@@ -1,0 +1,94 @@
+#include <bits/stdc++.h> 
+int maximumNonAdjacentSum(vector<int> &nums){
+    // Write your code here.
+    int n = nums.size();
+    if(n==1)    return nums[0];
+    if(n==2)    return max(nums[0], nums[1]);
+    vector<int> dp(n,0);
+    dp[0]  = nums[0];
+    dp[1] = nums[1];
+    dp[2] = nums[0] + nums[2];
+    for(int i=3;i<n;i++)
+        dp[i] = nums[i] + max(dp[i-2] , dp[i-3]);
+
+    return max(dp[n-1],dp[n-2]);
+}
+
+
+// Memoization 
+#include <bits/stdc++.h>
+
+int f(int n, vector<int> &nums, vector<int> &dp)
+{
+    if(n==0)    return nums[n];
+    if(n<0)     return 0;
+
+    if(dp[n] != -1) return dp[n];
+
+    int pick = nums[n] + f(n-2, nums, dp);
+    int nonPick = f(n-1, nums, dp);
+
+    return dp[n] = max(pick, nonPick);
+}
+int maximumNonAdjacentSum(vector<int> &nums){
+    // Write your code here.
+    int n = nums.size();
+    vector<int> dp(n, -1);
+
+    return f(n-1, nums, dp);
+}
+
+// tabular
+
+#include <bits/stdc++.h>
+
+int f(int n, vector<int> &nums, vector<int> &dp)
+{
+    dp[0] = nums[0];
+
+    for(int i=1;i<n;i++)
+    {
+        int pick = nums[i] ;
+        if(i>1)
+            pick += dp[i-2];
+        int nonPick = dp[i-1];
+        dp[i] = max(pick, nonPick); 
+    }
+    return dp[n-1];
+}
+int maximumNonAdjacentSum(vector<int> &nums){
+    // Write your code here.
+    int n = nums.size();
+    vector<int> dp(n, -1);
+
+    return f(n, nums, dp);
+}
+
+// optimization
+
+#include <bits/stdc++.h>
+
+int f(int n, vector<int> &nums, vector<int> &dp)
+{
+    int prev2 = 0;
+    int prev = nums[0];
+
+    for(int i=1;i<n;i++)
+    {
+        int pick = nums[i];
+        if(i>1)
+            pick += prev2;
+        int nonPick = prev;
+        int curr = max(pick, nonPick); 
+        prev2 = prev;
+        prev = curr;
+    }
+    return prev;
+}
+int maximumNonAdjacentSum(vector<int> &nums){
+    // Write your code here.
+    int n = nums.size();
+    vector<int> dp(n, -1);
+
+    return f(n, nums, dp);
+}

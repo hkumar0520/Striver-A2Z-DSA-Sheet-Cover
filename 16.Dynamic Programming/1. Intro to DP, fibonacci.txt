@@ -1,3 +1,6 @@
+
+// memoization
+
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -33,6 +36,8 @@ int main()
 
 ##################################################################################################
 
+// Tabular
+
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -65,7 +70,7 @@ int main()
 
 ###################################################################################################
 
-
+// optimization
 
 #include<bits/stdc++.h>
 using namespace std;
