@@ -1,5 +1,29 @@
 #include <bits/stdc++.h>
 
+// recursion
+
+#include <bits/stdc++.h>
+
+int f(int ind, vector<int> hgs)
+{
+    if(ind == 0) return 0;
+
+    int oneStep = f(ind-1,hgs) + abs(hgs[ind]-hgs[ind-1]);
+    int twoStep = INT_MAX;
+
+    if(ind>1)
+        twoStep = f(ind-2, hgs) + abs(hgs[ind]-hgs[ind-2]);
+
+    return min(oneStep,twoStep);
+
+}
+int frogJump(int n, vector<int> &heights)
+{
+    // Write your code here.
+
+    return f(n-1, heights);
+}
+
 //Memoization
 
 int f(int ind, vector<int> hgs, vector<int> & dp)

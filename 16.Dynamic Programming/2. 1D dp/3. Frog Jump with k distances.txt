@@ -1,4 +1,35 @@
 
+// recursion 
+
+int f(int ind, vector<int> hgs,  int k)
+{
+    if(ind == 0) return 0;
+
+    int minimum = INT_MAX;
+    for(int j = 1;j<=k;j++)
+    {
+        if((ind-j)>=0)
+        {
+            int value = f(ind-j,hgs, k) + abs(hgs[ind]-hgs[ind-j]);
+            minimum = min(minimum, value);
+        }
+    }
+
+    return minimum;
+}
+
+int minimizeCost(int n, int k, vector<int> &height){
+
+
+    return f(n-1, height, k);
+
+    // Write your code here.
+}
+
+
+###############################################################################################
+
+// memoization
 int f(int ind, vector<int> hgs, vector<int> &dp, int k)
 {
     if(ind == 0) return 0;
