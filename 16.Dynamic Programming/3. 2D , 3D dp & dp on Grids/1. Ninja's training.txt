@@ -1,0 +1,92 @@
+
+
+// using recursion
+
+
+int f(int ind, vector<vector<int>> points, int nonPick)
+{
+    if(ind < 0)
+        return 0;
+
+    int indexOne = (nonPick+1)%3;
+    int indexTwo = (nonPick+2)%3;
+    int pickOne = points[ind][indexOne] + f(ind-1,points,indexOne);
+    int picktwo = points[ind][indexTwo] + f(ind-1,points,indexTwo);
+
+    return max(pickOne,picktwo);
+
+}
+int ninjaTraining(int n, vector<vector<int>> &points)
+{
+    // Write your code here.
+    int pickOne = points[n-1][0]  + f(n-2,points, 0);
+    int picktwo = points[n-1][1]  + f(n-2,points, 1);
+    int pickthree = points[n-1][2]  + f(n-2,points, 2);
+    return max(pickOne, max(picktwo, pickthree));
+}
+
+
+// memoization, 6/11, 43/80
+
+
+
+int f(int ind, vector<vector<int>> points, int nonPick, vector<vector<int>>& dp)
+{
+    if(ind < 0)
+        return 0;
+
+    if(dp[ind][nonPick]!=-1)
+        return dp[ind][nonPick];
+
+    int indexOne = (nonPick+1)%3;
+    int indexTwo = (nonPick+2)%3;
+    
+    int pickOne = points[ind][indexOne] + f(ind-1,points,indexOne, dp);
+    int picktwo = points[ind][indexTwo] + f(ind-1,points,indexTwo, dp);
+
+    return dp[ind][nonPick] = max(pickOne,picktwo);
+
+}
+int ninjaTraining(int n, vector<vector<int>> &points)
+{
+    // Write your code here.
+    vector<vector<int>> dp(n,vector<int>(3,-1));
+    int pickOne = points[n-1][0]  + f(n-2,points, 0, dp);
+    int picktwo = points[n-1][1]  + f(n-2,points, 1, dp);
+    int pickthree = points[n-1][2]  + f(n-2,points, 2, dp);
+    return max(pickOne, max(picktwo, pickthree));
+}
+
+##############################################################################
+
+int f(int ind, vector<vector<int>> points, int nonPick, vector<vector<int>>& dp)
+{
+    if(nonPick == -1)
+    {
+        int pickOne = points[ind][0]  + f(ind-1,points, 0, dp);
+        int picktwo = points[ind][1]  + f(ind-1,points, 1, dp);
+        int pickthree = points[ind][2]  + f(ind-1,points, 2, dp);
+        return max(pickOne, max(picktwo, pickthree));
+    }
+
+    if(ind < 0)
+        return 0;
+
+    if(dp[ind][nonPick]!=-1)
+        return dp[ind][nonPick];
+
+    int indexOne = (nonPick+1)%3;
+    int indexTwo = (nonPick+2)%3;
+    
+    int pickOne = points[ind][indexOne] + f(ind-1,points,indexOne, dp);
+    int picktwo = points[ind][indexTwo] + f(ind-1,points,indexTwo, dp);
+
+    return dp[ind][nonPick] = max(pickOne,picktwo);
+
+}
+int ninjaTraining(int n, vector<vector<int>> &points)
+{
+    // Write your code here.
+    vector<vector<int>> dp(n,vector<int>(3,-1));
+    return f(n-1, points, -1, dp);
+}
