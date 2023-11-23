@@ -15,6 +15,7 @@ int maximumNonAdjacentSum(vector<int> &nums){
 }
 
 
+###############################################################################################
 // Memoization 
 #include <bits/stdc++.h>
 
@@ -38,6 +39,7 @@ int maximumNonAdjacentSum(vector<int> &nums){
     return f(n-1, nums, dp);
 }
 
+###############################################################################################
 // tabular
 
 #include <bits/stdc++.h>
@@ -64,6 +66,7 @@ int maximumNonAdjacentSum(vector<int> &nums){
     return f(n, nums, dp);
 }
 
+###############################################################################################
 // optimization
 
 #include <bits/stdc++.h>

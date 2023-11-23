@@ -26,9 +26,9 @@ int ninjaTraining(int n, vector<vector<int>> &points)
 }
 
 
+###############################################################################################
+
 // memoization, 6/11, 43/80
-
-
 
 int f(int ind, vector<vector<int>> points, int nonPick, vector<vector<int>>& dp)
 {
@@ -57,7 +57,7 @@ int ninjaTraining(int n, vector<vector<int>> &points)
     return max(pickOne, max(picktwo, pickthree));
 }
 
-##############################################################################
+###############################################################################################
 
 int f(int ind, vector<vector<int>> points, int nonPick, vector<vector<int>>& dp)
 {

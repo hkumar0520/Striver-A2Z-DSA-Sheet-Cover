@@ -25,6 +25,7 @@ int minimizeCost(int n, int k, vector<int> &height){
 }
 
 
+###############################################################################################
 //another memoization approach
 
 
@@ -56,6 +57,7 @@ int minimizeCost(int n, int k, vector<int> &height){
     // Write your code here.
 }
 
+###############################################################################################
 // Tabular approach
 
 int f(int n, vector<int> hgs, int k)

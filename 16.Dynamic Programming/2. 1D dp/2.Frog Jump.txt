@@ -29,6 +29,7 @@ int frogJump(int n, vector<int> &heights)
 }
 
 
+###############################################################################################
 // tabular form 
 
 #include <bits/stdc++.h>
@@ -56,6 +57,7 @@ int frogJump(int n, vector<int> &heights)
     return f(heights);
 }
 
+###############################################################################################
 // optimization method
 
 #include <bits/stdc++.h>
