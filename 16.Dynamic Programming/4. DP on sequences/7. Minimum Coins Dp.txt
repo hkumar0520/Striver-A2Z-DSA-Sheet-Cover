@@ -1,0 +1,87 @@
+
+// in below one , it is coming like this
+// INT_MAX + 1 = INT_MIN
+int f(int ind, int target, vector<int> num)
+{
+    if(ind == 0)
+        return ((target%num[ind]) ==0 ) ? target/num[ind] : INT_MAX;
+
+    int notpick = f(ind-1, target, num);
+    int pick = INT_MAX;
+    if(num[ind]<=target)
+        pick = 1 + f(ind, target-num[ind], num);
+
+    cout<<pick<<" "<<notpick<<endl;
+    return min(notpick, pick);
+}
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    int val = f(n-1,x,num);
+    return  val == INT_MAX? -1: val;
+}
+
+
+###############################################################################################
+// recursion, time limit exceed
+
+#include <bits/stdc++.h> 
+
+int f(int ind, int target, vector<int> num)
+{
+    if(ind == 0)
+        return ((target%num[ind]) ==0 ) ? target/num[ind] : 1e9;
+
+    int notpick = f(ind-1, target, num);
+    int pick = 1e9;
+    if(num[ind]<=target)
+        pick = 1 + f(ind, target-num[ind], num);
+
+    return min(notpick, pick);
+}
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    int val = f(n-1,x,num);
+    return  val >= 1e9? -1: val;
+}
+
+###############################################################################################
+// memoization 
+#include <bits/stdc++.h> 
+
+int f(int ind, int target, vector<int> num, vector<vector<int>> &dp)
+{
+    if(ind == 0)
+        return ((target%num[ind]) ==0 ) ? target/num[ind] : 1e9;
+
+    if(dp[ind][target] != -1)   return dp[ind][target];
+
+    int notpick = f(ind-1, target, num, dp);
+    int pick = 1e9;
+    if(num[ind]<=target)
+        pick = 1 + f(ind, target-num[ind], num, dp);
+
+    return dp[ind][target] = min(notpick, pick);
+}
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    vector<vector<int>> dp(n,vector<int>(x+1,-1));
+    int val = f(n-1,x,num,dp);
+    return  val >= 1e9? -1: val;
+}
+
+
+###############################################################################################
+
+// tabular
+
+
+
+###############################################################################################
+
+// optimization

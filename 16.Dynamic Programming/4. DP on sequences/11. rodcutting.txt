@@ -1,0 +1,125 @@
+
+
+// recursion 
+
+int f(int ind, int n, vector<int> price)
+{
+	// below no need 
+	// if(n == 0)
+	//	return 0;
+	
+	if(ind == 0) return n*price[ind];	
+
+	int notpick = f(ind-1,n,price);
+	int pick = 0;
+	if((ind+1)<= n)
+		pick = price[ind] + f(ind,n-(ind+1), price);
+
+	return max(notpick, pick);
+}
+
+int cutRod(vector<int> &price, int n)
+{
+	// Write your code here.
+	return f(n-1, n, price);
+}
+
+
+###############################################################################################
+// memoization
+
+
+int f(int ind, int n, vector<int> price, vector<vector<int>> &dp)
+{
+	// below no need
+	// if(n == 0)
+	//	return 0;
+	
+	if(ind == 0) return n*price[ind];
+
+	if(dp[ind][n] != -1)	return dp[ind][n];	
+
+	int notpick = f(ind-1,n,price, dp);
+	int pick = 0;
+	if((ind+1)<= n)
+		pick = price[ind] + f(ind,n-(ind+1), price, dp);
+
+	return dp[ind][n] = max(notpick, pick);
+}
+
+int cutRod(vector<int> &price, int n)
+{
+	// Write your code here.
+	vector<vector<int>> dp(n,vector<int>(n+1,-1));
+	return f(n-1, n, price, dp);
+}
+
+
+###############################################################################################
+// tabular 
+
+
+int f(int ind, int n, vector<int> price, vector<vector<int>> dp)
+{
+	// if(ind == 0) return n*price[ind];
+	for(int i=0;i<n+1;i++)
+		dp[0][i] = i*price[0];
+	
+	for(int i=1;i<n;i++)
+	{
+		for(int j=0;j<n+1;j++)
+		{
+			int notpick = dp[i-1][j];
+			int pick = 0;
+			if((i+1)<=j)
+				pick = price[i] +dp[i][j-(i+1)];
+
+			dp[i][j] = max(notpick, pick);
+		}
+	}
+	
+	return dp[n-1][n];
+}
+
+int cutRod(vector<int> &price, int n)
+{
+	// Write your code here.
+	vector<vector<int>> dp(n,vector<int>(n+1,-1));
+	return f(n-1, n, price, dp);
+}
+
+
+
+
+###############################################################################################
+// optimization 
+
+
+int f(int ind, int n, vector<int> price, vector<int>dp)
+{
+	// if(ind == 0) return n*price[ind];
+	for(int i=0;i<n+1;i++)
+		dp[i] = i*price[0];
+	
+	for(int i=1;i<n;i++)
+	{
+		for(int j=0;j<n+1;j++)
+		{
+			int notpick = dp[j];
+			int pick = 0;
+			if((i+1)<=j)
+				pick = price[i] +dp[j-(i+1)];
+
+			dp[j] = max(notpick, pick);
+		}
+	}
+	
+	return dp[n];
+}
+
+int cutRod(vector<int> &price, int n)
+{
+	// Write your code here.
+	vector<int>dp (n+1,-1);
+	return f(n-1, n, price, dp);
+}
