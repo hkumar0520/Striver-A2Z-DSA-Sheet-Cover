@@ -21,7 +21,7 @@ long countWaysToMakeChange(int *denominations, int n, int value)
 
 
 ###############################################################################################
-// optimiation
+// memoization
 
 
 #include <bits/stdc++.h>

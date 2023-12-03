@@ -80,8 +80,78 @@ int minimumElements(vector<int> &num, int x)
 
 // tabular
 
+#include <bits/stdc++.h> 
 
+int f(int n, int target, vector<int> num, vector<vector<int>> &dp)
+{
+    // if(ind == 0)
+    //     return ((target%num[ind]) ==0 ) ? target/num[ind] : 1e9;
+    for(int j=0;j<=target;j++)
+        if(j%num[0] == 0)   dp[0][j] = j/num[0];
+
+    for(int i=1;i<n;i++)
+    {
+        for(int j=0;j<=target;j++)
+        {
+            int notpick = dp[i-1][j];
+            int pick = 1e9;
+            if(num[i]<=j)
+                pick = 1+dp[i][j-num[i]];
+
+            dp[i][j] = min(notpick, pick);
+        }
+    }
+
+    return dp[n-1][target];
+}
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    vector<vector<int>> dp(n,vector<int>(x+1,1e9));
+    int val = f(n,x,num,dp);
+    return  val >= 1e9? -1: val;
+}
 
 ###############################################################################################
 
 // optimization
+
+#include <bits/stdc++.h> 
+
+int f(int n, int target, vector<int> num)
+{
+
+    vector<int>curr (target+1,1e9);
+
+    // if(ind == 0)
+    //     return ((target%num[ind]) ==0 ) ? target/num[ind] : 1e9;
+    for(int j=0;j<=target;j++)
+        if(j%num[0] == 0)   curr[j] = j/num[0];
+
+    for(int i=1;i<n;i++)
+    {
+        vector<int> temp = curr;
+        for(int j=0;j<=target;j++)
+        {
+            int notpick = curr[j];
+            int pick = 1e9;
+            if(num[i]<=j)
+                pick = 1+temp[j-num[i]];
+
+            temp[j] = min(notpick, pick);
+        }
+        curr = temp;
+    }
+
+    return curr[target];
+}
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    int val = f(n,x,num);
+    return  val >= 1e9? -1: val;
+}
+
+
