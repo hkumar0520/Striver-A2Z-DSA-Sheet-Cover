@@ -1,0 +1,171 @@
+
+
+// recursion
+
+int f(int ind, int buy, vector<int>& values, int n, int cap)
+{
+    if(cap == 0)    return 0;
+    if(ind == n)    return 0;
+
+    int opt1 = 0, opt2 = 0;
+    if(buy == 0)
+    {
+        opt1 = f(ind+1,buy,values,n,cap);
+        opt2 = -values[ind] + f(ind+1,1,values,n,cap);
+    }
+    else
+    {
+        opt1 = f(ind+1,buy,values,n,cap);
+        opt2 = values[ind] + f(ind+1,0,values,n,cap-1);
+    }
+    return max(opt1,opt2);
+}
+
+int maxProfit(vector<int>& prices)
+{
+    // Write your code here.
+    int n = prices.size();
+    return f(0, 0, prices, n, 2);
+
+}
+
+###############################################################################################
+
+// correct memoization
+
+int f(int ind, int buy, vector<int>& values, int n,vector<vector<vector<int>>> &dp, int cap)
+{
+    if(cap == 0)    return 0;
+    if(ind == n)    return 0;
+
+    if(dp[ind][buy][cap] != -1)  return dp[ind][buy][cap];
+
+    int opt1 = 0, opt2 = 0;
+    if(buy == 0)
+    {
+        opt1 = f(ind+1,buy,values,n,dp,cap);
+        opt2 = -values[ind] + f(ind+1,1,values,n,dp,cap);
+    }
+    else
+    {
+        opt1 = f(ind+1,buy,values,n,dp,cap);
+        opt2 = values[ind] + f(ind+1,0,values,n,dp,cap-1);
+    }
+    return dp[ind][buy][cap] = max(opt1,opt2);
+}
+
+int maxProfit(vector<int>& prices)
+{
+    // Write your code here.
+    int n = prices.size();
+    vector<vector<vector<int>>> dp(n,vector<vector<int>>(2,vector<int>(3,-1)));
+    return f(0, 0, prices, n,dp, 2);
+}
+
+###############################################################################################
+
+// my memo 
+int f(int ind, int buy, vector<int>& values, int n,vector<vector<vector<int>>> &dp, int cap)
+{
+    if(cap == -1)    return 0;
+    if(ind == n)    return 0;
+
+    if(dp[ind][buy][cap] != -1)  return dp[ind][buy][cap];
+
+    int opt1 = 0, opt2 = 0;
+    if(buy == 0)
+    {
+        opt1 = f(ind+1,buy,values,n,dp,cap);
+        opt2 = -values[ind] + f(ind+1,1,values,n,dp,cap);
+    }
+    else
+    {
+        opt1 = f(ind+1,buy,values,n,dp,cap);
+        opt2 = values[ind] + f(ind+1,0,values,n,dp,cap-1);
+    }
+    return dp[ind][buy][cap] = max(opt1,opt2);
+}
+
+int maxProfit(vector<int>& prices)
+{
+    // Write your code here.
+    int n = prices.size();
+    vector<vector<vector<int>>> dp(n,vector<vector<int>>(2,vector<int>(2,-1)));
+    return f(0, 0, prices, n,dp, 1);
+}
+
+
+###############################################################################################
+// tabular approach
+
+int f(vector<int>& values, int n,vector<vector<vector<int>>> &dp)
+{
+    for(int ind=n-1;ind>=0;ind--)
+    {
+        for(int buy=0;buy<=1;buy++)
+        {
+            for(int cap=1;cap<=2;cap++)
+            {
+                if(buy==0)
+                {
+                    dp[ind][buy][cap] = max(0 + dp[ind+1][buy][cap],
+                                            -values[ind]+dp[ind+1][1][cap]);
+                }
+                else
+                {
+                    dp[ind][buy][cap] = max(0 + dp[ind+1][buy][cap],
+                                            values[ind]+dp[ind+1][0][cap-1]);
+                }
+
+            }
+        }
+    }
+    return dp[0][0][2];
+}
+
+int maxProfit(vector<int>& prices)
+{
+    // Write your code here.
+    int n = prices.size();
+    vector<vector<vector<int>>> dp(n+1,vector<vector<int>>(2,vector<int>(3,0)));
+    return f(prices,n,dp);
+}
+
+###############################################################################################
+// optimized
+
+int f(vector<int>& values, int n)
+{
+    vector<vector<int>> curr(2,vector<int>(3,0));
+    vector<vector<int>> ahead(2,vector<int>(3,0));
+
+    for(int ind=n-1;ind>=0;ind--)
+    {
+        for(int buy=0;buy<=1;buy++)
+        {
+            for(int cap=1;cap<=2;cap++)
+            {
+                if(buy==0)
+                {
+                    curr[buy][cap] = max(0 + ahead[buy][cap],
+                                            -values[ind]+ahead[1][cap]);
+                }
+                else
+                {
+                    curr[buy][cap] = max(0 + ahead[buy][cap],
+                                            values[ind]+ahead[0][cap-1]);
+                }
+            }
+        }
+        ahead = curr;
+    }
+    return curr[0][2];
+}
+
+int maxProfit(vector<int>& prices)
+{
+    // Write your code here.
+    int n = prices.size();
+    return f(prices,n);
+}
+

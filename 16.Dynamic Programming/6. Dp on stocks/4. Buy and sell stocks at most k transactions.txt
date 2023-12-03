@@ -1,0 +1,141 @@
+
+// recursion
+
+#include <bits/stdc++.h> 
+
+int f(int ind, int buy, vector<int>& values, int n, int cap)
+{
+    if(cap == 0)    return 0;
+    if(ind == n)    return 0;
+
+    int opt1 = 0, opt2 = 0;
+    if(buy == 0)
+    {
+        opt1 = f(ind+1,buy,values,n,cap);
+        opt2 = -values[ind] + f(ind+1,1,values,n,cap);
+    }
+    else
+    {
+        opt1 = f(ind+1,buy,values,n,cap);
+        opt2 = values[ind] + f(ind+1,0,values,n,cap-1);
+    }
+    return max(opt1,opt2);
+}
+
+int maximumProfit(vector<int> &prices, int n, int k)
+{
+    // Write your code here.
+    return f(0, 0, prices, n, k);
+}
+
+###############################################################################################
+// memoization
+#include <bits/stdc++.h> 
+
+int f(int ind, int buy, vector<int>& values, int n,vector<vector<vector<int>>> &dp, int cap)
+{
+    if(cap == 0)    return 0;
+    if(ind == n)    return 0;
+
+    if(dp[ind][buy][cap] != -1)  return dp[ind][buy][cap];
+
+    int opt1 = 0, opt2 = 0;
+    if(buy == 0)
+    {
+        opt1 = f(ind+1,buy,values,n,dp,cap);
+        opt2 = -values[ind] + f(ind+1,1,values,n,dp,cap);
+    }
+    else
+    {
+        opt1 = f(ind+1,buy,values,n,dp,cap);
+        opt2 = values[ind] + f(ind+1,0,values,n,dp,cap-1);
+    }
+    return dp[ind][buy][cap] = max(opt1,opt2);
+}
+
+int maximumProfit(vector<int> &prices, int n, int k)
+{
+    // Write your code here.    
+    vector<vector<vector<int>>> dp(n,vector<vector<int>>(2,vector<int>(k+1,-1)));
+    return f(0, 0, prices, n, dp, k);
+}
+
+
+###############################################################################################
+// tabular
+
+#include <bits/stdc++.h> 
+
+int f(vector<int>& values, int n,vector<vector<vector<int>>> &dp, int k)
+{
+    for(int ind=n-1;ind>=0;ind--)
+    {
+        for(int buy=0;buy<=1;buy++)
+        {
+            for(int cap=1;cap<=k;cap++)
+            {
+                if(buy==0)
+                {
+                    dp[ind][buy][cap] = max(0 + dp[ind+1][buy][cap],
+                                            -values[ind]+dp[ind+1][1][cap]);
+                }
+                else
+                {
+                    dp[ind][buy][cap] = max(0 + dp[ind+1][buy][cap],
+                                            values[ind]+dp[ind+1][0][cap-1]);
+                }
+
+            }
+        }
+    }
+    return dp[0][0][k];
+}
+
+int maximumProfit(vector<int> &prices, int n, int k)
+{
+    // Write your code here.    
+    vector<vector<vector<int>>> dp(n+1,vector<vector<int>>(2,vector<int>(k+1,0)));
+    return f(prices, n, dp, k);
+}
+
+
+###############################################################################################
+// optimization
+
+#include <bits/stdc++.h> 
+
+int f(vector<int>& values, int n, int k)
+{
+    vector<vector<int>> curr(2,vector<int>(k+1,0));
+    vector<vector<int>> ahead(2,vector<int>(k+1,0));
+
+    for(int ind=n-1;ind>=0;ind--)
+    {
+        for(int buy=0;buy<=1;buy++)
+        {
+            for(int cap=1;cap<=k;cap++)
+            {
+                if(buy==0)
+                {
+                    curr[buy][cap] = max(0 + ahead[buy][cap],
+                                            -values[ind]+ahead[1][cap]);
+                }
+                else
+                {
+                    curr[buy][cap] = max(0 + ahead[buy][cap],
+                                            values[ind]+ahead[0][cap-1]);
+                }
+            }
+        }
+        ahead = curr;
+    }
+    return curr[0][k];
+}
+
+int maximumProfit(vector<int> &prices, int n, int k)
+{
+    // Write your code here.    
+    return f(prices, n, k);
+}
+
+

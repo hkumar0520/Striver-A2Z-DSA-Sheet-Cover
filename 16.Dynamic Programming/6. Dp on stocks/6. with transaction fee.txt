@@ -1,0 +1,70 @@
+
+// recursion 
+int f(int ind, int buy, vector<int> &values, int n, int fee)
+{
+    if(ind == n)    return 0;
+
+    int opt1 = 0, opt2 = 0;
+    if(buy == 0)
+    {
+        opt1 = f(ind+1,buy,values,n, fee);
+        opt2 = -values[ind] + f(ind+1,1,values,n, fee);
+    }
+    else
+    {
+        opt1 = f(ind+1,buy,values,n, fee);
+        opt2 = values[ind]-fee + f(ind+1,0,values,n, fee);
+    }
+    return max(opt1,opt2);
+}
+
+int maximumProfit(vector<int> &prices, int n, int fee)
+{
+	// Write your code here.
+	return f(0, 0, prices, n, fee);
+
+}
+
+
+###############################################################################################
+// memoization
+
+#include <bits/stdc++.h>
+
+int f(int ind, int buy, vector<int> &values, int n, vector<vector<int>> &dp, int fee)
+{
+    
+    if(ind == n)    return 0;
+
+    if(dp[ind][buy] != -1)   return dp[ind][buy];
+
+    int opt1 = 0, opt2 = 0;
+    if(buy == 0)
+    {
+        opt1 = f(ind+1,buy,values,n,dp, fee);
+        opt2 = -values[ind] + f(ind+1,1,values,n,dp, fee);
+    }
+    else
+    {
+        opt1 = f(ind+1,buy,values,n,dp, fee);
+        opt2 = values[ind] - fee + f(ind+1,0,values,n,dp, fee);
+    }
+    return dp[ind][buy] = max(opt1,opt2);
+}
+
+int maximumProfit(vector<int> &prices, int n, int fee)
+{
+	// Write your code here.
+	vector<vector<int>> dp(n,vector<int>(2,-1));
+	return f(0, 0, prices, n,dp, fee);
+
+}
+
+
+
+###############################################################################################
+// tabular
+
+
+###############################################################################################
+// optimization
