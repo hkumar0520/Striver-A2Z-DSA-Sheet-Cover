@@ -1,0 +1,128 @@
+
+
+// recursion 
+
+
+bool f(int ind1, string pattern, int ind2, string text)
+{
+   int m = pattern.size(), n = text.size();
+   if(ind1 == m && ind2 == n)
+      return true;
+   if(ind1 >=m || ind2 >=n)
+      return false;
+
+   bool match = false;
+   if((pattern[ind1] = text[ind2]) || pattern[ind1]=='?')
+      match = f(ind1+1,pattern,ind2+1,text);
+   else
+   {
+      if(pattern[ind1]=='*')
+      {
+         bool one = f(ind1, pattern, ind2+1,text);
+         bool two = f(ind1+1,pattern,ind2+1,text);
+         match = one || two;
+      }
+   }
+   return match;
+}
+bool wildcardMatching(string pattern, string text)
+{
+   // Write your code here.
+
+   int m = pattern.size();
+   int n = text.size();
+
+   return f(0, pattern, 0, text);
+}
+
+
+###############################################################################################
+
+// correct recursion
+
+
+bool isAllStars(string pattern, int n)
+{
+   for(int i=0;i<=n;i++)
+   {
+      if(pattern[i] != '*')   return false;
+   }
+   return true;
+}
+bool f(int ind1, string pattern, int ind2, string text)
+{
+   if(ind1<0 && ind2<0)    return true;
+   if(ind1<0 && ind2>=0)   return false;
+   if(ind2<0 && ind1>=0)
+      return isAllStars(pattern,ind1);
+
+   if((pattern[ind1] == text[ind2]) || pattern[ind1] == '?')
+      return f(ind1-1,pattern, ind2-1, text);
+   else
+   {
+      if(pattern[ind1] == '*')
+         return f(ind1-1,pattern,ind2,text)||f(ind1,pattern,ind2-1,text);
+
+   }
+   return false;
+}
+bool wildcardMatching(string pattern, string text)
+{
+   // Write your code here.
+
+   int m = pattern.size();
+   int n = text.size();
+
+   return f(m-1, pattern, n-1, text);
+}
+
+###############################################################################################
+// memoization
+
+
+#include <bits/stdc++.h>
+
+bool isAllStars(string pattern, int n)
+{
+   for(int i=0;i<=n;i++)
+   {
+      if(pattern[i] != '*')   return false;
+   }
+   return true;
+}
+bool f(int ind1, string pattern, int ind2, string text,vector<vector<int>> &dp)
+{
+   if(ind1<0 && ind2<0)    return true;
+   if(ind1<0 && ind2>=0)   return false;
+   if(ind2<0 && ind1>=0)
+      return isAllStars(pattern,ind1);
+
+   if(dp[ind1][ind2] != -1)   return dp[ind1][ind2];
+
+   if((pattern[ind1] == text[ind2]) || pattern[ind1] == '?')
+      return dp[ind1][ind2] = f(ind1-1,pattern, ind2-1, text,dp);
+   else
+   {
+      if(pattern[ind1] == '*')
+         return dp[ind1][ind2] = f(ind1-1,pattern,ind2,text,dp)||f(ind1,pattern,ind2-1,text,dp);
+
+   }
+   return false;
+}
+bool wildcardMatching(string pattern, string text)
+{
+   // Write your code here.
+
+   int m = pattern.size();
+   int n = text.size();
+   vector<vector<int>> dp(m, vector<int>(n,-1));
+
+   return f(m-1, pattern, n-1, text,dp);
+}
+
+###############################################################################################
+
+// tabular
+
+
+

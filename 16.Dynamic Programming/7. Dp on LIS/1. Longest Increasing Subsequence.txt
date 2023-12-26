@@ -1,0 +1,96 @@
+
+// recursion 
+
+
+int f(int ind, int arr[], int lastMax)
+{
+    if(ind< 0)    return 0;    
+
+    int notpick = f(ind-1,arr,lastMax);
+    int pick = 0;
+    if(arr[ind]<lastMax)
+        pick = 1 + f(ind-1,arr,arr[ind]);
+
+    return max(notpick,pick);
+
+}
+
+int longestIncreasingSubsequence(int arr[], int n)
+{
+    // Write Your Code here
+    return f(n-1,arr,1e6);
+}
+
+
+###############################################################################################
+// memoization
+
+runtime error in my as well as striver
+
+
+#include<bits/stdc++.h>
+
+int f(int ind, int arr[], int prevIndex, vector<vector<int>> &dp)
+{
+        
+
+    if(ind < 0)    return 0;    
+
+    // arr[ind ..... prevIndex]
+    if(dp[ind][prevIndex] != -1)   return dp[ind][prevIndex];
+
+    int notpick = f(ind-1,arr,prevIndex,dp);
+    
+    int pick = 0;
+    
+    if((prevIndex == dp.size()) || arr[ind]<arr[prevIndex])
+        pick = 1 + f(ind-1,arr,ind,dp);
+
+    return dp[ind][prevIndex] = max(notpick,pick);
+
+}
+
+int longestIncreasingSubsequence(int arr[], int n)
+{
+    // Write Your Code here
+    vector<vector<int>> dp(n,vector<int>(n+1,-1));
+    return f(n-1,arr,n,dp);
+}
+
+
+
+
+###############################################################################################
+// tabular
+
+// too long to execute 
+
+
+#include<bits/stdc++.h>
+
+int f(int arr[], int n)
+{
+    vector<int> dp(n,1);
+    int maxAns = INT_MIN;
+
+    for(int i=1;i<n;i++)
+    {
+        for(int j=i-1;j>=0;j--)
+        {
+            if(arr[i]>arr[j])
+                dp[i] = max(dp[i],dp[j]+1);
+        }
+        maxAns = max(maxAns, dp[i]);
+    }
+    return maxAns;
+}
+
+int longestIncreasingSubsequence(int arr[], int n) {
+    // Create a 2D DP array initialized to -1
+    
+    return f(arr,n);
+}
+
+
+###############################################################################################
+// optimization

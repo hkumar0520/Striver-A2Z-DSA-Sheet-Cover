@@ -1,0 +1,152 @@
+
+
+// my method of lcs
+
+#include <bits/stdc++.h> 
+
+void f(int n, string s, int m, string t, vector<vector<int>> &dp)
+{
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=m;j++)
+        {
+            if(s[i-1] == t[j-1])
+                dp[i][j] = dp[i-1][j-1]+1;
+            else
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+}
+
+string findLCS(int n, int m,string s1, string s2){
+	// Write your code here.	
+	vector<vector<int>> dp(n+1,vector<int>(m+1,0));
+
+	f(n,s1, m, s2,dp);
+
+	string s = "";
+
+	int i = n, j = m;
+	while(i>0 && j>0)
+	{
+		if(dp[i][j] == dp[i-1][j])
+			i--;
+		else if(dp[i][j] == dp[i][j-1])
+			j--;
+		else
+		{
+			s = s1[i-1] + s;
+			i--;
+			j--;
+		}
+	}
+	return s;
+}
+
+string shortestSupersequence(string a, string b)
+{
+	// Write your code here.
+	int m = a.size(), n = b.size();
+	string lcs  = findLCS(m, n, a, b);
+
+
+	int i=0,j=0, lcslen = lcs.size();
+	string str = "";
+
+
+	for(int k=0; k<lcslen; k++)
+	{
+		while(i<m && a[i] != lcs[k])
+		{
+			str = str + a[i];
+			i++;
+		}
+		while(j<n && b[j] != lcs[k])
+		{
+			str = str + b[j];
+			j++;
+		}
+		i++;
+		j++;
+		str = str + lcs[k];
+	}
+	while(i<m)
+		str = str + a[i++];
+	
+	while(j<n)
+		str = str + b[j++];
+
+	return str;
+
+}
+
+###############################################################################################
+// different method 
+
+#include <bits/stdc++.h> 
+
+void f(int n, string s, int m, string t, vector<vector<int>> &dp)
+{
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=m;j++)
+        {
+            if(s[i-1] == t[j-1])
+                dp[i][j] = dp[i-1][j-1]+1;
+            else
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+}
+
+string findSCS(int n, int m,string s1, string s2){
+	// Write your code here.	
+	vector<vector<int>> dp(n+1,vector<int>(m+1,0));
+
+	f(n,s1, m, s2,dp);
+
+	string s = "";
+
+	int i = n, j = m;
+	while(i>0 && j>0)
+	{
+		if(dp[i][j] == dp[i-1][j])
+		{	
+			s = s1[i-1] + s;
+			i--;
+		}
+		else if(dp[i][j] == dp[i][j-1])
+		{
+			s = s2[j-1] + s;	
+			j--;
+		}
+		else
+		{
+			s = s1[i-1] + s;
+			i--;
+			j--;
+		}
+	}
+	while(i>0)
+	{
+		s = s1[i-1] + s;
+		i--;
+	}
+	while(j>0)
+	{
+		s = s2[j-1] + s;
+		j--;
+	}
+	return s;
+}
+
+string shortestSupersequence(string a, string b)
+{
+	// Write your code here.
+	int m = a.size(), n = b.size();
+	return findSCS(m, n, a, b);
+}
+
+
+
+

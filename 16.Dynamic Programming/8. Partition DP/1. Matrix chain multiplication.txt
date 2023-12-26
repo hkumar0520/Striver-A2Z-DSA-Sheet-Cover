@@ -1,0 +1,90 @@
+
+// recursion
+
+int f(int start, int endd, int* arr)
+{
+    if(start == endd)   return 0;
+
+    int mini = 1e9;
+
+
+    for(int k=start;k <= (endd-1);k++)
+    {
+        int ans = f(start,k,arr) + f(k+1,endd,arr) + arr[start-1]*arr[k]*arr[endd];
+        mini = min(mini,ans);
+    }
+    return mini;
+}
+int matrixChainMultiplication(int* arr, int n) {
+    // Write your code here
+    return f(1,n, arr);
+}
+
+###############################################################################################
+// memoization
+
+
+
+#include <bits/stdc++.h>
+
+int f(int start, int endd, int* arr, vector<vector<int>> &dp)
+{
+    if(start == endd)   return 0;
+
+    if(dp[start][endd] != -1)   return dp[start][endd];
+
+    int mini = 1e9;
+
+
+    for(int k=start;k <= (endd-1);k++)
+    {
+        int ans = f(start,k,arr,dp) + f(k+1,endd,arr,dp) + arr[start-1]*arr[k]*arr[endd];
+        mini = min(mini,ans);
+    }
+    return dp[start][endd] = mini;
+}
+int matrixChainMultiplication(int* arr, int n) {
+    // Write your code here
+    vector<vector<int>> dp(n,vector<int>(n+1,-1));
+    return f(1,n, arr, dp);
+}
+
+
+###############################################################################################
+// tabular
+
+#include <bits/stdc++.h>
+
+int f(int n, int* arr, vector<vector<int>> &dp)
+{
+    for(int i=1;i<n;i++)
+        dp[i][i] = 0;
+    for(int len = 2;len<n;len++)
+    {
+        for(int i=1;i<n-len+1;i++)
+        {
+            int j = i+len-1;
+            dp[i][j] = INT_MAX;
+            for(int k = i;k<j;k++)
+            {
+                int cost = arr[i-1]*arr[k]*arr[j] + dp[i][k] + dp[k+1][j];
+                dp[i][j] = min(dp[i][j], cost);
+            }
+        }
+    }
+
+    return dp[1][n-1];
+}
+int matrixChainMultiplication(int* arr, int n) {
+    // Write your code here
+    vector<vector<int>> dp(n+1,vector<int>(n+1,-1));
+    return f(n+1, arr, dp);
+}
+
+
+###############################################################################################
+// optimization
+
+
+
+

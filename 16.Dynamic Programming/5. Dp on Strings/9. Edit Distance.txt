@@ -1,0 +1,150 @@
+
+
+// recursion
+
+class Solution {
+public:
+    int f(int ind1, string s, int ind2, string t)
+    {
+        if(ind1 < 0)    return ind2 + 1;
+        if(ind2 < 0)    return ind1 + 1;
+
+        if(s[ind1] == t[ind2])  return f(ind1-1,s,ind2-1,t);
+
+        int insertt = f(ind1,s,ind2-1,t);
+        int deletee = f(ind1-1,s,ind2,t);
+        int replacee = f(ind1-1,s,ind2-1,t);
+
+        return min({insertt, deletee, replacee})+1; 
+    }
+    int minDistance(string word1, string word2) {
+        
+        int m = word1.size();
+        int n = word2.size();
+
+        return f(m-1, word1, n-1, word2);
+    }
+};
+
+
+###############################################################################################
+// memoization 
+
+
+class Solution {
+public:
+    int f(int ind1, string s, int ind2, string t, vector<vector<int>> &dp)
+    {
+        if(ind1 < 0)    return ind2 + 1;
+        if(ind2 < 0)    return ind1 + 1;
+
+        if(dp[ind1][ind2] != -1)    return dp[ind1][ind2];
+
+        if(s[ind1] == t[ind2])  return f(ind1-1,s,ind2-1,t,dp);
+
+        int insertt = f(ind1,s,ind2-1,t,dp);
+        int deletee = f(ind1-1,s,ind2,t,dp);
+        int replacee = f(ind1-1,s,ind2-1,t,dp);
+
+        return dp[ind1][ind2] = min({insertt, deletee, replacee})+1; 
+    }
+    int minDistance(string word1, string word2) {
+        
+        int m = word1.size();
+        int n = word2.size();
+
+        vector<vector<int>> dp(m,vector<int>(n,-1));
+
+        return f(m-1, word1, n-1, word2, dp);
+    }
+};
+
+
+###############################################################################################
+// tabular
+
+class Solution {
+public:
+    int f(int m, string s, int n, string t, vector<vector<int>> &dp)
+    {
+        // t 0 characters present, i characters of s delete
+        for(int i=0;i<m+1;i++)
+            dp[i][0] = i;
+
+        // s 0 characters present, j characters of t insert
+        for(int j=0;j<n+1;j++)
+            dp[0][j] = j;
+
+        for(int i=1;i<m+1;i++)
+        {
+            for(int j=1;j<n+1;j++)
+            {
+                if(s[i-1] == t[j-1])
+                    dp[i][j] = dp[i-1][j-1];
+                else
+                {
+                    int insertt = dp[i][j-1];
+                    int delettt = dp[i-1][j];
+                    int replacee = dp[i-1][j-1];
+
+                    dp[i][j] = min({ insertt, delettt, replacee}) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+    int minDistance(string word1, string word2) {
+        
+        int m = word1.size();
+        int n = word2.size();
+
+        vector<vector<int>> dp(m+1,vector<int>(n+1,0));
+
+        return f(m, word1, n, word2, dp);
+    }
+};
+
+###############################################################################################
+// optimization
+
+class Solution {
+public:
+    int f(int m, string s, int n, string t, vector<int> &dp)
+    {
+        // s 0 characters present, j characters of t insert
+        for(int j=0;j<n+1;j++)
+            dp[j] = j;
+
+        for(int i=1;i<m+1;i++)
+        {
+            vector<int> temp = dp;
+            temp[0] = i;
+            for(int j=1;j<n+1;j++)
+            {
+                if(s[i-1] == t[j-1])
+                    temp[j] = dp[j-1];
+                else
+                {
+                    int insertt = temp[j-1];
+                    int delettt = dp[j];
+                    int replacee = dp[j-1];
+
+                    temp[j] = min({ insertt, delettt, replacee}) + 1;
+                }
+            }
+            dp = temp;
+        }
+        return dp[n];
+    }
+    int minDistance(string word1, string word2) {
+        
+        int m = word1.size();
+        int n = word2.size();
+
+        vector<int> dp(n+1,0);
+
+        return f(m, word1, n, word2, dp);
+    }
+};
+
+

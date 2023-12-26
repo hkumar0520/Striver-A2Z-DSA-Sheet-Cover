@@ -1,0 +1,144 @@
+
+
+// recursion
+
+
+int f(int ind1, string str, int ind2, string sub)
+{
+	if(ind2<0)	return 1;
+	if(ind1<0)	return 0;
+	
+	int equal = 0, notequal = 0;
+	if(str[ind1] == sub[ind2])
+	{
+		int notpick = f(ind1-1,str,ind2,sub);
+		int pick = f(ind1-1,str,ind2-1,sub);
+		equal = notpick + pick;
+	}
+	else
+		notequal = f(ind1-1, str, ind2, sub);
+
+	return equal + notequal;
+}
+int distinctSubsequences(string &str, string &sub)
+{
+	// Write your code here.
+	int m = str.size(), n = sub.size();
+	return f(m-1,str, n-1,sub);
+}
+
+
+###############################################################################################
+// memoization
+
+
+int mod = 1000000007;
+int f(int ind1, string str, int ind2, string sub, vector<vector<int>> &dp)
+{
+	if(ind2<0)	return 1;
+	if(ind1<0)	return 0;
+
+	if(dp[ind1][ind2] != -1)	return dp[ind1][ind2];
+	
+	int result = 0;
+	if(str[ind1] == sub[ind2])
+	{
+		int notpick = f(ind1-1,str,ind2,sub, dp);
+		int pick = f(ind1-1,str,ind2-1,sub, dp);
+		result = (notpick%mod + pick%mod)%mod;
+	}
+	else
+		result = f(ind1-1, str, ind2, sub, dp);
+
+	return dp[ind1][ind2] = result%mod;
+}
+int distinctSubsequences(string &str, string &sub)
+{
+	// Write your code here.
+	int m = str.size(), n = sub.size();
+	vector<vector<int>> dp(m,vector<int>(n,-1));
+	return f(m-1,str, n-1,sub,dp);
+}
+
+
+###############################################################################################
+// tabular
+
+
+int mod = 1000000007;
+int f(int m, string str, int n, string sub, vector<vector<int>> &dp)
+{
+	// if(ind2<0)	return 1;
+	for(int i=0;i<m+1;i++)
+		dp[i][0] = 1;
+
+	for(int i=1;i<=m;i++)
+	{
+		for(int j=1;j<=n;j++)
+		{
+			int result = 0;
+			if(str[i-1] == sub[j-1])
+			{
+				int pick = dp[i-1][j-1];
+				int notpick = dp[i-1][j];
+				result = (pick%mod + notpick%mod)%mod;
+			}
+			else
+				result = dp[i-1][j];
+			
+			dp[i][j] = result % mod;
+		}
+	}
+	return dp[m][n];
+
+}
+int distinctSubsequences(string &str, string &sub)
+{
+	// Write your code here.
+	int m = str.size(), n = sub.size();
+	vector<vector<int>> dp(m+1,vector<int>(n+1,0));
+	return f(m,str, n,sub,dp);
+}
+
+
+###############################################################################################
+// optimization
+
+
+int mod = 1000000007;
+int f(int m, string str, int n, string sub, vector<int> dp)
+{
+	// if(ind2<0)	return 1;
+	dp[0] = 1;
+
+	for(int i=1;i<=m;i++)
+	{
+		vector<int> temp = dp;
+		for(int j=1;j<=n;j++)
+		{
+			int result = 0;
+			if(str[i-1] == sub[j-1])
+			{
+				int pick = dp[j-1];
+				int notpick = dp[j];
+				result = (pick%mod + notpick%mod)%mod;
+			}
+			else
+				result = dp[j];
+			
+			temp[j] = result % mod;
+		}
+		dp = temp;
+	}
+	return dp[n];
+
+}
+int distinctSubsequences(string &str, string &sub)
+{
+	// Write your code here.
+	int m = str.size(), n = sub.size();
+	vector<int> dp(n+1,0);
+	return f(m,str, n,sub,dp);
+}
+
+
