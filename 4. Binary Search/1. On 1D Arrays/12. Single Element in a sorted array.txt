@@ -1,0 +1,25 @@
+
+int singleNonDuplicate(vector<int>& arr)
+{
+	// Write your code here
+	int i=1, n = arr.size();
+	int j = n-2;
+	if(n == 1) 	return arr[0];
+	if(arr[0] != arr[1])	return arr[0];
+	if(arr[n-1] != arr[n-2])	return arr[n-1];
+
+	while(i<=j)
+	{
+		int mid = (i+j)/2;
+
+		if(arr[mid] != arr[mid+1] && arr[mid] != arr[mid-1])
+			return arr[mid];
+
+		if( (mid%2 ==0 && arr[mid] == arr[mid+1]) ||
+			(mid%2 == 1 && arr[mid] == arr[mid-1]))
+			i = mid+1;
+		else
+			j = mid-1;
+	}
+	return -1;
+}

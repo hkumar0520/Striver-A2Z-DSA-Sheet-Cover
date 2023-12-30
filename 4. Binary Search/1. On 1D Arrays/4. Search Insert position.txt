@@ -1,0 +1,43 @@
+
+// recursion
+
+int f(vector<int> &nums, int target, int i, int j)
+{
+    if(i>j)
+        return j+1;
+    int mid = (i+j)/2;
+    if(nums[mid] == target)
+        return mid;
+    else if(nums[mid]>target)
+        return f(nums,target,i,mid-1);
+
+	return f(nums,target,mid+1,j);
+}
+
+int searchInsert(vector<int>& arr, int m)
+{
+	// Write your code here.
+    return f(arr,m, 0, arr.size()-1);
+}
+
+
+################################################################################################
+
+// iteration 
+
+int searchInsert(vector<int>& arr, int m)
+{
+	// Write your code here.
+    int j = arr.size()-1, i=0;
+    while(i<=j)
+    {
+        int mid = (i+j)/2;
+        if(arr[mid] == m)
+            return mid;
+        else if(arr[mid]>m)
+           j = mid-1;
+        else
+            i = mid+1;
+    }
+    return j+1;
+}

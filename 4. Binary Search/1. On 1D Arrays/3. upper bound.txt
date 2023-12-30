@@ -1,0 +1,57 @@
+The upper bound in a sorted array is the index of the first 
+value that is greater than a given value. 
+If the greater value does not exist then the answer is 'n', 
+Where 'n' is the size of the array.
+
+// recursion
+
+void f(vector<int> arr, int x, int i, int j, int &ans)
+{
+	if(i>j)
+		return ;
+	
+	int mid = (i+j)/2;
+	if(arr[mid] > x)
+	{
+		ans = mid;
+		f(arr,x,i,mid-1,ans);
+	}
+	else
+		f(arr,x,mid+1,j,ans);
+	
+}
+int upperBound(vector<int> arr, int x, int n) {
+	// Write your code here
+	if(x>=arr[n-1])
+		return n;
+
+	int ans = 0;
+
+	f(arr,x,0,n-1,ans);
+	return ans;
+}
+
+
+
+################################################################################################
+
+// iteration 
+
+int upperBound(vector<int> &arr, int x, int n){
+	// Write your code here
+	if(x >= arr[n-1])
+		return n;
+	int i = 0, j = n-1, ans = 0;
+	while(i<=j)
+	{
+		int mid = (i+j)/2;
+		if(arr[mid] > x)
+		{
+			ans = mid;
+			j = mid-1;
+		}
+		else
+			i = mid+1;
+	}
+	return ans;	
+}
