@@ -1,0 +1,35 @@
+
+
+
+int minDistance(vector<int> &stalls, int k, int mid)
+{
+    int lastPlace = stalls[0], n = stalls.size();
+    for(int i=1;i<n;i++)
+    {
+        if((stalls[i]-lastPlace) >= mid)
+        {
+            lastPlace = stalls[i];
+            k--;
+        }
+    }
+    if(k<=1)    return true;
+    return false;
+}
+int aggressiveCows(vector<int> &stalls, int k)
+{
+    //    Write your code here.
+    sort(stalls.begin(), stalls.end());
+    int i = 0, n = stalls.size();
+    int j = stalls[n-1] - stalls[0];
+    while(i<=j)
+    {
+        int mid = (i+j)/2;
+        bool possible = minDistance(stalls,k,mid);
+        if(possible)
+            i = mid+1;
+        else    
+            j = mid-1;
+    }
+    return j;
+}
+

@@ -1,0 +1,32 @@
+
+
+
+int findsum(vector<int>& arr, int limit, int mid)
+{
+	int sum = 0;
+	for(auto u: arr)
+		sum += ceil((double)u/(double)mid);
+
+	return sum;
+}
+int smallestDivisor(vector<int>& arr, int limit)
+{
+	// Write your code here.
+	int maxx = -1;
+	for(auto u: arr)
+		maxx = max(u, maxx);
+
+	int lo = 1, hi = maxx;
+	while(lo <= hi)
+	{
+		int mid = (lo + hi)/2;
+		int sum = findsum(arr, limit, mid);
+		if(sum <= limit)
+			hi = mid-1;
+		else
+			lo = mid+1;
+
+	}
+	return lo;
+}
+

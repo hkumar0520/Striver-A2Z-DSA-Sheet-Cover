@@ -1,0 +1,19 @@
+
+
+int NthRoot(int n, int m) {
+    // Write your code here.
+  int i = 1, j = m-1;
+  while(i<=j)
+  {
+    int mid = (i+j)/2;
+    // sometimes val is out of bounds, then its value -2147483648 subsituted
+    int val = pow(mid,n); 
+    if(val == m)
+      return mid;
+    else if(val > m || (val == -2147483648 )) // in case val is outof bounds
+      j = mid-1;
+    else
+      i = mid+1;
+  }
+  return -1;
+}
