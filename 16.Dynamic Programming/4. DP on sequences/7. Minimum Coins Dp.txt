@@ -154,4 +154,43 @@ int minimumElements(vector<int> &num, int x)
     return  val >= 1e9? -1: val;
 }
 
+######################################################
+no need of temp
 
+class Solution {
+public:
+
+int f(int n, int target, vector<int> num)
+{
+
+    vector<int>curr (target+1,1e9);
+
+    // if(ind == 0)
+    //     return ((target%num[ind]) ==0 ) ? target/num[ind] : 1e9;
+    for(int j=0;j<=target;j++)
+        if(j%num[0] == 0)   curr[j] = j/num[0];
+
+    for(int i=1;i<n;i++)
+    {
+        for(int j=0;j<=target;j++)
+        {
+            int notpick = curr[j];
+            int pick = 1e9;
+            if(num[i]<=j)
+                pick = 1+curr[j-num[i]];
+
+            curr[j] = min(notpick, pick);
+        }
+    }
+
+    return curr[target];
+}
+int coinChange(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    int val = f(n,x,num);
+    return  val >= 1e9? -1: val;
+}
+   
+};

@@ -1,0 +1,51 @@
+
+https://leetcode.com/problems/length-of-the-longest-subsequence-that-sums-to-target/description/
+
+class Solution {
+public:
+    int f(int ind,int target, vector<int> nums)
+    {
+        if(target == 0) return 0;
+        if(ind<0)   return INT_MIN;   
+        int  notpick = f(ind-1,target,nums);
+        int pick = INT_MIN;
+        if(nums[ind]<=target)
+            pick = 1+f(ind-1,target-nums[ind],nums);
+        return max(pick,notpick);
+    }
+    int lengthOfLongestSubsequence(vector<int>& nums, int target) {
+        int n = nums.size();
+        int ans = f(n-1,target,nums);
+        return ans>=0 ?ans:-1;
+    }
+};
+
+#############################################################################
+// memo 
+
+class Solution {
+public:
+    int f(int ind,int target, vector<int> nums,vector<vector<int>>& dp)
+    {
+        if(target == 0) return 0;
+        if(ind<0)   return INT_MIN;   
+        if(dp[ind][target] >=0 )    
+            return dp[ind][target];
+        int  notpick = f(ind-1,target,nums,dp);
+        int pick = INT_MIN;
+        if(nums[ind]<=target)
+            pick = 1+f(ind-1,target-nums[ind],nums,dp);
+        return dp[ind][target] = max(pick,notpick);
+    }
+    int lengthOfLongestSubsequence(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<vector<int>> dp(n,vector<int>(target+1,INT_MIN));
+        int ans = f(n-1,target,nums,dp);
+        return ans>=0 ?ans:-1;
+    }
+};
+
+
+
+
+

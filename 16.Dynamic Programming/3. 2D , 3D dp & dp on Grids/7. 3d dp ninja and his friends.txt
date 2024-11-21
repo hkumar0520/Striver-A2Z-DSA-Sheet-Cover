@@ -1,0 +1,87 @@
+
+
+
+// recursion 
+
+#include <bits/stdc++.h> 
+
+int f(int row, int col1, int col2, vector<vector<int>> grid)
+{
+    int colsize = grid[0].size();
+    if(col1<0 || col2<0 || col1>=colsize || col2>=colsize)
+        return INT_MIN;
+    if(row == grid.size()-1)
+    {
+        if(col1 == col2)
+            return grid[row][col1];
+        else
+            return grid[row][col1]+grid[row][col2];
+    }
+
+    int maximum = INT_MIN;
+    for(int d1 = -1; d1<=1 ;d1++)
+    {
+        int ans = INT_MIN;
+        for(int d2 = -1; d2<=1;d2++)
+        {
+            if(col1 == col2)
+                ans = grid[row][col1]+f(row+1,col1+d1,col2+d2,grid);
+            else
+                ans = grid[row][col1]+grid[row][col2]+f(row+1,col1+d1,col2+d2,grid);
+            maximum = max(maximum, ans);
+        }
+    }
+    return maximum;
+}
+int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
+    // Write your code here.
+    return f(0,0,c-1,grid);
+}
+
+###############################################################################################
+// memoization
+
+#include <bits/stdc++.h> 
+
+int f(int row, int col1, int col2, vector<vector<int>> grid, vector<vector<vector<int>>> dp)
+{
+    int colsize = grid[0].size();
+    if(col1<0 || col2<0 || col1>=colsize || col2>=colsize)
+        return INT_MIN;
+    if(row == grid.size()-1)
+    {
+        if(col1 == col2)
+            return grid[row][col1];
+        else
+            return grid[row][col1]+grid[row][col2];
+    }
+
+    if(dp[row][col1][col2] != -1)   return dp[row][col1][col2];
+
+    int maximum = INT_MIN;
+    for(int d1 = -1; d1<=1 ;d1++)
+    {
+        for(int d2 = -1; d2<=1;d2++)
+        {
+            int ans = INT_MIN;
+            if(col1 == col2)
+                ans = grid[row][col1]+f(row+1,col1+d1,col2+d2,grid,dp);
+            else
+                ans = grid[row][col1]+grid[row][col2]+f(row+1,col1+d1,col2+d2,grid,dp);
+            maximum = max(maximum, ans);
+        }
+    }
+    return dp[row][col1][col2] = maximum;
+}
+int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
+    // Write your code here.
+    vector<vector<vector<int>>> dp(r,vector<vector<int>>(c,vector<int>(c,-1)));
+    return f(0,0,c-1,grid,dp);
+}
+
+###############################################################################################
+// tabular
+
+
+###############################################################################################
+// optimization

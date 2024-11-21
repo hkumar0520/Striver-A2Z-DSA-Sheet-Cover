@@ -1,0 +1,100 @@
+
+// recursion 
+
+class Solution {
+public:
+    
+    int f(int start, int endd, vector<int>& cuts)
+    {
+        if((start == endd) || ((start + 1) == endd) )   return 0;
+
+        int maxx = 0;
+        for(int i=start+1;i<=(endd-1);i++)
+        {
+            vector<int> arr = cuts;
+            int cost = arr[i-1]*arr[i]*arr[i+1];
+            // deleting the ith element
+            arr.erase(arr.begin()+i);
+            cost += f(start,arr.size()-1,arr);
+            maxx = max(maxx,cost);
+        }
+        
+        return maxx ;
+    }
+    int maxCoins(vector<int>& nums) {
+        nums.insert(nums.begin(),1);
+        nums.push_back(1);
+       
+        int n = nums.size();
+        return f(0,n-1,nums);
+    }
+};
+
+// burst the last ballon first
+
+class Solution {
+public:
+    
+    int f(int start, int endd, vector<int>& cuts)
+    {
+        if((start == endd) || ((start + 1) == endd) )   return 0;
+
+        int maxx = 0;
+        for(int i=start+1;i<=(endd-1);i++)
+        {
+            int cost = cuts[start]*cuts[i]*cuts[endd];
+            cost+= f(start,i,cuts) + f(i,endd,cuts);
+            maxx = max(cost,maxx);
+        }
+        
+        return maxx ;
+    }
+    int maxCoins(vector<int>& nums) {
+        nums.insert(nums.begin(),1);
+        nums.push_back(1);
+       
+        int n = nums.size();
+        return f(0,n-1,nums);
+    }
+};
+
+
+###############################################################################################
+// memoization
+
+class Solution {
+public:
+    
+    int f(int start, int endd, vector<int>& cuts,vector<vector<int>>& dp)
+    {
+        if((start == endd) || ((start + 1) == endd) )   return 0;
+
+        if(dp[start][endd] != -1)   return dp[start][endd];
+
+        int maxx = 0;
+        for(int i=start+1;i<=(endd-1);i++)
+        {
+            int cost = cuts[start]*cuts[i]*cuts[endd];
+            cost+= f(start,i,cuts,dp) + f(i,endd,cuts,dp);
+            maxx = max(cost,maxx);
+        }
+        
+        return dp[start][endd] = maxx ;
+    }
+    int maxCoins(vector<int>& nums) {
+        nums.insert(nums.begin(),1);
+        nums.push_back(1);
+       
+        int n = nums.size();
+        vector<vector<int>> dp(n,vector<int>(n,-1));
+        return f(0,n-1,nums,dp);
+    }
+};
+
+
+###############################################################################################
+// tabular
+
+
+###############################################################################################
+// optimization

@@ -1,4 +1,6 @@
 
+// included 0 in  testcase as well
+
 //recursion
 #include <bits/stdc++.h> 
 
@@ -94,8 +96,10 @@ int mod =(int)1e9+7;
 
 int f(int n, int target, vector<int> &arr, vector<vector<int>> &dp)
 {
-    if(arr[0] == 0)     dp[0][0] = 2;
-    else                dp[0][0] = 1;
+
+  //          
+    if(arr[0] == 0)     dp[0][0] = 2;     //     if(target == 0 && arr[ind] == 0)
+    else                dp[0][0] = 1;     //     if(target == 0)
 
     if(arr[0]!=0 && arr[0]<=target)      dp[0][arr[0]]  = 1;
     

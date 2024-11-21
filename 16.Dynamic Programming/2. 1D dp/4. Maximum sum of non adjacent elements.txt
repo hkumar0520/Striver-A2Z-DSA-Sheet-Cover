@@ -95,7 +95,7 @@ int maximumNonAdjacentSum(vector<int> &nums){
 
 #include <bits/stdc++.h>
 
-int f(int n, vector<int> &nums, vector<int> &dp)
+int f(int n, vector<int> &nums)
 {
     int prev2 = 0;
     int prev = nums[0];
@@ -115,7 +115,33 @@ int f(int n, vector<int> &nums, vector<int> &dp)
 int maximumNonAdjacentSum(vector<int> &nums){
     // Write your code here.
     int n = nums.size();
-    vector<int> dp(n, -1);
 
-    return f(n, nums, dp);
+    return f(n, nums);
 }
+
+########################################################################
+// Another optimization
+
+class Solution {
+public:
+    int f(int n,vector<int> nums)
+    {
+        int prev2 = 0;
+        int prev = nums[0];
+        int maximum = nums[0];
+        for(int i=1;i<n;i++)
+        {
+            int pick = nums[i] + prev2;
+            int nonpick = prev;
+            maximum = max(pick, nonpick);
+            prev2 = prev;
+            prev = maximum;
+        }
+        return maximum;
+    }
+    int rob(vector<int>& nums) {
+        return f(nums.size(), nums);
+    }
+};
+
+

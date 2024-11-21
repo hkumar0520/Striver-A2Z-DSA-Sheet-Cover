@@ -1,0 +1,65 @@
+
+// recursion 
+#include <bits/stdc++.h> 
+
+int f(int start, int endd, vector<int> &arr)
+{
+    if((start == endd) || ((start + 1) == endd) )   return 0;
+
+    // not using INT_MAX becoz when mini reutrn sometimes INT_MAX + random no error comes
+    int mini = 1e9;
+
+    //arr[start,endd]
+    for(int k=start+1;k <= (endd-1);k++)
+    {
+        int ans = f(start,k,arr) + f(k,endd,arr) + arr[start]*arr[k]*arr[endd];
+        mini = min(mini,ans);
+    }
+    return mini;
+}
+
+
+int matrixMultiplication(vector<int> &arr, int N)
+{
+    // Write your code here.
+    return f(0,N-1, arr);
+}
+
+###############################################################################################
+// memoization
+
+#include <bits/stdc++.h> 
+
+int f(int start, int endd, vector<int> &arr, vector<vector<int>>& dp)
+{
+    if((start == endd) || ((start + 1) == endd) )   return 0;
+
+
+    if(dp[start][endd] != -1)   return dp[start][endd];
+
+    int mini = 1e9;
+
+    //arr[start,endd]
+    for(int k=start+1;k <= (endd-1);k++)
+    {
+        int ans = f(start,k,arr,dp) + f(k,endd,arr,dp) + arr[start]*arr[k]*arr[endd];
+        mini = min(mini,ans);
+    }
+    return dp[start][endd] = mini;
+}
+
+
+int matrixMultiplication(vector<int> &arr, int N)
+{
+    // Write your code here.
+    vector<vector<int>> dp(N,vector<int>(N,-1));
+    return f(0,N-1, arr,dp);
+}
+
+
+###############################################################################################
+// tabular
+
+
+###############################################################################################
+// optimization

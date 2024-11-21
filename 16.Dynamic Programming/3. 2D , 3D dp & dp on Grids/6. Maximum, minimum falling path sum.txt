@@ -186,6 +186,45 @@ int getMaxPathSum(vector<vector<int>> &matrix)
 }
 
 
+#####################################################################################
+
+code  clean
+
+#include <bits/stdc++.h> 
+
+int f(int m,int n, vector<vector<int>> &mat, vector<int> &dp)
+{
+    int maximum = INT_MIN;
+    for(int i=0;i<m;i++)
+    {
+        vector<int> temp = dp;
+        for(int j=0;j<n;j++)
+        {
+            int up = dp[j];
+            int upleft = INT_MIN;
+            if(j>0)
+                upleft = dp[j-1];
+            int upright = INT_MIN;
+            if(j<n-1)
+                upright = dp[j+1];
+            temp[j] = mat[i][j] + max(up, max(upleft, upright));
+            
+            if(i==m-1)
+                maximum  = max(maximum, temp[j]);
+        }
+        dp = temp;
+    }
+    return maximum;
+}
+int getMaxPathSum(vector<vector<int>> &matrix)
+{
+    //  Write your code here.
+    int m = matrix.size(),n = matrix[0].size();
+    vector<int> dp(n,0);
+
+    return f(m,n,matrix,dp);
+}
+
 
 
 
