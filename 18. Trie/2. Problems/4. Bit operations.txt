@@ -1,0 +1,276 @@
+
+
+Given three bit manipulations functions: XOR, check and setBit.
+
+In XOR function you are given two integers n and m return the xor of n and m.
+
+In check function you are given two integer a and b return 1 if ath bit (1-indexed) of b is set otherwise return 0.
+
+In setBit function you are given two integer c and d, set the cth bit (0-indexed) of d if not yet set .
+
+class Solution {
+  public:
+    int XOR(int n, int m) {
+        // code here
+        return n^m;
+    }
+    int check(int a, int b) {
+        // code here
+        return b>>(a-1) & 1;
+    }
+    int setBit(int c, int d) {
+        // code here
+        return d|1<<c;
+    }
+};
+
+
+#########################################################################################
+
+struct Node
+{
+    Node* links[2];
+    bool flag = false;
+    
+    bool isContainsKey(int bit)
+    {
+        return links[bit] != NULL;
+    }
+    
+    void put(int bit, Node* node)
+    {
+        links[bit] = node;
+    }
+    
+    Node* get(int bit)
+    {
+        return links[bit];
+    }
+    
+    void setEnd()
+    {
+        flag = true;
+    }
+    
+    bool getEnd()
+    {
+        return flag;
+    }
+};
+class Trie
+{
+    private:
+        Node* root ;
+    public:
+    Trie(){
+        root = new Node();
+    }
+    void insert(int num)
+    {
+        Node* curr = root;
+        for(int i=31;i>=0;i--)
+        {
+            int bit = (num>>i) & 1;
+            if(!curr->isContainsKey(bit))
+            {
+                curr->put(bit, new Node());
+            }
+            curr = curr->get(bit);
+        }
+        curr->setEnd();
+    }
+    int findXOR(int num)
+    {
+        Node* curr = root;
+        int result = 0;
+        for(int i=31;i>=0;i--)
+        {
+            int bit = (num>>i) & 1;
+            int oppositebit = 1-bit;
+            if(curr->isContainsKey(oppositebit))
+            {
+                result = result | (1<<i);
+                curr = curr->get(oppositebit);
+            }
+            else
+                curr = curr->get(bit);
+        }
+        return result;
+    }
+    bool check(int num)
+    {
+        // 0 based
+        num = num-1;
+        Node* curr = root;
+        for(int i=31;i>num;i--)
+        {
+            if(curr->isContainsKey(0))
+                curr = curr->get(0);
+            else
+                curr = curr->get(1);
+        }
+        return curr->isContainsKey(1);
+    }
+    int setAtDifferentpos(int num)
+    {
+        Node*curr = root;
+        int result = 0;
+        
+        for(int i=31;i>=0 ;i--)
+        {
+            if(i==num)
+                result = result | (1<<i);
+                
+            if(curr->isContainsKey(0))
+            {
+                curr = curr->get(0);
+            }
+            else
+            {
+                result = result | (1<<i);
+                curr = curr->get(1);
+            }
+        }
+        return result;
+    }
+};
+class Solution {
+  public:
+    int XOR(int n, int m) {
+        // code here
+        Trie* t = new Trie();
+        t->insert(n);
+        
+        return t->findXOR(m);
+    }
+    int check(int a, int b) {
+        // code here
+        Trie* t = new Trie();
+        t->insert(b);
+        
+        return t->check(a);
+    }
+    int setBit(int c, int d) {
+        // code here
+        Trie* t = new Trie();;
+        t->insert(d);
+        
+        return t->setAtDifferentpos(c);
+    }
+};
+
+#######################################################################
+
+others solution Java
+
+class Node{
+    Node links[] = new Node[2];
+    boolean flag = false;
+    
+    boolean contains(int bit){
+        return links[bit] != null;
+    }
+    
+    void put(int bit , Node node){
+        links[bit] = node;
+    }
+    Node get(int bit){
+        return links[bit];
+    }
+    
+    boolean isEnd(){
+        return flag;
+    }
+}
+
+class Trie{
+    Node root;
+    int ans;
+    Trie(){
+        root = new Node();
+        ans =0;
+    }
+    
+    void insert(int num){
+        Node node = root;
+        for(int i = 31 ; i >= 0 ; i--){
+            int bit = (num >> i) & 1;
+            if(!node.contains(bit)){
+                node.put(bit , new Node());
+            }
+            node = node.get(bit);
+        }
+        node.flag = true;
+    }
+    
+    int findXor(int num){
+        Node node = root;
+        int result = 0;
+        for(int i = 31; i >= 0 ; i--){
+            int bit = (num >> i) & 1;
+            
+            int oppositeBit =1 - bit;
+            if(node.contains(oppositeBit)){
+                result |= (1 << i);
+                node = node.get(oppositeBit);
+            }else{
+                node = node.get(bit);
+            }
+        }
+        return result;
+    }
+    
+    boolean check(int num){
+        int size = 32 - num;
+        Node node = root;
+        for(int i = 0 ; i < size ; i++){
+            if(node.contains(0)){
+                node = node.get(0);
+            }else{
+                node=  node.get(1);
+            }
+        }
+        return !node.contains(0);
+    }
+    
+    int returnNumAfterSetting(int c){
+        int result = 0;
+        Node node = root;
+        
+        for(int i = 31 ; i >= 0 ; i--){
+            if( i == c){
+                result |= (1 << i);
+            }
+            if(node.contains(0)){
+                node = node.get(0);
+            }else{
+                result |= (1 << i);
+                node = node.get(1);
+            }
+            
+        }
+        return result;
+    }
+}
+class Solution {
+  
+    public int XOR(int n, int m)
+    { 
+        // Code here
+        Trie t = new Trie();
+        t.insert(n);
+        return t.findXor(m);
+    }
+    public int check(int a, int b) {
+        // Code here
+        Trie t = new Trie();
+        t.insert(b);
+        return t.check(a)? 1 : 0;
+    }
+    public int setBit(int c, int d) {
+        // Code here
+        Trie t = new Trie();
+        t.insert(d);
+        return t.returnNumAfterSetting(c);
+    }
+}

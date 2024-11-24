@@ -1,0 +1,123 @@
+ solve 66/67 testcase (leetcode)
+
+
+ struct Node{
+    Node* links[2];
+    bool flag = false;
+
+    bool isContainsKey(int bit)
+    {
+        return links[bit] != NULL;
+    }
+
+    Node* get(int bit)
+    {
+        return links[bit];
+    }
+
+    void put(int bit, Node* node)
+    {
+        links[bit] = node;
+    }
+
+    bool getEnd(){
+        return flag;
+    }
+
+    void setEnd(){
+        flag = true;
+    }
+};
+
+class Trie{
+    Node* root;
+    public:
+    Trie(){
+        root = new Node();
+    }
+     void insert(int num)
+    {
+        Node* curr = root;
+        for(int i=31;i>=0;i--)
+        {
+            int bit = (num>>i) & 1;
+            if(!curr->isContainsKey(bit))
+            {
+                curr->put(bit,new Node());
+            }
+            curr = curr->get(bit);
+        }
+        curr->setEnd();
+    }
+     int findXor(int num)
+    {
+        Node* curr = root;
+        int result = -1;
+        for(int i=31;i>=0;i--)
+        {
+            int bit = (num >> i) & 1;
+            int oppositebit = 1-bit;
+            if(curr->isContainsKey(oppositebit))
+            {
+                if(result == -1)    result = 0;
+                result = result | (1<<i);
+                curr = curr->get(oppositebit);
+            }
+            else
+            {
+                if(curr->isContainsKey(bit))
+                    curr = curr->get(bit);
+            }
+        }
+        return result;
+    }
+};
+
+class Solution {
+public:
+    vector<int> maximizeXor(vector<int>& nums, vector<vector<int>>& queries) {
+        Trie* trie = new Trie();
+
+        vector<vector<int>> temp;
+        for(int j=0;j<queries.size();j++)
+        {
+            vector<int> query = queries[j];
+            query.push_back(j);
+            temp.push_back(query);
+        }
+        queries = temp;
+        sort(queries.begin(),queries.end(),[](vector<int> a,vector<int>b){
+            return a[1]<b[1];
+        });
+
+        sort(nums.begin(),nums.end());
+
+        vector<pair<int,int>> ans;
+
+        for(int i = 0; i<queries.size();i++)
+        {
+            int num = queries[i][0], lim = queries[i][1],index = queries[i][2];
+            if(i==0)
+            {
+                for(int j = 0;j<nums.size() && nums[j]<=lim;j++)
+                    trie->insert(nums[j]);
+                ans.push_back(make_pair(index,trie->findXor(num)));
+            }
+            else
+            {
+                int prevlimit = queries[i-1][1];
+                int upboundindex = upper_bound(nums.begin(),nums.end(),prevlimit)-nums.begin();
+                for(int j = upboundindex;j<nums.size() && nums[j]<=lim;j++)
+                    trie->insert(nums[j]);
+                ans.push_back(make_pair(index,trie->findXor(num)));
+            }
+        }
+        sort(ans.begin(),ans.end(),[](pair<int,int> a, pair<int,int>b){
+            return a.first<b.first;
+        });
+        vector<int> originalans;
+        for(auto a: ans)
+            originalans.push_back(a.second);
+        return originalans;
+    }
+};

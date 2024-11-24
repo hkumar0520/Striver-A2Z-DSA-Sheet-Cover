@@ -1,0 +1,89 @@
+
+
+struct Node{
+    Node* links[2];
+    bool flag = false;
+
+    bool isContainsKey(int bit)
+    {
+        return links[bit] != NULL;
+    }
+
+    Node* get(int bit)
+    {
+        return links[bit];
+    }
+
+    void put(int bit, Node* node)
+    {
+        links[bit] = node;
+    }
+
+    bool getEnd(){
+        return flag;
+    }
+
+    void setEnd(){
+        flag = true;
+    }
+};
+
+class Trie{
+    Node* root;
+    public:
+    Trie(){
+        root = new Node();
+    }
+
+    void insert(int num)
+    {
+        Node* curr = root;
+        for(int i=31;i>=0;i--)
+        {
+            int bit = (num>>i) & 1;
+            if(!curr->isContainsKey(bit))
+            {
+                curr->put(bit,new Node());
+            }
+            curr = curr->get(bit);
+        }
+        curr->setEnd();
+    }
+
+    int findXor(int num)
+    {
+        Node* curr = root;
+        int result = 0;
+        for(int i=31;i>=0;i--)
+        {
+            int bit = (num >> i) & 1;
+            int oppositebit = 1-bit;
+            if(curr->isContainsKey(oppositebit))
+            {
+                result = result | (1<<i);
+                curr = curr->get(oppositebit);
+            }
+            else
+            {
+                curr = curr->get(bit);
+            }
+        }
+        return result;
+    }
+};
+
+class Solution {
+public:
+    int findMaximumXOR(vector<int>& nums) {
+        Trie* trie = new Trie();
+
+        for(int i=0;i<nums.size();i++)
+            trie->insert(nums[i]);
+
+        int maximum = 0;
+        for(int i=0;i<nums.size();i++)
+            maximum = max(maximum, trie->findXor(nums[i]));
+
+        return maximum;
+    }
+};

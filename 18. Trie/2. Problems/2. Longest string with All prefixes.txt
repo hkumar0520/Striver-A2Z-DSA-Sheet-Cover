@@ -1,0 +1,88 @@
+#include <bits/stdc++.h> 
+
+struct Node{
+    // by default links[26] is NULL for all 26 Node*
+    Node* links[26];
+    bool flag = false;
+
+    bool isContainsKey(char ch){
+        return links[ch-'a'] != NULL;
+    }
+
+    void put(char ch, Node* node)
+    {
+        links[ch-'a'] = node;
+    }
+
+    Node* get(char ch)
+    {
+        return links[ch-'a'];
+    }
+
+    void setEnd()
+    {
+        flag = true;
+    }
+
+    bool getEnd()
+    {
+        return flag;
+    }
+};
+
+void insert(string word, Node* curr)
+{
+    Node *current = curr;
+    for(int i=0;i<word.size();i++)
+    {
+        if(!current->isContainsKey(word[i]))
+        {
+            current->put(word[i],new Node());
+        }
+        current = current->get(word[i]);
+    }
+    current->setEnd();
+}
+bool isCompleteString(string word,Node* curr)
+{
+    Node *current = curr;
+    for(int i=0;i<word.size();i++)
+    {
+        current = current->get(word[i]);
+        // checking flag of every char is true or not
+        if(!current->getEnd()) return false;   
+    }
+    return current->getEnd();
+}
+
+
+string completeString(int n, vector<string> &a){
+    // Write your code here.
+    Node *root = new Node();
+    Node *curr = root;
+
+    // for lexiographucally sort  
+    sort(a.begin(),a.end());
+
+    for(int i=0;i<n;i++)
+        insert(a[i],curr);
+
+    string ans = "None";
+    int maxlen = 0;
+    for(int i=0;i<n;i++)
+    {
+        if(isCompleteString(a[i],curr))
+        {
+            if(a[i].size() > maxlen)
+            {
+                ans = a[i];
+                maxlen = a[i].size();
+            }
+        }
+    }
+    return ans;
+}
+
+
+
+

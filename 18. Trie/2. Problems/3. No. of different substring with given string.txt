@@ -1,0 +1,78 @@
+
+struct Node{
+    Node* links[26];
+
+    bool isContainsKey(char ch)
+    {
+        return links[ch-'a'] != NULL;
+    }
+
+    void  put(char ch, Node* node)
+    {
+        links[ch-'a'] = node;
+    }
+    Node* get(char ch)
+    {
+        return links[ch-'a'];
+    }
+};
+
+int countDistinctSubstrings(string &word)
+{
+    //    Write your code here.
+    Node* root = new Node();
+    // for emtpy string
+    int countt = 0;
+    for(int i=0;i<word.size();i++)
+    {
+        Node* curr = root;
+        for(int j=i;j<word.size();j++)
+        {
+            if(!curr->isContainsKey(word[j]))
+            {
+                countt++;
+                curr->put(word[j],new Node());
+            }
+            curr = curr->get(word[j]);
+        }
+    }
+    return countt+1;
+}
+
+
+##################################################################################
+using set 
+
+set<string> countDistinctSubstrings(const string& s) {
+    // Set to store
+    // distinct substrings
+    set<string> st;
+
+    // Length of the
+    // input string
+    int n = s.length();
+
+    // Iterate over each
+    // character in the string
+    for (int i = 0; i < n; i++) {
+        // Initialize an empty string
+        // to store the current substring
+        string str = "";
+
+        // Iterate over the remaining characters 
+        // in the string starting from index i
+        for (int j = i; j < n; j++) {
+            // Append the current
+            // character to the substring
+            str += s[j];
+
+            // Insert the current
+            // substring into the set
+            st.insert(str);
+        }
+    }
+
+    // Return the set containing
+    // all distinct substrings
+    return st;
+}
