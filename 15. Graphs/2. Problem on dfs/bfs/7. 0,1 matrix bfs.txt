@@ -1,0 +1,47 @@
+// not dfs problem
+// like rotten oranges
+
+class Solution {
+public:
+    vector<vector<int>> bfs(vector<vector<int>> &grid)
+    {
+        // 0- x, 1-y, 2-step
+        queue<vector<int>> qtraverse;
+        int  m = grid.size(), n = grid[0].size();
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j] == 0)
+                    qtraverse.push({i,j,0});
+            }
+        }
+        int a[4] = {-1,0,1,0};
+        int b[4] = {0,1,0,-1};
+        vector<vector<int>> ans(m,vector<int>(n,0));
+        while(!qtraverse.empty())
+        {
+            vector<int> node = qtraverse.front();
+            qtraverse.pop();
+            int x = node[0], y = node[1], step = node[2];
+           
+            for(int i=0;i<4;i++)
+            {
+                int nx = x + a[i];
+                int ny = y + b[i];
+                // grid[nx][ny] == 1 acts as a unvisited node;
+                if(nx >=0 && ny>= 0 && nx<m && ny <n && grid[nx][ny] == 1)
+                {
+                    grid[nx][ny] = 0;
+                    qtraverse.push({nx,ny,step+1});
+                    ans[nx][ny] = step+1;
+                } 
+            }
+        }
+        return ans;
+    }
+    vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
+        vector<vector<int>> grid = mat;
+        return bfs(grid);
+    }
+};

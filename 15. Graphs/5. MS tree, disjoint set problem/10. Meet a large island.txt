@@ -1,0 +1,136 @@
+
+
+class DisjointSet{
+    vector<int> size, rank, parent;
+    public:
+
+    DisjointSet(int n)
+    {
+        size.resize(n,1);
+        rank.resize(n,0);
+        parent.resize(n,0);
+        for(int i=0; i<n;i++)
+            parent[i] = i;
+    }
+    
+    int findParent(int x)
+    {
+        if( x == parent[x])
+            return x;
+        
+        return parent[x] = findParent(parent[x]);
+    }
+
+    void unionByRank(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if(ulp_u == ulp_v)  return ;
+
+        if( rank[ulp_u] < rank[ulp_v]){
+            parent[ulp_u] = ulp_v;
+        }
+        else if( rank[ulp_v] < rank[ulp_u]){
+            parent[ulp_v] = ulp_u;
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+    
+    void unionBySize(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if(ulp_u == ulp_v)  return ;
+
+        if( size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+
+    int getSize(int x){
+        return size[x];
+    }
+};
+
+class Solution {
+public:
+    int largestIsland(vector<vector<int>>& grid) {
+        int rowSize = grid.size(), colSize = grid[0].size();
+
+        int totalSize = rowSize * colSize;
+        
+        // left, up, right, down
+        int xOperations[4] = {0, -1, 0, 1};
+        int yOperations[4] = {-1, 0, 1, 0}; 
+
+        DisjointSet ds(totalSize);
+        for(int i=0; i<rowSize; i++)
+        {
+            for(int j=0; j<colSize; j++)
+            {
+                if(grid[i][j] == 1)
+                {
+                    for(int k = 0; k<4 ; k++)
+                    {
+                        int nx = i + xOperations[k];
+                        int ny = j + yOperations[k];
+                        if(nx >= 0 && ny >= 0 && nx < rowSize && ny < colSize &&
+                            grid[nx][ny] == 1)
+                        {
+                            ds.unionBySize( i*colSize + j , nx*colSize + ny); 
+                        }
+                    }
+                }
+            }
+        }
+
+        int maxSize = 0;
+
+        for(int i=0; i<rowSize; i++)
+        {
+            for(int j=0; j<colSize; j++)
+            {
+                if(grid[i][j] == 0)
+                {
+                    set<int> ultParent;
+                    for(int k = 0; k<4 ; k++)
+                    {
+                        int nx = i + xOperations[k];
+                        int ny = j + yOperations[k];
+                        if(nx >= 0 && ny >= 0 && nx < rowSize && ny < colSize &&
+                            grid[nx][ny] == 1)
+                        {
+                            int ulp_newXY = ds.findParent( nx*colSize + ny);
+                            ultParent.insert(ulp_newXY);
+                        }
+                    }
+
+                    int sum = 0;
+                    for(auto it: ultParent)
+                    {
+                        sum = sum + ds.getSize(it);
+                    }
+                    maxSize = max(maxSize, sum + 1);
+                }
+            }
+        }
+        return maxSize == 0? totalSize : maxSize;
+    }
+};
+
+// Two corner cases
+// 1. if all values are 1's return totalSize;
+// 2. if all values are 0's return 1
+
+
+Time complexity = O(rowSize*colSize*4) = O(m*n)
+
+

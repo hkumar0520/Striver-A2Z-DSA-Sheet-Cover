@@ -1,0 +1,198 @@
+
+// correct
+
+    vector<int> bfs(vector<vector<int>>& edges, int n, int src)
+    {
+        vector<int> ans(n,INT_MAX);
+        
+        queue<int> qtraverse;
+        qtraverse.push(src);
+        ans[src] = 0;
+        
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+            for(vector<int> edge: edges)
+            {
+                // u-->v (weight)
+                int u = edge[0], v = edge[1], weight = edge[2];
+                if(u == node)
+                {
+                   if(ans[v] > ans[node] + weight)
+                   {
+                       ans[v] = ans[node] + weight;
+                       qtraverse.push(v);
+                   }
+                }
+            }
+        }
+        for(int i = 0; i<ans.size(); i++)
+        {
+            if(ans[i] == INT_MAX)
+                ans[i] = -1;
+        }
+        return ans;
+    }
+    
+    vector<int> shortestPath(int V, int E, vector<vector<int>>& edges) {
+        // code here
+        return bfs(edges,V,0);
+    }
+
+###############################################################################
+
+//{ Driver Code Starts
+// Initial Template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+// User function Template for C++
+class Solution {
+  public:
+  
+    vector<int> bfs(vector<vector<pair<int,int>>>& graph, int n, int src)
+    {
+        vector<int> ans(n,INT_MAX);
+        
+        queue<int> qtraverse;
+        qtraverse.push(src);
+        ans[src] = 0;
+        
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+            for(pair<int,int> currnode: graph[node])
+            {
+                int v = currnode.first, weight = currnode.second;
+                if(ans[v] > ans[node] + weight)
+                {
+                   ans[v] = ans[node] + weight;
+                   qtraverse.push(v);
+               }
+            }
+        }
+        for(int i = 0; i<ans.size(); i++)
+        {
+            if(ans[i] == INT_MAX)
+                ans[i] = -1;
+        }
+        return ans;
+    }
+    
+    void getGraph(vector<vector<pair<int,int>>>& graph, vector<vector<int>>& edges)
+    {
+        for(auto edge: edges)
+        {
+            // u-->v(weight)
+            int u = edge[0], v = edge[1], weight = edge[2];
+            graph[u].push_back({v, weight});
+        }
+    }
+    
+    vector<int> shortestPath(int V, int E, vector<vector<int>>& edges) {
+        
+        vector<vector<pair<int,int>>> graph(V);
+        getGraph(graph, edges);
+        
+        return bfs(graph, V, 0);
+    }
+};
+
+
+//{ Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        vector<vector<int>> edges;
+        for (int i = 0; i < m; ++i) {
+            vector<int> temp;
+            for (int j = 0; j < 3; ++j) {
+                int x;
+                cin >> x;
+                temp.push_back(x);
+            }
+            edges.push_back(temp);
+        }
+        Solution obj;
+        vector<int> res = obj.shortestPath(n, m, edges);
+        for (auto x : res) {
+            cout << x << " ";
+        }
+        cout << "\n";
+
+        cout << "~"
+             << "\n";
+    }
+}
+
+// } Driver Code Ends
+
+###################################################################################################
+
+// toposrt dfs ans 
+
+
+    void dfs(vector<vector<pair<int,int>>>& graph, int node
+    , stack<int>& st, vector<int>& vis)
+    {
+        vis[node] = 1;
+        for(pair<int,int> currnode: graph[node])
+        {
+            int v = currnode.first;
+            if(!vis[v])
+                dfs(graph, v, st, vis);    
+        }
+        st.push(node);
+    }
+    
+    void getGraph(vector<vector<pair<int,int>>>& graph, vector<vector<int>>& edges)
+    {
+        for(auto edge: edges)
+        {
+            // u-->v(weight)
+            int u = edge[0], v = edge[1], weight = edge[2];
+            graph[u].push_back({v, weight});
+        }
+    }
+    
+    vector<int> shortestPath(int V, int E, vector<vector<int>>& edges) {
+        
+        vector<vector<pair<int,int>>> graph(V);
+        getGraph(graph, edges);
+        
+        stack<int> st;
+        vector<int> vis(V,0);
+        
+        dfs(graph, 0, st, vis);
+        
+        vector<int> dist(V,INT_MAX);
+        dist[0] = 0;
+        while(!st.empty())
+        {
+            int node = st.top();
+            st.pop();
+            
+            for(auto currnode: graph[node])
+            {
+                int v = currnode.first, wt = currnode.second;
+                if(dist[v] > dist[node] + wt)
+                    dist[v] = dist[node] + wt;
+            }
+        }
+        for(int i=0;i<V;i++)
+        {
+            if(dist[i] == INT_MAX)
+                dist[i] = -1;
+        }
+        return dist;
+    }
+
+

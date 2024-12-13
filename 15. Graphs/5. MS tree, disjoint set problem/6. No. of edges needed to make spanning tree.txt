@@ -1,0 +1,178 @@
+ 
+ // 19 ms or 23 ms sometimes
+
+class DisjointSet{
+    vector<int> rank, parent, size;
+    public:
+
+    DisjointSet(int n){
+        rank.resize(n, 0);
+        size.resize(n, 1);
+        parent.resize(n,0);
+        for(int i=0; i<n;i++)
+            parent[i] = i;
+    }
+
+    int findParent(int x)
+    {
+        if(x == parent[x])
+            return x;
+        
+        return parent[x] = findParent(parent[x]);
+    }
+
+    void unionByRank(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+
+        if( rank[ulp_u] < rank[ulp_v]){
+            parent[ulp_u] = ulp_v;
+        }
+        else if( rank[ulp_v] < rank[ulp_u]){
+            parent[ulp_v] = ulp_u;
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+    
+    void unionBySize(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+
+        if( size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+    vector<int> getParent(){
+        return parent;
+    }
+};
+
+class Solution {
+public:
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        if(connections.size() < n-1)
+            return -1;
+        
+        // only  in * pointer, this valid DisjointSet ds = new DisjointSet(n);
+        DisjointSet ds(n);
+
+        for(vector<int> edge: connections){
+            int u = edge[0], v = edge[1];
+            if(ds.findParent(u) != ds.findParent(v)){
+                ds.unionBySize(u,v);
+            }
+        }
+        // for path compression in the parent
+        for(int i=0;i<n;i++)
+            ds.findParent(i);
+
+        vector<int> parentVec = ds.getParent();
+        vector<int> vis(n, 0);
+        int nc = 0;
+        for(auto u:parentVec){
+            if(!vis[u]){
+                vis[u] = 1;
+                nc++;
+            }
+        }
+
+        return nc-1;
+    }
+};
+
+##########################################################################################
+
+
+class DisjointSet{
+    vector<int> rank, parent, size;
+    public:
+
+    DisjointSet(int n){
+        rank.resize(n, 0);
+        size.resize(n, 1);
+        parent.resize(n,0);
+        for(int i=0; i<n;i++)
+            parent[i] = i;
+    }
+
+    int findParent(int x)
+    {
+        if(x == parent[x])
+            return x;
+        
+        return parent[x] = findParent(parent[x]);
+    }
+
+    void unionByRank(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if (ulp_u == ulp_v) return;
+
+        if( rank[ulp_u] < rank[ulp_v]){
+            parent[ulp_u] = ulp_v;
+        }
+        else if( rank[ulp_v] < rank[ulp_u]){
+            parent[ulp_v] = ulp_u;
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+    
+    void unionBySize(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if (ulp_u == ulp_v) return;
+        
+        if( size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+    vector<int> getParent(){
+        return parent;
+    }
+};
+
+class Solution {
+public:
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        if(connections.size() < n-1)
+            return -1;
+        
+        // only  in * pointer, this valid DisjointSet ds = new DisjointSet(n);
+        DisjointSet ds(n);
+
+        for(vector<int> edge: connections){
+            int u = edge[0], v = edge[1];
+            if(ds.findParent(u) != ds.findParent(v)){
+                ds.unionBySize(u,v);
+            }
+        }
+        vector<int> parentVec = ds.getParent();
+        int noComponents = 0;
+        for(int i = 0; i<parentVec.size(); i++){
+            if(i == parentVec[i])
+                noComponents++;
+        }
+        return noComponents-1;
+    }
+};
+

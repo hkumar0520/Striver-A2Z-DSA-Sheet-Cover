@@ -1,0 +1,153 @@
+
+// time limit 
+
+class Solution {
+  public:
+  
+    vector<int> bfs(vector<vector<int>>& edges, int n, int src)
+    {
+        vector<int> ans(n,INT_MAX);
+        
+        queue<int> qtraverse;
+        qtraverse.push(src);
+        ans[src] = 0;
+        
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+            for(vector<int> edge: edges)
+            {
+                int u = edge[0], v = edge[1];
+                if(u == node)
+                {
+                   if(ans[v] > ans[node] + 1)
+                   {
+                       ans[v] = ans[node] + 1;
+                       qtraverse.push(v);
+                   }
+                }
+                else if(v == node)
+                {
+                   if(ans[u] > ans[node] + 1)
+                   {
+                      ans[u] = ans[node] + 1;
+                      qtraverse.push(u);
+                   }
+                }
+            }
+        }
+        for(int i = 0; i<ans.size(); i++)
+        {
+            if(ans[i] == INT_MAX)
+                ans[i] = -1;
+        }
+        return ans;
+    }
+    vector<int> shortestPath(vector<vector<int>>& edges, int N,int M, int src){
+        
+        // code here
+        return bfs(edges,N,src);
+    }
+};
+
+
+#######################################################################################
+
+correct
+
+//{ Driver Code Starts
+// Initial Template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+// User function Template for C++
+class Solution {
+  public:
+  
+    vector<int> bfs(vector<vector<int>>& graph, int n, int src)
+    {
+        vector<int> ans(n,INT_MAX);
+        
+        queue<int> qtraverse;
+        qtraverse.push(src);
+        ans[src] = 0;
+        
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+            for(int v: graph[node])
+            {
+                if(ans[v] > ans[node] + 1)
+                {
+                   ans[v] = ans[node] + 1;
+                   qtraverse.push(v);
+               }
+            }
+        }
+        for(int i = 0; i<ans.size(); i++)
+        {
+            if(ans[i] == INT_MAX)
+                ans[i] = -1;
+        }
+        return ans;
+    }
+    
+    void getGraph(vector<vector<int>>& graph, vector<vector<int>>& edges)
+    {
+        for(auto edge: edges)
+        {
+            int u = edge[0], v = edge[1];
+            graph[u].push_back(v);
+            graph[v].push_back(u);
+        }
+    }
+    
+    vector<int> shortestPath(vector<vector<int>>& edges, int N,int M, int src){
+        
+        // code here
+        vector<vector<int>> graph(N);
+        getGraph(graph, edges);
+        
+        return bfs(graph, N, src);
+    }
+};
+
+
+//{ Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m; cin >> n >> m;
+        vector<vector<int>> edges;
+
+        for (int i = 0; i < m; ++i) {
+            vector<int> temp;
+            for(int j=0; j<2; ++j){
+                int x; cin>>x;
+                temp.push_back(x);
+            }
+            edges.push_back(temp);
+        }
+
+        int src; cin >> src;
+
+        Solution obj;
+
+        vector<int> res = obj.shortestPath(edges, n, m, src);
+
+        for (auto x : res){
+            cout<<x<<" ";
+        }
+        cout << "\n";
+    
+cout << "~" << "\n";
+}
+}
+
+// } Driver Code Ends
+

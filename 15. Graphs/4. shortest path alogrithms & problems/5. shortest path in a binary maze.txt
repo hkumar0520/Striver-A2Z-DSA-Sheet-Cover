@@ -1,0 +1,168 @@
+
+// 84ms
+
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        if(grid[0][0] == 1)     return -1;
+
+        // 0-step, 
+        queue<vector<int>> qtraverse;
+        qtraverse.push({1, 0, 0});
+
+        while(!qtraverse.empty())
+        {
+            vector<int> frontNode = qtraverse.front();
+            qtraverse.pop();
+            int step = frontNode[0], xCordinate = frontNode[1], yCordinate = frontNode[2];
+            if(xCordinate  == grid.size()-1 && yCordinate == grid[0].size()-1)
+                return step;
+            for(int i=-1;i<=1;i++)
+            {
+                for(int j=-1;j<=1;j++)
+                {
+                    int xnew = xCordinate + i;
+                    int ynew = yCordinate + j;
+                    if(xnew >=0 && ynew>=0 && xnew<grid.size() && ynew<grid[0].size() && grid[xnew][ynew] == 0)
+                    {
+                        grid[xnew][ynew] = 1;
+                        qtraverse.push({ step+1, xnew, ynew });
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+};
+
+
+#####################################################################################
+
+// 87ms
+
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        if(grid[0][0] == 1)     return -1;
+
+        // 0-step, 
+        queue<vector<int>> qtraverse;
+        qtraverse.push({1, 0, 0});
+        int rowSize = grid.size(), colSize = grid[0].size();
+        vector<vector<int>> dist(rowSize, vector<int>(colSize, INT_MAX));
+        dist[0][0] = 1;
+
+        while(!qtraverse.empty())
+        {
+            vector<int> frontNode = qtraverse.front();
+            qtraverse.pop();
+            int step = frontNode[0], xCordinate = frontNode[1], yCordinate = frontNode[2];
+            
+            for(int i=-1;i<=1;i++)
+            {
+                for(int j=-1;j<=1;j++)
+                {
+                    int xnew = xCordinate + i;
+                    int ynew = yCordinate + j;
+                    if(xnew >=0 && ynew>=0 && xnew<rowSize && ynew<colSize 
+                        && grid[xnew][ynew] == 0 && dist[xnew][ynew] > step + 1)
+                    {
+                        dist[xnew][ynew] = step+1;
+                        qtraverse.push({ step+1, xnew, ynew });
+                    }
+                }
+            }
+        }
+        return dist[rowSize-1][colSize-1] == INT_MAX? -1: dist[rowSize-1][colSize-1];
+    }
+};
+
+
+
+############################################################################################
+
+// 112 ms
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        if(grid[0][0] == 1) 
+            return -1;
+        // sort on basis of vector[0] element 
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>> > pq;
+
+        int n = grid.size();
+        pq.push({ 1, 0, 0});
+
+        while(!pq.empty())
+        {
+            vector<int> latestNode = pq.top();
+            pq.pop();
+            int step = latestNode[0], x = latestNode[1], y = latestNode[2];
+            if(x == n-1 && y == n-1)
+                return step;
+            for(int i=-1;i<=1;i++)
+            {
+                for(int j=-1;j<=1;j++)
+                {
+                    int nx = x + i,
+                        ny = y + j;
+                    if(nx>=0 && ny>=0 && nx<n && ny<n && grid[nx][ny] == 0)
+                    {
+                        grid[nx][ny] = 1;
+                        pq.push({ step + 1, nx, ny});
+                    } 
+
+                }
+            }
+        }
+        return -1;
+    }
+};
+
+################################################################################################################################
+
+// 118ms , 123ms
+
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        if(grid[0][0] == 1)     return -1;
+
+        // sort on basis of vector[0] element 
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>> > pq;
+
+
+        pq.push({1, 0, 0});
+        int rowSize = grid.size(), colSize = grid[0].size();
+        vector<vector<int>> dist(rowSize, vector<int>(colSize, INT_MAX));
+        dist[0][0] = 1;
+
+        while(!pq.empty())
+        {
+            vector<int> frontNode = pq.top();
+            pq.pop();
+            int step = frontNode[0], xCordinate = frontNode[1], yCordinate = frontNode[2];
+            
+            if(xCordinate == rowSize-1 && yCordinate == colSize-1)
+                return step;
+
+            for(int i=-1;i<=1;i++)
+            {
+                for(int j=-1;j<=1;j++)
+                {
+                    int xnew = xCordinate + i;
+                    int ynew = yCordinate + j;
+                    if(xnew >=0 && ynew>=0 && xnew<rowSize && ynew<colSize 
+                        && grid[xnew][ynew] == 0 && dist[xnew][ynew] > step + 1)
+                    {
+                        dist[xnew][ynew] = step+1;
+                        pq.push({ step+1, xnew, ynew });
+                    }
+                }
+            }
+        }
+        return dist[rowSize-1][colSize-1] == INT_MAX? -1: dist[rowSize-1][colSize-1];
+    }
+};
+
+

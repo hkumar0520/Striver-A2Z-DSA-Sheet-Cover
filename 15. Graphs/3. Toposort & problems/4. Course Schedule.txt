@@ -1,0 +1,101 @@
+// bfs
+
+class Solution {
+public:
+    void getIndegree(vector<int>& indegree, vector<vector<int>>& prerequisites)
+    {
+        for(auto edge: prerequisites)
+        {
+            // b->a
+            int a = edge[0], b = edge[1];
+            indegree[a]++;
+        }
+    }
+    bool bfs(vector<int>& indegree, vector<vector<int>>& prerequisites)
+    {
+        int numCourses = indegree.size();
+        queue<int> qtraverse;
+        for(int i=0;i<numCourses;i++)
+        {
+            if(indegree[i] == 0)
+                qtraverse.push(i);
+        }
+        int countt = 0;
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+
+            countt++;
+            for(auto edge: prerequisites)
+            {
+                int a = edge[0], b = edge[1];
+                if(b == node)
+                {
+                    indegree[a]--;
+                    if(indegree[a] == 0)
+                    {
+                        qtraverse.push(a);
+                    }
+                }
+            }
+        }
+        return countt == numCourses? true: false;
+    }
+
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> indegree(numCourses, 0);
+        getIndegree(indegree, prerequisites);
+
+        return bfs(indegree, prerequisites);
+        
+    }
+};
+
+##################################################################################
+
+# dfs 53/54 test cases passed ( time limit )
+
+class Solution {
+public:
+
+    bool dfs(int node, vector<int>& vis, vector<vector<int>>& prerequisites)
+    {
+        vis[node] = 1;
+
+        for(auto edge: prerequisites)
+        {
+            int a = edge[0], b = edge[1];
+            if(b == node)
+            {
+                if(!vis[a])
+                {
+                    if(dfs(a, vis, prerequisites))
+                        return true;
+                }
+                else if(vis[a] == 1)
+                    return true;
+            }
+        }
+        // processed
+        vis[node] = 2;
+
+        return false;
+    }
+
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+      
+        vector<int> vis(numCourses, 0);
+        for(int i=0; i<numCourses; i++)
+        {
+            if(!vis[i])
+            {
+                // iscycle
+                if(dfs(i, vis, prerequisites))
+                    return false;
+            }
+        }
+        // notcycle, toposort exists
+        return true;
+    }
+};

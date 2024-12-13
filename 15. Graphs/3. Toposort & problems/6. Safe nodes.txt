@@ -1,0 +1,150 @@
+
+//  brute force 103/112 test cases passed 
+class Solution {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        queue<int> qtraverse;
+        int n = graph.size();
+        for(int i=0;i<n;i++)
+        {
+            // outdegree 0
+            if(graph[i].size() == 0)
+                qtraverse.push(i);
+        }
+        vector<int> ans;
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+            ans.push_back(node);
+            for(int i=0;i<n;i++)
+            {
+                if(i != node)
+                {
+                    vector<int> connections = graph[i];
+                    if(find(connections.begin(),connections.end(), node) != connections.end())
+                    {
+                        int index = find(connections.begin(),connections.end(), node) - connections.begin();
+                        connections.erase(connections.begin()+index);
+                        graph[i] = connections;
+                        if(connections.size() == 0)
+                            qtraverse.push(i);
+                    }
+                }
+            }
+        }
+        sort(ans.begin(),ans.end());
+        return ans;
+    }
+};
+
+#######################################################################################
+
+// dfs approach
+
+class Solution {
+public:
+    bool dfs(int node, vector<int>& vis, vector<vector<int>>& graph)
+    {
+        vis[node] = 1;
+
+        for(auto v: graph[node])
+        {
+            if(!vis[v])
+            {
+                if(dfs(v, vis, graph))
+                    return true;
+            }
+            else if(vis[v] == 1)
+                return true;
+        }
+
+        //processed
+        vis[node] = 2;
+        return false;
+    }
+    bool dfsapproach(int ind, vector<vector<int>>& graph)
+    {
+        int n = graph.size();
+        vector<int> vis(n,0);
+        return dfs(ind, vis, graph);
+    }
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<int> ans;
+        for(int i=0;i<n;i++)
+        {
+            // is one of the path of i contains cycle
+            if(!dfsapproach(i, graph ))
+                ans.push_back(i);
+        }
+        sort(ans.begin(),ans.end());
+        return  ans;
+    }
+};
+
+
+########################################################################################
+
+bfs 
+
+class Solution {
+public:
+    void getIndegree(vector<int>& indegree, vector<vector<int>>& graph)
+    {
+        for(auto u: graph)
+        {
+            for(auto v: u)
+                indegree[v]++;
+        }
+    }
+    void getNewGraph(vector<vector<int>>& newgraph, vector<vector<int>>& graph)
+    {
+        for(int i = 0; i<graph.size(); i++)
+        {
+            for(int j=0; j<graph[i].size(); j++)
+            {
+                int u = graph[i][j], v = i;
+                newgraph[u].push_back(i);
+            }
+        }
+    }
+    vector<int> bfs(vector<int>& indegree, vector<vector<int>>& graph)
+    {
+        queue<int> qtraverse;
+        int n = indegree.size();
+        vector<int> ans;
+
+        for(int i=0;i<n;i++)
+        {
+            if(indegree[i] == 0)
+                qtraverse.push(i);
+        }
+
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+
+            ans.push_back(node);
+            for(auto v: graph[node])
+            {
+                indegree[v]--;
+                if(indegree[v] == 0)
+                    qtraverse.push(v);
+            }
+        }
+        sort(ans.begin(), ans.end());
+        return ans;
+    }
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<vector<int>> newgraph(n);
+        vector<int> indegree(n,0);
+
+        getNewGraph(newgraph, graph);
+        getIndegree(indegree, newgraph);
+
+        return bfs(indegree, newgraph);
+    }
+};

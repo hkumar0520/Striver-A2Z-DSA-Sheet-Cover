@@ -1,0 +1,63 @@
+
+
+class Solution {
+public:
+    bool dfs(vector<vector<int>>& graph, vector<int>& color, vector<int> startNode)
+    {
+        int element = startNode[0], elementColor = startNode[1];
+        color[element] = elementColor;
+
+        for(auto v: graph[element])
+        {
+            if(color[v] == -1)
+            {
+                if(!dfs(graph,color,{v,!elementColor}))
+                    return false;
+            }
+            else if(color[v] == elementColor)
+                return false;
+        } 
+        return true;
+    }
+    bool bfs(vector<vector<int>>& graph, vector<int>& color, int startNode)
+    {
+        // 0-node, 1-color
+        queue<vector<int>> qtraverse;
+        qtraverse.push({startNode, 0});
+        color[startNode] = 0;
+
+        while(!qtraverse.empty())
+        {
+            vector<int> node = qtraverse.front();
+            qtraverse.pop();
+
+            int element = node[0], elementColor = node[1];
+            for(auto v: graph[element])
+            {
+                if(color[v] == -1)
+                {
+                    color[v] = !elementColor;
+                    qtraverse.push({v, !elementColor});
+                }
+                else if(color[v] == elementColor )
+                    return false;
+            }
+        }
+        return true;
+    }
+    bool isBipartite(vector<vector<int>>& graph) {
+        int n = graph.size();
+        // color is acts as vis
+        vector<int> color(n,-1);
+        for(int i=0;i<n;i++)
+        {
+            if(color[i] == -1)
+            {
+                //if(!bfs(graph, color, i))  return false;
+                if(!dfs(graph,color,{i,0})) return false;
+            }
+        }
+        return true;        
+    }
+};
+

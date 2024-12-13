@@ -1,0 +1,153 @@
+
+// simple queue, 687ms
+
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        
+        vector<int> dist(n, INT_MAX);
+        dist[src] = 0;
+
+        queue<vector<int>> qtraverse;
+        
+        // 0-step, 1-price, 2-src
+        qtraverse.push({0, 0, src});
+
+        while(!qtraverse.empty())
+        {
+            vector<int> currCity = qtraverse.front();
+            qtraverse.pop();
+
+            int  stopNo = currCity[0], cost = currCity[1], stopCity = currCity[2];
+
+            // k+1 th stop is destination, means no going forward
+            if(stopNo == (k+1))
+                continue;
+
+            for(vector<int> edge: flights)
+            {
+                int fromCity = edge[0], toCity = edge[1], costTravelling = edge[2];
+                if(fromCity == stopCity && (dist[toCity] > cost + costTravelling))
+                {
+                    dist[toCity] = cost + costTravelling;
+                    qtraverse.push({ stopNo+1, dist[toCity], toCity});
+                }
+            }
+        }
+        return dist[dst] == INT_MAX? -1: dist[dst];
+    }
+};
+
+
+#####################################################################################
+
+//12ms, 2ms
+
+class Solution {
+public:
+    void getGraph(vector<vector<pair<int,int>>>& graph, vector<vector<int>>& flights)
+    {
+        for(auto edge: flights)
+        {
+            int fromCity = edge[0], toCity = edge[1], cost = edge[2];
+            graph[fromCity].push_back({toCity, cost});
+        }
+    }
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        
+        vector<vector<pair<int,int>>> graph(n);
+        getGraph(graph, flights);
+
+        vector<int> dist(n, INT_MAX);
+        dist[src] = 0;
+
+        queue<vector<int>> qtraverse;
+        
+        // 0-step, 1-price, 2-src
+        qtraverse.push({0, 0, src});
+
+        while(!qtraverse.empty())
+        {
+            vector<int> currCity = qtraverse.front();
+            qtraverse.pop();
+
+            int  stopNo = currCity[0], cost = currCity[1], stopCity = currCity[2];
+
+            // k+1 th stop is destination, means no going forward
+            if(stopNo == (k+1))
+                continue;
+
+            for(pair<int,int> curr: graph[stopCity])
+            {
+                int toCity = curr.first, costTravelling = curr.second;
+                if(dist[toCity] > cost + costTravelling)
+                {
+                    dist[toCity] = cost + costTravelling;
+                    qtraverse.push({ stopNo+1, dist[toCity], toCity});
+                }
+            }
+        }
+        return dist[dst] == INT_MAX? -1: dist[dst];
+    }
+};
+
+#######################################################################################
+
+TLE now 
+
+class Solution {
+public:
+    void getGraph(vector<vector<pair<int,int>>>& graph, vector<vector<int>>& flights)
+    {
+        for(auto edge: flights)
+        {
+            int fromCity = edge[0], toCity = edge[1], cost = edge[2];
+            graph[fromCity].push_back({toCity, cost});
+        }
+    }
+    struct CustomComparator{
+        bool operator()(vector<int> a,vector<int> b){
+            return a[1]>b[1];
+        }
+    };
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        
+        vector<vector<pair<int,int>>> graph(n);
+        getGraph(graph, flights);
+
+        vector<int> dist(n, INT_MAX);
+        dist[src] = 0;
+
+        // queue<vector<int>> qtraverse;
+        priority_queue< vector<int>, vector<vector<int>>,
+                        CustomComparator > qtraverse;
+        
+        // 0-step, 1-price, 2-src
+        qtraverse.push({0, 0, src});
+
+        while(!qtraverse.empty())
+        {
+            vector<int> currCity = qtraverse.top();
+            qtraverse.pop();
+
+            int  stopNo = currCity[0], cost = currCity[1], stopCity = currCity[2];
+
+            if(stopCity == dst)
+                return cost;
+            // k+1 th stop is destination, means no going forward
+            if(stopNo == (k+1))
+                continue;
+
+            for(pair<int,int> curr: graph[stopCity])
+            {
+                int toCity = curr.first, costTravelling = curr.second;
+                // if(dist[toCity] > cost + costTravelling)
+                // {
+                    // dist[toCity] = cost + costTravelling;
+                    qtraverse.push({ stopNo+1, cost + costTravelling, toCity});
+                // }
+            }
+        }
+        return dist[dst] == INT_MAX? -1: dist[dst];
+    }
+};

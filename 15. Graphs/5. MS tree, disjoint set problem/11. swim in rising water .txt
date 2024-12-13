@@ -1,0 +1,132 @@
+
+Intuition
+PS: we need to find at what time we will be able to reach the last location starting from the first location such that time taken is minimum.
+obviously we can't reach any lesser than the height of the last location and not any longer than the max height.
+{Intuition for binary search on answer approach}
+Intutively thinking about the union and find approach is hard.
+
+1. Would describe the approaches:
+Bascially if we could start from the very first and keep on increasing time and see if we can reach the last , if at any time we would be able to reach the last then that time would be minimum.
+//DFS
+
+2. Improved version of the prev approach {DFS+binary search}
+we know that our ans would always be in the range{last height,max heigh}
+we can apply binary search for the answer in this range, and pick the approapriate answer, rather than trying for all the possible times.
+
+3. basically the third approach is pure dikstra,
+we keep on selecting the min, and have a priority queue for the min {rather than selecting all in dfs approach},
+in dikstra we get a path which contains all the min possible nodes to reach the end.
+since the max of the nodes would be the least time required to visit this particular path given by the dikstra algorithm so we could be having the max of it as our time.
+
+4. Now here we can see the connectivity, Union and find intution,
+all the elements got connected at last,
+see if we could be connecting all the elements in increasing time,
+and at a particular time we see that the first and the last element
+also got connected then since we are increasing the time linearly
+we must have got the min time.
+
+
+##################################################################
+using 4th approach 
+
+class DisjointSet{
+    vector<int> size, rank, parent;
+    public:
+
+    DisjointSet(int n)
+    {
+        size.resize(n,1);
+        rank.resize(n,0);
+        parent.resize(n,0);
+        for(int i=0; i<n;i++)
+            parent[i] = i;
+    }
+    
+    int findParent(int x)
+    {
+        if( x == parent[x])
+            return x;
+        
+        return parent[x] = findParent(parent[x]);
+    }
+
+    void unionByRank(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if(ulp_u == ulp_v)  return ;
+
+        if( rank[ulp_u] < rank[ulp_v]){
+            parent[ulp_u] = ulp_v;
+        }
+        else if( rank[ulp_v] < rank[ulp_u]){
+            parent[ulp_v] = ulp_u;
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+    
+    void unionBySize(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if(ulp_u == ulp_v)  return ;
+
+        if( size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+
+    int getSize(int x){
+        return size[x];
+    }
+};
+
+class Solution {
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        
+        int n = grid.size();
+        int totalSize = n*n;
+
+        pair<int, int> adj[totalSize];
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                adj[ grid[i][j] ] = {i,j};
+            }
+        }
+
+        DisjointSet ds(totalSize);
+        vector<int> vis(totalSize, 0);
+        int xCord[4] = {-1, 0, 1, 0};
+        int yCord[4] = {0, 1, 0, -1};
+
+        for(int t = 0; t<totalSize; t++)
+        {
+            int x = adj[t].first, y = adj[t].second;
+            vis[x*n + y] = 1;
+
+            for(int k=0; k<4; k++){
+                int nx = x + xCord[k];
+                int ny = y + yCord[k];
+
+                if(nx>=0 && ny>=0 && nx<n && ny<n && vis[nx*n + ny]==1){
+                    ds.unionByRank( x*n + y, nx*n + ny);
+                }
+            }
+            if(ds.findParent( 0 ) == ds.findParent( totalSize -1 )){
+                return t;
+            }
+        }
+
+        return totalSize - 1;
+    }
+};
+

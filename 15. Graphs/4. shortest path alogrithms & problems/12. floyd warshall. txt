@@ -1,0 +1,43 @@
+
+/* If we want to check for a negative cycle:
+After completing the steps(outside those three loops), we will run a loop 
+and check if any cell having the row and column the same(i = j) contains a 
+value less than 0. */
+
+    void shortestDistance(vector<vector<int>>& mat) {
+        // Code here
+        int  rowSize = mat.size(), colSize = mat[0].size();
+        for(int i=0; i<rowSize; i++)
+        {
+            for(int j=0; j<colSize; j++)
+            {
+                if(mat[i][j] == -1)
+                    mat[i][j] = 1e9;
+                    
+                if(i == j)
+                    mat[i][j] = 0;
+            }
+        }
+        
+        // rowsize & colsize are equal
+        
+        for(int k=0; k<rowSize; k++)
+        {
+            for(int i=0; i<rowSize; i++)
+            {
+                for(int j=0; j<colSize; j++)
+                {
+                    mat[i][j] = min(mat[i][j], mat[i][k] + mat[k][j]);
+                }
+            }
+        }
+        
+        for(int i=0; i<rowSize; i++)
+        {
+            for(int j=0; j<colSize; j++)
+            {
+                if(mat[i][j] == 1e9)
+                    mat[i][j] = -1;
+            }
+        }
+    }

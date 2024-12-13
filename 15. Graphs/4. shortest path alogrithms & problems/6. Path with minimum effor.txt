@@ -1,0 +1,153 @@
+
+// 2893ms
+
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+
+        queue<vector<int>> pq;
+
+        int rowsize = heights.size(), colsize = heights[0].size();
+
+        vector<vector<int>> dist(rowsize, vector<int>(colsize, INT_MAX));
+
+        pq.push({0, 0, 0});
+        dist[0][0] = 0;
+
+        int xchange[4] = {-1, 0, 1, 0};
+        int ychange[4] = {0, 1, 0, -1};
+        int minAbsDiff = INT_MAX;
+        while (!pq.empty()) {
+            vector<int> currNode = pq.front();
+            pq.pop();
+            int AbsDiff = currNode[0], xcordinate = currNode[1],
+                ycordinate = currNode[2];
+
+            if (xcordinate == rowsize - 1 && ycordinate == colsize - 1) {
+                minAbsDiff = min(minAbsDiff, AbsDiff);
+                continue;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int xnew = xcordinate + xchange[i];
+                int ynew = ycordinate + ychange[i];
+                if (xnew >= 0 && ynew >= 0 && xnew < rowsize &&
+                    ynew < colsize) {
+                    int newdist =
+                        max(AbsDiff, abs(heights[xnew][ynew] -
+                                         heights[xcordinate][ycordinate]));
+                    if (dist[xnew][ynew] > newdist) {
+                        dist[xnew][ynew] = newdist;
+                        pq.push({dist[xnew][ynew], xnew, ynew});
+                    }
+                }
+            }
+        }
+
+        return minAbsDiff;
+    }
+};
+
+###############################################################################################
+
+// 179ms 
+
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+
+        // sort based on vectro[0] element
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>>
+            pq;
+
+        int rowsize = heights.size(), colsize = heights[0].size();
+
+        vector<vector<int>> dist(rowsize, vector<int>(colsize, INT_MAX));
+
+        pq.push({0, 0, 0});
+        dist[0][0] = 0;
+
+        int xchange[4] = {-1, 0, 1, 0};
+        int ychange[4] = {0, 1, 0, -1};
+        int minAbsDiff = INT_MAX;
+        while (!pq.empty()) {
+            vector<int> currNode = pq.top();
+            pq.pop();
+            int AbsDiff = currNode[0], xcordinate = currNode[1],
+                ycordinate = currNode[2];
+
+            if (xcordinate == rowsize - 1 && ycordinate == colsize - 1) {
+                minAbsDiff = min(minAbsDiff, AbsDiff);
+                continue;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int xnew = xcordinate + xchange[i];
+                int ynew = ycordinate + ychange[i];
+                if (xnew >= 0 && ynew >= 0 && xnew < rowsize &&
+                    ynew < colsize) {
+                    int newdist =
+                        max(AbsDiff, abs(heights[xnew][ynew] -
+                                         heights[xcordinate][ycordinate]));
+                    if (dist[xnew][ynew] > newdist) {
+                        dist[xnew][ynew] = newdist;
+                        pq.push({dist[xnew][ynew], xnew, ynew});
+                    }
+                }
+            }
+        }
+
+        return minAbsDiff;
+    }
+};
+
+########################################################################################
+
+// 179 ms 
+
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+
+        // sort based on vectro[0] element
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>>
+            pq;
+
+        int rowsize = heights.size(), colsize = heights[0].size();
+
+        vector<vector<int>> dist(rowsize, vector<int>(colsize, INT_MAX));
+
+        pq.push({0, 0, 0});
+        dist[0][0] = 0;
+
+        int xchange[4] = {-1, 0, 1, 0};
+        int ychange[4] = {0, 1, 0, -1};
+        while (!pq.empty()) {
+            vector<int> currNode = pq.top();
+            pq.pop();
+            int AbsDiff = currNode[0], xcordinate = currNode[1],
+                ycordinate = currNode[2];
+
+            if (xcordinate == rowsize - 1 && ycordinate == colsize - 1) {
+                return AbsDiff;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int xnew = xcordinate + xchange[i];
+                int ynew = ycordinate + ychange[i];
+                if (xnew >= 0 && ynew >= 0 && xnew < rowsize &&
+                    ynew < colsize) {
+                    int newdist =
+                        max(AbsDiff, abs(heights[xnew][ynew] -
+                                         heights[xcordinate][ycordinate]));
+                    if (dist[xnew][ynew] > newdist) {
+                        dist[xnew][ynew] = newdist;
+                        pq.push({dist[xnew][ynew], xnew, ynew});
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+};

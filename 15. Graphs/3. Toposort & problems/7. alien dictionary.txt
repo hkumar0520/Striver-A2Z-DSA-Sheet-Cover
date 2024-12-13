@@ -1,0 +1,194 @@
+//bfs 
+https://www.naukri.com/code360/problems/alien-dictionary_630423?leftPanelTabValue=SUBMISSION
+
+
+ #include <bits/stdc++.h>
+
+
+    string bfs(map<char,map<char,int>>& mymap
+        ,vector<int>& indegree ,vector<int>& ispresent)
+    {
+        queue<int> q;
+        for(int i=0;i<26;i++)
+        {
+            // both which have outdegree = 0 & outdegree !=0 included
+            if(indegree[i]==0 && ispresent[i] == 1)
+                q.push(i+'a');
+        }
+        vector<int> vis(26,0);
+        string ans="";
+        while(!q.empty())
+        {
+            char current=q.front();
+            q.pop();
+            vis[current-'a'] = 1;
+            ans=ans+current;
+            for(auto u:mymap[current])
+            {
+                indegree[u.first-'a']--;
+                if(indegree[u.first-'a']==0)
+                   q.push(u.first);
+            }
+        }
+        return ans;
+    }
+    string getAlienLanguage(vector<string> &words, int K) {
+        // Write your code here
+        map<char,map<char,int>> mymap;
+        vector<int> indegree(26,0);
+        vector<int> ispresent(26,0);
+        int n=words.size();
+        // which characters are present
+        for(int i=0;i<n;i++)
+        {
+            string str = words[i];
+            for(char ch: str)
+                ispresent[ch-'a'] = 1;
+        }
+
+         for(int i=1;i<n;i++)
+        {
+            string first=words[i-1];
+            string second=words[i];
+            int len=min(first.size(),second.size());
+            int j=0;
+            while(j<len)
+            {
+                char u=first[j];
+                char v=second[j];
+                if(u!=v)
+                {
+                    if(mymap[u][v] != 1)
+                    {
+                        mymap[u][v]=1;
+                        indegree[v-'a']++;
+                    }
+                    break;
+                }
+                j++;
+            }
+        }
+        return bfs(mymap,indegree, ispresent);
+    }
+
+
+
+
+
+
+##########################################################################################
+
+https://www.lintcode.com/problem/892/description
+
+// 40% complete
+
+class Solution {
+public:
+    /**
+     * @param words: a list of words
+     * @return: a string which is correct order
+     */
+string insertSpecific(string& ans, int ind)
+{
+    char chinsert = (char)('a'+ind);
+    int n = ans.size();
+    for(int i=0;i<n;i++)
+    {
+        char ch = ans[i];
+        if(chinsert < ch)
+        {
+            ans = ans.substr(0,i) + chinsert + ans.substr(i);
+            return ans;
+        }
+    }
+    ans += chinsert;
+    return ans;
+}
+string bfs(map<char,map<char,int>>& mymap
+        ,vector<int>& indegree ,vector<int>& ispresent
+        ,vector<string> &words)
+    {
+        queue<int> q;
+        int total = 0;
+        for(int i=0;i<26;i++)
+        {
+            // both which have outdegree = 0 & outdegree !=0 included
+            if(indegree[i]==0 && ispresent[i] == 1)
+                q.push(i+'a');
+
+            if(ispresent[i])
+                total++;
+        }
+        vector<int> vis(26,0);
+        string ans="";
+        while(!q.empty())
+        {
+            char current=q.front();
+            q.pop();
+            vis[current-'a'] = 1;
+            ans=ans+current;
+            for(auto u:mymap[current])
+            {
+                indegree[u.first-'a']--;
+                if(indegree[u.first-'a']==0)
+                   q.push(u.first);
+            }
+        }
+      
+        // in case of cycle, toposort does not exist, 
+        // or no elemen with degree zero
+        if( (ans.size() != total) || total == 0)
+            return "";
+
+        // remaining characters insert
+        for(int i=0;i<words.size();i++)
+        {
+            string str = words[i];
+            for(char ch: str)
+                ispresent[ch-'a'] = 1;
+        }
+        
+        // insert in albhatecially english order , remaingng characters;
+        for(int i=0;i<26;i++)
+        {
+            if(!vis[i] && ispresent[i] == 1)
+               ans = insertSpecific(ans, i);
+        }
+        return ans;
+    }
+    string alienOrder(vector<string> &words) {
+        // Write your code here
+        map<char,map<char,int>> mymap;
+        vector<int> indegree(26,0);
+        vector<int> ispresent(26,0);
+        int n=words.size();
+
+         for(int i=1;i<n;i++)
+        {
+            string first=words[i-1];
+            string second=words[i];
+            int len=min(first.size(),second.size());
+            int j=0;
+            while(j<len)
+            {
+                char u=first[j];
+                char v=second[j];
+                if(u!=v)
+                {
+                    ispresent[u-'a'] = 1;
+                    ispresent[v-'a'] = 1;
+                    if(mymap[u][v] != 1)
+                    {
+                        mymap[u][v]=1;
+                        indegree[v-'a']++;
+                    }
+                    break;
+                }
+                j++;
+            }
+        }
+        return bfs(mymap,indegree, ispresent, words);
+        
+    }
+
+};

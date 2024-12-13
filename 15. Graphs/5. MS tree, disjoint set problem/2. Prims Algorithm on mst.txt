@@ -1,0 +1,84 @@
+    int spanningTree(int V, vector<vector<int>> adj[])
+    {
+        // code here
+        vector<int> vis(V, 0);
+        priority_queue<vector<int> , vector<vector<int>> ,
+                        greater<vector<int>> > pq;
+                        
+        
+        // from parent to node weight, node  
+        pq.push({ 0, 0});
+        
+        int minSum = 0;
+        
+        while(!pq.empty())
+        {
+            vector<int> currentNode = pq.top();
+            pq.pop();
+            
+            int wt = currentNode[0], node = currentNode[1];
+            
+            if(vis[node])   continue;
+            
+            minSum = minSum + wt;
+            vis[node] = 1;
+            
+            for(vector<int> edge: adj[node])
+            {
+                int dstNode = edge[0], wtDstNode = edge[1];
+                if(!vis[dstNode])
+                    pq.push({ wtDstNode, dstNode});
+            }
+        }
+        return minSum;
+    }
+
+    time complexity = E*logE   
+    logE = both push, pop operation of priority_queue
+    space complextiy = O(V) + O(E) ( for the pq O(E))
+
+################################################################################
+
+
+int spanningTree(int V, vector<vector<int>> adj[])
+    {
+        // code here
+        vector<int> vis(V, 0);
+        vector<vector<int>> mst;
+        priority_queue<vector<int> , vector<vector<int>> ,
+                        greater<vector<int>> > pq;
+                        
+        
+        // from parent to node weight, node , parent 
+        pq.push({ 0, 0, -1});
+        
+        int minSum = 0;
+        
+        while(!pq.empty())  // E
+        {
+            vector<int> currentNode = pq.top();  // logE
+            pq.pop();
+            
+            int wt = currentNode[0], node = currentNode[1], parent = currentNode[2];
+            
+            if(vis[node])   continue;
+            
+            minSum = minSum + wt;
+            vis[node] = 1;
+            // edge from parent->node 
+            if(parent != -1)
+                mst.push_back({ parent, node});
+            
+            for(vector<int> edge: adj[node])  // E
+            {
+                int dstNode = edge[0], wtDstNode = edge[1];
+                if(!vis[dstNode])  
+                    pq.push({ wtDstNode, dstNode});  // logE
+            }
+        }
+        return minSum;
+    }
+
+    time complexity = E*logE   
+    logE = both push, pop operation of priority_queue
+    space complextiy = O(V) + O(E) ( for the pq O(E))

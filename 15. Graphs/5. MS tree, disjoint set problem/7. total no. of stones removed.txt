@@ -1,0 +1,124 @@
+
+
+class DisjointSet{
+    vector<int> size, rank, parent;
+    public:
+
+    DisjointSet(int n)
+    {
+        size.resize(n,1);
+        rank.resize(n,0);
+        parent.resize(n,0);
+        for(int i=0; i<n;i++)
+            parent[i] = i;
+    }
+    
+    int findParent(int x)
+    {
+        if( x == parent[x])
+            return x;
+        
+        return parent[x] = findParent(parent[x]);
+    }
+
+    void unionByRank(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if (ulp_u == ulp_v) return;
+        
+        if( rank[ulp_u] < rank[ulp_v]){
+            parent[ulp_u] = ulp_v;
+        }
+        else if( rank[ulp_v] < rank[ulp_u]){
+            parent[ulp_v] = ulp_u;
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+    
+    void unionBySize(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if (ulp_u == ulp_v) return;
+
+        if( size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+
+    vector<int> getParent(){
+        return parent;
+    }
+};
+
+class Solution {
+public:
+    int removeStones(vector<vector<int>>& stones) {
+        int V = stones.size();
+        DisjointSet ds(V);
+
+        for(int i=0; i<V; i++)
+        {
+            int x_i = stones[i][0], y_i = stones[i][1];
+            int ulp_i = ds.findParent(i);
+            for(int j=i+1; j<V; j++)
+            {
+                int x_j = stones[j][0], y_j = stones[j][1];
+                // if there is edge b/w i and j(i->j or j->i)
+                if( (x_i == x_j) || (y_i == y_j) )
+                {
+                    int ulp_j = ds.findParent(j);
+                    if(ulp_i != ulp_j)
+                        ds.unionByRank(i,j);
+
+                }
+            }
+        }
+
+        int  totalComponent = 0;
+        vector<int> parentVec = ds.getParent();
+
+        for(int i=0; i<V;i++)
+        {
+            if( i == parentVec[i])
+                totalComponent++;
+        }
+
+        // from every compoent we can remove all vertices except one
+        return V - totalComponent;
+    }
+};
+
+
+// Intuition
+
+HINT 1 :
+Instead of viewing this question as "Remove the maximum number of stones with the same rows and columns", you may take this question to be "What is the number of stones that can be reached from one another, if reaching stone A to stone B requires either stone A and B having same row or column.
+
+HINT 2 :
+Let us assume that the number of given stones is "num"
+If we look at all the stone clusters connected to one another, what is the number of stones that you can remove?
+Example : In the below given grid, if '0' represents stones
+X X 0 X X
+0 X 0 X X
+X X X X X
+0 X X X 0
+
+We can map all the stones to one another using basic traversal algorithms.
+For EACH SUCH CLUSTER of stones that can be connected in the grid, the number of stones that can be removed is number of stones in that cluster - 1.
+
+If we now add the number of clusters and all the number of stones that can be remove :-
+(Stones in Cluster 1- 1) + (C2 -1) + (C3 -1) + ......
+= C1 + C2 + C3 +..... - (number of clusters)
+= Total number of stones - Number of Clusters
+
+Which will be the solution to this problem.

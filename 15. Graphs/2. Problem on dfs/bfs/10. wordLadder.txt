@@ -1,0 +1,116 @@
+
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> st(wordList.begin(),wordList.end());
+
+        if(st.find(endWord) == st.end())
+            return 0;
+
+        queue<pair<string,int>> qtraverse;
+        qtraverse.push({beginWord,1});
+
+        while(!qtraverse.empty())
+        {
+            string word = qtraverse.front().first;
+            int steps = qtraverse.front().second;
+            qtraverse.pop();
+
+            if(word == endWord)
+                return steps;
+
+            for(int i=0;i<word.size();i++)
+            {
+                string str = word;
+                for(int j=0;j<26;j++)
+                {
+                    str[i] = (char)('a'+j);
+                    if(st.find(str) != st.end())
+                    {
+                        qtraverse.push({str,steps+1});
+                        st.erase(str);   // working like vis node
+                    }
+                }
+            }
+
+        }
+        return 0;
+    }
+};
+
+
+#############################################################################
+
+my approach 
+
+["hot","dot","dog","lot","log","cog"]
+
+hot = dot,lot
+dot = hot,lot , dog
+dog = dot,log,cog
+lot = hot, dot, log 
+log = lot, dog, cog 
+cog = dog, log 
+
+
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        if(find(wordList.begin(),wordList.end(),endWord)==wordList.end())
+            return 0;
+        wordList.insert(wordList.begin(),beginWord);
+        sort(wordList.begin(),wordList.end());
+        wordList.erase(unique(wordList.begin(),wordList.end()),wordList.end());
+        int n=wordList.size();
+        map<int,vector<int>> graph;
+        for(int i=0;i<wordList.size();i++)
+        {
+            for(int j=i+1;j<wordList.size();j++)
+            {
+                    int countt=0;
+                    for(int k=0;k<wordList[i].size();k++)
+                    {
+                        if(wordList[i][k]!=wordList[j][k])
+                            countt++;
+                        if(countt>=2)
+                            break;
+                    }
+                    if(countt==1)
+                    {
+                        graph[i].push_back(j);
+                        graph[j].push_back(i);
+                    }
+                
+            }
+        }
+        auto it=find(wordList.begin(),wordList.end(),beginWord);
+        auto it1=find(wordList.begin(),wordList.end(),endWord);
+        int start=it-wordList.begin(),endd=it1-wordList.begin();
+        queue<vector<int>> q;
+        q.push({start,1});
+        vector<bool> vis(n,false);
+        vis[start]=true;
+        int ans=0,flag=0;
+        while(!q.empty())
+        {
+            vector<int> current=q.front();
+            q.pop();
+            for(auto u:graph[current[0]])
+            {
+                if(!vis[u])
+                {
+                    q.push({u,current[1]+1});
+                    vis[u]=true;
+                    if(u==endd)
+                    {
+                        ans=current[1]+1;
+                        return ans;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+};
+
+

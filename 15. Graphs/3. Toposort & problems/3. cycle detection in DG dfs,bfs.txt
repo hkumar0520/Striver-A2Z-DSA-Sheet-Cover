@@ -1,0 +1,138 @@
+// dfs (i wrote gfg provided sol)
+
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+class Solution {
+  public:
+    // Function to detect cycle in a directed graph.
+    
+    bool dfs(int ind, vector<int>& vis, vector<vector<int>> adj)
+    {
+        // visited in the same path
+        vis[ind] = 1;
+        
+        for(auto v: adj[ind])
+        {
+            // vis[v] == 0
+            if(!vis[v])
+            {
+                if(dfs(v,vis,adj))
+                    return true;
+            }
+            else if(vis[v] == 1)
+                return  true;
+        }
+        
+        // processed
+        vis[ind] = 2;
+        return false;
+    }
+    bool isCyclic(int n, vector<vector<int>> adj) {
+        // code here
+        vector<int> vis(n,0);
+        for(int i=0;i<n;i++)
+        {
+            // vis[i] == 0
+            if(!vis[i])
+            {
+                if(dfs(i,vis,adj))
+                    return true;
+            }
+        }
+        return false;
+    }
+};
+
+//{ Driver Code Starts.
+
+int main() {
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int V, E;
+        cin >> V >> E;
+
+        vector<vector<int>> adj(V);
+
+        for (int i = 0; i < E; i++) {
+            int u, v;
+            cin >> u >> v;
+            adj[u].push_back(v);
+        }
+
+        Solution obj;
+        cout << obj.isCyclic(V, adj) << "\n";
+
+        cout << "~"
+             << "\n";
+    }
+
+    return 0;
+}
+
+// } Driver Code Ends
+
+
+#######################################################################################
+
+bfs
+
+    // Function to detect cycle in a directed graph.
+    
+    void getIndegree(vector<int>& indegree, vector<vector<int>> adj)
+    {
+        for(auto u: adj)
+        {
+            for(auto v:u)
+            {
+                indegree[v]++;
+            }
+        }
+    }
+    void bfs(int &countIndegreeZero, vector<int>& indegree, vector<vector<int>> adj)
+    {
+        int n = adj.size();
+        queue<int> qtraverse;
+        
+        for(int i=0;i<n;i++)
+        {
+            if(indegree[i] == 0)
+                qtraverse.push(i);
+        }
+        
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+            countIndegreeZero++;
+            
+            for(auto v: adj[node])
+            {
+                indegree[v]--;
+                if(indegree[v] == 0)
+                {
+                    qtraverse.push(v);
+                }
+            }
+        }
+    }
+    bool isCyclic(int n, vector<vector<int>> adj) {
+        // code here
+        vector<int>  indegree(n,0);
+        getIndegree(indegree,adj);
+        int countIndegreeZero = 0;
+        
+        bfs(countIndegreeZero,indegree, adj);
+        
+        return (n == countIndegreeZero) ? false: true;
+    }
+};
+
+
+
+
