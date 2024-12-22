@@ -1,0 +1,314 @@
+
+
+#include <bits/stdc++.h>
+
+class User{
+    int userId;
+    vector<int> followeed;
+    priority_queue<pair<int,int>> tweets;
+
+    public:
+    User(){
+
+    }
+
+    User(int userid){
+        userId = userid;
+        followeed = {};
+    }
+    // User(const User& oldUser){
+    //     userId = oldUser.userId;
+    //     followeed = oldUser.followeed;
+    //     tweets = oldUser.tweets;
+    // }
+    // void setUserId(int userId){
+    //     userId = userId;
+    // }
+
+    void postTweet(int time, int tweetId){
+        tweets.push({ time, tweetId });
+    }
+
+    priority_queue<pair<int,int>> getTweets(){
+        return tweets;
+    }
+
+    void followedUser(int followeedId){
+        vector<int>::iterator it = find(followeed.begin(), followeed.end(), followeedId);
+        if(it == followeed.end()){
+            followeed.push_back(followeedId);
+        }
+    }
+    
+    void unFollowedUser(int followeedId){
+        vector<int>::iterator it = find(followeed.begin(), followeed.end(), followeedId);
+        if(it != followeed.end()){
+            int index = it-followeed.begin();
+            followeed.erase(it);
+        }
+    }
+
+    vector<int> getFolloweed(){
+        return followeed;
+    }
+};
+
+class Twitter {
+    map<int, User> userReference;
+    int time = 0;
+    
+    public:
+    Twitter() {
+        
+    }
+    
+    void postTweet(int userId, int tweetId) {
+        time++;
+
+        User user;
+        if(userReference.find(userId) == userReference.end()){
+            user = User(userId);
+        }
+        else{
+            user = userReference[userId];
+        }
+
+        user.postTweet(time, tweetId);
+
+        // store latest user updates
+        userReference.erase(userId);
+        userReference[userId] = user;
+    }
+    
+    vector<int> getNewsFeed(int userId) {
+        if(userReference.find(userId) == userReference.end())
+            return {};
+
+        User user = userReference[userId];
+
+        priority_queue<pair<int,int>> pq = user.getTweets();
+
+        vector<int> followeed = user.getFolloweed();
+
+        for(int iuserid: followeed){
+            User usertmp = userReference[iuserid];
+            priority_queue<pair<int,int>> pqtmp = usertmp.getTweets();
+            while(!pqtmp.empty()){
+                pq.push(pqtmp.top());
+                pqtmp.pop();
+            }
+        }
+
+        vector<int> recentTweets;
+        int countRecent = 0;
+
+        while(!pq.empty() && countRecent < 10){
+            recentTweets.push_back(pq.top().second);
+            pq.pop();
+            countRecent++;
+        }
+        return recentTweets;        
+    }
+    
+    void follow(int followerId, int followeeId) {
+        User follower;
+        if(userReference.find(followerId) == userReference.end()){
+            follower = User(followerId); 
+        }
+        else
+            follower = userReference[followerId];
+
+        User followeed;
+        if(userReference.find(followeeId) == userReference.end()){
+            followeed = User(followeeId); 
+            userReference[followeeId] = followeed;
+        }
+
+        follower.followedUser(followeeId);
+
+        // store again
+        userReference.erase(followerId);
+        userReference[followerId] = follower;
+    }
+    
+    void unfollow(int followerId, int followeeId) {
+        if(userReference.find(followerId) == userReference.end())
+            return ;
+        if(userReference.find(followeeId) == userReference.end())
+            return ;
+
+        User follower = userReference[followerId];
+
+        follower.unFollowedUser(followeeId);
+        
+        // store again
+        userReference.erase(followerId);
+        userReference[followerId] = follower;
+    }
+};
+
+/**
+ * Your Twitter object will be instantiated and called as such:
+ * Twitter* obj = new Twitter();
+ * obj->postTweet(userId,tweetId);
+ * vector<int> param_2 = obj->getNewsFeed(userId);
+ * obj->follow(followerId,followeeId);
+ * obj->unfollow(followerId,followeeId);
+ */
+
+ 
+ #########################################################################
+
+
+
+To reduce the memory usage in the provided code, there are several strategies we can adopt, such as avoiding unnecessary object copies, reusing memory, and reducing redundant data structures. Below are some changes to reduce memory consumption:
+
+### Key Changes:
+1. **Avoid unnecessary copying of objects:**
+   - Instead of copying entire `User` objects, we can pass references to the `User` class objects wherever possible to avoid the overhead of copying large objects.
+   
+2. **Use pointers in place of copying objects:**
+   - By using pointers to `User` objects, we avoid the need to copy objects when updating the `userReference` map or performing operations like following and unfollowing users.
+   
+3. **Reduce `priority_queue` usage:**
+   - `priority_queue` may consume more memory than necessary, as it internally uses a heap and requires memory for the heap structure. A better approach might be to store the tweets in a sorted list or vector and limit its size.
+
+4. **Optimize user-followed list:**
+   - Use `unordered_set` or `set` for `followeed` to optimize the lookup time and memory usage when checking if a user is already followed.
+
+5. **Avoid storing redundant `priority_queue` copies:**
+   - Instead of copying the entire `priority_queue`, we can merge the queues more efficiently or store tweets in a simpler structure.
+
+### Optimized Code:
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+class User {
+public:
+    int userId;
+    unordered_set<int> followeed;
+    deque<pair<int, int>> tweets;  // Using deque to store tweets in reverse order for easy push_back and pop_front.
+
+    User(int userid) : userId(userid) {}
+
+    // Post a new tweet with a timestamp.
+    void postTweet(int time, int tweetId) {
+        tweets.push_front({time, tweetId}); // Store tweets in reverse order to keep the most recent ones at the front
+        if (tweets.size() > 10) { // We only need the 10 most recent tweets
+            tweets.pop_back();
+        }
+    }
+
+    // Add a user to the following list.
+    void followedUser(int followeedId) {
+        followeed.insert(followeedId);
+    }
+
+    // Remove a user from the following list.
+    void unFollowedUser(int followeedId) {
+        followeed.erase(followeedId);
+    }
+};
+
+class Twitter {
+    unordered_map<int, User*> userReference;  // Use pointers to avoid copying entire User objects
+    int time = 0;
+    
+public:
+    Twitter() {}
+
+    // Post a new tweet
+    void postTweet(int userId, int tweetId) {
+        time++;
+        
+        if (userReference.find(userId) == userReference.end()) {
+            userReference[userId] = new User(userId);
+        }
+        
+        User* user = userReference[userId];
+        user->postTweet(time, tweetId);
+    }
+    
+    // Get the news feed of a user
+    vector<int> getNewsFeed(int userId) {
+        if (userReference.find(userId) == userReference.end()) {
+            return {};
+        }
+
+        User* user = userReference[userId];
+        vector<pair<int, int>> allTweets;
+        
+        // Add the tweets of the user
+        for (auto& tweet : user->tweets) {
+            allTweets.push_back(tweet);
+        }
+
+        // Add the tweets of the users they follow
+        for (int followeeId : user->followeed) {
+            if (userReference.find(followeeId) != userReference.end()) {
+                User* followee = userReference[followeeId];
+                for (auto& tweet : followee->tweets) {
+                    allTweets.push_back(tweet);
+                }
+            }
+        }
+
+        // Sort tweets by timestamp in descending order and return the 10 most recent tweets
+        sort(allTweets.begin(), allTweets.end(), greater<pair<int, int>>());
+
+        vector<int> recentTweets;
+        for (int i = 0; i < min(10, (int)allTweets.size()); i++) {
+            recentTweets.push_back(allTweets[i].second);
+        }
+
+        return recentTweets;
+    }
+    
+    // Follow a user
+    void follow(int followerId, int followeeId) {
+        if (userReference.find(followerId) == userReference.end()) {
+            userReference[followerId] = new User(followerId);
+        }
+        
+        if (userReference.find(followeeId) == userReference.end()) {
+            userReference[followeeId] = new User(followeeId);
+        }
+        
+        User* follower = userReference[followerId];
+        follower->followedUser(followeeId);
+    }
+    
+    // Unfollow a user
+    void unfollow(int followerId, int followeeId) {
+        if (userReference.find(followerId) == userReference.end()) return;
+        if (userReference.find(followeeId) == userReference.end()) return;
+
+        User* follower = userReference[followerId];
+        follower->unFollowedUser(followeeId);
+    }
+};
+
+```
+
+### Optimizations Breakdown:
+1. **Pointer-based storage:**
+   - Instead of copying `User` objects every time, the `userReference` map now stores pointers to `User` objects. This avoids unnecessary deep copies of `User` objects.
+
+2. **Efficient tweet storage:**
+   - A `deque` is used to store tweets, which allows efficient push and pop operations at both ends. We only keep the 10 most recent tweets, reducing memory usage. Once there are more than 10 tweets, the oldest is discarded.
+
+3. **Using `unordered_set` for following users:**
+   - The `followeed` list is now an `unordered_set`, which provides faster lookups and reduces the space complexity of following checks.
+
+4. **Efficient news feed generation:**
+   - The tweets are directly stored in a vector (`allTweets`), which is then sorted by time, and only the top 10 tweets are selected, which avoids maintaining a large priority queue.
+
+5. **Avoiding redundant object creation:**
+   - Users are created only once and reused through the pointer mechanism. The code doesn't recreate user objects unnecessarily.
+
+This should reduce memory usage, as it avoids storing redundant copies of user data, tweets, and reduces the overhead of priority queues.
+
+

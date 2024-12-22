@@ -1,0 +1,177 @@
+
+
+  int kthSmallest(vector<int> &arr, int k) {
+        // code here
+        priority_queue<int, vector<int>, greater<int>> pq;
+        for(int num: arr)
+            pq.push(num);
+        
+        int countK = 0, smallestKelement = 0;
+        while(!pq.empty() && countK<k){
+            int topElement = pq.top();
+            pq.pop();
+            
+            countK++;
+            smallestKelement = topElement;
+        }
+        return smallestKelement;
+    }
+
+Time Complexity = O(nlogn)
+space complexity = O(n)
+
+
+
+
+
+
+#########################################################################
+
+
+
+
+
+
+
+class Solution {
+  public:
+    // arr : given array
+    // k : find kth smallest element and return using this function
+    int kthSmallest(vector<int> &arr, int k) {
+        // code here
+        priority_queue<int> pq;
+        for(int num: arr){
+            pq.push(num);
+            if(pq.size() > k)
+                pq.pop();
+        }
+        return pq.top();
+    }
+};
+
+
+Time Complexity = O(nlogk)
+space complexity = O(k)
+
+
+
+
+
+
+##############################################################################
+
+
+
+
+
+
+
+
+To solve the problem of finding the `k`th smallest element in an array using a heap, we can use a **min-heap** or a **max-heap**.
+
+### Approach:
+
+Since we are interested in finding the `k`th smallest element, a **max-heap** is a suitable choice. Here's how:
+
+1. **Max-Heap Approach:**
+   - Build a max-heap of size `k` using the first `k` elements of the array.
+   - Traverse the remaining elements of the array. For each element:
+     - If it is smaller than the root of the heap (which is the largest element in the heap), replace the root with this element.
+     - Rebalance the heap to maintain the heap property.
+   - After processing all elements, the root of the max-heap will contain the `k`th smallest element.
+
+This method ensures that the heap always contains the smallest `k` elements, and the root of the heap will be the `k`th smallest element.
+
+### Time Complexity:
+- **Building the heap:** O(k) for the first `k` elements.
+- **Processing the remaining elements:** For each of the remaining `n-k` elements, we perform a `O(log k)` operation (heap insertion).
+  Thus, the overall time complexity is **O(n log k)**.
+
+### Space Complexity:
+- The space complexity is **O(k)** because we are using a heap to store the `k` smallest elements at any point in time.
+
+### C++ Code Implementation:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>  // For using the heap
+
+// Function to find the kth smallest element using a max-heap
+int findKthSmallest(std::vector<int>& arr, int k) {
+    // Max-heap to store the smallest k elements
+    std::priority_queue<int> maxHeap;
+    
+    // Insert the first k elements into the max-heap
+    for (int i = 0; i < k; ++i) {
+        maxHeap.push(arr[i]);
+    }
+    
+    // Process the rest of the elements in the array
+    for (int i = k; i < arr.size(); ++i) {
+        // If the current element is smaller than the root of the heap
+        if (arr[i] < maxHeap.top()) {
+            maxHeap.pop(); // Remove the largest element (the root)
+            maxHeap.push(arr[i]); // Insert the current element
+        }
+    }
+    
+    // The root of the max-heap is the kth smallest element
+    return maxHeap.top();
+}
+
+int main() {
+    // Example 1
+    std::vector<int> arr1 = {7, 10, 4, 3, 20, 15};
+    int k1 = 3;
+    std::cout << "The " << k1 << "rd smallest element is: " << findKthSmallest(arr1, k1) << std::endl;
+
+    // Example 2
+    std::vector<int> arr2 = {2, 3, 1, 20, 15};
+    int k2 = 4;
+    std::cout << "The " << k2 << "th smallest element is: " << findKthSmallest(arr2, k2) << std::endl;
+
+    return 0;
+}
+```
+
+### Explanation:
+
+1. **Max-Heap:**
+   - We use `std::priority_queue<int>` in C++, which implements a max-heap by default. The heap stores the top `k` smallest elements.
+   - Initially, we insert the first `k` elements into the heap.
+   - Then, for each of the remaining elements, we compare it with the root of the heap (which is the largest of the smallest `k` elements).
+     - If the current element is smaller than the largest element in the heap (the root), we pop the root and insert the current element.
+
+2. **Finding the `k`th smallest:**
+   - Once all elements have been processed, the root of the heap will hold the `k`th smallest element.
+
+### Time Complexity:
+- **Building the heap:** O(k) — we are inserting `k` elements into the heap.
+- **Processing the rest of the elements:** O(n - k) for the remaining elements, and for each of them, we perform an O(log k) operation.
+  Thus, the total time complexity is **O(n log k)**.
+
+### Space Complexity:
+- The space complexity is **O(k)** because we only store up to `k` elements in the heap at any time.
+
+### Example:
+
+For input:
+```
+arr[] = [7, 10, 4, 3, 20, 15], k = 3
+```
+
+The output will be:
+```
+The 3rd smallest element is: 7
+```
+
+For the second input:
+```
+arr[] = [2, 3, 1, 20, 15], k = 4
+```
+
+The output will be:
+```
+The 4th smallest element is: 15
+```

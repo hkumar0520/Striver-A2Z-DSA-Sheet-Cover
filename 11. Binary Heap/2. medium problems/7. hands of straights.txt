@@ -1,0 +1,334 @@
+
+// 944ms beats 5%
+
+
+class Solution {
+public:
+    bool isNStraightHand(vector<int>& hand, int groupSize) {
+        int handSize = hand.size();
+
+        if( handSize % groupSize != 0)  return false;
+
+        priority_queue<int> pq;
+        for(int num: hand){
+            pq.push(num);
+        }
+
+        vector<vector<int>> vec;
+
+        while(!pq.empty()){
+            int curr = pq.top();
+            pq.pop();
+
+            int vecSize = vec.size();
+            bool isInserted = false;
+            for(int i = 0; i<vecSize; i++){
+                int i_vecSize = vec[i].size();
+
+                if( (i_vecSize<groupSize) &&
+                ((vec[i][i_vecSize -1] - 1) == curr)){
+                    vec[i].push_back(curr);
+                    isInserted = true;
+                    break;
+                }
+            }
+            if(!isInserted)
+                vec.push_back({ curr });
+        }
+        
+        // check each group is of size groupSize;
+        for(auto v: vec){
+            cout<<v.size()<<endl;
+            if(v.size() != groupSize){
+                return false;
+            }
+        }
+
+        return true;        
+    }
+};
+
+###############################################################
+
+526ms
+
+class Solution {
+public:
+    bool isNStraightHand(vector<int>& hand, int groupSize) {
+        int handSize = hand.size();
+
+        if( handSize % groupSize != 0)  return false;
+
+        priority_queue<int> pq;
+        for(int num: hand){
+            pq.push(num);
+        }
+
+        // last element, count
+        vector<pair<int,int>> vec;
+
+        while(!pq.empty()){
+            int curr = pq.top();
+            pq.pop();
+
+            int vecSize = vec.size();
+            bool isInserted = false;
+            for(int i = 0; i<vecSize; i++){
+                int i_vecSize = vec[i].second;
+
+                if( (i_vecSize<groupSize) &&
+                ((vec[i].first - 1) == curr)){
+                    vec[i].first = curr;
+                    vec[i].second = vec[i].second + 1;
+                    isInserted = true;
+                    break;
+                }
+            }
+            if(!isInserted)
+                vec.push_back({ curr, 1 });
+        }
+        
+        // check each group is of size groupSize;
+        for(auto v: vec){
+            if(v.second != groupSize){
+                return false;
+            }
+        }
+
+        return true;        
+    }
+};
+########################################################
+
+using vector 503 midSize
+
+class Solution {
+public:
+    bool isNStraightHand(vector<int>& hand, int groupSize) {
+        int handSize = hand.size();
+
+        if( handSize % groupSize != 0)  return false;
+
+        vector<int> pq;
+        for(int num: hand){
+            pq.push_back(num);
+        }
+
+        sort(pq.begin(), pq.end());
+
+        // last element, count
+        vector<pair<int,int>> vec;
+
+        int j = pq.size() -1 ;
+
+        while(j>=0){
+            int curr = pq[j];
+
+            int vecSize = vec.size();
+            bool isInserted = false;
+            for(int i = 0; i<vecSize; i++){
+                int i_vecSize = vec[i].second;
+
+                if( (i_vecSize<groupSize) &&
+                ((vec[i].first - 1) == curr)){
+                    vec[i].first = curr;
+                    vec[i].second = vec[i].second + 1;
+                    isInserted = true;
+                    break;
+                }
+            }
+            if(!isInserted)
+                vec.push_back({ curr, 1 });
+
+            j--;
+        }
+        
+        // check each group is of size groupSize;
+        for(auto v: vec){
+            if(v.second != groupSize){
+                return false;
+            }
+        }
+
+        return true;        
+    }
+};
+
+#################################################################
+
+using binary search in loop
+
+class Solution {
+public:
+    bool isInsertedFunc(int curr, vector<vector<int>>& vec, int groupSize ){
+        int vecSize = vec.size();
+        int i = 0, j = vecSize-1;
+
+        cout<<vecSize<<" hi endl"<<endl;
+        while(i <= j){
+            int mid = (i+j)/2;
+            int midSize = vec[mid].size();
+            cout<<i<<" "<<j<<" "<<mid<<" "<<midSize<<endl;
+
+            if((vec[mid][midSize -1] - 1) == curr){
+                if( midSize < groupSize ){
+                    vec[mid].push_back(curr);
+                    return true;
+                }
+                else{
+                    j = mid;
+                }
+            }
+            else if((vec[mid][midSize -1] - 1) < curr)
+                j = mid-1;
+            else
+                i = mid+1; 
+        }
+        return false;
+        
+            // for(int i = 0; i<vecSize; i++){
+            //     int i_vecSize = vec[i].size();
+
+            //     if( (i_vecSize<groupSize) &&
+            //     ((vec[i][i_vecSize -1] - 1) == curr)){
+            //         vec[i].push_back(curr);
+            //         isInserted = true;
+            //         break;
+            //     }
+            // }
+
+    }
+    bool isNStraightHand(vector<int>& hand, int groupSize) {
+        int handSize = hand.size();
+
+        if( handSize % groupSize != 0)  return false;
+
+        priority_queue<int> pq;
+        for(int num: hand){
+            pq.push(num);
+        }
+
+        vector<vector<int>> vec;
+
+        while(!pq.empty()){
+            int curr = pq.top();
+            pq.pop();
+
+         cout<<"$"<<endl;   
+        for(auto u: vec){
+            for(auto v: u){
+                cout<<v<<" ";
+            }
+            cout<<endl;
+        }
+        cout<<"$"<<endl;
+
+            bool isInserted = isInsertedFunc(curr, vec, groupSize);
+            
+            if(!isInserted)
+                vec.push_back({ curr });
+        }
+
+        cout<<"hello "<<endl;
+
+        for(auto u: vec){
+            for(auto v: u){
+                cout<<v<<" ";
+            }
+            cout<<endl;
+        }
+
+        // check each group is of size groupSize;
+        for(auto v: vec){
+            cout<<v.size()<<endl;
+            if(v.size() != groupSize){
+                return false;
+            }
+        }
+
+        return true;        
+    }
+};
+
+hand =
+[1,2,3,6,2,3,4,7,8]
+groupSize = 3
+
+failing in this case
+
+$
+$
+0 hi endl
+$
+8 
+$
+1 hi endl
+0 0 0 1
+$
+8 7 
+$
+1 hi endl
+0 0 0 2
+$
+8 7 6 
+$
+1 hi endl
+0 0 0 3
+$
+8 7 6 
+4 
+$
+2 hi endl
+0 1 0 3
+1 1 1 1
+$
+8 7 6 
+4 3 
+$
+2 hi endl
+0 1 0 3
+1 1 1 2
+$
+8 7 6 
+4 3 
+3 
+$
+3 hi endl
+0 2 1 2
+$
+8 7 6 
+4 3 2 
+3 
+$
+3 hi endl
+0 2 1 3
+0 0 0 3
+$
+8 7 6 
+4 3 2 
+3 
+2 
+$
+4 hi endl
+0 3 1 3
+0 1 0 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3
+1 1 1 3

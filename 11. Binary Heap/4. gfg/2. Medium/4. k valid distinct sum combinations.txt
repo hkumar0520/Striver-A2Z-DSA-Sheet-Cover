@@ -1,0 +1,85 @@
+
+
+// time limit exceed 1010/1020 passed 
+
+class Solution {
+  public:
+    vector<int> maxCombinations(int N, int K, vector<int> &A, vector<int> &B) {
+        // code here
+        
+        priority_queue<int, vector<int>, greater<int>> pq;
+        
+        for(int i=0; i<N; i++){
+            for(int j = 0; j<N; j++){
+                pq.push( A[i] + B[j]);
+                if(pq.size() > K)
+                    pq.pop();
+            }
+        }
+        
+        vector<int> ans;
+        while(!pq.empty()){
+            int curr = pq.top();
+            pq.pop();
+            
+            ans.insert(ans.begin(), curr);
+        }
+        
+        return ans;
+    }
+};
+
+
+######################################################################
+
+
+
+class Solution {
+  public:
+    vector<int> maxCombinations(int N, int K, vector<int> &A, vector<int> &B) {
+        // code here
+        
+        // sort in decreasing order
+        sort(A.begin(), A.end(), greater<int>());
+        sort(B.begin(), B.end(), greater<int>());
+        
+        priority_queue<pair<int,pair<int,int>> > pq;
+        set<pair<int,int>> vis;
+        
+        pq.push({ A[0] + B[0], { 0, 0}});
+        vis.insert({0,0});
+        
+        vector<int> ans;
+        
+        while(K--){
+            auto curr =  pq.top();
+            pq.pop();
+            int sum = curr.first;
+            int i = curr.second.first;
+            int j = curr.second.second;
+            
+            ans.push_back(sum);
+            
+            if( (i+1)<A.size() && vis.find({i+1, j}) == vis.end()){
+                pq.push({A[i+1] + B[j], {i+1, j}});
+                vis.insert({i+1, j});
+            }
+            
+            if( (j+1) < B.size() && vis.find({ i, j+1}) == vis.end()){
+                pq.push({ A[i] + B[j+1], {i, j+1}});
+                vis.insert({ i, j+1 });
+            }
+        }
+        return ans;
+        
+    }
+};
+
+
+Time Complexity:
+Sorting both arrays takes O(N log N).
+The priority queue operations (insertions and deletions) take O(log N), and we perform at most K such operations.
+Overall, the time complexity is dominated by O(N log N) due to the sorting step.
+
+Space Complexity:
+We use a priority queue and a set to store combinations, so the space complexity is O(N).

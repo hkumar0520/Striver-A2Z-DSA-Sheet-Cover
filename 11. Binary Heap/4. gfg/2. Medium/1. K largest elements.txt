@@ -1,0 +1,37 @@
+
+https://www.geeksforgeeks.org/problems/k-largest-elements4206/1?page=1&category=Heap&difficulty=Medium&sortBy=submissions
+
+
+class Solution {
+  public:
+    vector<int> kLargest(vector<int>& arr, int k) {
+        // code here
+        
+        // using min heap
+        priority_queue< int, vector<int>, greater<int>> pq;
+        
+        // O(n)
+        for(auto  num: arr){
+            pq.push(num);          // log(N)
+            if(pq.size() > k)   
+                pq.pop();
+        }
+        
+        vector<int> ans;
+        
+        // O(K)
+        while(!pq.empty()){
+            int curr = pq.top();          // logN
+            pq.pop();
+            ans.insert(ans.begin(), curr);
+        }
+        return ans;
+    }
+};
+
+
+/*
+Time Complexity - N*log(N) + K*log(N) =  N*log(N)
+Space Complexity - K (size of pq) + K (size of ans) = 2k
+
+*/

@@ -1,0 +1,32 @@
+
+
+https://www.geeksforgeeks.org/problems/is-binary-tree-heap/1?page=1&category=Heap&difficulty=Medium&sortBy=submissions
+
+class Solution {
+  public:
+    bool isHeap(struct Node* tree) {
+        // code here
+        if(tree->left == NULL && tree->right == NULL)
+            return true;
+            
+        if(tree->left == NULL || tree->right == NULL)
+            return false;
+            
+        bool forCurrent = false;
+        if(tree->data >= tree->left->data && 
+            tree->data >= tree->right->data)
+            forCurrent = true;
+            
+        bool forLeft= isHeap(tree->left);
+        bool forRight = isHeap(tree->right);
+        
+        return forCurrent && forLeft && forRight;
+    }
+};
+
+/*
+Time Complexity: O(n)  for n nodes
+Space Complexity: log(N) size of stack in recursion in worst case
+ as binary tree log(N) is size of stack 
+
+*/

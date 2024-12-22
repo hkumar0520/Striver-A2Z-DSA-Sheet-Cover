@@ -1,0 +1,38 @@
+
+
+class Solution{
+public:
+    int getLeftChild(int i){
+        return 2*i+1;
+    }
+    int getRightChild(int i){
+        return 2*i+2;
+    }
+    void MaxHeapifyDown(int i, vector<int>& arr){
+        int lChild = getLeftChild(i);
+        int rChild = getRightChild(i);
+        int largest = i;
+        
+        if(lChild < arr.size() && arr[lChild] > arr[largest]){
+            largest = lChild;
+        }
+        if(rChild < arr.size() && arr[rChild] > arr[largest]){
+            largest = rChild;
+        }
+        
+        if( i != largest){
+            swap(arr[i], arr[largest]);
+            MaxHeapifyDown( largest, arr );
+        }
+    }
+    
+    
+    void convertMinToMaxHeap(vector<int> &arr, int N){
+        
+        for(int i=(N/2)-1 ; i>=0 ; i--){
+            MaxHeapifyDown(i, arr);
+        }
+    }
+    
+};
+

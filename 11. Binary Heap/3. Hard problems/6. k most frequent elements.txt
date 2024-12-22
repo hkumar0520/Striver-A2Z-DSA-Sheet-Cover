@@ -1,0 +1,25 @@
+
+
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        priority_queue<pair<int,int> > pq;
+        
+        map<int,int> mp;
+        for(int num: nums)
+            mp[num]++;
+
+        for(auto it: mp)
+            pq.push({it.second, it.first});
+
+        vector<int> ans;
+        int countk = 0;
+        while(!pq.empty() && countk < k){
+            ans.push_back(pq.top().second);
+            pq.pop();
+            countk++;
+        }
+        return ans;
+    }
+};
+

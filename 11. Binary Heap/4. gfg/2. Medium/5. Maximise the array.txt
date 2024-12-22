@@ -1,0 +1,60 @@
+
+https://www.geeksforgeeks.org/problems/maximize-the-array3340/1?page=1&category=Heap&difficulty=Medium&sortBy=submissions
+
+class Solution {
+public:
+
+    class CustomComparator{
+        public:
+        bool operator()(vector<int> a, vector<int> b){
+            if(a[2] != b[2])
+                return a[2]>b[2];
+            
+            return a[1]<b[1];
+        }
+    };
+    vector<int> maximizeArray(int arr1[], int arr2[], int n) {
+            // code here 
+            
+        // vector<int>     
+        priority_queue< vector<int> > pq;
+        unordered_set<int> st;
+        
+        // element, index, arr1 or arr2 
+        for(int i = 0; i<n; i++){
+            if(st.find(arr2[i]) == st.end()){
+                pq.push({ arr2[i], i, 2});
+                st.insert(arr2[i]);
+            }
+        }
+        
+        for(int i=0; i<n; i++){
+            if(st.find(arr1[i]) == st.end()){
+                pq.push({ arr1[i], i, 1});
+                st.insert(arr1[i]);
+            }
+        }
+        
+        st.clear();
+        vector<vector<int>> storeVec;
+        
+        while(storeVec.size() < n && !pq.empty()){
+            if(st.find(pq.top()[0]) == st.end()){
+                st.insert(pq.top()[0]);
+                storeVec.push_back(pq.top());
+            }
+            pq.pop();
+        }
+        
+        sort(storeVec.begin(), storeVec.end() , CustomComparator());
+        
+        vector<int> ans;
+        for(int i=0; i<n; i++){
+            ans.push_back(storeVec[i][0]);
+        }
+        
+        return ans;
+    }
+};
+
+

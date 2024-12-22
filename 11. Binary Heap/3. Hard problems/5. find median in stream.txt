@@ -1,0 +1,195 @@
+
+
+class MedianFinder {
+    priority_queue<int, vector<int>, greater<int>> greaterHalf;
+    priority_queue<int> lowerHalf;
+public:
+    MedianFinder() {
+        
+    }
+    
+    void addNum(int num) {
+
+        if(!lowerHalf.empty() && num<= lowerHalf.top())
+            lowerHalf.push(num);
+        else
+            greaterHalf.push(num);
+
+        // Balanced the two heaps
+        if(lowerHalf.size() < greaterHalf.size()){
+            lowerHalf.push(greaterHalf.top());
+            greaterHalf.pop();
+        }
+        else if(greaterHalf.size() < lowerHalf.size()){
+            greaterHalf.push(lowerHalf.top());
+            lowerHalf.pop();
+        }
+    }
+    
+    double findMedian() {
+        int lSize = lowerHalf.size();
+        int gSize = greaterHalf.size();
+        if(lSize == gSize){
+            return (lowerHalf.top() + greaterHalf.top()) /2.0;
+        }
+
+        if(lSize > gSize)   return lowerHalf.top();
+
+        return greaterHalf.top();
+    }
+};
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder* obj = new MedianFinder();
+ * obj->addNum(num);
+ * double param_2 = obj->findMedian();
+ */
+
+ ###########################################################################
+
+
+ To solve this problem, we need to maintain two heaps:
+
+1. A **Max Heap** (to store the lower half of the numbers)
+2. A **Min Heap** (to store the upper half of the numbers)
+
+**Approach:**
+
+- We insert numbers into one of the two heaps based on their value compared to the current median. 
+- The **Max Heap** will store the smaller half of the numbers, and the **Min Heap** will store the larger half.
+- After each insertion, we need to balance the two heaps, ensuring the number of elements in the heaps is either equal or the difference in their sizes is at most one.
+- The median is:
+  - If the heaps are of equal size, it's the average of the largest element in the **Max Heap** and the smallest element in the **Min Heap**.
+  - If the heaps are of unequal size, the median is the top element of the heap with more elements.
+
+**Steps:**
+
+1. **Insert number into the correct heap**:
+   - If the number is smaller than or equal to the root of the **Max Heap**, it goes into the **Max Heap**.
+   - Otherwise, it goes into the **Min Heap**.
+
+2. **Balance the heaps**:
+   - If the size of one heap exceeds the other by more than one, move the root of the larger heap to the smaller heap.
+
+3. **Get the median**:
+   - If both heaps are of the same size, return the average of the roots of the two heaps.
+   - If they are not of the same size, return the root of the heap with more elements.
+
+### C++ Code Implementation
+
+```cpp
+#include <iostream>
+#include <queue>
+#include <vector>
+using namespace std;
+
+class Solution {
+private:
+    priority_queue<int> maxHeap; // Max heap to store the lower half
+    priority_queue<int, vector<int>, greater<int>> minHeap; // Min heap to store the upper half
+
+public:
+    // Function to insert a number into the heaps
+    void insertHeap(int x) {
+        // Insert into maxHeap if it's the first element or smaller than maxHeap's root
+        if (maxHeap.empty() || x <= maxHeap.top()) {
+            maxHeap.push(x);
+        } else {
+            minHeap.push(x);
+        }
+
+        // Balance the heaps
+        balanceHeaps();
+    }
+
+    // Function to balance the two heaps
+    void balanceHeaps() {
+        // If maxHeap has more than one extra element, move the top to minHeap
+        if (maxHeap.size() > minHeap.size() + 1) {
+            minHeap.push(maxHeap.top());
+            maxHeap.pop();
+        }
+        // If minHeap has more elements, move the top to maxHeap
+        else if (minHeap.size() > maxHeap.size()) {
+            maxHeap.push(minHeap.top());
+            minHeap.pop();
+        }
+    }
+
+    // Function to get the median of the current stream
+    double getMedian() {
+        if (maxHeap.size() > minHeap.size()) {
+            // If maxHeap has more elements, the median is the root of maxHeap
+            return maxHeap.top();
+        } else {
+            // If the heaps are of equal size, the median is the average of the two roots
+            return (maxHeap.top() + minHeap.top()) / 2.0;
+        }
+    }
+};
+
+int main() {
+    Solution sol;
+    int N;
+    cin >> N;
+
+    for (int i = 0; i < N; i++) {
+        int x;
+        cin >> x;
+        sol.insertHeap(x);
+        cout << sol.getMedian() << endl;
+    }
+
+    return 0;
+}
+```
+
+### Explanation of the Code:
+
+1. **Data Structures**:
+   - We use two priority queues:
+     - `maxHeap`: A max-heap (stores smaller half of the stream).
+     - `minHeap`: A min-heap (stores larger half of the stream).
+   
+2. **insertHeap()**:
+   - This function inserts the new number into one of the heaps. If the number is smaller than or equal to the root of `maxHeap`, it's inserted into `maxHeap`. Otherwise, it goes into `minHeap`.
+   - After insertion, the heaps are balanced to ensure that their sizes differ by at most 1.
+
+3. **balanceHeaps()**:
+   - If the size of `maxHeap` exceeds that of `minHeap` by more than one element, the top element of `maxHeap` is moved to `minHeap`.
+   - If `minHeap` has more elements, the top of `minHeap` is moved to `maxHeap`.
+
+4. **getMedian()**:
+   - If the heaps have the same size, the median is the average of the roots of both heaps.
+   - If `maxHeap` has more elements, the median is the root of `maxHeap`.
+
+### Time Complexity:
+- **Insert operation**: Each insertion takes \(O(\log n)\) time due to the heap operations.
+- **Balance operation**: After each insertion, balancing the heaps takes \(O(\log n)\).
+- **Median retrieval**: Retrieving the median takes constant time, \(O(1)\), since we just look at the roots of the heaps.
+
+Thus, the time complexity of handling the entire stream of N integers is \(O(N \log N)\), which meets the required time complexity for large inputs.
+
+### Example:
+
+#### Input:
+```
+4
+5 15 1 3
+```
+
+#### Output:
+```
+5
+10
+5
+4
+```
+
+- After inserting 5, the median is 5.
+- After inserting 15, the median is the average of 5 and 15, which is 10.
+- After inserting 1, the median is 5.
+- After inserting 3, the median is 4.
+
+This solution efficiently maintains the running median for a stream of numbers, satisfying the problem constraints.

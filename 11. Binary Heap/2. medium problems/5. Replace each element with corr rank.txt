@@ -1,0 +1,133 @@
+
+
+class Solution{
+public:
+
+    vector<int> replaceWithRank(vector<int> &arr, int N){
+        
+        // num, {index, rank}
+        map<int, pair<int,int>> mp;
+        priority_queue<int, vector<int>, greater<int>> pq;
+        
+        for(int i = 0; i<arr.size(); i++)
+        {
+            if(mp.find( arr[i] ) == mp.end() ){
+                mp[ arr[i] ] = { i, 0};
+                pq.push( arr[i] );
+            }
+        }
+        
+        int rank = 1;
+        while(!pq.empty()){
+            int curr = pq.top();
+            pq.pop();
+            
+            mp[curr].second = rank;
+            rank++;
+        }
+        vector<int> ans;
+        for(int num: arr){
+            ans.push_back( mp[num].second );
+        }
+
+        return ans;
+    }
+
+};
+
+
+
+
+
+##########################################################################
+
+
+
+
+
+class Solution{
+public:
+
+    vector<int> replaceWithRank(vector<int> &arr, int N){
+        
+        // num, {index, rank}
+        map<int, int> mp;
+        priority_queue<int, vector<int>, greater<int>> pq;
+        
+        for(int i = 0; i<arr.size(); i++)
+            pq.push(arr[i]);
+        
+        int rank = 1;
+        while(!pq.empty()){
+            int curr = pq.top();
+            pq.pop();
+            
+            if(mp.find(curr) == mp.end()){
+                mp[curr] = rank;
+                rank++;
+            }
+        }
+        vector<int> ans;
+        for(int num: arr){
+            ans.push_back( mp[num] );
+        }
+        return ans;
+    }
+
+};
+
+Let's analyze the time and space complexity of the given code step-by-step.
+
+### Time Complexity:
+
+1. **Building the Priority Queue**:
+   - The `priority_queue` is constructed by pushing each element of the `arr` into it. This operation involves inserting `n` elements, where `n` is the size of the input array `arr`.
+   - Each insertion into a `priority_queue` takes `O(log k)` time, where `k` is the number of elements in the priority queue at any given time.
+   - Thus, the total time to build the priority queue is **O(n log n)**.
+
+2. **Populating the `map`**:
+   - After building the priority queue, we iterate over it until it is empty.
+   - In each iteration, we pop an element from the priority queue (`O(log n)`) and check if it exists in the `map`.
+   - If the element is not found in the map, we insert it with its corresponding rank. The `map` insertions have an average time complexity of **O(log m)** where `m` is the number of distinct elements.
+   - Since the map will store at most `n` distinct elements (in the worst case, all elements in the array are unique), the time complexity for this loop is **O(n log n)**.
+
+3. **Building the Result Vector**:
+   - After processing the priority queue and building the `map`, we loop through the input array `arr` to construct the result vector `ans`. For each element, we perform a lookup in the `map`, which is an `O(log n)` operation.
+   - Therefore, the total time complexity for building the result vector is **O(n log n)**.
+
+### Overall Time Complexity:
+Summing up all the individual steps, we get the overall time complexity:
+
+- **O(n log n)** for building the priority queue.
+- **O(n log n)** for inserting into the `map`.
+- **O(n log n)** for building the result vector.
+
+Thus, the total time complexity is **O(n log n)**.
+
+### Space Complexity:
+
+1. **Priority Queue**:
+   - The priority queue holds all `n` elements at the start, so its space complexity is **O(n)**.
+
+2. **Map**:
+   - The `map` stores the rank for each distinct element in the array. In the worst case (when all elements are distinct), the map will store `n` elements.
+   - Therefore, the space complexity for the map is **O(n)**.
+
+3. **Result Vector**:
+   - The result vector `ans` has a size of `n` because we are building it by inserting `n` elements.
+   - Therefore, the space complexity for the result vector is **O(n)**.
+
+### Overall Space Complexity:
+Summing up all the space requirements:
+
+- **O(n)** for the priority queue.
+- **O(n)** for the map.
+- **O(n)** for the result vector.
+
+Thus, the total space complexity is **O(n)**.
+
+### Conclusion:
+- **Time Complexity**: **O(n log n)**
+- **Space Complexity**: **O(n)**
+
+
