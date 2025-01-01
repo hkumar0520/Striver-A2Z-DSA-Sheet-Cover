@@ -66,6 +66,7 @@ public:
         int V = stones.size();
         DisjointSet ds(V);
 
+        O(V*V)
         for(int i=0; i<V; i++)
         {
             int x_i = stones[i][0], y_i = stones[i][1];
@@ -97,6 +98,15 @@ public:
         return V - totalComponent;
     }
 };
+
+Time complexity: O(n*n*4*@)
+space complexity: 4n
+{
+    n= parent
+    n= rank
+    n= size
+    n= parentVec
+}
 
 
 // Intuition

@@ -78,6 +78,57 @@ int main() {
 // } Driver Code Ends
 
 
+### Time Complexity:
+
+To analyze the time complexity, let's break down the main parts of the code:
+
+1. **DFS Traversal (`dfs` function):**
+   - The DFS function is called recursively for each unvisited node and explores all the neighbors of the current node.
+   - In the worst case, we visit every node and every edge in the graph.
+   - For each node, we perform a constant amount of work, and for each edge, we perform one DFS call.
+   - Hence, the time complexity of DFS is proportional to the number of nodes and edges, i.e., \( O(n + m) \), where:
+     - `n` is the number of nodes (vertices),
+     - `m` is the number of edges in the graph.
+
+2. **Main function (`isCyclic` function):**
+   - The main function initializes the `vis` array and then iterates through each node. For each unvisited node, it calls the `dfs` function.
+   - In the worst case, DFS will visit every node and edge, and it might be called once per node. Since each DFS call works in \( O(n + m) \) time and we might call it once for each node, the overall time complexity remains \( O(n + m) \).
+
+Thus, the **total time complexity** of the algorithm is:
+\[
+O(n + m)
+\]
+where:
+- `n` is the number of nodes (vertices),
+- `m` is the number of edges in the graph.
+
+### Space Complexity:
+
+1. **Visited Array (`vis`):**
+   - The `vis` array is used to store the state of each node (whether it is unvisited, in the current DFS path, or fully processed). It has a size of `n` and requires \( O(n) \) space.
+
+2. **Recursion Stack (DFS Call Stack):**
+   - The maximum depth of recursion occurs when the graph is a linear chain of nodes (e.g., a directed path). In such a case, the maximum recursion depth will be `n`, and hence, the recursion stack will require \( O(n) \) space.
+   - In general, the recursion depth will be bounded by `n`, so the space complexity due to recursion is \( O(n) \).
+
+3. **Adjacency List (`adj`):**
+   - The adjacency list `adj` stores the graph, which has `n` nodes and `m` edges. It requires \( O(n + m) \) space.
+
+Thus, the **total space complexity** is:
+\[
+O(n + m)
+\]
+where:
+- `n` is the number of nodes (vertices),
+- `m` is the number of edges.
+
+### Conclusion:
+- **Time Complexity**: \( O(n + m) \)
+- **Space Complexity**: \( O(n + m) \)
+
+
+
+
 #######################################################################################
 
 bfs
@@ -131,7 +182,69 @@ bfs
         
         return (n == countIndegreeZero) ? false: true;
     }
-};
+
+
+
+### Time Complexity:
+
+Let's break down the time complexity of the given code step by step:
+
+1. **`getIndegree` function:**
+   - This function computes the in-degree for each vertex in the graph. It iterates over each node in the adjacency list `adj` and increments the in-degree for each adjacent vertex.
+   - The outer loop iterates over all `n` nodes, and the inner loop iterates over the neighbors of each node. In total, this will be proportional to the number of edges `m` in the graph.
+   - **Time Complexity**: \( O(m) \), where `m` is the number of edges.
+
+2. **`bfs` function:**
+   - **Initialization**: The first part of the `bfs` function initializes the queue with all nodes having an in-degree of 0. This step involves iterating over all `n` nodes and takes \( O(n) \) time.
+   - **BFS Traversal**: During the BFS traversal, each node is visited once, and for each node, we process all its outgoing edges (neighbors). Each edge is processed exactly once during the BFS.
+   - Hence, the total time for BFS is proportional to the number of nodes and edges, i.e., \( O(n + m) \), where:
+     - `n` is the number of nodes,
+     - `m` is the number of edges.
+
+3. **`isCyclic` function:**
+   - The `isCyclic` function calls `getIndegree` and `bfs`.
+   - `getIndegree` runs in \( O(m) \), and `bfs` runs in \( O(n + m) \).
+   - The total time complexity of the `isCyclic` function is:
+   
+   \[
+   O(m) + O(n + m) = O(n + m)
+   \]
+
+Thus, the **total time complexity** is:
+\[
+O(n + m)
+\]
+where:
+- `n` is the number of nodes (vertices),
+- `m` is the number of edges in the graph.
+
+### Space Complexity:
+
+Now, let's analyze the space complexity:
+
+1. **Indegree Array (`indegree`):**
+   - The `indegree` array stores the in-degree of each node, and it has a size of `n`. So, it requires \( O(n) \) space.
+
+2. **Queue (`qtraverse`):**
+   - The queue used in the `bfs` function can store at most `n` nodes at once in the worst case (if all nodes have an in-degree of 0 initially). Therefore, the queue requires \( O(n) \) space.
+
+3. **Adjacency List (`adj`):**
+   - The adjacency list stores the graph, and its space complexity is proportional to the number of nodes and edges: \( O(n + m) \).
+
+4. **Other variables (`countIndegreeZero`):**
+   - The `countIndegreeZero` variable is a constant integer that requires \( O(1) \) space.
+
+Thus, the **total space complexity** is:
+\[
+O(n + m)
+\]
+where:
+- `n` is the number of nodes (vertices),
+- `m` is the number of edges.
+
+### Conclusion:
+- **Time Complexity**: \( O(n + m) \)
+- **Space Complexity**: \( O(n + m) \)
 
 
 

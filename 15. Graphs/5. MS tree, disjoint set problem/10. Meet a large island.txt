@@ -132,5 +132,10 @@ public:
 
 
 Time complexity = O(rowSize*colSize*4) = O(m*n)
+Space complexity = O(n){
+    n = parent,
+    n = size,
+    n = rank 
+}
 
 

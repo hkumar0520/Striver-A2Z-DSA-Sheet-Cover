@@ -41,7 +41,7 @@ public:
 
 #####################################################################################
 
-//12ms, 2ms
+//12ms, 2ms, 0ms 
 
 class Solution {
 public:
@@ -90,6 +90,65 @@ public:
         return dist[dst] == INT_MAX? -1: dist[dst];
     }
 };
+
+
+
+Let's break down the time and space complexity of the code step by step:
+
+### Code Description:
+This code implements a solution to find the cheapest price from a source city to a destination city with at most `k` stops. It uses a graph-based approach with a breadth-first search (BFS) strategy and a queue to traverse the graph level by level.
+
+### 1. `getGraph` Function:
+```cpp
+void getGraph(vector<vector<pair<int,int>>>& graph, vector<vector<int>>& flights)
+```
+This function builds the graph where each city is represented as a node and its outgoing flights are stored as edges. Each edge is a pair containing the destination city and the travel cost.
+
+- **Time Complexity**:  
+   - The input `flights` has `m` entries, where each entry represents a flight with a source city, destination city, and cost. The loop iterates over all the flights.
+   - **Time complexity**: O(m), where `m` is the number of flights.
+  
+- **Space Complexity**:  
+   - The graph stores `n` cities, and each city has a list of outgoing edges. In the worst case, all cities might be connected to each other.
+   - **Space complexity**: O(n + m), where `n` is the number of cities and `m` is the number of flights.
+
+### 2. `findCheapestPrice` Function:
+```cpp
+int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k)
+```
+- **Input Parameters**:
+   - `n`: number of cities.
+   - `flights`: a list of all the flights.
+   - `src`: the source city.
+   - `dst`: the destination city.
+   - `k`: the maximum number of stops.
+
+This function uses a BFS approach with a queue (`qtraverse`) to explore all possible routes, where each entry in the queue consists of:
+   - `stopNo`: The number of stops taken so far.
+   - `cost`: The accumulated cost so far.
+   - `stopCity`: The current city being visited.
+
+- **Time Complexity**:  
+   The BFS explores each city, and for each city, it looks at all the outgoing flights (edges). The number of cities is `n` and the number of flights is `m`. In the worst case, the algorithm explores all the cities and all the flights. Additionally, for each city, it can have up to `k+1` levels of stops in the queue.
+   - The queue may contain at most `O(n * (k+1))` entries (since at most `k+1` stops are allowed).
+   - For each entry in the queue, the algorithm explores all outgoing flights (edges) from the current city, and the number of outgoing flights for a city is proportional to the number of flights `m`.
+   - **Time complexity**: O((k+1) * m), where `k` is the maximum number of stops and `m` is the number of flights. Since the algorithm may need to traverse all flights and cities with up to `k+1` stops, the complexity is O((k+1) * m).
+
+- **Space Complexity**:  
+   - The space used by the graph is O(n + m) (since each city can have multiple outgoing flights).
+   - The queue `qtraverse` can hold up to O(n * (k+1)) entries at a time.
+   - The `dist` array holds the shortest cost to reach each city, which requires O(n) space.
+   - **Space complexity**: O(n + m + n * (k+1)) ≈ O(n * (k+1) + m) in the worst case.
+
+### Overall Time and Space Complexity:
+
+- **Time Complexity**: O((k+1) * m), where `k` is the maximum number of stops and `m` is the number of flights.
+  
+- **Space Complexity**: O(n * (k+1) + m), where `n` is the number of cities, `k` is the maximum number of stops, and `m` is the number of flights.
+
+
+
+
 
 #######################################################################################
 

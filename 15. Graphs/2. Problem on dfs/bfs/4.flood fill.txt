@@ -63,6 +63,50 @@ public:
     }
 };
 
+### Time Complexity
+
+The time complexity for both the **BFS** and **DFS** approaches can be analyzed as follows:
+
+1. **Grid Traversal**:
+   - Each cell in the grid is visited at most once, either by the BFS queue or by the DFS recursion. 
+   - In the worst case, all cells in the grid are processed, which takes \(O(m \times n)\), where \(m\) is the number of rows and \(n\) is the number of columns.
+
+2. **Neighbor Checking**:
+   - For each cell, up to four neighbors are checked, which is a constant operation (\(O(1)\)).
+
+**Overall Time Complexity**:
+\[
+O(m \times n)
+\]
+
+---
+
+### Space Complexity
+
+The space complexity for both approaches is determined by:
+
+1. **Visited Array**:
+   - A 2D vector `vis` of size \(m \times n\) is used to track visited cells. This takes \(O(m \times n)\) space.
+
+2. **Queue for BFS**:
+   - In the worst case, the queue can store all cells in the grid, which takes \(O(m \times n)\) space.
+
+3. **Recursion Stack for DFS**:
+   - In the worst case (when the entire grid is connected and the recursion depth equals the number of cells), the recursion stack requires \(O(m \times n)\) space.
+
+**Overall Space Complexity**:
+\[
+O(m \times n)
+\]
+
+---
+
+### Summary
+- **Time Complexity**: \(O(m \times n)\)
+- **Space Complexity**: \(O(m \times n)\)
+
+Both the BFS and DFS implementations have the same time and space complexity, but their performance can differ in practice based on the structure of the grid and the specific problem constraints.
+
 #############################################################
 
 #include<bits/stdc++.h>

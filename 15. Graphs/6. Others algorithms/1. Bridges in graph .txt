@@ -2,8 +2,7 @@
 
 class Solution {
 public:
-    void dfs(int node, int parent, int t, vector<int>& time, vector<int>& low,
-            vector<int>& vis, vector<int> graph[], vector<vector<int>>& ans){
+    void dfs(int node, int parent, int t, vector<int>& time, vector<int>& low, vector<int>& vis, vector<int> graph[], vector<vector<int>>& ans){
         
         vis[node] = 1;
         time[node] = t;
@@ -121,3 +120,234 @@ Time Complexity: O(V+2E), where V = no. of vertices, E = no. of edges. It is bec
 Space Complexity: O(V+2E) + O(3V), where V = no. of vertices, E = no. of edges. O(V+2E) to store the graph in an adjacency list and O(3V) for the three arrays i.e. tin, low, and vis, each of size V.
 
 
+
+
+
+
+##########################################################################
+
+
+
+
+
+
+
+Finding **bridges** in a graph involves identifying edges that, if removed, would increase the number of connected components of the graph. In other words, a bridge is an edge that is not part of any cycle.
+
+### Algorithm to Find Bridges:
+The algorithm uses **Depth First Search (DFS)** and the concept of **discovery time** and **low time**:
+1. **Discovery Time**: The time when a node is first visited during DFS.
+2. **Low Time**: The lowest discovery time of any node reachable from the current node or its descendants.
+
+### Steps:
+1. Use DFS to traverse the graph.
+2. Keep track of discovery and low times for each vertex.
+3. For an edge \( u \to v \):
+   - If \( \text{low}[v] > \text{disc}[u] \), the edge is a bridge.
+
+---
+
+### C++ Implementation:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class Graph {
+    int V; // Number of vertices
+    vector<vector<int>> adj; // Adjacency list
+    vector<int> disc, low, parent;
+    vector<pair<int, int>> bridges; // To store bridges
+    int time;
+
+    void dfs(int u) {
+        disc[u] = low[u] = ++time;
+
+        for (int v : adj[u]) {
+            if (disc[v] == -1) { // If v is not visited
+                parent[v] = u;
+                dfs(v);
+
+                // Update low value of u for parent function calls
+                low[u] = min(low[u], low[v]);
+
+                // Check if the edge u-v is a bridge
+                if (low[v] > disc[u]) {
+                    bridges.push_back({u, v});
+                }
+            } else if (v != parent[u]) { // Back edge case
+                low[u] = min(low[u], disc[v]);
+            }
+        }
+    }
+
+public:
+    Graph(int V) : V(V), adj(V), disc(V, -1), low(V, -1), parent(V, -1), time(0) {}
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    vector<pair<int, int>> findBridges() {
+        for (int i = 0; i < V; i++) {
+            if (disc[i] == -1) {
+                dfs(i);
+            }
+        }
+        return bridges;
+    }
+};
+
+int main() {
+    int V = 5;
+    Graph g(V);
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(3, 4);
+
+    vector<pair<int, int>> bridges = g.findBridges();
+
+    cout << "Bridges in the graph:\n";
+    for (auto bridge : bridges) {
+        cout << bridge.first << " - " << bridge.second << "\n";
+    }
+
+    return 0;
+}
+```
+
+---
+
+### Example:
+#### Input:
+Graph edges:
+- \( 0 \to 1 \), \( 0 \to 2 \), \( 1 \to 2 \), \( 1 \to 3 \), \( 3 \to 4 \)
+
+#### Output:
+```
+Bridges in the graph:
+1 - 3
+3 - 4
+```
+
+---
+
+### Explanation:
+- Removing edge \( 1 \to 3 \) or \( 3 \to 4 \) increases the number of connected components.
+
+---
+
+### Time Complexity:
+- **DFS Traversal**: \( O(V + E) \), where \( V \) is the number of vertices and \( E \) is the number of edges.
+
+### Space Complexity:
+- \( O(V + E) \) for adjacency list.
+- \( O(V) \) for discovery, low arrays, and parent tracking.
+
+
+
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+Explanation 
+
+
+The **bridge-finding algorithm** explained above uses **Depth First Search (DFS)** to identify edges that, if removed, would increase the number of connected components in a graph. Here’s a detailed explanation of the approach:
+
+---
+
+### Key Concepts:
+1. **Discovery Time (`disc`)**:
+   - This is the time when a node is first visited during the DFS traversal.
+   - It helps track the order in which nodes are visited.
+
+2. **Low Time (`low`)**:
+   - For each node, `low[u]` is the smallest discovery time reachable from \( u \), either directly or through its descendants in the DFS tree.
+   - It helps identify if a node \( v \) can reach an ancestor of \( u \) without using the edge \( u \to v \).
+
+3. **Parent (`parent`)**:
+   - Tracks the parent of each node in the DFS tree to avoid revisiting the immediate parent of a node.
+
+4. **Bridge Condition**:
+   - An edge \( u \to v \) is a **bridge** if \( \text{low}[v] > \text{disc}[u] \).
+   - This means that \( v \) cannot reach \( u \) or any of \( u \)’s ancestors without using the edge \( u \to v \).
+
+---
+
+### Algorithm Steps:
+1. **Initialize Variables**:
+   - `disc` and `low` arrays to track discovery and low times.
+   - `parent` array to track the parent of each node in the DFS tree.
+   - `bridges` vector to store the identified bridges.
+
+2. **Perform DFS**:
+   - For each unvisited node \( u \):
+     - Set its `disc[u]` and `low[u]` to the current time.
+     - Recursively visit all its neighbors \( v \):
+       - If \( v \) is unvisited:
+         - Set \( u \) as \( v \)’s parent and call DFS on \( v \).
+         - After returning from DFS on \( v \), update `low[u]` using `low[v]`.
+         - Check if \( \text{low}[v] > \text{disc}[u] \), indicating \( u \to v \) is a bridge.
+       - If \( v \) is already visited and is not \( u \)’s parent, update `low[u]` using `disc[v]` (back edge).
+
+3. **Store Bridges**:
+   - Whenever the bridge condition is met, store the edge \( u \to v \) in the `bridges` vector.
+
+4. **Output Results**:
+   - Return the list of bridges.
+
+---
+
+### Example Walkthrough:
+#### Input Graph:
+```
+0 - 1 - 3 - 4
+ \  |
+   2
+```
+
+#### Execution:
+1. Start DFS from node \( 0 \):
+   - \( \text{disc}[0] = 1 \), \( \text{low}[0] = 1 \).
+
+2. Visit \( 1 \) from \( 0 \):
+   - \( \text{disc}[1] = 2 \), \( \text{low}[1] = 2 \).
+
+3. Visit \( 2 \) from \( 1 \):
+   - \( \text{disc}[2] = 3 \), \( \text{low}[2] = 3 \).
+   - Backtrack to \( 1 \), update \( \text{low}[1] = \min(\text{low}[1], \text{disc}[2]) = 1 \).
+
+4. Visit \( 3 \) from \( 1 \):
+   - \( \text{disc}[3] = 4 \), \( \text{low}[3] = 4 \).
+
+5. Visit \( 4 \) from \( 3 \):
+   - \( \text{disc}[4] = 5 \), \( \text{low}[4] = 5 \).
+   - Backtrack to \( 3 \), \( \text{low}[3] = \min(\text{low}[3], \text{disc}[4]) = 4 \).
+
+6. Check Bridge Conditions:
+   - \( \text{low}[4] > \text{disc}[3] \): \( 3 \to 4 \) is a bridge.
+   - \( \text{low}[3] > \text{disc}[1] \): \( 1 \to 3 \) is a bridge.
+
+---
+
+### Complexity Analysis:
+#### Time Complexity:
+- **DFS Traversal**: \( O(V + E) \), where \( V \) is the number of vertices and \( E \) is the number of edges.
+  - Each edge is traversed once, and each node is visited once.
+
+#### Space Complexity:
+- \( O(V + E) \) for the adjacency list.
+- \( O(V) \) for the `disc`, `low`, and `parent` arrays.
+
+---
+
+### Output:
+For the given graph:
+- Bridges: \( 1 \to 3 \), \( 3 \to 4 \).
+
+This means removing these edges would increase the number of connected components in the graph.

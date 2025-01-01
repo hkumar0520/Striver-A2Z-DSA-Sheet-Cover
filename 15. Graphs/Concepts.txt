@@ -1,0 +1,88 @@
+
+
+Here’s a comprehensive list of graph problems that covers all major topics:
+
+### **Basic Concepts**
+1. **Graph Representation**
+   - Adjacency List vs. Adjacency Matrix
+   - Convert edge list to adjacency list/matrix
+2. **Degree of Nodes**
+   - Find the in-degree and out-degree of a directed graph.
+
+### **Traversal**
+3. **Breadth-First Search (BFS)**
+   - Level order traversal of a graph.
+   - Find the shortest path in an unweighted graph.
+4. **Depth-First Search (DFS)**
+   - Detect connected components in an undirected graph.
+   - Detect cycles in a directed or undirected graph.
+
+### **Shortest Paths**
+5. **Dijkstra's Algorithm**
+   - Find the shortest path in a weighted graph.
+6. **Bellman-Ford Algorithm**
+   - Handle graphs with negative weights.
+7. **Floyd-Warshall Algorithm**
+   - Find all pairs shortest paths.
+8. **A* Algorithm**
+   - Heuristic-based shortest path.
+
+### **Minimum Spanning Tree (MST)**
+9. **Prim's Algorithm**
+10. **Kruskal's Algorithm**
+
+### **Topological Sort**
+11. Use Kahn’s algorithm or DFS to order tasks in a Directed Acyclic Graph (DAG).
+
+### **Cycle Detection**
+12. Detect cycles in:
+    - Directed graphs (using DFS or Union-Find).
+    - Undirected graphs (using Union-Find).
+
+### **Graph Connectivity**
+13. **Connected Components**
+    - Count connected components in an undirected graph.
+14. **Bridges and Articulation Points**
+    - Find critical edges or nodes in a graph.
+15. **Strongly Connected Components (SCC)**
+    - Use Kosaraju’s or Tarjan’s algorithm.
+
+### **Flow Problems**
+16. **Maximum Flow**
+    - Ford-Fulkerson Algorithm.
+    - Edmonds-Karp Algorithm.
+17. **Minimum Cut**
+    - Use Max-Flow Min-Cut theorem.
+
+### **Graph Coloring**
+18. Check if a graph is bipartite (2-colorable).
+19. Find the chromatic number of a graph.
+
+### **Special Graphs**
+20. **Tree Problems**
+    - Lowest Common Ancestor (LCA).
+    - Diameter of a tree.
+    - Tree traversals (DFS, BFS, etc.).
+21. **Grid Problems**
+    - Find the number of islands in a grid.
+    - Shortest path in a grid with obstacles.
+
+### **Advanced Topics**
+22. **Eulerian Path and Circuit**
+    - Check if a graph has an Eulerian path or circuit.
+23. **Hamiltonian Path and Cycle**
+    - Check if a graph has a Hamiltonian path or cycle.
+24. **Planar Graphs**
+    - Test if a graph is planar.
+25. **Graph Matching**
+    - Maximum Bipartite Matching using the Hungarian algorithm.
+
+### **Dynamic Programming on Graphs**
+26. Longest Path in a DAG.
+27. Count paths between two nodes in a DAG.
+
+### **Random Graph Problems**
+28. **Traveling Salesman Problem (TSP)** (NP-hard).
+29. **Graph Isomorphism** - Check if two graphs are identical.
+
+Would you like to explore one of these topics or get a problem for practice?

@@ -72,7 +72,52 @@ https://www.naukri.com/code360/problems/alien-dictionary_630423?leftPanelTabValu
     }
 
 
+Let's break down the **time complexity** and **space complexity** of the given code.
 
+### Functions Breakdown
+
+#### 1. **`bfs(map<char, map<char, int>>& mymap, vector<int>& indegree, vector<int>& ispresent)`**
+   - **Time Complexity**:  
+     - The function starts by iterating over all characters (26 letters from 'a' to 'z'). This loop runs in **O(26) = O(1)** time since there are a constant number of characters (26). For each character, it checks if it has an indegree of 0 and is present (from the `ispresent` array). This takes constant time for each character.
+     - After that, we perform BFS. The queue `q` processes each character at most once. In the worst case, the number of characters processed is 26. For each character, we look at its neighbors in the `mymap` (which stores edges between characters). The total number of edges in `mymap` is at most **O(E)**, where `E` is the number of directed edges between characters (i.e., the number of distinct character pairs where one character precedes another in the alien language).
+     - For each edge, we decrease the indegree and possibly add the next character to the queue.
+     - **Overall Time Complexity**: **O(V + E)**, where `V` is the number of vertices (26 characters) and `E` is the number of edges (relationships between characters). Since `V = 26`, we get **O(26 + E) = O(E)**, where `E` is the number of distinct character relationships.
+
+   - **Space Complexity**:  
+     - The space complexity is determined by:
+       - The `queue` used in BFS, which can hold at most 26 characters at once. Thus, space complexity for the queue is **O(26) = O(1)**.
+       - The `vis` vector of size 26, which stores whether a character has been visited. This takes **O(26) = O(1)** space.
+       - The `ans` string, which holds the result of the BFS traversal. It will hold at most 26 characters, so it requires **O(26) = O(1)** space.
+     - **Overall Space Complexity**: **O(1)** (ignoring input data size).
+
+---
+
+#### 2. **`getAlienLanguage(vector<string>& words, int K)`**
+   - **Time Complexity**:  
+     - The function starts by iterating over the list of words to set up the `ispresent` array. For each word, it processes each character, which results in **O(n * m)** time, where `n` is the number of words and `m` is the average length of the words. Thus, the time complexity for this part is **O(n * m)**.
+     - Then, the function iterates through adjacent pairs of words to determine the relationships (edges) between characters. This involves checking each character in the pairs of words, and the number of comparisons per pair is at most the length of the shorter word. This results in a time complexity of **O(n * m)**.
+     - The final part is calling the `bfs` function, which has a time complexity of **O(E)**, where `E` is the number of edges (relationships between characters).
+     - **Overall Time Complexity**: The dominant terms are the word processing and relationship setting, which give **O(n * m + E)**, where `n` is the number of words, `m` is the average length of a word, and `E` is the number of edges.
+   
+   - **Space Complexity**:  
+     - The space complexity is determined by:
+       - The `ispresent` and `indegree` arrays, both of size 26, which take **O(26) = O(1)** space.
+       - The `mymap` stores edges between characters, and in the worst case, it stores all possible directed edges between 26 characters, leading to **O(26^2) = O(1)** space, since the maximum number of edges is constant.
+       - The `bfs` function uses a queue and an `ans` string, both of size 26, which requires **O(26) = O(1)** space.
+     - **Overall Space Complexity**: **O(1)** (ignoring the input size).
+
+---
+
+### Final Summary
+
+- **Time Complexity**:  
+  The overall time complexity is **O(n * m + E)**, where:
+  - `n` is the number of words in the input list `words`.
+  - `m` is the average length of the words in the input.
+  - `E` is the number of edges (relationships between characters).
+
+- **Space Complexity**:  
+  The overall space complexity is **O(1)**, as the space used does not grow with the size of the input but rather is limited to fixed-size arrays and structures for processing the alphabet (26 letters).
 
 
 

@@ -1,0 +1,308 @@
+
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    
+    bool dfs(vector<vector<char>>grid, string word,pair<int,int> index,
+            vector<vector<bool>>& vis, int wordIndx, 
+            vector<pair<int,int>> directions, int dirNIndx){
+        
+        int x = index.first, y = index.second, rowSize = grid.size(),
+            colSize = grid[0].size(), wordSize = word.size();
+        vis[x][y] = true;
+        
+        if((wordIndx+1) == wordSize)    return true;
+        
+                
+        int newX = x + directions[dirNIndx].first;
+        int newY = y + directions[dirNIndx].second;
+                
+        if(newX>=0 && newY>=0 && newX<rowSize && newY<colSize &&
+            !vis[newX][newY] && (wordIndx+1)<wordSize
+            && word[wordIndx+1] == grid[newX][newY])
+        {
+            if(dfs(grid, word, {newX, newY}, vis, wordIndx+1, directions,dirNIndx)) 
+                return true;
+        }
+
+        
+        vis[x][y] = false;
+        return false;
+    }
+    bool dfsApproach(vector<vector<char>>grid, string word,pair<int,int> index){
+        
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<bool>> vis(m, vector<bool>(n, false));
+        
+        vector<pair<int,int>> directions;
+        
+        for(int diffx = -1; diffx<=1; diffx++){
+            for(int diffy = -1; diffy<=1; diffy++){
+                if(diffx == 0 && diffy == 0)
+                    continue;
+                directions.push_back({diffx, diffy});
+            }
+        }
+        
+        bool isPresent = false;
+        for(int i=0; i<8; i++){
+            isPresent = dfs(grid, word, index, vis, 0, directions, i);
+            if(isPresent)   return true;
+        }
+        
+        return false;
+    }
+	vector<vector<int>>searchWord(vector<vector<char>>grid, string word){
+	    // Code here
+	    
+	    vector<vector<int>> ans;
+	    
+	    int rowSize = grid.size(), colSize = grid[0].size();
+	    
+	    for(int i = 0; i<rowSize; i++){
+	        for(int j =0; j<colSize; j++){
+	            if(grid[i][j] == word[0]){
+	                if(dfsApproach(grid, word, {i,j}))
+	                    ans.push_back({i,j});
+	            }
+	        }
+	    }
+	    return ans;
+	}
+};
+
+### Time Complexity:
+
+#### 1. **Function `dfs`:**
+
+The depth-first search (`dfs`) function explores a possible path for matching the given word in the grid, starting from a specific cell. The main operations within the `dfs` function involve:
+
+- **Recursion**: It explores 8 directions for each cell in the grid. For each valid direction (within bounds, not visited, and matching the next character of the word), it recurses with the updated position.
+- **Base Case**: When the current index of the word reaches the end (`wordIndx + 1 == wordSize`), the function returns `true`.
+- **Backtracking**: The `vis` matrix ensures that no cell is visited more than once during a single word search path.
+
+Since the function explores all potential paths for each cell, the time complexity of `dfs` depends on the number of cells it explores and the maximum depth of recursion (which is the length of the word).
+
+For a grid of size `m x n`, the worst-case scenario is that the function may recursively visit all adjacent cells, one per step, up to the length of the word `W`.
+
+Thus, the **time complexity of `dfs`** is **O(W)** (depth of recursion) multiplied by **8** (maximum directions), giving **O(8 * W)** per DFS call.
+
+#### 2. **Function `dfsApproach`:**
+
+The function `dfsApproach` starts a DFS search from each cell that matches the first character of the word. For each matching starting cell, it calls the `dfs` function.
+
+- First, it initializes the `directions` vector (which contains 8 directions) in **O(8)** time.
+- Then, it calls `dfs` for each of the 8 directions. The worst-case time complexity of calling `dfs` is **O(8 * W)**.
+
+Since the `dfsApproach` function iterates over all 8 directions, the overall time complexity for this function is **O(8 * W)** for each matching starting cell.
+
+#### 3. **Function `searchWord`:**
+
+The `searchWord` function iterates over the entire grid of size `m x n` to find the starting cell that matches the first character of the word. For each such starting cell, it calls `dfsApproach` to check if the word can be formed starting from that cell.
+
+- There are `m * n` cells in the grid.
+- For each cell, if the first character matches, it invokes `dfsApproach`, which has a complexity of **O(8 * W)**.
+
+Thus, the overall time complexity for the `searchWord` function is:
+
+\[
+O(m \cdot n) \cdot O(8 \cdot W) = O(m \cdot n \cdot W)
+\]
+
+### Space Complexity:
+
+1. **Function `dfs`:**
+   - The space complexity comes from the `vis` matrix, which stores the visited status of each cell in the grid. The matrix size is **O(m * n)**.
+   - Additionally, the recursion stack uses **O(W)** space, where `W` is the maximum depth of the recursion (the length of the word).
+
+Thus, the space complexity of `dfs` is **O(m * n + W)**.
+
+2. **Function `dfsApproach`:**
+   - The `vis` matrix is of size **O(m * n)**.
+   - The `directions` vector has 8 directions, which takes **O(8)** space (constant).
+   - The recursion stack in `dfs` uses **O(W)** space.
+
+Thus, the space complexity of `dfsApproach` is **O(m * n + W)**.
+
+3. **Function `searchWord`:**
+   - The function maintains a result vector (`ans`), which stores the coordinates of the cells where the word is found. In the worst case, this vector can store all `m * n` cells, so it takes **O(m * n)** space.
+   - The space complexity of `dfsApproach` is **O(m * n + W)**.
+
+Thus, the space complexity of `searchWord` is **O(m * n + W)**.
+
+### Final Time and Space Complexity:
+- **Time Complexity**: **O(m * n * W)**
+- **Space Complexity**: **O(m * n + W)**
+
+These complexities are derived from the need to explore each cell, search recursively in 8 possible directions, and track visited cells and recursion depth.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+//{ Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution {
+public:
+    
+    bool dfs(vector<vector<char>>grid, string word,pair<int,int> index,
+             int wordIndx, vector<pair<int,int>> directions, int dirNIndx){
+        
+        int x = index.first, y = index.second, rowSize = grid.size(),
+            colSize = grid[0].size(), wordSize = word.size();
+
+        if((wordIndx+1) == wordSize)    return true;
+        
+                
+        int newX = x + directions[dirNIndx].first;
+        int newY = y + directions[dirNIndx].second;
+                
+        if(newX>=0 && newY>=0 && newX<rowSize && newY<colSize &&
+            (wordIndx+1)<wordSize && word[wordIndx+1] == grid[newX][newY])
+        {
+            if(dfs(grid, word, {newX, newY}, wordIndx+1, directions,dirNIndx)) 
+                return true;
+        }
+
+        return false;
+    }
+    bool dfsApproach(vector<vector<char>>grid, string word,pair<int,int> index){
+        
+        int m = grid.size(), n = grid[0].size();
+        
+        vector<pair<int,int>> directions;
+        
+        for(int diffx = -1; diffx<=1; diffx++){
+            for(int diffy = -1; diffy<=1; diffy++){
+                if(diffx == 0 && diffy == 0)
+                    continue;
+                directions.push_back({diffx, diffy});
+            }
+        }
+        
+        bool isPresent = false;
+        for(int i=0; i<8; i++){
+            isPresent = dfs(grid, word, index, 0, directions, i);
+            if(isPresent)   return true;
+        }
+        
+        return false;
+    }
+	vector<vector<int>>searchWord(vector<vector<char>>grid, string word){
+	    // Code here
+	    
+	    vector<vector<int>> ans;
+	    
+	    int rowSize = grid.size(), colSize = grid[0].size();
+	    
+	    for(int i = 0; i<rowSize; i++){
+	        for(int j =0; j<colSize; j++){
+	            if(grid[i][j] == word[0]){
+	                if(dfsApproach(grid, word, {i,j}))
+	                    ans.push_back({i,j});
+	            }
+	        }
+	    }
+	    return ans;
+	}
+};
+
+
+### Time Complexity:
+
+#### 1. **Function `dfs`:**
+
+The `dfs` function is responsible for exploring each of the 8 possible directions from a given starting position in the grid. For each direction, it recursively tries to match the next character of the word in the grid.
+
+- For each recursive call, it checks one of the 8 directions and moves to the next cell if it matches the word. It only recurses if the next character of the word matches the grid cell.
+- The recursion can go as deep as the length of the word, `W`.
+
+So, in the worst case, each `dfs` call explores **O(1)** direction at each level and the recursion depth is **O(W)** (the length of the word).
+
+Thus, the **time complexity of `dfs`** for one direction is **O(W)**.
+
+#### 2. **Function `dfsApproach`:**
+
+In `dfsApproach`, for each potential starting point (where the first character of the word matches the grid cell), the function tries to match the word by checking all 8 directions. For each of these directions, it calls the `dfs` function.
+
+- It initializes the `directions` vector in **O(8)** time (constant time).
+- It then iterates over the 8 possible directions, calling `dfs` each time. Since `dfs` is **O(W)** for each direction, this gives **O(8 * W) = O(W)** time for `dfsApproach`.
+
+So, the **time complexity of `dfsApproach`** for one starting position is **O(W)**.
+
+#### 3. **Function `searchWord`:**
+
+The `searchWord` function iterates over all `m * n` cells of the grid to find cells that match the first character of the word. For each matching cell, it calls `dfsApproach` to check if the word can be formed starting from that cell.
+
+- The grid has `m * n` cells.
+- For each cell that matches the first character of the word, `dfsApproach` is called, which has a complexity of **O(W)**.
+
+Thus, the overall time complexity of `searchWord` is:
+
+\[
+O(m \cdot n) \cdot O(W) = O(m \cdot n \cdot W)
+\]
+
+### Space Complexity:
+
+#### 1. **Function `dfs`:**
+The `dfs` function uses recursion, and the recursion depth is determined by the length of the word. The maximum recursion depth is **W** (the length of the word). Hence, the space complexity for the recursion stack in `dfs` is **O(W)**.
+
+Additionally, `dfs` does not use any extra space beyond the parameters passed in, so the space complexity is **O(W)** due to the recursion stack.
+
+#### 2. **Function `dfsApproach`:**
+In `dfsApproach`, the space complexity comes from the `directions` vector (which contains 8 directions) and the recursion stack for `dfs`.
+
+- The `directions` vector takes **O(8) = O(1)** space (since the number of directions is fixed).
+- The recursion stack for `dfs` takes **O(W)** space (the length of the word).
+
+Thus, the total space complexity of `dfsApproach` is **O(W)**.
+
+#### 3. **Function `searchWord`:**
+The function `searchWord` uses a result vector (`ans`) to store the coordinates of all cells where the word is found. In the worst case, the word could be found at all `m * n` cells, so the space complexity for the result vector is **O(m * n)**.
+
+Additionally, the space complexity for `dfsApproach` is **O(W)** as discussed above.
+
+Thus, the total space complexity of `searchWord` is:
+
+\[
+O(m \cdot n + W)
+\]
+
+### Final Time and Space Complexity:
+
+- **Time Complexity**: **O(m * n * W)**, where `m` and `n` are the dimensions of the grid and `W` is the length of the word.
+- **Space Complexity**: **O(m * n + W)**, where `m * n` is the space for storing the result and `W` is the maximum recursion depth for the `dfs` function.
+
+These complexities are derived from iterating over all cells in the grid and performing a depth-first search for each matching starting cell.

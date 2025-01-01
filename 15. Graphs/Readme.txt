@@ -22,3 +22,17 @@ char chinsert = (char)('a'+ind);
 
 //
  vector<long> dist(n, LONG_MAX);
+
+
+// CustomComparator
+    struct CustomComparator{
+        bool operator()(vector<int> a,vector<int> b){
+            return a[1]>b[1];
+        }
+    };
+        priority_queue< vector<int>, vector<vector<int>>,
+                        CustomComparator > qtraverse;
+
+
+instead of INT_MAX use LONG_MAX
+

@@ -39,6 +39,59 @@ public:
 };
 
 
+### **Time Complexity**
+
+1. **Initialization:**
+   - Converting the `wordList` into an `unordered_set` takes \( O(L \cdot N) \), where:
+     - \( L \) is the average length of words in the `wordList`.
+     - \( N \) is the total number of words in the `wordList`.
+
+2. **BFS Traversal:**
+   - Each word in the `wordList` can be processed at most once since it is removed from the `unordered_set` after being visited.
+   - For each word of length \( L \), we iterate through its \( L \) characters and try replacing each character with 26 possible letters.
+   - This results in \( O(26 \cdot L \cdot N) \) operations for BFS traversal.
+
+3. **Overall Time Complexity:**
+   - Combining the initialization and BFS traversal, the total time complexity is:
+     \[
+     O(L \cdot N + 26 \cdot L \cdot N) = O(L \cdot N)
+     \]
+
+---
+
+### **Space Complexity**
+
+1. **Visited Set (`unordered_set`):**
+   - The `unordered_set` can store up to \( N \) words, requiring \( O(L \cdot N) \) space.
+
+2. **Queue:**
+   - The queue stores pairs of strings and their respective step counts. In the worst case, all \( N \) words could be in the queue at some point.
+   - The space required is \( O(L \cdot N) \).
+
+3. **Auxiliary Space:**
+   - Temporary variables like `str` and `word` require \( O(L) \) space.
+
+4. **Overall Space Complexity:**
+   - Dominated by the `unordered_set` and the queue, resulting in:
+     \[
+     O(L \cdot N)
+     \]
+
+---
+
+### **Final Complexity**
+
+- **Time Complexity:** \( O(L \cdot N) \)
+- **Space Complexity:** \( O(L \cdot N) \)
+
+
+
+
+
+
+
+
+
 #############################################################################
 
 my approach 
@@ -114,3 +167,184 @@ public:
 };
 
 
+
+
+### **Time Complexity**
+
+1. **Preprocessing:**
+   - **Finding `endWord`:** \( O(N \cdot L) \), where \( N \) is the number of words in `wordList` and \( L \) is the average length of a word.
+   - **Inserting `beginWord` and removing duplicates:**
+     - Insertion and sorting take \( O(N \cdot \log N) \).
+     - Removing duplicates using `unique` is \( O(N) \).
+   - Total preprocessing: \( O(N \cdot L + N \cdot \log N) \).
+
+2. **Graph Construction:**
+   - For each pair of words in the `wordList`, we compare their characters to determine if they differ by exactly one character.
+   - Comparing two words takes \( O(L) \), and there are \( \binom{N}{2} = O(N^2) \) pairs.
+   - Total graph construction: \( O(N^2 \cdot L) \).
+
+3. **BFS Traversal:**
+   - Each node (word) is visited once, and its neighbors are processed. The total number of edges in the graph is \( O(N^2) \), so BFS takes \( O(N + N^2) = O(N^2) \).
+   - For each edge, constant work is done to process neighbors.
+
+4. **Overall Time Complexity:**
+   - Dominated by graph construction, so the total time complexity is:
+     \[
+     O(N^2 \cdot L)
+     \]
+
+---
+
+### **Space Complexity**
+
+1. **Graph Storage:**
+   - The adjacency list `graph` stores up to \( O(N^2) \) edges.
+   - Space required for the graph: \( O(N^2) \).
+
+2. **Visited Array:**
+   - The `vis` array stores a boolean for each word: \( O(N) \).
+
+3. **Queue:**
+   - The BFS queue stores up to \( O(N) \) nodes at a time: \( O(N) \).
+
+4. **WordList Storage:**
+   - The `wordList` vector stores \( N \) words of average length \( L \): \( O(N \cdot L) \).
+
+5. **Overall Space Complexity:**
+   - Dominated by the adjacency list, resulting in:
+     \[
+     O(N^2 + N \cdot L)
+     \]
+
+---
+
+### **Final Complexity**
+
+- **Time Complexity:** \( O(N^2 \cdot L) \)
+- **Space Complexity:** \( O(N^2 + N \cdot L) \)
+
+
+
+###########################################################################
+
+explanation of the code 
+
+This code solves the **Word Ladder** problem using a **graph-based approach**. Here's a detailed explanation of the code:
+
+---
+
+### **Problem Statement**
+Given two words, `beginWord` and `endWord`, and a list of words (`wordList`), find the shortest transformation sequence from `beginWord` to `endWord`, such that:
+1. Only one letter can be changed at a time.
+2. Each transformed word must exist in the `wordList`.
+
+---
+
+### **Code Breakdown**
+
+1. **Check if `endWord` Exists in `wordList`:**
+   ```cpp
+   if(find(wordList.begin(),wordList.end(),endWord)==wordList.end())
+       return 0;
+   ```
+   - If `endWord` is not in the `wordList`, return 0 because it's impossible to reach it.
+
+2. **Prepare `wordList`:**
+   ```cpp
+   wordList.insert(wordList.begin(),beginWord);
+   sort(wordList.begin(),wordList.end());
+   wordList.erase(unique(wordList.begin(),wordList.end()),wordList.end());
+   ```
+   - Add `beginWord` to the `wordList` since it will also be part of the graph.
+   - Sort the `wordList` and remove duplicates using `unique`.
+
+3. **Graph Construction:**
+   ```cpp
+   map<int,vector<int>> graph;
+   for(int i=0;i<wordList.size();i++) {
+       for(int j=i+1;j<wordList.size();j++) {
+           int countt=0;
+           for(int k=0;k<wordList[i].size();k++) {
+               if(wordList[i][k]!=wordList[j][k])
+                   countt++;
+               if(countt>=2)
+                   break;
+           }
+           if(countt==1) {
+               graph[i].push_back(j);
+               graph[j].push_back(i);
+           }
+       }
+   }
+   ```
+   - Construct a graph where each node represents a word in `wordList`.
+   - Two nodes (words) are connected if they differ by exactly one character.
+   - Iterate through all pairs of words and count character differences:
+     - If the difference is exactly 1, create a bidirectional edge between them.
+
+4. **Find Start and End Indices:**
+   ```cpp
+   auto it=find(wordList.begin(),wordList.end(),beginWord);
+   auto it1=find(wordList.begin(),wordList.end(),endWord);
+   int start=it-wordList.begin(),endd=it1-wordList.begin();
+   ```
+   - Find the indices of `beginWord` and `endWord` in the `wordList`.
+
+5. **Breadth-First Search (BFS):**
+   ```cpp
+   queue<vector<int>> q;
+   q.push({start,1});
+   vector<bool> vis(n,false);
+   vis[start]=true;
+   ```
+   - Use BFS to find the shortest path from `start` to `endd`.
+   - Initialize a queue to store the current word index and the number of steps taken so far.
+   - Mark the `start` word as visited.
+
+6. **Process the BFS Queue:**
+   ```cpp
+   while(!q.empty()) {
+       vector<int> current=q.front();
+       q.pop();
+       for(auto u:graph[current[0]]) {
+           if(!vis[u]) {
+               q.push({u,current[1]+1});
+               vis[u]=true;
+               if(u==endd) {
+                   ans=current[1]+1;
+                   return ans;
+               }
+           }
+       }
+   }
+   ```
+   - For each word, visit its neighbors (words connected in the graph).
+   - If a neighbor is not visited, add it to the queue with an incremented step count.
+   - If the `endWord` index is reached, return the step count.
+
+7. **Return 0 if No Path Found:**
+   ```cpp
+   return 0;
+   ```
+   - If the BFS completes without finding the `endWord`, return 0.
+
+---
+
+### **Key Points**
+- **Graph Representation:** Each word is a node, and edges connect words differing by one character.
+- **Shortest Path:** BFS is used to find the shortest path in an unweighted graph.
+- **Efficiency:** The graph construction checks all pairs of words, which is computationally expensive for large `wordList`.
+
+---
+
+### **Complexity Analysis**
+
+- **Time Complexity:**
+  - Graph construction: \( O(N^2 \cdot L) \), where \( N \) is the number of words and \( L \) is the word length.
+  - BFS traversal: \( O(N^2) \) in the worst case.
+  - Total: \( O(N^2 \cdot L) \).
+
+- **Space Complexity:**
+  - Graph storage: \( O(N^2) \).
+  - BFS queue and visited array: \( O(N) \).
+  - Total: \( O(N^2) \).

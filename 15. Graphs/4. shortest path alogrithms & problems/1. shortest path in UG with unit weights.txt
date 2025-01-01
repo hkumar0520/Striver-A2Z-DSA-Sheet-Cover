@@ -116,6 +116,16 @@ class Solution {
     }
 };
 
+/*
+Time Complexity : O(M) + O(N+2M) + O(N)
+M - for adjacency list conversion
+N+2M - for bfs traversal
+N - again dist traversal 
+
+Space Complexity : O( N) {for the stack storing the BFS} + O(N) {for the resultant array} + O(N) {for the dist array storing updated shortest paths} + O( N+2M) {for the adjacency list} ~ O(N+M) .
+
+*/
+
 
 //{ Driver Code Starts.
 int main() {
@@ -151,3 +161,77 @@ cout << "~" << "\n";
 
 // } Driver Code Ends
 
+
+
+Let's analyze the time and space complexity of the provided code step by step.
+
+### 1. **Function: `shortestPath`**
+This is the main function that calls two other functions:
+- `getGraph(graph, edges)`: This builds the graph from the edge list.
+- `bfs(graph, N, src)`: This finds the shortest path from the source node `src` to all other nodes using BFS.
+
+### 2. **Function: `getGraph(graph, edges)`**
+The purpose of this function is to build the adjacency list representation of the graph from a list of edges.
+
+```cpp
+void getGraph(vector<vector<int>>& graph, vector<vector<int>>& edges) {
+    for (auto edge: edges) {
+        int u = edge[0], v = edge[1];
+        graph[u].push_back(v);
+        graph[v].push_back(u);
+    }
+}
+```
+
+- **Time Complexity**: This loop iterates over all edges in the `edges` array. Each edge involves two operations (adding `v` to `u`'s adjacency list and vice versa), so the complexity for processing each edge is constant \(O(1)\). Given \(M\) edges, the time complexity is \(O(M)\).
+- **Space Complexity**: The space complexity is \(O(N + M)\) because we store the graph in an adjacency list with \(N\) nodes and \(M\) edges.
+
+### 3. **Function: `bfs(graph, n, src)`**
+This function performs a breadth-first search (BFS) to find the shortest paths from a source node `src` to all other nodes in the graph.
+
+```cpp
+vector<int> bfs(vector<vector<int>>& graph, int n, int src) {
+    vector<int> ans(n, INT_MAX);
+    queue<int> qtraverse;
+    qtraverse.push(src);
+    ans[src] = 0;
+
+    while (!qtraverse.empty()) {
+        int node = qtraverse.front();
+        qtraverse.pop();
+        for (int v : graph[node]) {
+            if (ans[v] > ans[node] + 1) {
+                ans[v] = ans[node] + 1;
+                qtraverse.push(v);
+            }
+        }
+    }
+
+    for (int i = 0; i < ans.size(); i++) {
+        if (ans[i] == INT_MAX)
+            ans[i] = -1;
+    }
+    return ans;
+}
+```
+
+- **Time Complexity**:
+  - The BFS loop processes each node and its adjacent nodes. Each node is added to the queue only once, and for each node, we traverse all its neighbors (i.e., each edge is examined exactly once). Thus, the time complexity of BFS is \(O(N + M)\), where \(N\) is the number of nodes and \(M\) is the number of edges.
+  - The final loop that checks for `INT_MAX` and replaces it with `-1` runs in \(O(N)\), as it iterates over the `ans` vector.
+  - Therefore, the total time complexity of `bfs` is \(O(N + M)\).
+
+- **Space Complexity**:
+  - The space used by the `ans` vector is \(O(N)\).
+  - The queue used in BFS can store up to \(O(N)\) elements (in the worst case, when all nodes are in the queue).
+  - The adjacency list `graph` takes \(O(N + M)\) space.
+  - Therefore, the total space complexity of `bfs` is \(O(N + M)\).
+
+### 4. **Function: `shortestPath(edges, N, M, src)`**
+- **Time Complexity**: This function first calls `getGraph(graph, edges)` with a time complexity of \(O(M)\), then it calls `bfs(graph, N, src)` with a time complexity of \(O(N + M)\). Therefore, the total time complexity of `shortestPath` is \(O(N + M)\).
+- **Space Complexity**: The space complexity is dominated by the space used by the graph representation, the adjacency list, and the BFS state. Hence, the total space complexity is \(O(N + M)\).
+
+### Summary of Time and Space Complexity:
+- **Time Complexity**: \(O(N + M)\), where \(N\) is the number of nodes and \(M\) is the number of edges.
+- **Space Complexity**: \(O(N + M)\).
+
+This is typical for BFS-based shortest path algorithms in unweighted graphs, where each edge and node is processed once.

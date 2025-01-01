@@ -1,0 +1,244 @@
+
+//User function Template for C++
+
+class Solution {
+
+ private:
+    void dfs(int node, int parent, int timee, vector<bool>& vis,
+        vector<int>& disc, vector<int>& low,  vector<int>adj[], 
+        vector<int>& mark)
+    {
+        vis[node] = true;
+        disc[node] = low[node] = timee;
+        timee++;
+        int children = 0;
+        for(auto it: adj[node]){
+            
+            if(it == parent)    continue;
+            if(vis[it] == false){
+                
+                children++;
+                dfs(it, node, timee, vis, disc, low, adj, mark);
+                
+                low[node] = min(low[node], low[it]);
+                
+                // non root
+                if(low[it] >= disc[node] && parent != -1)
+                    mark[node] = 1;
+            }
+            else{
+                low[node] = min( low[node], disc[it]);
+            }
+        }
+        if(parent == -1 && children > 1)
+            mark[node] = 1;
+    }
+  
+  public:
+    vector<int> articulationPoints(int V, vector<int>adj[]) {
+        // Code here
+        vector<bool> vis(V, false);
+        vector<int> disc(V, 0);
+        vector<int> low(V, 0);
+        vector<int> mark(V, 0);
+        int timee = 0;
+        for(int i=0; i<V; i++){
+            if(!vis[i])
+                dfs(i, -1, timee, vis, disc, low, adj, mark);
+        }
+        
+        vector<int> ans;
+        for(int i=0; i<V; i++){
+            //cout<<mark[i]<<" ";
+            if(mark[i] == 1)
+                ans.push_back(i);
+        }
+        
+        if(ans.empty()) ans.push_back(-1);
+        
+        return ans;
+    }
+};
+
+Time Complexity : O(V+2E)
+Space Complexity: O(V)
+
+
+
+
+
+
+
+
+#############################################################################
+
+
+
+
+
+
+### **Articulation Points in a Graph**
+
+An **articulation point** (or cut vertex) in a graph is a vertex that, if removed along with its associated edges, increases the number of connected components of the graph. Articulation points are critical for network reliability, as their removal can disconnect parts of the network.
+
+---
+
+### **Algorithm Explanation**
+
+The algorithm to find articulation points uses **Depth First Search (DFS)** and is similar to the bridge-finding algorithm. It uses the concepts of **discovery time (`disc`)** and **low time (`low`)** to identify articulation points.
+
+#### **Key Concepts**
+1. **Discovery Time (`disc`)**:
+   - The time when a node is first visited during DFS.
+
+2. **Low Time (`low`)**:
+   - The earliest discovery time reachable from a node, either directly or through its descendants.
+
+3. **Articulation Point Conditions**:
+   - **Root Node**: A root node is an articulation point if it has more than one child in the DFS tree.
+   - **Non-Root Node**: A non-root node \( u \) is an articulation point if there exists a child \( v \) such that \( \text{low}[v] \geq \text{disc}[u] \).
+
+#### **Steps**
+1. Initialize `disc`, `low`, and `parent` arrays.
+2. Start DFS traversal from any unvisited node.
+3. For each node \( u \):
+   - Update `disc[u]` and `low[u]`.
+   - Explore its neighbors \( v \):
+     - If \( v \) is unvisited:
+       - Set \( u \) as \( v \)'s parent and recursively call DFS for \( v \).
+       - After returning from DFS for \( v \), update `low[u]` using `low[v]`.
+       - Check articulation conditions:
+         - If \( u \) is a root and has more than one child.
+         - If \( u \) is not a root and \( \text{low}[v] \geq \text{disc}[u] \).
+     - If \( v \) is already visited and is not the parent of \( u \), update `low[u]` using `disc[v]`.
+
+4. Store the articulation points.
+
+---
+
+### **Code Walkthrough**
+
+Here’s the implementation in **C++**:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void dfs(int u, vector<int> adj[], vector<bool> &visited, vector<int> &disc, vector<int> &low, vector<int> &parent, vector<bool> &isArticulation, int &time) {
+    visited[u] = true;
+    disc[u] = low[u] = ++time;
+    int children = 0; // Count of children in DFS tree
+
+    for (int v : adj[u]) {
+        if (!visited[v]) {
+            children++;
+            parent[v] = u;
+            dfs(v, adj, visited, disc, low, parent, isArticulation, time);
+
+            // Update low value of u based on child v
+            low[u] = min(low[u], low[v]);
+
+            // Articulation point condition for non-root
+            if (parent[u] != -1 && low[v] >= disc[u]) {
+                isArticulation[u] = true;
+            }
+
+            // Articulation point condition for root
+            if (parent[u] == -1 && children > 1) {
+                isArticulation[u] = true;
+            }
+        } else if (v != parent[u]) {
+            // Update low value of u for back edge
+            low[u] = min(low[u], disc[v]);
+        }
+    }
+}
+
+void findArticulationPoints(int V, vector<int> adj[]) {
+    vector<bool> visited(V, false);
+    vector<int> disc(V, -1);       // Discovery times of visited vertices
+    vector<int> low(V, -1);        // Earliest visited vertex reachable
+    vector<int> parent(V, -1);     // Parent vertices in DFS tree
+    vector<bool> isArticulation(V, false); // Articulation point flag
+    int time = 0;
+
+    // Perform DFS for each unvisited node
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            dfs(i, adj, visited, disc, low, parent, isArticulation, time);
+        }
+    }
+
+    // Print articulation points
+    cout << "Articulation points are: ";
+    for (int i = 0; i < V; i++) {
+        if (isArticulation[i]) {
+            cout << i << " ";
+        }
+    }
+    cout << endl;
+}
+
+int main() {
+    int V = 5;
+    vector<int> adj[V];
+
+    // Example graph
+    adj[0].push_back(1);
+    adj[1].push_back(0);
+
+    adj[0].push_back(2);
+    adj[2].push_back(0);
+
+    adj[1].push_back(2);
+    adj[2].push_back(1);
+
+    adj[1].push_back(3);
+    adj[3].push_back(1);
+
+    adj[3].push_back(4);
+    adj[4].push_back(3);
+
+    findArticulationPoints(V, adj);
+
+    return 0;
+}
+```
+
+---
+
+### **Example Walkthrough**
+#### Graph:
+```
+0 -- 1 -- 3 -- 4
+ \   |
+   2
+```
+
+#### Execution:
+1. Start DFS from \( 0 \).
+2. Traverse \( 1 \), \( 2 \), \( 3 \), and \( 4 \), updating `disc` and `low` values.
+3. Check articulation conditions:
+   - \( 1 \): \( \text{low}[3] \geq \text{disc}[1] \) → Articulation point.
+   - \( 3 \): \( \text{low}[4] \geq \text{disc}[3] \) → Articulation point.
+
+#### Output:
+Articulation points: \( 1, 3 \).
+
+---
+
+### **Complexity Analysis**
+
+#### Time Complexity:
+- **DFS Traversal**: \( O(V + E) \), where \( V \) is the number of vertices and \( E \) is the number of edges.
+
+#### Space Complexity:
+- \( O(V + E) \) for adjacency list.
+- \( O(V) \) for `disc`, `low`, `parent`, and `isArticulation` arrays.
+
+---
+
+### **Summary**
+This algorithm efficiently identifies articulation points using DFS and low-link values. Articulation points are critical for analyzing the reliability of networks and are used in various applications like communication networks and circuit design.

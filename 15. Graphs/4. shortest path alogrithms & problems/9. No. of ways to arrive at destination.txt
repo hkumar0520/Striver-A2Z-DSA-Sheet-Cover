@@ -337,6 +337,79 @@ public:
     }
 };
 
+Let's analyze the **time complexity** and **space complexity** of the provided code.
+
+### Code Overview
+
+The problem is about finding the number of shortest paths from a source node (node 0) to a destination node (node \(n-1\)) in a graph, where the graph is defined by `roads` (which are bidirectional edges with weights). The solution uses a modified Dijkstra's algorithm to calculate both the shortest distance and the number of ways to reach the destination node.
+
+### Time Complexity
+
+1. **Building the Graph (`getGraph` function)**:
+   ```cpp
+   void getGraph(vector<vector<pair<int, int>>>& graph, vector<vector<int>>& roads)
+   {
+       for (vector<int> edge : roads) {
+           int u = edge[0], v = edge[1], wt = edge[2];
+           graph[u].push_back({v, wt});
+           graph[v].push_back({u, wt});
+       }
+   }
+   ```
+   - The graph is built from the list of `roads`. Each road contains 3 values (source, destination, and weight), and each edge is added twice (since the graph is undirected).
+   - For \(E\) edges in the `roads`, adding edges to the adjacency list takes \(O(1)\) time per edge. So, the time complexity for this part is:
+     \[
+     O(E)
+     \]
+     where \(E\) is the number of roads (edges).
+
+2. **Dijkstra’s Algorithm with Path Counting**:
+   The `countPaths` function implements a modified version of Dijkstra's algorithm to find the shortest path and count the number of ways to reach the destination.
+
+   - **Priority Queue Operations**: We use a priority queue (`qtraverse`) to process nodes. Each node is pushed and popped from the queue at most once. Since the priority queue operations (insertions and deletions) take \(O(\log V)\) time, where \(V\) is the number of vertices, the total number of operations involving the priority queue is \(O((V + E) \log V)\). This comes from the fact that we might push and pop up to \(V\) vertices and \(E\) edges.
+   
+   - **Relaxing Edges**: For each node, we inspect all its neighbors. For each edge, we perform constant-time checks and updates, which results in a total of \(O(E)\) edge relaxations.
+
+   So, the time complexity of the Dijkstra’s algorithm part (including priority queue operations and edge relaxations) is:
+   \[
+   O((V + E) \log V)
+   \]
+   where \(V\) is the number of vertices and \(E\) is the number of edges.
+
+### Total Time Complexity
+
+Combining both the graph construction and Dijkstra’s algorithm, the total time complexity is:
+\[
+O(E + (V + E) \log V) = O(E \log V + V \log V)
+\]
+Since \(E\) can be at most \(V^2\) in a dense graph, we often approximate the time complexity as:
+\[
+O(E \log V)
+\]
+where \(E\) is the number of edges and \(V\) is the number of vertices.
+
+### Space Complexity
+
+1. **Graph Representation**:
+   The graph is stored as an adjacency list, which requires \(O(E)\) space, since there are \(E\) edges and each edge is stored as a pair of integers.
+
+2. **Distance and Path Count Arrays**:
+   The `dist` array stores the shortest distance from the source to each node, and the `ways` array stores the number of ways to reach each node via the shortest path.
+   - Both `dist` and `ways` have a size of \(V\), so each requires \(O(V)\) space.
+
+3. **Priority Queue**:
+   The priority queue stores pairs of `(cost, node)`. In the worst case, it can store all \(V\) vertices, so it requires \(O(V)\) space.
+
+Thus, the overall space complexity is:
+\[
+O(V + E)
+\]
+where \(V\) is the number of vertices and \(E\) is the number of edges.
+
+### Final Answer
+
+- **Time Complexity**: \(O(E \log V)\)
+- **Space Complexity**: \(O(V + E)\)
 
 
 #######################################################################################

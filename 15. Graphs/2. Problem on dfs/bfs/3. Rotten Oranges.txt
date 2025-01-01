@@ -42,6 +42,47 @@ public:
     }
 };
 
+### Time Complexity
+
+The time complexity of the code can be analyzed as follows:
+
+1. **Initialization Loop**:
+   - The nested loop traverses the entire grid to count the total oranges (`totalcnt`) and enqueue the initially rotten oranges.
+   - This operation takes \(O(n \times m)\), where \(n\) is the number of rows and \(m\) is the number of columns.
+
+2. **Breadth-First Search (BFS)**:
+   - Each cell in the grid is processed at most once (either as an initially rotten orange or when it becomes rotten during the BFS).
+   - For each cell, we check its four neighbors, which is a constant operation (\(O(1)\)).
+   - Thus, the BFS also takes \(O(n \times m)\).
+
+**Overall Time Complexity**:
+\[
+O(n \times m)
+\]
+
+---
+
+### Space Complexity
+
+The space complexity depends on:
+
+1. **Queue Storage**:
+   - The queue `qtraverse` stores the positions of rotten oranges. In the worst case, all oranges in the grid could be rotten, so the queue size could grow to \(O(n \times m)\).
+
+2. **Auxiliary Storage**:
+   - The code uses constant space for variables (`ax`, `by`, etc.).
+
+**Overall Space Complexity**:
+\[
+O(n \times m)
+\]
+
+---
+
+### Summary
+- **Time Complexity**: \(O(n \times m)\)
+- **Space Complexity**: \(O(n \times m)\)
+
 ###################################################################
 
 my earlier soln 

@@ -51,6 +51,51 @@ class Solution {
     }
 };
 
+### Time Complexity
+
+#### 1. **Outer Loop in `isCycle`**:
+- The loop iterates over all vertices to ensure all connected components are visited.
+- The `bfs` function is called for each unvisited node.
+- Since each node is processed only once during BFS, the total contribution from this loop is \(O(V)\), where \(V\) is the number of vertices.
+
+#### 2. **BFS Traversal**:
+- Inside the `bfs` function, each vertex is enqueued and processed at most once, contributing \(O(V)\).
+- For each vertex, its adjacency list is traversed. Since the graph is represented as an adjacency list, the total number of edges across all vertices is \(E\), where \(E\) is the number of edges.
+- Thus, traversing the adjacency list contributes \(O(E)\).
+
+**Total Time Complexity**:
+\[
+O(V + E)
+\]
+
+This is because each vertex and edge is processed exactly once in the BFS traversal.
+
+---
+
+### Space Complexity
+
+#### 1. **Visited Array**:
+- A `vis` array of size \(V\) is used to track visited vertices. This requires \(O(V)\) space.
+
+#### 2. **Queue for BFS**:
+- In the worst case, the queue can store all vertices in a connected component. This requires \(O(V)\) space.
+
+#### 3. **Adjacency List**:
+- The adjacency list representation of the graph is passed as input and requires \(O(V + E)\) space.
+
+**Total Space Complexity**:
+\[
+O(V + E)
+\]
+
+---
+
+### Summary
+- **Time Complexity**: \(O(V + E)\)
+- **Space Complexity**: \(O(V + E)\)
+
+This is optimal for detecting cycles in an undirected graph using BFS.
+
 //{ Driver Code Starts.
 int main() {
     int tc;
@@ -80,7 +125,7 @@ int main() {
 // } Driver Code Ends
 
 
-##########################################################
+###############################################################################
 
 #include <bits/stdc++.h>
 using namespace std;

@@ -112,3 +112,61 @@ int main() {
     return 0;
 }
 // } Driver Code Ends
+
+### Time Complexity:
+
+Let's analyze the time complexity step by step:
+
+1. **`getIndegree` function:**
+   - In this function, we iterate through the adjacency list `adj`. For each node, we loop through its adjacent nodes (i.e., outgoing edges) and increment their in-degrees. 
+   - Since there are `n` vertices and `m` edges in the graph, the total number of iterations of the nested loops is proportional to the number of edges (`m`).
+   - **Time Complexity**: \( O(m) \)
+
+2. **`bfs` function:**
+   - **Queue initialization**: The first part of the `bfs` function initializes the queue by checking the in-degrees of all nodes and adding those with in-degree 0 to the queue. This takes \( O(n) \) time since we check all nodes.
+   - **BFS traversal**: We process each node exactly once and for each node, we iterate over its outgoing edges (adjacency list). The number of iterations depends on the number of edges, `m`. Each edge will be processed exactly once during the BFS traversal.
+   - **Time Complexity**: \( O(n + m) \), where `n` is the number of nodes and `m` is the number of edges.
+
+3. **`topologicalSort` function:**
+   - The `topologicalSort` function calls `getIndegree` and `bfs`. 
+   - `getIndegree` takes \( O(m) \) time and `bfs` takes \( O(n + m) \) time. So, the total time complexity of `topologicalSort` is:
+   
+   \[
+   O(m) + O(n + m) = O(n + m)
+   \]
+
+Thus, the **total time complexity** is:
+\[
+O(n + m)
+\]
+where:
+- `n` is the number of nodes (vertices),
+- `m` is the number of edges.
+
+### Space Complexity:
+
+Let's analyze the space complexity:
+
+1. **Adjacency List (`adj`)**:
+   - The adjacency list stores the graph and requires \( O(n + m) \) space because there are `n` nodes and `m` edges.
+   
+2. **Indegree Array (`indegree`)**:
+   - The `indegree` array stores the in-degree of each node, requiring \( O(n) \) space.
+
+3. **Answer Array (`ans`)**:
+   - The `ans` array stores the topologically sorted nodes, which will contain `n` nodes. So, it requires \( O(n) \) space.
+
+4. **Queue (`qtraverse`)**:
+   - The queue stores nodes during the BFS traversal. In the worst case, it will contain all `n` nodes. Hence, the queue requires \( O(n) \) space.
+
+Thus, the **total space complexity** is:
+\[
+O(n + m)
+\]
+where:
+- `n` is the number of nodes,
+- `m` is the number of edges.
+
+### Conclusion:
+- **Time Complexity**: \( O(n + m) \)
+- **Space Complexity**: \( O(n + m) \)

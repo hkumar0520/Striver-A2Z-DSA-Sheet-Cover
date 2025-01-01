@@ -45,3 +45,42 @@ public:
         return bfs(grid);
     }
 };
+
+### **Time Complexity**
+
+1. **Outer Loops (Initialization):**
+   - The two nested loops iterate over all cells in the matrix to enqueue cells with a value of `0`.
+   - This operation takes \( O(m \times n) \), where \( m \) is the number of rows and \( n \) is the number of columns.
+
+2. **BFS Traversal:**
+   - Each cell in the matrix is processed at most once because once a cell is visited, it is marked as `0` and won't be revisited.
+   - For each cell, the algorithm checks up to 4 neighbors, which is constant work per cell.
+   - The total time complexity for BFS traversal is \( O(m \times n) \).
+
+3. **Overall Time Complexity:**
+   - Combining the initialization and BFS traversal, the total time complexity is:
+     \[
+     O(m \times n)
+     \]
+
+### **Space Complexity**
+
+1. **Queue:**
+   - In the worst case, the queue can contain all cells in the matrix (e.g., when all cells are `0` initially).
+   - The space required for the queue is \( O(m \times n) \).
+
+2. **Auxiliary Space:**
+   - The `ans` matrix requires \( O(m \times n) \) space to store the result.
+   - The `grid` matrix is a copy of the input matrix, which also requires \( O(m \times n) \) space.
+
+3. **Overall Space Complexity:**
+   - The total space complexity is dominated by the `grid`, `ans`, and the queue, resulting in:
+     \[
+     O(m \times n)
+     \]
+
+### **Final Complexity**
+
+- **Time Complexity:** \( O(m \times n) \)
+- **Space Complexity:** \( O(m \times n) \)
+

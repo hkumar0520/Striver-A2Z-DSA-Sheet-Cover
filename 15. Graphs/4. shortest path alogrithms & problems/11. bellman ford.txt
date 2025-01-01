@@ -46,6 +46,76 @@ class Solution {
     }
 };
 
+Let's analyze the **time complexity** and **space complexity** of the provided Bellman-Ford algorithm implementation.
+
+### Code Breakdown
+
+The function `bellmanFord` computes the shortest path from a source vertex `src` to all other vertices in a graph using the **Bellman-Ford algorithm**. The input consists of:
+- `V`: Number of vertices in the graph.
+- `edges`: A list of edges, where each edge is represented by a vector of three integers `[source, destination, weight]`.
+- `src`: The source vertex from which the shortest path is calculated.
+
+### Step 1: Initialization
+```cpp
+vector<int> dist(V, 1e8);
+dist[src] = 0;
+```
+Here, the distance vector `dist` is initialized with a large value (`1e8`) for all vertices, and the source vertex distance is set to `0`.
+
+- **Time Complexity:** Initializing the `dist` vector takes **O(V)** time because it iterates over all vertices once.
+- **Space Complexity:** The space complexity for storing the `dist` vector is **O(V)**, as it holds one value for each vertex.
+
+### Step 2: Relaxation of Edges (V-1 times)
+```cpp
+for(int i=0; i < (V-1); i++)
+{
+    for(vector<int> edge: edges)
+    {
+        int source = edge[0], destination = edge[1], wt = edge[2];
+        if(dist[source] != 1e8 && dist[destination] > dist[source] + wt)
+            dist[destination] = dist[source] + wt;
+    }
+}
+```
+The core of the Bellman-Ford algorithm involves relaxing all edges **V-1 times**. In each iteration, we go through each edge in the graph and update the distance for the destination vertex if a shorter path is found.
+
+- The outer loop runs **V-1 times** (one for each vertex except the source).
+- The inner loop iterates over all edges in the graph. Let `E` represent the number of edges.
+
+Thus, the time complexity for the relaxation process is **O((V - 1) * E)**, which simplifies to **O(V * E)**.
+
+### Step 3: Check for Negative Weight Cycles
+```cpp
+for(vector<int> edge: edges)
+{
+    int source = edge[0], destination = edge[1], wt = edge[2];
+    if(dist[source] != 1e8 && dist[destination] > dist[source] + wt)
+        return {-1};
+}
+```
+This step is to check if there are negative weight cycles in the graph. If the distance can still be relaxed after **V-1** iterations, it indicates the presence of a negative cycle, and `-1` is returned.
+
+- The loop iterates over all edges, so the time complexity for this step is **O(E)**.
+
+### Overall Time Complexity
+- Initialization: **O(V)**
+- Relaxation step: **O(V * E)**
+- Negative cycle check: **O(E)**
+
+Thus, the total time complexity is **O(V * E)**.
+
+### Overall Space Complexity
+- The `dist` vector stores the shortest distance for each vertex, requiring **O(V)** space.
+- The `edges` vector stores the graph, which takes **O(E)** space.
+
+Thus, the total space complexity is **O(V + E)**.
+
+### Summary:
+
+- **Time Complexity:** **O(V * E)**
+- **Space Complexity:** **O(V + E)**
+
+
 
 //{ Driver Code Starts.
 

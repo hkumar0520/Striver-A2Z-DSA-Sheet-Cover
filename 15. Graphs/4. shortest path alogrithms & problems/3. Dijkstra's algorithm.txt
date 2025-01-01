@@ -10,16 +10,20 @@ vector<int> dijkstra(vector<vector<pair<int, int>>> &adj, int src) {
         int n = adj.size();
         vector<int> dist(n, INT_MAX);
         dist[src] = 0;
+        // O(V)
         while(!st.empty())
         {
+            // O(logV)
             pair<int,int> nodeStep = *(st.begin());
             st.erase(st.begin());
             int steps = nodeStep.first, node = nodeStep.second;
+            // O(E)
             for(auto currnode: adj[node])
             {
                 int v = currnode.first, wt = currnode.second;
                 if(dist[v] > steps + wt)
                 {
+                    // O(logV)
                     if(dist[v] != INT_MAX)
                         st.erase({dist[v],v});
                         
@@ -35,6 +39,57 @@ vector<int> dijkstra(vector<vector<pair<int, int>>> &adj, int src) {
         }
         return dist;
     }
+
+
+The provided code implements **Dijkstra's algorithm** for finding the shortest paths from a source vertex to all other vertices in a weighted graph. Let's analyze its time and space complexity:
+
+### Space Complexity:
+The space complexity is determined by the data structures used in the algorithm.
+
+1. **Adjacency List (`adj`)**: The input graph is represented as an adjacency list. Each vertex has a list of its neighboring vertices with their associated edge weights. If the graph has `V` vertices and `E` edges, the space used by the adjacency list is **O(V + E)**.
+
+2. **Distance Vector (`dist`)**: This vector stores the shortest distance from the source vertex to each vertex. Its size is `V`, so it takes **O(V)** space.
+
+3. **Set (`st`)**: The set `st` is used to store pairs of the current distance and vertex, and it is organized by sorting based on the first value (the distance). In the worst case, this set contains all vertices, so its space complexity is **O(V)**.
+
+Thus, the total space complexity is:
+
+\[
+\text{Space Complexity} = O(V + E)
+\]
+
+### Time Complexity:
+
+Let's break down the different parts of the algorithm to compute the time complexity.
+
+1. **Initialization**: 
+   - The `dist` vector is initialized with `O(V)` operations (setting all distances to `INT_MAX` except the source).
+   - The set `st` is initialized with one element (the source), which is done in **O(log V)** time.
+
+2. **Main Loop (while loop)**:
+   - The while loop runs until `st` becomes empty. In the worst case, we will visit every vertex once, so this loop runs at most `V` times.
+
+3. **Inside the While Loop**:
+   - The `st.begin()` operation and `st.erase(st.begin())` both take **O(log V)** time because `st` is a balanced tree-based set.
+   - In each iteration of the loop, for each node, we iterate through its adjacent nodes (edges). If the graph has `E` edges, the total number of iterations across all vertices is **O(E)**.
+
+4. **Set Operations (Insert and Erase)**:
+   - For each edge, there are two main operations on the set: **erase** and **insert**. Each of these operations takes **O(log V)** time due to the underlying balanced tree structure of the `set`. In the worst case, this operation is called for each edge, so across all edges, these operations take **O(E log V)** time.
+
+5. **Final Step**:
+   - The final loop, which replaces `INT_MAX` in `dist` with `-1`, runs in **O(V)** time.
+
+Thus, the overall time complexity is dominated by the operations inside the while loop and set operations, which together result in:
+
+\[
+\text{Time Complexity} = O((V + E) \log V)
+\]
+
+### Conclusion:
+- **Time Complexity**: \( O((V + E) \log V) \)
+- **Space Complexity**: \( O(V + E) \)
+
+
 
 
 ###########################################################################################
@@ -73,3 +128,94 @@ vector<int> dijkstra(vector<vector<pair<int, int>>> &adj, int src) {
         }
         return dist;
     }
+
+
+The provided code implements **Dijkstra's algorithm** using a **priority queue** (min-heap) to efficiently select the next vertex with the smallest tentative distance. Let's analyze the time and space complexity of this implementation:
+
+### Space Complexity:
+1. **Adjacency List (`adj`)**: The graph is represented using an adjacency list. The space complexity for storing the graph is **O(V + E)**, where:
+   - `V` is the number of vertices.
+   - `E` is the number of edges.
+
+2. **Distance Vector (`dist`)**: The `dist` vector stores the shortest distance from the source vertex to all other vertices. It requires **O(V)** space.
+
+3. **Priority Queue (`pq`)**: The priority queue is used to store the vertices, ordered by their tentative distance. In the worst case, all `V` vertices can be stored in the priority queue at once. Thus, the space complexity of the priority queue is **O(V)**.
+
+Thus, the total space complexity is:
+
+\[
+\text{Space Complexity} = O(V + E)
+\]
+
+### Time Complexity:
+
+Let's break down the different parts of the algorithm to compute the time complexity.
+
+1. **Initialization**: 
+   - The `dist` vector is initialized with `O(V)` operations (setting all distances to `INT_MAX` except the source).
+   - The priority queue is initialized with one element (the source), which takes **O(log V)** time.
+
+2. **Main Loop (while loop)**:
+   - The while loop runs until the priority queue `pq` is empty. In the worst case, we will process each vertex once, so this loop can run at most `V` times.
+   
+3. **Priority Queue Operations**:
+   - In each iteration, we pop the top element from the priority queue using `pq.top()` and `pq.pop()`. Both operations take **O(log V)** time because the priority queue is implemented as a binary heap.
+   - After processing the current vertex, we examine its neighbors. For each neighboring vertex, we might need to **push** a new pair into the priority queue. Each push operation takes **O(log V)** time as well.
+
+   In total, we will process all edges, and for each edge, we may perform one push operation, which results in **O(E log V)** time for all edges.
+
+4. **Final Step**:
+   - The final loop, which replaces `INT_MAX` in `dist` with `-1`, runs in **O(V)** time.
+
+Thus, the overall time complexity is dominated by the priority queue operations, which give:
+
+\[
+\text{Time Complexity} = O((V + E) \log V)
+\]
+
+### Conclusion:
+- **Time Complexity**: \( O((V + E) \log V) \)
+- **Space Complexity**: \( O(V + E) \)
+
+
+#####################################################################################
+
+
+using set  
+
+class Solution {
+  public:
+    
+   vector<int> dijkstra(vector<vector<pair<int, int>>> &adj, int src) {
+        // Code here
+        set<pair<int,int>> st;
+        // sort on basis of pair.first
+        st.insert({ 0, src});
+        
+        int n = adj.size();
+        vector<int> dist(n, INT_MAX);
+        dist[src] = 0;
+        while(!st.empty())
+        {
+            pair<int,int> nodeStep = *(st.begin());
+            st.erase(st.begin());
+            int steps = nodeStep.first, node = nodeStep.second;
+            for(auto currnode: adj[node])
+            {
+                int v = currnode.first, wt = currnode.second;
+                if(dist[v] > steps + wt)
+                {
+                    dist[v] = steps+wt;
+                    st.insert({dist[v],v});
+                }
+            }
+        }
+        for(int  i=0;i<n;i++)
+        {
+            if(dist[i] == INT_MAX)
+                dist[i] = -1;
+        }
+        return dist;
+    }
+};
+

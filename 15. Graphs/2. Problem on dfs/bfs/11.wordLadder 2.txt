@@ -65,7 +65,72 @@ public:
     }
 };
 
-################################################################################
+
+
+### **Time Complexity**
+
+1. **Outer While Loop:**
+   - The `qtraverse` queue processes all possible paths, and each word transformation is added to the queue. The worst-case scenario occurs when every possible transformation is explored.
+   - The maximum number of transformations is \( O(26 \times M \times N) \), where:
+     - \( M \): Length of each word.
+     - \( N \): Number of words in the `wordList`.
+     - \( 26 \): Number of letters in the alphabet.
+
+2. **Inner For Loops:**
+   - For each word in the queue, we attempt \( M \times 26 \) transformations.
+   - Checking if a transformed word exists in the set \( st \) is \( O(1) \) on average.
+
+3. **Total BFS Complexity:**
+   - Each word is processed at most once (due to the `st.erase()` operation), so the overall BFS complexity is:
+     \[
+     O(N \times M \times 26) = O(N \times M)
+     \]
+
+4. **Clearing the Visited Words:**
+   - The `vis` vector is cleared and processed after each level. This operation is \( O(N) \) in total across all levels.
+
+5. **Overall Time Complexity:**
+   - The overall complexity is:
+     \[
+     O(N \times M + N)
+     \]
+   - Simplified: \( O(N \times M) \).
+
+---
+
+### **Space Complexity**
+
+1. **Queue `qtraverse`:**
+   - At most, the queue contains all possible paths. Each path can have a length of \( O(M) \), and there can be \( O(N) \) words.
+   - Space for the queue is \( O(N \times M) \).
+
+2. **Set `st`:**
+   - Stores \( O(N) \) words, each of length \( O(M) \).
+   - Space for the set is \( O(N \times M) \).
+
+3. **Vector `vis`:**
+   - Stores visited words for the current level, which is \( O(N) \) in total.
+
+4. **Result `ans`:**
+   - In the worst case, it stores all shortest paths. Each path can have \( O(M) \) words, and there can be \( O(P) \) paths, where \( P \) is the number of shortest paths.
+   - Space for `ans` is \( O(P \times M) \).
+
+5. **Overall Space Complexity:**
+   - Dominated by the queue and result storage:
+     \[
+     O(N \times M + P \times M)
+     \]
+
+---
+
+### **Summary**
+
+- **Time Complexity:** \( O(N \times M) \)
+- **Space Complexity:** \( O(N \times M + P \times M) \), where \( P \) is the number of shortest paths.
+
+
+
+########################################################################################
 
 time limit exceed 33/37
 
@@ -140,3 +205,61 @@ public:
     }
 };
 
+
+#####################################################################################
+
+// memory limit exceed imporved version of first 
+
+class Solution {
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> st(wordList.begin(), wordList.end());
+        if (st.find(endWord) == st.end())
+            return {};
+
+        queue<vector<string>> qtraverse;
+        qtraverse.push({beginWord});
+
+        vector<vector<string>> ans;
+
+        while (!qtraverse.empty()) {
+            int qsize = qtraverse.size();
+            unordered_set<string> levelVisited; // Track words visited at the current level
+
+            while (qsize--) {
+                vector<string> node = qtraverse.front();
+                qtraverse.pop();
+
+                string word = node.back();
+                if (word == endWord) {
+                    if (ans.empty() || ans[0].size() == node.size())
+                        ans.push_back(node);
+                } else {
+                    for (int i = 0; i < word.size(); i++) {
+                        string str = word;
+                        for (int j = 0; j < 26; j++) {
+                            str[i] = (char)('a' + j);
+                            if (st.find(str) != st.end()) {
+                                node.push_back(str);
+                                qtraverse.push(node);
+                                node.pop_back();
+
+                                levelVisited.insert(str); // Mark the word for removal at this level
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Remove all words visited at the current level from the set
+            for (const string& str : levelVisited)
+                st.erase(str);
+
+            // If we found a valid transformation sequence, no need to explore further
+            if (!ans.empty())
+                break;
+        }
+
+        return ans;
+    }
+};

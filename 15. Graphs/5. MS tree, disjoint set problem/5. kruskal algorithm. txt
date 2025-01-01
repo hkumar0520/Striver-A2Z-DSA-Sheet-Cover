@@ -96,7 +96,13 @@ class Solution
 };
 
 time complexity = O(V+E) + O(ElogE) + O(E*4a*2)
-space complexity = 
+space complexity = O(V) + O(V) + O(V) + O(E)
+{
+    v = rank,
+    v = size,
+    v = parent,
+    E = for storing edges 
+}
 
 #############################################################################
 

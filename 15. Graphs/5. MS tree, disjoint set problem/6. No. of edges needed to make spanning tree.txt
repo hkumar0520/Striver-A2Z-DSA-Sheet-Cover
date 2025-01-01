@@ -160,14 +160,17 @@ public:
         // only  in * pointer, this valid DisjointSet ds = new DisjointSet(n);
         DisjointSet ds(n);
 
+        // O(E)
         for(vector<int> edge: connections){
             int u = edge[0], v = edge[1];
+            // O(4*@)
             if(ds.findParent(u) != ds.findParent(v)){
                 ds.unionBySize(u,v);
             }
         }
         vector<int> parentVec = ds.getParent();
         int noComponents = 0;
+        // O(n)
         for(int i = 0; i<parentVec.size(); i++){
             if(i == parentVec[i])
                 noComponents++;
@@ -175,4 +178,11 @@ public:
         return noComponents-1;
     }
 };
+
+
+Time complexity : O(E*4*a) + O(N)
+Space complexity: 3*N
+{
+    n = parent, n = size, n = parenVec, n = rank
+}
 

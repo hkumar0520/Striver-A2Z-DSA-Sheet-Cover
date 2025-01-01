@@ -28,6 +28,54 @@ class Solution {
 };
 
 
+Let's analyze the time and space complexity of the given code.
+
+### Code Overview
+
+The problem involves finding the minimum number of multiplicative steps to reach from the `start` number to the `end` number, where in each step, we multiply the current number by any number from the given array `arr` and take the result modulo 100000. This can be seen as a shortest path problem in an implicit graph where each node is a number and edges represent multiplicative steps.
+
+### Time Complexity
+
+1. **Queue Operations and BFS**:
+   The algorithm uses Breadth-First Search (BFS) to explore the shortest path from the `start` to the `end`. The queue `qtraverse` stores pairs of (steps, node), where `steps` is the number of steps taken to reach a `node`.
+
+   - In the worst case, each unique node (number) can be visited only once. The node space is bounded by the number of possible remainders when taking modulo `100000`, which is 100000. Therefore, we can have up to 100000 unique numbers (nodes) in the graph.
+   - In each iteration, the algorithm processes a node and explores all possible transitions (multiplications with the elements of `arr`). If the array `arr` has size \(m\), then for each node, there are \(m\) possible next nodes.
+   
+   Therefore, for each of the 100000 nodes, the algorithm performs \(m\) operations. The total time complexity of this part is:
+   \[
+   O(m \times 100000)
+   \]
+   where \(m\) is the size of the array `arr` and 100000 is the number of possible unique nodes.
+
+2. **Queue Operations**:
+   - In each iteration of the while loop, the algorithm processes one element from the queue, checks its neighbors (multiplications), and adds the result to the queue if it hasn't been visited before.
+   - There are at most 100000 elements in the queue, and for each element, we check at most \(m\) neighbors (as mentioned above).
+
+Thus, the overall time complexity is:
+\[
+O(m \times 100000)
+\]
+
+### Space Complexity
+
+1. **Distance Array (`dist`)**:
+   The `dist` array stores the minimum number of steps required to reach each number modulo 100000. It has a fixed size of 100000, so it takes \(O(100000)\) space.
+
+2. **Queue (`qtraverse`)**:
+   The queue stores pairs of (steps, node). In the worst case, the queue may store up to 100000 pairs (each representing a distinct node). Hence, the space complexity of the queue is also \(O(100000)\).
+
+Thus, the overall space complexity is:
+\[
+O(100000)
+\]
+
+### Final Answer
+
+- **Time Complexity**: \(O(m \times 100000)\), where \(m\) is the size of the array `arr`.
+- **Space Complexity**: \(O(100000)\).
+
+
 #######################################################################################
 
 //{ Driver Code Starts
@@ -99,5 +147,47 @@ cout << "~" << "\n";
 }
 
 // } Driver Code Ends
+
+
+### Time Complexity:
+
+The algorithm is a **Breadth-First Search (BFS)** over a graph where each node represents a number modulo `100000`. The solution explores the state space by multiplying the current node value by the elements in the `arr` and taking the result modulo `100000`.
+
+- **State space size**: 
+  There are `100000` possible states (from `0` to `99999`) since the modulo is `100000`.
+  
+- **BFS traversal**: 
+  In the worst case, the algorithm explores all these states. For each state, the algorithm tries to explore transitions to other states based on the `arr` values. Each transition involves multiplying the current node by an element of the array `arr`.
+
+- **Loop over `arr`**:
+  For each state (i.e., for each node in the BFS), we loop over all elements in `arr`. Let the size of `arr` be `n`.
+
+Thus, in the worst case, the BFS will explore all `100000` states, and for each state, we will consider `n` transitions (one for each element in `arr`).
+
+Therefore, the **time complexity** is:
+\[
+O(100000 \times n)
+\]
+where `n` is the size of `arr`.
+
+### Space Complexity:
+
+- **Distance array (`dist`)**: 
+  We store the minimum number of steps to reach each state in an array of size `100000`. This requires `O(100000)` space.
+
+- **Queue (`qtraverse`)**: 
+  The queue can store at most `100000` nodes in the worst case, as there are `100000` possible states. Each node in the queue stores a pair of integers (`steps` and `node`), so the space complexity of the queue is proportional to the number of nodes.
+
+Thus, the **space complexity** is:
+\[
+O(100000 + 100000) = O(100000)
+\]
+which is dominated by the space used for the queue and the `dist` array.
+
+### Conclusion:
+- **Time Complexity**: \( O(100000 \times n) \)
+- **Space Complexity**: \( O(100000) \)
+
+
 
 #######################################################################################

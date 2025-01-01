@@ -246,3 +246,92 @@ public:
     }
 };
 
+Let's analyze the **time complexity** and **space complexity** of the provided code step by step.
+
+### Code Overview
+
+The problem is to determine the minimum time required for all nodes to receive a signal starting from node `k` in a directed weighted graph. This is a typical **Shortest Path** problem where you need to calculate the shortest time (or distance) from the source node (`k`) to all other nodes, and then return the maximum time taken by any node. If any node cannot be reached, return `-1`.
+
+The solution uses **Dijkstra's algorithm**, a greedy algorithm that is commonly used for finding the shortest paths from a source to all other nodes in a graph with non-negative edge weights.
+
+### Time Complexity
+
+1. **Graph Construction (`getGraph` function)**:
+   ```cpp
+   void getGraph(vector<vector<pair<int,int>>>& graph, vector<vector<int>>& times)
+   {
+       for (vector<int> edge: times) {
+           int start = edge[0], endd = edge[1], weight = edge[2];
+           graph[start].push_back({endd, weight});
+       }
+   }
+   ```
+   - This function builds the graph from the `times` array. For each edge in the `times` list, we are adding it to the adjacency list. 
+   - If there are \(E\) edges (size of `times`), the time complexity for building the graph is \(O(E)\).
+
+2. **Dijkstra’s Algorithm**:
+   The `networkDelayTime` function uses **Dijkstra's algorithm** to find the shortest path from the source node `k` to all other nodes in the graph.
+
+   - **Priority Queue Operations**: We use a **min-heap priority queue** (`qtraverse`), where each element is a pair containing the current distance and the node. Each time we extract the minimum distance node, we perform a logarithmic operation relative to the number of nodes, \(O(\log V)\), where \(V\) is the number of nodes. 
+   - In the worst case, each node is inserted into the priority queue once and extracted once, so there are at most \(O(V)\) insertions and extractions.
+   
+   - **Edge Relaxations**: For each node, we examine all its neighbors (i.e., outgoing edges). In the worst case, each edge is relaxed once, which gives a time complexity of \(O(E)\) for relaxing the edges.
+
+   Combining these, the overall time complexity of Dijkstra's algorithm is:
+   \[
+   O((V + E) \log V)
+   \]
+   where \(V\) is the number of nodes, and \(E\) is the number of edges. The \((V + E)\) term accounts for all nodes and edges, and the \(\log V\) term accounts for the priority queue operations.
+
+3. **Final Check for Maximum Time**:
+   ```cpp
+   int minTime = INT_MIN;
+   for (int i = 1; i <= n; i++) {
+       if (dist[i] == INT_MAX) return -1;
+       minTime = max(minTime, dist[i]);
+   }
+   ```
+   - This loop iterates over all \(n\) nodes to find the maximum distance among all nodes that are reachable.
+   - This loop has a time complexity of \(O(n)\).
+
+### Total Time Complexity
+
+The total time complexity of the algorithm is the sum of the time complexities for graph construction, Dijkstra's algorithm, and the final loop:
+
+\[
+O(E) + O((V + E) \log V) + O(n)
+\]
+
+Since \(V = n\) and \(E\) is the number of edges, the time complexity simplifies to:
+
+\[
+O((V + E) \log V)
+\]
+
+This is the time complexity for the algorithm.
+
+### Space Complexity
+
+1. **Graph Representation**:
+   The graph is represented as an adjacency list, which takes \(O(E)\) space to store all the edges.
+
+2. **Distance Array (`dist`)**:
+   The `dist` array stores the shortest distance from the source node to every other node. Since there are \(V\) nodes, this array takes \(O(V)\) space.
+
+3. **Priority Queue (`qtraverse`)**:
+   The priority queue stores pairs of `(distance, node)`. In the worst case, the queue can store all \(V\) nodes, so it takes \(O(V)\) space.
+
+Thus, the overall space complexity is:
+
+\[
+O(V + E)
+\]
+
+### Final Answer
+
+- **Time Complexity**: \(O((V + E) \log V)\)
+- **Space Complexity**: \(O(V + E)\)
+
+Where:
+- \(V\) is the number of nodes in the graph.
+- \(E\) is the number of edges in the graph.

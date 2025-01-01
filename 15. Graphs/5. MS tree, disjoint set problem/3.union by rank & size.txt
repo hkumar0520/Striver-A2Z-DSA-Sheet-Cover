@@ -132,7 +132,7 @@ Same
 
 Time Complexity:  The actual time complexity is O(4) which is very small and close to 1. So, we can consider 4 as a constant.
 
-
+Space Complexity: O(n) , n = size of rank, parent.
 
 ###########################################################################################
 
@@ -154,12 +154,14 @@ public:
         }
     }
 
+    // O(4)
     int findUPar(int node) {
         if (node == parent[node])
             return node;
         return parent[node] = findUPar(parent[node]);
     }
 
+    // O(4)
     void unionByRank(int u, int v) {
         int ulp_u = findUPar(u);
         int ulp_v = findUPar(v);
@@ -175,7 +177,7 @@ public:
             rank[ulp_u]++;
         }
     }
-
+    // O(4)
     void unionBySize(int u, int v) {
         int ulp_u = findUPar(u);
         int ulp_v = findUPar(v);
@@ -216,6 +218,8 @@ Not Same
 Same
 
 Time Complexity:  The time complexity is O(4) which is very small and close to 1. So, we can consider 4 as a constant.
+
+Space Complexity: O(n) , n = size of rank, parent.
 
 
 
