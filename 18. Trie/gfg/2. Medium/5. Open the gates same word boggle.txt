@@ -1,0 +1,119 @@
+
+
+
+// word boggle like question
+
+struct Node{
+    Node* links[256];
+    bool isEnd = false;
+    
+    bool isContainsKey(char ch){
+        return links[ch] != NULL;
+    }
+    
+    Node* get(char ch){
+        return links[ch];
+    }
+    
+    void put(char ch, Node* node){
+        links[ch] = node;
+    }
+    
+    bool getEnd(){
+        return isEnd;
+    }
+    
+    void setEnd(){
+        isEnd = true;
+    }
+};
+
+class Trie{
+  Node* root;
+  
+  public:
+  Trie(){
+      root = new Node();
+  }
+  
+  void insert(string word){
+      Node *curr = root;
+      for(int i=0; i<word.size(); i++){
+          if(!curr->isContainsKey(word[i])){
+              curr->put(word[i], new Node());
+          }
+          curr = curr->get(word[i]);
+      }
+      curr->setEnd();
+  }
+  
+    void dfs(pair<int,int> indexXY, string path, unordered_set<string>& res
+            , vector<vector<char> >& board, Node* currNode
+            , vector<vector<bool>>& vis)
+    {
+        int x = indexXY.first, y = indexXY.second;
+        
+        if(!currNode->isContainsKey(board[x][y]))   return;
+        
+        // get the node for {i,j} character
+        currNode = currNode->get(board[x][y]);
+        
+        // get the desired string
+        if(currNode->getEnd()){
+            if(res.find(path) == res.end())
+                res.insert(path);
+        }
+        
+        // visited mark
+        vis[x][y] =  true;
+        
+        int rowSize = board.size(), colSize = board[0].size();
+        
+        for(int i = -1; i<=1; i++){
+            for(int j = -1; j<=1; j++){
+                int nx = x + i;
+                int ny = y + j;
+                
+                if(nx>=0 && ny>=0 && nx<rowSize && ny<colSize 
+                    && !vis[nx][ny]){
+                    
+                    dfs({nx, ny}, path+board[nx][ny], res, board, currNode, vis);
+                }
+            }
+        }
+        
+        //unvisited
+        vis[x][y] = false;
+    }
+  
+    void isCheckWordThere(pair<int,int> indexXY, unordered_set<string>& res
+                          ,vector<vector<char> >& board, vector<vector<bool>>& vis)
+    {
+        Node* curr = root;
+        string path = "";
+        dfs(indexXY, path + board[indexXY.first][indexXY.second], res, board, curr, vis);
+    }
+};
+
+class Solution {
+public:
+	vector<string> openGates(vector<vector<char> >& map, vector<string>& gate_names) {
+	    // Code here
+	    
+	    Trie* trie = new Trie();
+	    for(string str: gate_names)
+	        trie->insert(str);
+	        
+	    unordered_set<string> res;
+	    vector<vector<bool>> vis(map.size(), vector<bool>(map[0].size(), false));
+	    for(int i=0; i<map.size(); i++){
+	        for(int j = 0; j<map[i].size(); j++){
+	            trie->isCheckWordThere({i,j}, res, map, vis );
+	        }
+	    }
+	    vector<string> ans;
+	    for(string str: res)
+	        ans.push_back(str);
+	    return ans;
+	}
+};

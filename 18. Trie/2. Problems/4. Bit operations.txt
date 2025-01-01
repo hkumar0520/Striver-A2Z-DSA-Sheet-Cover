@@ -25,6 +25,24 @@ class Solution {
 };
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #########################################################################################
 
 struct Node
@@ -158,6 +176,71 @@ class Solution {
         return t->setAtDifferentpos(c);
     }
 };
+
+
+### **Time Complexity**
+
+#### **1. Trie Insert Operation (`insert`):**
+- For each number, we traverse all 32 bits (assuming 32-bit integers).
+- Each bit requires a constant amount of work (checking if a node exists and inserting if necessary).
+- Complexity per insertion: \( O(32) = O(1) \).
+- For \( N \) numbers, total complexity: \( O(N) \).
+
+#### **2. Trie XOR Query (`findXOR`):**
+- For each number, we traverse all 32 bits.
+- Each bit requires a constant amount of work (checking and navigating the trie).
+- Complexity per query: \( O(32) = O(1) \).
+- For \( Q \) queries, total complexity: \( O(Q) \).
+
+#### **3. Check Operation (`check`):**
+- The loop iterates through 32 bits, performing constant-time operations for each bit.
+- Complexity per operation: \( O(32) = O(1) \).
+
+#### **4. Set Bit at Different Position (`setAtDifferentpos`):**
+- Similar to the above operations, it iterates through 32 bits.
+- Complexity per operation: \( O(32) = O(1) \).
+
+#### **Overall Time Complexity:**
+- Insertions: \( O(N) \) for \( N \) numbers.
+- Queries (XOR, check, set bit): \( O(Q) \) for \( Q \) queries.
+- Total: \( O(N + Q) \).
+
+---
+
+### **Space Complexity**
+
+#### **1. Trie Structure:**
+- Each node in the trie can have up to 2 children (binary trie for 0 and 1).
+- For \( N \) numbers, the maximum number of nodes in the trie is approximately \( O(32 \times N) = O(N) \), as each number requires up to 32 levels and unique prefixes create new nodes.
+
+#### **2. Additional Space:**
+- Each function uses a constant amount of space for variables and temporary storage.
+- Space for the result is negligible compared to the trie size.
+
+#### **Overall Space Complexity:**
+- Dominated by the trie: \( O(N) \).
+
+---
+
+### **Summary**
+
+- **Time Complexity:** \( O(N + Q) \), where \( N \) is the number of insertions, and \( Q \) is the number of queries.
+- **Space Complexity:** \( O(N) \), for the trie structure.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #######################################################################
 

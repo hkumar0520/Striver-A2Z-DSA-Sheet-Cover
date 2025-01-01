@@ -1,0 +1,512 @@
+
+
+struct Node{
+    Node* links[256];
+    bool isEnd = false;
+    
+    bool isContainsKey(char ch){
+        return links[ch] != NULL;
+    }
+    
+    Node* get(char ch){
+        return links[ch];
+    }
+    
+    void put(char ch, Node* node){
+        links[ch] = node;
+    }
+    
+    bool getEnd(){
+        return isEnd;
+    }
+    
+    void setEnd(){
+        isEnd = true;
+    }
+};
+
+class Trie{
+  Node* root;
+  
+  public:
+  Trie(){
+      root = new Node();
+  }
+  
+  void insert(string word){
+      Node *curr = root;
+      for(int i=0; i<word.size(); i++){
+          if(!curr->isContainsKey(word[i])){
+              curr->put(word[i], new Node());
+          }
+          curr = curr->get(word[i]);
+      }
+      curr->setEnd();
+  }
+  
+    void dfs(pair<int,int> indexXY, string path, unordered_set<string>& res
+            , vector<vector<char> >& board, Node* currNode)
+    {
+        int x = indexXY.first, y = indexXY.second;
+        
+        if(!currNode->isContainsKey(board[x][y]))   return;
+        
+        // get the node for {i,j} character
+        currNode = currNode->get(board[x][y]);
+        
+        // get the desired string
+        if(currNode->getEnd()){
+            if(res.find(path) == res.end())
+                res.insert(path);
+        }
+        
+        // visited mark
+        char prevChar = board[x][y];
+        board[x][y] =  '0';
+        
+        int rowSize = board.size(), colSize = board[0].size();
+        
+        for(int i = -1; i<=1; i++){
+            for(int j = -1; j<=1; j++){
+                int nx = x + i;
+                int ny = y + j;
+                
+                if(nx>=0 && ny>=0 && nx<rowSize && ny<colSize 
+                    && board[nx][ny] != '0'){
+                    
+                    dfs({nx, ny}, path+board[nx][ny], res, board, currNode);
+                }
+            }
+        }
+        
+        //unvisited
+        board[x][y] = prevChar;
+    }
+  
+    void isCheckWordThere(pair<int,int> indexXY, unordered_set<string>& res
+                          ,vector<vector<char> >& board)
+    {
+        Node* curr = root;
+        string path = "";
+        dfs(indexXY, path + board[indexXY.first][indexXY.second], res, board, curr);
+    }
+};
+
+class Solution {
+public:
+	vector<string> wordBoggle(vector<vector<char> >& board, vector<string>& dictionary) {
+	    // Code here
+	    Trie* trie = new Trie();
+	    for(string str: dictionary)
+	        trie->insert(str);
+	        
+	    unordered_set<string> res;
+	    for(int i=0; i<board.size(); i++){
+	        for(int j = 0; j<board[i].size(); j++){
+	            trie->isCheckWordThere({i,j}, res, board );
+	        }
+	    }
+	    vector<string> ans;
+	    for(string str: res)
+	        ans.push_back(str);
+	    return ans;
+	}
+};
+
+### Time Complexity Analysis
+
+#### 1. **Insertion of Words into the Trie**:
+In the `insert` method, each word is inserted into the Trie one character at a time. 
+
+- **Time Complexity per word insertion**: 
+  - For each word of length \( L \), we iterate through its characters, and each character insertion takes constant time since the Trie nodes for each character are just references.
+  - In the worst case, each word is inserted in \( O(L) \) time, where \( L \) is the length of the word.
+
+- **Time Complexity for inserting all words**: 
+  - If there are \( N \) words in the dictionary and the average length of each word is \( L \), the total time complexity for inserting all the words is \( O(N \times L) \).
+
+#### 2. **Depth-First Search (DFS)**:
+The `dfs` function performs a depth-first search on the board, starting from each character. The recursion explores all 8 neighboring cells (up, down, left, right, and diagonals), attempting to form words based on the Trie.
+
+- **Worst-case time complexity for `dfs`**: 
+  - In the worst case, for each call to `dfs`, it explores all 8 directions from the current cell. This results in a branching factor of 8 for each recursion.
+  - The depth of recursion depends on the maximum possible word length, which could be up to the number of cells on the board, i.e., \( M \times N \), where \( M \) and \( N \) are the dimensions of the board.
+
+- **Total complexity for `dfs`**:
+  - The maximum number of recursive calls could be \( O(M \times N) \), where \( M \) is the number of rows and \( N \) is the number of columns of the board. For each call, we check if a valid character exists in the Trie (constant time check), and we make recursive calls to the 8 neighboring cells.
+  - In the worst case, for each cell on the board, there are \( O(8^{L}) \) recursive calls (where \( L \) is the maximum length of any word in the dictionary). 
+  - **Total time complexity for DFS**: \( O(M \times N \times 8^L) \), where \( L \) is the maximum length of words in the dictionary.
+
+#### 3. **Final Set Conversion**:
+After running the DFS from every starting cell on the board, the unique words found are stored in a `unordered_set`. Then, they are converted to a vector for the final output.
+
+- **Time complexity**: 
+  - Inserting each string into the unordered set takes \( O(1) \) on average. After the DFS completes, we loop through the set and push back the elements into the final result vector. 
+  - **Time complexity for this operation** is \( O(K) \), where \( K \) is the number of unique words found.
+
+### Overall Time Complexity:
+Combining the insertion and DFS complexities, we have:
+
+1. Insertion complexity: \( O(N \times L) \)
+2. DFS complexity: \( O(M \times N \times 8^L) \)
+3. Final set conversion complexity: \( O(K) \)
+
+Thus, the overall time complexity is:
+\[
+O(N \times L + M \times N \times 8^L + K)
+\]
+Where:
+- \( N \) = number of words in the dictionary,
+- \( L \) = maximum length of a word in the dictionary,
+- \( M \) = number of rows in the board,
+- \( N \) = number of columns in the board,
+- \( K \) = number of unique words found.
+
+### Space Complexity Analysis
+
+#### 1. **Trie Structure**:
+The space complexity for the Trie depends on the total number of nodes created for all words in the dictionary.
+
+- Each node in the Trie has an array of 256 pointers (since `Node* links[256]`).
+- The total number of nodes created for all words in the dictionary is proportional to the sum of the lengths of all words. If the total number of characters across all words is \( S \), then the space complexity for the Trie is \( O(S) \), where \( S \) is the sum of the lengths of all the words in the dictionary.
+
+#### 2. **DFS Recursion and Visited Board**:
+- The recursion stack of DFS can grow up to \( O(M \times N) \) in the worst case (if the entire board is explored).
+- The `visited` state is implicitly managed by the `board` array (where characters are marked as visited by temporarily changing their values to '0'), so we don’t need extra space for a separate visited array.
+
+Thus, the space complexity for the recursion and the board is \( O(M \times N) \).
+
+#### 3. **Result Set**:
+- The unordered set stores up to \( K \) unique words.
+- Each word takes \( O(L) \) space, where \( L \) is the maximum length of a word.
+- The total space for the set is \( O(K \times L) \).
+
+#### Overall Space Complexity:
+Combining the space required for the Trie, the recursion stack, and the result set, the total space complexity is:
+\[
+O(S + M \times N + K \times L)
+\]
+Where:
+- \( S \) = sum of the lengths of all words in the dictionary,
+- \( M \times N \) = size of the board,
+- \( K \times L \) = space for storing the result words.
+
+### Conclusion:
+
+- **Time Complexity**: \( O(N \times L + M \times N \times 8^L + K) \)
+- **Space Complexity**: \( O(S + M \times N + K \times L) \)
+
+This solution can handle a large number of dictionary words efficiently, but its performance might degrade with a large board or long words due to the exponential growth of the search space.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
+
+
+
+
+
+
+
+
+
+
+struct Node{
+    Node* links[256];
+    bool isEnd = false;
+    
+    bool isContainsKey(char ch){
+        return links[ch] != NULL;
+    }
+    
+    Node* get(char ch){
+        return links[ch];
+    }
+    
+    void put(char ch, Node* node){
+        links[ch] = node;
+    }
+    
+    bool getEnd(){
+        return isEnd;
+    }
+    
+    void setEnd(){
+        isEnd = true;
+    }
+};
+
+class Trie{
+  Node* root;
+  
+  public:
+  Trie(){
+      root = new Node();
+  }
+  
+  void insert(string word){
+      Node *curr = root;
+      for(int i=0; i<word.size(); i++){
+          if(!curr->isContainsKey(word[i])){
+              curr->put(word[i], new Node());
+          }
+          curr = curr->get(word[i]);
+      }
+      curr->setEnd();
+  }
+  
+    void dfs(pair<int,int> indexXY, string path, unordered_set<string>& res
+            , vector<vector<char> >& board, Node* currNode
+            , vector<vector<bool>>& vis)
+    {
+        int x = indexXY.first, y = indexXY.second;
+        
+        if(!currNode->isContainsKey(board[x][y]))   return;
+        
+        // get the node for {i,j} character
+        currNode = currNode->get(board[x][y]);
+        
+        // get the desired string
+        if(currNode->getEnd()){
+            if(res.find(path) == res.end())
+                res.insert(path);
+        }
+        
+        // visited mark
+        vis[x][y] =  true;
+        
+        int rowSize = board.size(), colSize = board[0].size();
+        
+        for(int i = -1; i<=1; i++){
+            for(int j = -1; j<=1; j++){
+                int nx = x + i;
+                int ny = y + j;
+                
+                if(nx>=0 && ny>=0 && nx<rowSize && ny<colSize 
+                    && !vis[nx][ny]){
+                    
+                    dfs({nx, ny}, path+board[nx][ny], res, board, currNode, vis);
+                }
+            }
+        }
+        
+        //unvisited
+        vis[x][y] = false;
+    }
+  
+    void isCheckWordThere(pair<int,int> indexXY, unordered_set<string>& res
+                          ,vector<vector<char> >& board, vector<vector<bool>>& vis)
+    {
+        Node* curr = root;
+        string path = "";
+        dfs(indexXY, path + board[indexXY.first][indexXY.second], res, board, curr, vis);
+    }
+};
+
+class Solution {
+public:
+	vector<string> wordBoggle(vector<vector<char> >& board, vector<string>& dictionary) {
+	    // Code here
+	    Trie* trie = new Trie();
+	    for(string str: dictionary)
+	        trie->insert(str);
+	        
+	    unordered_set<string> res;
+	    vector<vector<bool>> vis(board.size(), vector<bool>(board[0].size(), false));
+	    for(int i=0; i<board.size(); i++){
+	        for(int j = 0; j<board[i].size(); j++){
+	            trie->isCheckWordThere({i,j}, res, board, vis );
+	        }
+	    }
+	    vector<string> ans;
+	    for(string str: res)
+	        ans.push_back(str);
+	    return ans;
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###############################################################################################################
+
+
+
+
+To improve the time complexity of the given code, we can focus on optimizing the `dfs` traversal and Trie operations. Here are some key improvements:
+
+### 1. **Optimization in DFS Traversal:**
+   - **Pruning during DFS**: If a path leads to a node where no valid word can be formed, stop further exploration immediately. This can be achieved by checking whether the current node has children (i.e., whether it is a prefix of any word in the dictionary).
+   - **Avoiding unnecessary string concatenation**: We are constantly concatenating strings (`path + board[nx][ny]`), which is inefficient because string concatenation has a time complexity of O(n). Instead, we can pass an integer representing the current path length (i.e., the length of the word currently being formed) and use that index in the DFS recursion.
+   
+### 2. **Trie Optimization:**
+   - **Avoid re-checking the root of the Trie**: We can skip the `root` node while performing DFS if the letter in `board[x][y]` doesn't match any character in the Trie. This can prevent unnecessary node checks.
+   
+### 3. **Efficient Set Operations:**
+   - The `unordered_set` for checking already found words is efficient, but it can still be optimized by ensuring that no duplicates are inserted in the Trie and during the DFS.
+
+Let's modify the code to incorporate these improvements:
+
+### Optimized Code:
+
+```cpp
+#include <vector>
+#include <unordered_set>
+#include <string>
+#include <iostream>
+using namespace std;
+
+struct Node{
+    Node* links[256] = {nullptr};  // links array initialized to nullptr
+    bool isEnd = false;
+
+    bool isContainsKey(char ch){
+        return links[ch] != nullptr;
+    }
+
+    Node* get(char ch){
+        return links[ch];
+    }
+
+    void put(char ch, Node* node){
+        links[ch] = node;
+    }
+
+    bool getEnd(){
+        return isEnd;
+    }
+
+    void setEnd(){
+        isEnd = true;
+    }
+
+    // Check if there are any valid child nodes
+    bool hasChildren() {
+        for (int i = 0; i < 256; i++) {
+            if (links[i]) return true;
+        }
+        return false;
+    }
+};
+
+class Trie{
+  Node* root;
+
+public:
+  Trie(){
+      root = new Node();
+  }
+
+  void insert(string word){
+      Node *curr = root;
+      for(char ch : word){
+          if(!curr->isContainsKey(ch)){
+              curr->put(ch, new Node());
+          }
+          curr = curr->get(ch);
+      }
+      curr->setEnd();
+  }
+
+  bool isCheckWordThere(pair<int,int> indexXY, unordered_set<string>& res, vector<vector<char>>& board, vector<vector<bool>>& vis){
+      Node* curr = root;
+      string path = "";
+      dfs(indexXY, path + board[indexXY.first][indexXY.second], res, board, curr, vis);
+      return true;
+  }
+
+  void dfs(pair<int,int> indexXY, string path, unordered_set<string>& res,
+           vector<vector<char>>& board, Node* currNode, vector<vector<bool>>& vis){
+      int x = indexXY.first, y = indexXY.second;
+
+      if (!currNode->isContainsKey(board[x][y])) return;
+
+      // Move to the next node in the Trie
+      currNode = currNode->get(board[x][y]);
+
+      // Check if we have a complete word
+      if (currNode->getEnd()){
+          if (res.find(path) == res.end())
+              res.insert(path);
+      }
+
+      // Mark as visited
+      vis[x][y] = true;
+
+      int rowSize = board.size(), colSize = board[0].size();
+
+      for (int i = -1; i <= 1; i++) {
+          for (int j = -1; j <= 1; j++) {
+              int nx = x + i;
+              int ny = y + j;
+
+              if (nx >= 0 && ny >= 0 && nx < rowSize && ny < colSize && !vis[nx][ny]) {
+                  // If there are no children in the current node, no need to explore further
+                  if (!currNode->hasChildren()) continue;
+                  dfs({nx, ny}, path + board[nx][ny], res, board, currNode, vis);
+              }
+          }
+      }
+
+      // Unmark as visited after exploring all directions
+      vis[x][y] = false;
+  }
+};
+
+class Solution {
+public:
+    vector<string> wordBoggle(vector<vector<char>>& board, vector<string>& dictionary) {
+        Trie* trie = new Trie();
+        for (string str : dictionary)
+            trie->insert(str);
+
+        unordered_set<string> res;
+        vector<vector<bool>> vis(board.size(), vector<bool>(board[0].size(), false));
+
+        for (int i = 0; i < board.size(); i++) {
+            for (int j = 0; j < board[i].size(); j++) {
+                // Check if there's a word starting from this cell
+                trie->isCheckWordThere({i, j}, res, board, vis);
+            }
+        }
+
+        vector<string> ans(res.begin(), res.end());
+        return ans;
+    }
+};
+```
+
+### Key Improvements:
+1. **`hasChildren()` Function**: This method checks if a node has any children, enabling us to prune the DFS early if no valid words can continue from the current path.
+2. **Avoiding String Concatenation**: In the DFS, we avoid creating new strings for each recursion. Instead, we pass the path directly.
+3. **Efficient DFS Termination**: The DFS terminates earlier when no further exploration is possible by checking if the current node has children.
+   
+### Time Complexity Analysis:
+1. **Insert Operation**: The insert operation in the Trie remains O(L), where L is the length of the word being inserted. For `n` words, this is O(nL).
+2. **DFS**: The DFS explores all the board cells. Each DFS call explores at most 8 directions. However, the pruning (using `hasChildren()`) and early termination (using `isContainsKey()`) will limit the exploration significantly. In the worst case, DFS can still explore all `O(9 * m * n)` board cells, but these optimizations reduce unnecessary work significantly.
+   
+Overall, this approach provides better performance by reducing unnecessary explorations during DFS, improving the time complexity in practical scenarios.

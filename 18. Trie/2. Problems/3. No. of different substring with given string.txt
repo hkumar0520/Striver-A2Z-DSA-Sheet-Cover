@@ -40,7 +40,67 @@ int countDistinctSubstrings(string &word)
 }
 
 
+### Time Complexity Analysis:
+
+Let's break down the time complexity step by step:
+
+1. **Outer loop** (`for(int i=0; i<word.size(); i++)`):
+   - This loop iterates over each starting position `i` in the string `word`. The number of iterations is equal to the length of the string `n` (`n = word.size()`).
+
+2. **Inner loop** (`for(int j=i; j<word.size(); j++)`):
+   - This nested loop starts from index `i` and goes to the end of the string. The number of iterations for each `i` is approximately `n - i`.
+   - In the worst case, this inner loop will run `n` times for `i = 0`, `n-1` times for `i = 1`, and so on, resulting in approximately `n + (n-1) + (n-2) + ... + 1 = n(n+1)/2` iterations across all `i`. This leads to an overall sum of approximately `O(n^2)`.
+
+3. **Inside the inner loop**:
+   - The operations inside the inner loop are:
+     - **isContainsKey**: This operation checks if a character exists in the current node’s links array, which is an `O(1)` operation, since the size of `links[]` is constant (26).
+     - **put**: This inserts a new node in the `links[]` array, which is also an `O(1)` operation.
+     - **get**: This retrieves the next node, which is again an `O(1)` operation.
+
+Thus, the work done inside the inner loop is constant, `O(1)`.
+
+### Total Time Complexity:
+- Since the outer loop runs `n` times, and the inner loop runs approximately `n^2/2` times, the total time complexity is:
+
+\[
+O(n^2)
+\]
+
+### Space Complexity Analysis:
+
+1. **Node structure**:
+   - Each `Node` contains an array of size 26 (for each letter of the alphabet), which is a constant space requirement of `O(26)` or simply `O(1)`.
+
+2. **Total number of nodes**:
+   - In the worst case, each distinct substring of the input string `word` will be represented by a new node. The number of distinct substrings of a string of length `n` is `O(n^2)` (in the worst case where all substrings are distinct).
+   - Since each node is created for a distinct substring and stored in the trie, the number of nodes created is proportional to the number of distinct substrings, which is `O(n^2)`.
+
+3. **Total space complexity**:
+   - Each node requires `O(1)` space, and there can be up to `O(n^2)` nodes. Thus, the total space complexity is:
+
+\[
+O(n^2)
+\]
+
+### Final Answer:
+
+- **Time Complexity**: `O(n^2)`
+- **Space Complexity**: `O(n^2)`
+
+
+
+
+
 ##################################################################################
+
+
+
+
+
+
+
+
+
 using set 
 
 set<string> countDistinctSubstrings(const string& s) {

@@ -1,0 +1,158 @@
+
+
+struct Node{
+    Node* links[26];
+    bool isEnd = false;
+    
+    bool isContainsKey(char ch){
+        return links[ch-'a'] != NULL;
+    }
+    
+    Node* get(char ch){
+        return links[ch-'a'];
+    }
+    
+    void put(char ch, Node* node){
+        links[ch-'a'] = node;
+    }
+    
+    bool getEnd(){
+        return isEnd;
+    }
+    
+    void setEnd(){
+        isEnd = true;
+    }
+};
+
+class Trie{
+  Node* root;
+  public:
+  
+  Trie(){
+      root = new Node();
+  }
+  
+  void Insert(string word){
+      Node* curr = root;
+      
+      for(int i=0; i<word.size(); i++){
+          if(!curr->isContainsKey(word[i]))
+            curr->put(word[i], new Node());
+            
+        curr = curr->get(word[i]);
+      }
+      
+      curr->setEnd();
+  }
+  bool Check(string word){
+      Node* curr = root;
+      for(int i=0;i<word.size();i++){
+          if(!curr->isContainsKey(word[i]))
+            return false;
+          
+          curr = curr->get(word[i]);
+      }
+      
+      return curr->getEnd();
+  }
+};
+
+
+class Solution{   
+public:
+    int klengthpref(string arr[], int n, int k, string str){    
+        if( k> str.size())  return 0;
+        
+        Trie* trie = new Trie();
+        trie->Insert(str.substr(0,k));
+        
+        int countPrefixStr = 0;
+        for(int i = 0; i<n; i++){
+            if( trie->Check(arr[i].substr(0,k)))
+                countPrefixStr++;
+        }
+        return countPrefixStr;
+    }
+};
+
+
+
+
+
+Let's analyze the time and space complexity of the given code.
+
+### Code Overview
+
+The code defines a **Trie** data structure for efficient insertion and checking of string prefixes. The `klengthpref` function, defined in the `Solution` class, is used to count how many strings from an input array start with the same prefix of length `k` as a given string `str`.
+
+### Time Complexity
+
+We'll break down the operations involved in the time complexity analysis:
+
+#### 1. **Insert Operation in the Trie**
+The `Insert` function in the `Trie` class inserts a string into the Trie. For a string of length `L`, it does the following:
+- Loops through each character in the string (`word.size()` iterations).
+- For each character, it checks if a node already exists for that character (`isContainsKey`), and if not, creates a new node (`put`).
+- Moving to the next node (`get`) takes constant time for each character.
+- In the worst case, the string length is `k` (in the `klengthpref` function, the substring of length `k` is inserted).
+
+So, the time complexity for the **Insert** operation for a string of length `k` is **O(k)**.
+
+#### 2. **Check Operation in the Trie**
+The `Check` function verifies whether a string (or its prefix) exists in the Trie. For a string of length `k`, it does the following:
+- Loops through each character in the string (`word.size()` iterations).
+- For each character, it checks if the node for that character exists (`isContainsKey`), and if so, it moves to the next node (`get`).
+- In the worst case, the string length is `k` (which is the same as the prefix length).
+
+So, the time complexity for the **Check** operation for a string of length `k` is **O(k)**.
+
+#### 3. **klengthpref Function**
+The `klengthpref` function does the following:
+1. **Inserting the Prefix of the Given String (`str`)**:
+   - It inserts a substring of length `k` from the string `str` into the Trie.
+   - This operation is **O(k)**.
+
+2. **Checking Prefixes for Each String in the Array (`arr`)**:
+   - It loops over each string in the array (`n` strings).
+   - For each string, it checks if the prefix of length `k` matches the inserted prefix.
+   - The **Check** operation for each string is **O(k)**.
+
+So, the overall time complexity of the `klengthpref` function is:
+- **O(k)** for inserting the prefix of `str`.
+- **O(n * k)** for checking the prefixes of `n` strings.
+
+Therefore, the total time complexity of the `klengthpref` function is:
+\[
+O(k + n \times k) = O(n \times k)
+\]
+Where:
+- `n` is the number of strings in the array `arr`.
+- `k` is the length of the prefix.
+
+### Space Complexity
+
+#### 1. **Space Complexity of the Trie**
+The space used by the Trie depends on the number of nodes created and the size of the alphabet:
+- Each node stores an array of size 26 (one for each lowercase letter of the alphabet).
+- The total number of nodes in the Trie is proportional to the total number of characters across all inserted strings.
+- In the worst case, if all inserted prefixes are unique, the number of nodes is proportional to the sum of the lengths of all unique strings in the Trie.
+
+Since we only insert the prefix of length `k` from the string `str`, and then check prefixes of length `k` for each string in the array:
+- The space complexity of the Trie is **O(n * k)**, where `n` is the number of strings and `k` is the length of the prefix.
+
+#### 2. **Space Complexity of the Solution**
+The solution uses a `Trie` object to store prefixes and an integer (`countPrefixStr`) to count the matching prefixes. The main space consumption is from the Trie.
+
+Thus, the total space complexity of the solution is **O(n * k)**, dominated by the space used by the Trie to store the prefixes.
+
+### Summary:
+
+- **Time Complexity:**
+  - `Insert` operation: **O(k)**
+  - `Check` operation: **O(k)**
+  - `klengthpref` function: **O(n * k)**
+
+- **Space Complexity:**
+  - Trie space: **O(n * k)**
+  - Total space complexity: **O(n * k)**

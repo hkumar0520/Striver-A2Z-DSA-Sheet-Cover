@@ -1,0 +1,139 @@
+
+
+
+struct Node{
+    // cannot write this Node* links[2] = NULL;
+    Node* links[2];
+    bool isEnd = false;
+    
+    bool isContainsKey(int ind){
+        return links[ind] != NULL;
+    }
+    
+    Node* get(int ind){
+        return links[ind];
+    }
+    
+    void put(int ind, Node* node){
+        links[ind] = node;
+    }
+    
+    bool getEnd(){
+        return isEnd;
+    }
+    
+    void setEnd(){
+        isEnd = true;
+    }
+    
+    
+};
+
+class Trie{
+    Node* root;
+    
+    public:
+    Trie(){
+        root = new Node();
+    }
+    
+    void Insert(vector<int> vec){
+        Node* curr = root;
+        
+        for(int i=0; i<vec.size();i++){
+            if( !curr->isContainsKey(vec[i]))
+                curr->put(vec[i], new Node());
+                
+            curr = curr->get(vec[i]);
+        }
+        curr->setEnd();
+    }
+    
+    bool Check(vector<int> vec){
+        Node* curr = root;
+        
+        for(int i=0; i<vec.size();i++){
+            if( !curr->isContainsKey(vec[i]))   return false;
+                
+            curr = curr->get(vec[i]);
+        }
+        return curr->getEnd();
+    }
+};
+
+class Solution
+{   
+    public:
+    vector<int> repeatedRows(vector<vector<int>> &matrix, int M, int N) 
+    { 
+        // Your code here
+        Trie* trie = new Trie();
+        
+        
+        vector<int> ans;
+        for(int i=0; i<M; i++){
+            if(trie->Check(matrix[i]))
+                ans.push_back(i);
+            else
+                trie->Insert(matrix[i]);
+        }
+        return ans;
+    } 
+};
+
+
+
+
+
+
+
+The code you provided defines a Trie (prefix tree) data structure to detect repeated rows in a matrix. The time and space complexity of the key operations in this code can be analyzed by examining the Trie operations and the overall solution.
+
+### Time Complexity
+
+Let’s analyze the different functions in the code and their time complexities:
+
+1. **Trie Insert Operation (`Insert()` method):**
+   - The `Insert` function iterates over the elements of a vector (representing a row of the matrix) and performs the following operations:
+     - Checking if a key exists in the current node (`isContainsKey()`) takes constant time: O(1).
+     - If the key is not found, it inserts a new node (which is an `O(1)` operation).
+     - Moving to the next node (`get()`) also takes constant time: O(1).
+   - The loop iterates over the elements of the vector (row), so for a vector of size `L` (the length of the row), the time complexity of `Insert()` is **O(L)**.
+
+2. **Trie Check Operation (`Check()` method):**
+   - Similar to `Insert()`, the `Check` function iterates over the vector of size `L` and performs constant-time checks (whether the key exists and moving to the next node).
+   - Therefore, the time complexity of the `Check()` function is also **O(L)**.
+
+3. **Repeated Rows Detection (`repeatedRows()` method in the `Solution` class):**
+   - The `repeatedRows()` method loops over the rows of the matrix (`M` rows).
+   - For each row, it calls `Check()` (which takes **O(L)** time) to check if the row already exists and then calls `Insert()` (also **O(L)** time) if the row is not found.
+   - So, for each row, the total time complexity is **O(L)** for `Check()` and **O(L)** for `Insert()`, making it **O(2L)** = **O(L)** per row.
+   - Therefore, for `M` rows, the total time complexity of the `repeatedRows()` method is **O(M * L)**, where:
+     - `M` is the number of rows in the matrix.
+     - `L` is the length of each row.
+
+### Space Complexity
+
+1. **Space Complexity of Trie:**
+   - The space used by the Trie is proportional to the number of nodes stored in the Trie. Each node has a fixed amount of space (two pointers for the children and one boolean value for the `isEnd`).
+   - In the worst case, the Trie could have one node for each unique row, where each row is of length `L`. Thus, in the worst case, the Trie will have **O(M * L)** nodes (each row could correspond to a distinct node in the Trie).
+   - Therefore, the space complexity of the Trie is **O(M * L)**.
+
+2. **Space Complexity of the Solution:**
+   - The `repeatedRows()` method uses an additional vector `ans` to store the row indices that are repeated. In the worst case, all rows could be repeated, so the space complexity for `ans` is **O(M)**.
+   - The Trie itself consumes **O(M * L)** space.
+   - Therefore, the total space complexity is **O(M * L)**.
+
+### Summary:
+
+- **Time Complexity:**
+  - **Insert**: O(L) per row
+  - **Check**: O(L) per row
+  - **repeatedRows**: O(M * L), where `M` is the number of rows and `L` is the length of each row
+
+- **Space Complexity:**
+  - **Trie**: O(M * L)
+  - **Solution**: O(M * L) (Trie) + O(M) (result vector), but dominated by **O(M * L)**
+
+
+  

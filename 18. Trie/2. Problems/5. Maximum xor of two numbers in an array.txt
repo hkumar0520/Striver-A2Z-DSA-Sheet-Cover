@@ -87,3 +87,49 @@ public:
         return maximum;
     }
 };
+
+
+### **Time Complexity**
+
+#### **1. Trie Insertion (`insert`):**
+- For each number, we traverse all 32 bits (assuming 32-bit integers).
+- Each bit requires a constant amount of work (checking and inserting into the trie).
+- Complexity per insertion: \( O(32) = O(1) \).
+- For \( N \) numbers in the input array `nums`, total complexity: \( O(N) \).
+
+#### **2. XOR Query (`findXor`):**
+- For each number, we traverse all 32 bits.
+- Each bit requires a constant amount of work (checking and navigating the trie).
+- Complexity per query: \( O(32) = O(1) \).
+- For \( N \) numbers in the input array `nums`, total complexity: \( O(N) \).
+
+#### **3. Maximum XOR Calculation:**
+- Iterates through the array `nums` and performs a `findXor` operation for each element.
+- Total complexity: \( O(N) \).
+
+#### **Overall Time Complexity:**
+- Insertion: \( O(N) \).
+- XOR Queries: \( O(N) \).
+- Total: \( O(N) \).
+
+---
+
+### **Space Complexity**
+
+#### **1. Trie Structure:**
+- Each node in the trie can have up to 2 children (binary trie for 0 and 1).
+- For \( N \) numbers, the trie will have at most \( O(32 \times N) = O(N) \) nodes, as each number requires up to 32 levels, and unique prefixes create new nodes.
+
+#### **2. Additional Space:**
+- The algorithm uses a constant amount of space for variables and temporary storage.
+- Space for the result is negligible compared to the trie size.
+
+#### **Overall Space Complexity:**
+- Dominated by the trie: \( O(N) \).
+
+---
+
+### **Summary**
+
+- **Time Complexity:** \( O(N) \), where \( N \) is the size of the input array `nums`.
+- **Space Complexity:** \( O(N) \), for the trie structure.

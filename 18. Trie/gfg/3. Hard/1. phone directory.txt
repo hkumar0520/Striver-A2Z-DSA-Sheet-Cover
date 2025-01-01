@@ -1,0 +1,173 @@
+
+
+// User function Template for C++
+
+struct Node{
+    Node* links[256];
+    bool isEnd = false;
+    
+    bool isContainsKey(char ch){
+        return links[ch] != NULL;
+    }
+    
+    Node* get(char ch){
+        return links[ch];
+    }
+    
+    void put(char ch, Node* node){
+        links[ch] = node;
+    }
+    
+    bool getEnd(){
+        return isEnd;
+    }
+    
+    void setEnd(){
+        isEnd = true;
+    }
+};
+
+class Trie{
+  Node* root;
+  
+  public:
+  Trie(){
+      root = new Node();
+  }
+  
+  void insert(string word){
+      Node *curr = root;
+      for(int i=0; i<word.size(); i++){
+          if(!curr->isContainsKey(word[i])){
+              curr->put(word[i], new Node());
+          }
+          curr = curr->get(word[i]);
+      }
+       curr->setEnd();
+  }
+  
+  bool check(string word){
+      Node* curr = root;
+      for(int i=0; i<word.size(); i++){
+          if(!curr->isContainsKey(word[i])) return false;
+          
+          curr = curr->get(word[i]);
+      }
+      return true;
+  }
+};
+
+
+class Solution{
+public:
+    vector<vector<string>> displayContacts(int n, string contact[], string s)
+    {
+        // code here
+        Trie* trie = new Trie();
+        trie->insert(s);
+        
+        int k = s.size();
+        vector<vector<string>> ans;
+        sort(contact, contact+n);
+        
+        for(int i = 1 ; i<=k; i++){
+            vector<string> currPath;
+            for(int j = 0; j<n; j++){
+                if(i > contact[j].size())  continue;
+                
+                if(j>0 && contact[j] == contact[j-1])   continue;
+                
+                if(trie->check( contact[j].substr(0,i) ))
+                    currPath.push_back(contact[j]);
+            }
+            if(currPath.size() > 0)
+                ans.push_back(currPath);
+            else
+                ans.push_back({ "0" });
+            
+        }
+        return ans;
+    }
+};
+
+#################################################################################
+
+// copy trie logic from above
+33/205 cases passed
+
+class Solution{
+public:
+    vector<vector<string>> displayContacts(int n, string contact[], string s)
+    {
+        // code here
+        Trie* trie = new Trie();
+        trie->insert(s);
+        
+        int k = s.size();
+        vector<vector<string>> ans;
+        // by commenting this line only 33/205 cases passed 
+        //sort(contact, contact+n); 
+        
+        for(int i = 1 ; i<=k; i++){
+            
+            vector<string> currPath;
+            
+            for(int j = 0; j<n; j++){
+                if(i > contact[j].size())  continue;
+                
+                if(j>0 && contact[j] == contact[j-1])   continue;
+                
+                if(trie->check( contact[j].substr(0,i) ))
+                    currPath.push_back(contact[j]);
+            }
+            if(currPath.size() > 0){
+                sort(currPath.begin(), currPath.end());
+                ans.push_back(currPath);
+            }
+            else
+                ans.push_back({ "0" });
+            
+        }
+        return ans;
+    }
+};
+
+
+
+#####################################################################################
+
+// User function Template for C++
+
+class Solution{
+public:
+    vector<vector<string>> displayContacts(int n, string contact[], string s)
+    {
+        int k = s.size();
+        vector<vector<string>> ans;
+        sort(contact, contact+n);
+        
+        for(int i = 1 ; i<=k; i++){
+            string prefix = s.substr(0, i);
+            vector<string> currPath;
+            
+            for(int j = 0; j<n; j++){
+                if(prefix.size() > contact[j].size())  continue;
+                
+                if(j>0 && contact[j] == contact[j-1])   continue;
+                
+                if( contact[j].substr(0,i) == prefix)
+                    currPath.push_back(contact[j]);
+            }
+            if(currPath.size() > 0)
+                ans.push_back(currPath);
+            else
+                ans.push_back({ "0" });
+            
+        }
+        return ans;
+    }
+};
+
+
+
+

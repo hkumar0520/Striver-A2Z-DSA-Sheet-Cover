@@ -2,6 +2,7 @@ learn this for trie
 
 struct Node{
     // by default links[26] is NULL for all 26 Node*, no need to initialze null
+    // cannot write this Node* links[2] = NULL, giving error;
     Node* links[26];
     bool flag = false;
 
@@ -110,6 +111,63 @@ public:
  * bool param_2 = obj->search(word);
  * bool param_3 = obj->startsWith(prefix);
  */
+
+
+
+
+### **Time Complexity**
+
+#### **1. Insertion (`insert` method):**
+- For each word of length \( L \), we traverse through all its characters to insert them into the trie.
+- Each character is processed in \( O(1) \), as the alphabet size is constant (\( 26 \) for lowercase English letters).
+- If there are \( N \) words, the total time complexity for insertion is:
+  \[
+  O(N \times L)
+  \]
+  where \( L \) is the average length of the words.
+
+#### **2. Search (`search` method):**
+- Searching for a word of length \( L \) requires traversing through \( L \) characters.
+- For a single search, the time complexity is \( O(L) \).
+- If multiple searches are performed, the total time complexity is proportional to the number of searches.
+
+#### **3. Prefix Search (`startsWith` method):**
+- Similar to `search`, prefix search also takes \( O(L) \), where \( L \) is the length of the prefix.
+
+---
+
+### **Space Complexity**
+
+#### **1. Trie Structure:**
+- Each node in the trie has \( 26 \) links (pointers) for lowercase English letters.
+- In the worst case, if all \( N \) words are unique and completely distinct, the trie will have \( \sum_{i=1}^N L_i \) nodes, where \( L_i \) is the length of the \( i \)-th word.
+- The total space required for the trie is:
+  \[
+  O(N \times L)
+  \]
+  where \( L \) is the average word length.
+
+#### **2. Auxiliary Space:**
+- Temporary variables used during traversal are constant and do not depend on the input size.
+- The space for input words and queries is not included in the trie’s space complexity.
+
+---
+
+### **Summary**
+
+- **Time Complexity:**
+  - Insertion: \( O(N \times L) \)
+  - Search: \( O(L) \) per query
+  - Prefix Search: \( O(L) \) per query
+- **Space Complexity:** \( O(N \times L) \), for the trie structure.
+
+
+
+
+
+
+
+
 
  ##################################################################################
 

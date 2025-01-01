@@ -85,4 +85,55 @@ string completeString(int n, vector<string> &a){
 
 
 
+Let's break down the **time complexity** and **space complexity** of the provided code.
 
+### Time Complexity
+
+1. **`insert(string word, Node* curr)`**:
+   - This function inserts a word into the trie.
+   - The loop runs once for each character of the word. For each character, we check whether a node already exists (`isContainsKey`), and if not, we create a new node (`put`).
+   - The time complexity for inserting a word of length `L` is **O(L)**, because we process each character of the word once.
+
+2. **`isCompleteString(string word, Node* curr)`**:
+   - This function checks if all prefixes of the word (from the start to the full word) exist as complete words in the trie.
+   - The function loops through each character of the word and checks if the current node has the `flag` set to `true` for every character in the word.
+   - The time complexity for this function is **O(L)**, where `L` is the length of the word, since we are traversing the word character by character.
+
+3. **`completeString(int n, vector<string>& a)`**:
+   - This function calls `insert` for each word in the vector `a`, and then checks for each word using `isCompleteString` whether it is a complete string.
+   - Sorting the vector of strings takes **O(n log n)**, where `n` is the number of strings in the vector.
+   - For each string, we insert it into the trie, which takes **O(L)**, where `L` is the length of the string. Since we perform this insertion for `n` strings, the overall complexity for all insertions is **O(n * L)**.
+   - After that, the function checks each string using `isCompleteString`, which also takes **O(L)** for each string. Therefore, the overall complexity for checking each word is **O(n * L)**.
+   - So, the total time complexity for the `completeString` function is:
+     - Sorting the vector: **O(n log n)**
+     - Inserting all strings: **O(n * L)**
+     - Checking each string: **O(n * L)**
+   - Combining these, the total time complexity is **O(n log n + n * L)**, where `n` is the number of strings and `L` is the average length of the strings.
+
+### Space Complexity
+
+1. **Trie Data Structure**:
+   - Each node in the trie contains:
+     - An array `links[26]` of size 26 to store pointers for each letter of the alphabet (each node has a constant amount of space for these 26 pointers).
+     - A boolean flag `flag` to indicate whether the node is the end of a word.
+   - The space used by each node is constant, i.e., **O(1)** for each node in terms of space for the node itself.
+   - If the total number of characters inserted into the trie across all words is `N`, the space complexity for the trie is **O(N)**, because we may need to create a new node for each distinct character in all words.
+
+2. **Function Variables**:
+   - The space for variables like `ans`, `maxlen`, and intermediate storage (such as pointers) is **O(1)**.
+
+### Overall Space Complexity
+- The space complexity is dominated by the space needed to store the trie nodes, so the overall space complexity is **O(N)**, where `N` is the total number of characters in all the words inserted into the trie.
+
+### Summary
+
+- **Time Complexity**:
+  - `insert(word)`: **O(L)**, where `L` is the length of the word.
+  - `isCompleteString(word)`: **O(L)**, where `L` is the length of the word.
+  - `completeString(n, vector<string>& a)`:
+    - Sorting the array: **O(n log n)**
+    - Inserting all words into the trie: **O(n * L)**
+    - Checking each word: **O(n * L)**
+    - Total: **O(n log n + n * L)**
+
+- **Space Complexity**: **O(N)**, where `N` is the total number of characters in all words inserted into the trie.
