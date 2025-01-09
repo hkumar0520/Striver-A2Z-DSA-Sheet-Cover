@@ -1,0 +1,64 @@
+
+
+https://www.geeksforgeeks.org/problems/substrings-of-length-k-with-k-1-distinct-elements/1?page=1&category=sliding-window&difficulty=Medium&sortBy=submissions
+
+//User function Template for C++
+
+class Solution {
+  public:
+    int countOfSubstrings(string S, int K) {
+        // code here
+        map<char,int> hash;
+        
+        for(int i=0; i<K; i++)
+            hash[S[i]]++;
+            
+        int countSubStrings = 0;
+        if(hash.size() == (K-1))
+            countSubStrings = 1;
+            
+        for(int i = K; i<S.size(); i++){
+            hash[S[i-K]]--;
+            if(hash[S[i-K]] == 0)
+                hash.erase(S[i-K]);
+                
+            hash[S[i]]++;
+            if(hash.size() == (K-1))
+                countSubStrings++;
+        }
+        return countSubStrings;
+    }
+};
+
+
+
+### Time Complexity:
+1. **Initialization of the hash map**:
+   - In the first `for` loop, we iterate through the first \( K \) characters of the string \( S \). This takes \( O(K) \) time.
+
+2. **Sliding Window**:
+   - For the rest of the string \( S \), the second `for` loop iterates through \( (N - K) \) characters, where \( N \) is the size of the string \( S \).
+   - Each insertion, deletion, or update operation in the `map` takes \( O(\log(K)) \), as the map maintains a balanced binary search tree structure.
+   - Therefore, the time complexity for the sliding window is \( O((N - K) \cdot \log(K)) \).
+
+**Total Time Complexity**:
+\[ O(K) + O((N - K) \cdot \log(K)) \approx O(N \cdot \log(K)) \]
+
+---
+
+### Space Complexity:
+1. **Hash Map**:
+   - The hash map stores at most \( K \) unique characters at any given time.
+   - Space complexity for the hash map is \( O(K) \).
+
+2. **Other Variables**:
+   - A few integer variables are used, which take \( O(1) \) space.
+
+**Total Space Complexity**:
+\[ O(K) \]
+
+---
+
+### Summary:
+- **Time Complexity**: \( O(N \cdot \log(K)) \)
+- **Space Complexity**: \( O(K) \)

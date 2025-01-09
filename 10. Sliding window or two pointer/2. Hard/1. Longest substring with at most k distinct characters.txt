@@ -1,0 +1,95 @@
+
+
+#include <map>
+
+int kDistinctChars(int k, string &str)
+{
+    // Write your code here
+    int n = str.size(), maxLen = -1;
+    for(int i=0; i<n; i++){
+        map<char,int> mp;
+        for(int j = i; j<n; j++){
+            mp[str[j]]++;
+                
+            if(mp.size() <= k)
+                maxLen = max(maxLen, j-i+1);
+            else if(mp.size() > k)
+                break;
+        }
+    }
+    return maxLen;
+}
+
+
+Time Complexity = O(n*n)
+Space Complexity = O(n);
+
+
+######################################################################
+
+#include <map>
+
+int kDistinctChars(int k, string &str)
+{
+    // Write your code here
+    int n = str.size(), maxLen = -1, l = 0, r = 0;
+
+    map<char,int> mp;
+    while(r<n){
+        mp[str[r]]++;
+
+        while(mp.size() > k){
+            mp[str[l]]--;
+            if(mp[str[l]] == 0)
+                mp.erase(str[l]);
+            l++;
+        }
+
+        if(mp.size() <= k)
+            maxLen = max(maxLen, r-l+1);
+
+        r++;
+    }
+    return maxLen;
+}
+
+time complexity = O(2*n)
+space complexity = O(1);
+
+###################################################################
+
+#include <map>
+
+int kDistinctChars(int k, string &str)
+{
+    // Write your code here
+    int n = str.size(), maxLen = -1, l = 0, r = 0;
+
+    map<char,int> mp;
+    while(r<n){
+        mp[str[r]]++;
+
+        if(mp.size() > k){
+            mp[str[l]]--;
+            if(mp[str[l]] == 0)
+                mp.erase(str[l]);
+            l++;
+        }
+
+        if(mp.size() <= k)
+            maxLen = max(maxLen, r-l+1);
+
+        r++;
+    }
+    return maxLen;
+}
+
+
+Time complexity - O(n)
+Space Complexity - O(1)
+
+
+
+
+
+

@@ -1,0 +1,56 @@
+
+
+In C++, finding the maximum and minimum keys or values in a `std::map` can be achieved in the following ways:
+
+---
+
+### 1. **Maximum and Minimum Keys**
+The keys in a `std::map` are stored in sorted order, so:
+- The **minimum key** is the first key in the map (`map.begin()`).
+- The **maximum key** is the last key in the map (`--map.end()`).
+
+#### Example:
+```cpp
+#include <iostream>
+#include <map>
+using namespace std;
+
+int main() {
+    map<int, int> myMap = {{1, 100}, {2, 200}, {3, 300}, {4, 400}};
+    
+    // Minimum key
+    cout << "Minimum key: " << myMap.begin()->first << endl;
+    
+    // Maximum key
+    cout << "Maximum key: " << (--myMap.end())->first << endl;
+
+    return 0;
+}
+```
+
+**Output**:
+```
+Minimum key: 1
+Maximum key: 4
+```
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

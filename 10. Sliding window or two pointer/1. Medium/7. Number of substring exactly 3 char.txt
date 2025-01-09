@@ -1,0 +1,302 @@
+
+
+
+
+
+class Solution {
+public:
+    int numberOfSubstrings(string s) {
+        
+        int n = s.size(), countSub = 0;
+
+        for(int i=0; i<n; i++)
+        {
+            vector<int> hash(3,0);
+            for(int j = i; j<n; j++){
+                hash[s[j]-'a'] = 1;
+                if(hash[0] && hash[1] && hash[2]){
+                    countSub += (n-j);
+                    break;
+                }
+            }
+        }
+
+        return countSub;
+    }
+};
+
+
+time complexity - O(n*n)
+space complexity - O(1)
+
+
+
+########################################################################
+
+
+
+
+
+
+
+
+
+
+
+class Solution {
+public:
+    int numberOfSubstrings(string s) {
+        
+        int n = s.size(), countSub = 0, l = 0, r = 0;
+
+        vector<int> hash(3, -1);
+        while(r<n){
+            hash[s[r]-'a'] = r;
+
+            if(hash[0] != -1 && hash[1] != -1 && hash[2] != -1){
+                countSub = countSub + (1 +  min({ hash[0], hash[1], hash[2]}));
+            }
+
+            r++;
+        }
+        return countSub;
+    }
+};
+
+
+
+Time complexity - O(n)
+Space Complexity - O(1)
+
+
+Let's break down the code step by step and explain it with an example.
+
+---
+
+### **Problem**
+We need to count the number of substrings in a given string `s` that contain all three characters `'a'`, `'b'`, and `'c'`.
+
+---
+
+### **Code Explanation**
+
+#### **Key Variables**
+1. **`hash`**: A vector of size 3 initialized to `-1`. It stores the **latest index** of the characters `'a'`, `'b'`, and `'c'` in the string. 
+   - `hash[0]` → Latest index of `'a'`.
+   - `hash[1]` → Latest index of `'b'`.
+   - `hash[2]` → Latest index of `'c'`.
+
+2. **`countSub`**: A counter to store the number of valid substrings.
+
+3. **`l` and `r`**: Left and right pointers to traverse the string.
+
+#### **Logic**
+- Traverse the string with the `r` pointer.
+- Update the `hash` vector with the latest index of the current character.
+- If all three characters `'a'`, `'b'`, and `'c'` have been seen (i.e., `hash[0]`, `hash[1]`, and `hash[2]` are not `-1`), calculate the number of valid substrings that end at the current position (`r`):
+  \[
+  \text{countSub} += 1 + \min(\text{hash[0], hash[1], hash[2]})
+  \]
+  This is because any substring starting from index `0` to the smallest index of `'a'`, `'b'`, or `'c'` and ending at `r` is valid.
+
+---
+
+### **Example**
+
+#### Input:
+```cpp
+string s = "abcabc";
+```
+
+#### Execution:
+
+| **Step** | **`r`** | **Character (`s[r]`)** | **`hash`**                | **Valid Substrings** | **Explanation**                                                                                     |
+|----------|----------|------------------------|---------------------------|-----------------------|-----------------------------------------------------------------------------------------------------|
+| 1        | 0        | `'a'`                 | `[0, -1, -1]`             | 0                     | `'b'` and `'c'` are missing.                                                                       |
+| 2        | 1        | `'b'`                 | `[0, 1, -1]`              | 0                     | `'c'` is missing.                                                                                  |
+| 3        | 2        | `'c'`                 | `[0, 1, 2]`               | 1                     | Substrings: `"abc"`. The smallest index is `0`, so `1 + min(0, 1, 2) = 1`.                         |
+| 4        | 3        | `'a'`                 | `[3, 1, 2]`               | 3                     | Substrings: `"bca"`, `"abc"`, `"bcab"`. Smallest index is `1`, so `1 + min(3, 1, 2) = 3`.          |
+| 5        | 4        | `'b'`                 | `[3, 4, 2]`               | 6                     | Substrings: `"cab"`, `"bca"`, `"abc"`, `"bcab"`, `"cab"`, `"cabc"`. Smallest index is `2`.          |
+| 6        | 5        | `'c'`                 | `[3, 4, 5]`               | 10                    | Substrings: `"abc"`, `"bca"`, `"bcab"`, `"cabc"`, `"cab"`, `"abcabc"`. Smallest index is `3`.       |
+
+#### Output:
+```cpp
+countSub = 10
+```
+
+---
+
+### **Why Does It Work?**
+- At each step, we ensure all three characters `'a'`, `'b'`, and `'c'` are present.
+- The formula `1 + min(hash[0], hash[1], hash[2])` ensures we count all substrings starting from the beginning of the string up to the smallest index of the three characters and ending at `r`.
+
+---
+
+### **Complexity**
+- **Time Complexity**: \(O(n)\)
+  - We traverse the string once, updating the hash vector and calculating the count in constant time.
+- **Space Complexity**: \(O(1)\)
+  - The `hash` vector has a fixed size of 3.
+
+---
+
+### **Summary**
+The code efficiently calculates the number of substrings containing all three characters `'a'`, `'b'`, and `'c'` using a sliding window approach and a hash table to track the latest indices of these characters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################################################################
+
+
+// solve using atmost K characters concept
+
+class Solution {
+public:
+
+    int kDistinctChars(int k, string &str)
+    {
+        // Write your code here
+        int n = str.size(), countSub = 0, l = 0, r = 0;
+
+        map<char,int> mp;
+        while(r<n){
+            mp[str[r]]++;
+
+            while(mp.size() > k){
+                mp[str[l]]--;
+                if(mp[str[l]] == 0)
+                    mp.erase(str[l]);
+                l++;
+            }
+
+            if(mp.size() <= k)
+                countSub +=  r-l+1;
+
+            r++;
+        }
+        return countSub;
+    }
+
+    int numberOfSubstrings(string s) {
+        return kDistinctChars(3, s) - kDistinctChars(2, s);
+    }
+};
+
+Time complexity - O(4*n)
+Space Complexity - O(1)
+
+
+
+
+Let’s go through the code step by step with an example.
+
+---
+
+### **Example Input**
+```cpp
+string s = "abcabc";
+```
+
+We want to find the number of substrings in `s` that contain exactly **3 distinct characters**.
+
+---
+
+### **Step 1: Count Substrings with at Most 3 Distinct Characters**
+
+#### **Execution of `kDistinctChars(3, "abcabc")`:**
+
+- **Initialization**:
+  - `n = 6`, `countSub = 0`, `l = 0`, `r = 0`, `mp = {}` (empty map).
+
+#### **Iteration**:
+
+| **Right Pointer (`r`)** | **Character** | **Map (`mp`)**       | **Left Pointer (`l`)** | **Substrings Count** | **Explanation**                  |
+|--------------------------|---------------|-----------------------|-------------------------|-----------------------|-----------------------------------|
+| 0                        | `'a'`         | `{a: 1}`             | 0                       | `1`                   | Substrings: `["a"]`              |
+| 1                        | `'b'`         | `{a: 1, b: 1}`       | 0                       | `3`                   | Substrings: `["a", "ab", "b"]`   |
+| 2                        | `'c'`         | `{a: 1, b: 1, c: 1}` | 0                       | `6`                   | Substrings: `["a", "ab", "abc", "b", "bc", "c"]` |
+| 3                        | `'a'`         | `{a: 2, b: 1, c: 1}` | 0                       | `10`                  | Substrings: `["a", "ab", "abc", "abca", "b", "bc", "bca", "c", "ca", "a"]` |
+| 4                        | `'b'`         | `{a: 2, b: 2, c: 1}` | 0                       | `15`                  | Substrings: Add 5 new substrings |
+| 5                        | `'c'`         | `{a: 2, b: 2, c: 2}` | 0                       | `21`                  | Substrings: Add 6 new substrings |
+
+**Result**:
+\[
+\text{kDistinctChars(3, "abcabc")} = 21
+\]
+
+---
+
+### **Step 2: Count Substrings with at Most 2 Distinct Characters**
+
+#### **Execution of `kDistinctChars(2, "abcabc")`:**
+
+- **Initialization**:
+  - `n = 6`, `countSub = 0`, `l = 0`, `r = 0`, `mp = {}`.
+
+#### **Iteration**:
+
+| **Right Pointer (`r`)** | **Character** | **Map (`mp`)**       | **Left Pointer (`l`)** | **Substrings Count** | **Explanation**                  |
+|--------------------------|---------------|-----------------------|-------------------------|-----------------------|-----------------------------------|
+| 0                        | `'a'`         | `{a: 1}`             | 0                       | `1`                   | Substrings: `["a"]`              |
+| 1                        | `'b'`         | `{a: 1, b: 1}`       | 0                       | `3`                   | Substrings: `["a", "ab", "b"]`   |
+| 2                        | `'c'`         | `{a: 1, b: 1, c: 1}` | 1                       | `5`                   | Shrink window: Remove `'a'`. Substrings: `["b", "bc", "c"]` |
+| 3                        | `'a'`         | `{b: 1, c: 1, a: 1}` | 2                       | `7`                   | Shrink window: Remove `'b'`. Substrings: `["c", "ca", "a"]` |
+| 4                        | `'b'`         | `{c: 1, a: 1, b: 1}` | 3                       | `9`                   | Shrink window: Remove `'c'`. Substrings: `["a", "ab", "b"]` |
+| 5                        | `'c'`         | `{a: 1, b: 1, c: 1}` | 4                       | `11`                  | Shrink window: Remove `'a'`. Substrings: `["b", "bc", "c"]` |
+
+**Result**:
+\[
+\text{kDistinctChars(2, "abcabc")} = 15
+\]
+
+---
+
+### **Step 3: Calculate Substrings with Exactly 3 Distinct Characters**
+
+Using the formula:
+\[
+\text{Substrings with exactly 3 distinct characters} = \text{kDistinctChars(3, "abcabc")} - \text{kDistinctChars(2, "abcabc")}
+\]
+\[
+= 21 - 15 = 6
+\]
+
+---
+
+### **Output**
+The number of substrings in `"abcabc"` with exactly 3 distinct characters is:
+```cpp
+6
+```
+
+---
+
+### **Explanation of Substrings**
+The substrings with exactly 3 distinct characters are:
+1. `"abc"`
+2. `"abca"`
+3. `"abcab"`
+4. `"abcabc"`
+5. `"bca"`
+6. `"bcab"`
+
+This matches the result!

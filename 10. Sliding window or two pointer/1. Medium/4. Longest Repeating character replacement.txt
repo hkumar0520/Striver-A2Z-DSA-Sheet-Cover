@@ -1,0 +1,285 @@
+
+// passed 46/49 testcase , time limit exceed;
+
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+
+        int len = 0, n = s.size();
+
+        for(int i=0; i<n; i++ ){
+           vector<int> mp(256, 0);
+            int maxVal = INT_MIN;
+            for(int j=i; j<n; j++){
+                mp[s[j]]++;
+
+                maxVal = max(maxVal, mp[s[j]]);
+
+                if(( j-i+1 - maxVal) <= k)
+                    len = max(len, j-i+1);
+                else
+                    break;
+            }
+        }
+
+        return len;
+    }
+};
+
+Time Complexity = O(n*n)
+Space Complexity = O(n);
+
+##############################################################################
+
+
+class Solution {
+public:
+    int findMax(vector<int>& map){
+        int maxValue = 0;
+        for(auto u: map)
+            maxValue = max( maxValue, u);
+        
+        return maxValue;
+    }
+    int characterReplacement(string s, int k) {
+
+        int maxLen = 0, n = s.size(), l = 0, r = 0;
+        vector<int> map(26, 0);
+
+        while(r<n){
+            map[s[r]-'A']++;
+            int maxVal = findMax(map);
+
+            while((r-l+1 - maxVal) > k){
+                map[s[l]-'A']--;
+                maxVal = findMax(map);
+                l++;
+            }
+            
+            if((r-l+1 - maxVal) <=k)
+                maxLen = max(maxLen, r-l+1);
+            
+            r++;
+        }
+        return maxLen;
+    }
+};
+
+
+
+time complexity = O(2*n)
+space complexity = O(1);
+
+####################################################################
+
+
+class Solution {
+public:
+    int findMax(vector<int>& map){
+        int maxValue = 0;
+        for(auto u: map)
+            maxValue = max( maxValue, u);
+        
+        return maxValue;
+    }
+    int characterReplacement(string s, int k) {
+
+        int maxLen = 0, n = s.size(), l = 0, r = 0;
+        vector<int> map(26, 0);
+
+        while(r<n){
+            map[s[r]-'A']++;
+            int maxVal = findMax(map);
+
+            if((r-l+1 - maxVal) > k){
+                map[s[l]-'A']--;
+                maxVal = findMax(map);
+                l++;
+            }
+            
+            if((r-l+1 - maxVal) <=k)
+                maxLen = max(maxLen, r-l+1);
+            
+            r++;
+        }
+        return maxLen;
+    }
+};
+
+
+Time complexity - O(n)
+Space Complexity - O(1)
+
+
+####################################################################
+
+chatgpt
+
+To solve the problem of finding the longest substring of a string `s` containing the same letter after performing at most `k` operations, we can use the sliding window technique combined with a frequency map to track the most frequent character in the current window. Here's how we can break down the approach:
+
+### Approach:
+1. **Sliding Window**: We'll maintain a window of characters where the number of characters that need to be changed is at most `k`.
+2. **Frequency Count**: We'll use a frequency map to keep track of the number of occurrences of each character within the current window.
+3. **Window Validity**: If the number of characters that need to be changed is greater than `k`, we will shrink the window from the left.
+4. **Max Length**: The longest valid window (where we can change characters to form a substring with all the same letters) will give us the desired result.
+
+### Detailed Steps:
+- Initialize a left pointer (`left`) and iterate through the string with a right pointer (`right`).
+- For each window, track the frequency of characters.
+- Calculate the number of changes needed as the size of the window minus the frequency of the most frequent character in the window.
+- If this number exceeds `k`, move the left pointer to shrink the window.
+- At each step, keep track of the maximum length of valid windows.
+
+### Code:
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int characterReplacement(string s, int k) {
+    unordered_map<char, int> freq_map;  // to store frequency of characters in the window
+    int left = 0;  // left pointer of the sliding window
+    int max_freq = 0;  // the frequency of the most frequent character in the current window
+    int max_len = 0;  // the maximum length of the substring we can achieve
+    
+    // Traverse the string with the right pointer
+    for (int right = 0; right < s.length(); ++right) {
+        char right_char = s[right];
+        
+        // Update the frequency of the current character in the window
+        freq_map[right_char]++;
+        
+        // Update the max_freq with the highest frequency of any character in the window
+        max_freq = max(max_freq, freq_map[right_char]);
+        
+        // If the window size minus the max_freq is greater than k, shrink the window
+        if (right - left + 1 - max_freq > k) {
+            // Shrink the window by moving the left pointer
+            freq_map[s[left]]--;
+            left++;
+        }
+        
+        // Calculate the length of the current valid window and update max_len
+        max_len = max(max_len, right - left + 1);
+    }
+    
+    return max_len;
+}
+
+int main() {
+    string s1 = "ABAB";
+    int k1 = 2;
+    cout << "Example 1: " << characterReplacement(s1, k1) << endl;  // Expected output: 4
+    
+    string s2 = "AABABBA";
+    int k2 = 1;
+    cout << "Example 2: " << characterReplacement(s2, k2) << endl;  // Expected output: 4
+    
+    return 0;
+}
+```
+
+### Explanation of Code:
+1. **Frequency Map (`freq_map`)**: We maintain a map to store the frequency of characters in the current window.
+2. **Sliding Window (`left` and `right` pointers)**: The `right` pointer iterates through the string, while the `left` pointer shrinks the window when the number of changes required exceeds `k`.
+3. **Max Frequency**: We track the frequency of the most common character within the current window (`max_freq`). The size of the window minus `max_freq` gives the number of characters we need to change. If this exceeds `k`, we move the `left` pointer.
+4. **Result**: We compute the maximum length of the valid window where the number of changes does not exceed `k`.
+
+### Time Complexity:
+- **O(n)**: The `right` pointer traverses each character in the string once, and the `left` pointer may also move across the string, but each character is processed at most twice (once when expanding the window and once when shrinking it).
+- The frequency map operations (insert and lookup) are O(1) on average.
+
+### Space Complexity:
+- **O(26) = O(1)**: The space used for the frequency map is constant since there are at most 26 uppercase English letters.
+
+### Examples:
+For `s = "ABAB"` and `k = 2`, you can change two 'A's to 'B's or two 'B's to 'A's, giving a maximum substring of length 4.
+For `s = "AABABBA"` and `k = 1`, changing one 'A' in the middle to 'B' gives the longest substring "BBBB" of length 4.
+
+
+##########################################################################################
+
+gpt with while in for loop 
+
+To update the `max_freq` inside the `if` block and replace `if` with `while`, we will need to make the following changes:
+
+1. **Update `max_freq` inside the loop**: This will make sure that the frequency of the most frequent character in the current window is always up-to-date as we shrink the window.
+   
+2. **Replace `if` with `while`**: This ensures that the window is shrunk continuously as long as the condition `right - left + 1 - max_freq > k` holds true, rather than just once when the condition is met.
+
+Here's the updated C++ code:
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int characterReplacement(string s, int k) {
+    unordered_map<char, int> freq_map;  // to store frequency of characters in the window
+    int left = 0;  // left pointer of the sliding window
+    int max_freq = 0;  // the frequency of the most frequent character in the current window
+    int max_len = 0;  // the maximum length of the substring we can achieve
+    
+    // Traverse the string with the right pointer
+    for (int right = 0; right < s.length(); ++right) {
+        char right_char = s[right];
+        
+        // Update the frequency of the current character in the window
+        freq_map[right_char]++;
+        
+        // Update the max_freq with the highest frequency of any character in the window
+        max_freq = max(max_freq, freq_map[right_char]);
+        
+        // If the window size minus the max_freq is greater than k, shrink the window
+        // This loop ensures we keep shrinking as long as the condition holds
+        while (right - left + 1 - max_freq > k) {
+            // Shrink the window by moving the left pointer
+            freq_map[s[left]]--;
+            left++;
+            
+            // Update max_freq again because the frequency map might have changed
+            max_freq = 0;
+            for (const auto& entry : freq_map) {
+                max_freq = max(max_freq, entry.second);
+            }
+        }
+        
+        // Calculate the length of the current valid window and update max_len
+        max_len = max(max_len, right - left + 1);
+    }
+    
+    return max_len;
+}
+
+int main() {
+    string s1 = "ABAB";
+    int k1 = 2;
+    cout << "Example 1: " << characterReplacement(s1, k1) << endl;  // Expected output: 4
+    
+    string s2 = "AABABBA";
+    int k2 = 1;
+    cout << "Example 2: " << characterReplacement(s2, k2) << endl;  // Expected output: 4
+    
+    return 0;
+}
+```
+
+### Explanation of Changes:
+
+1. **Replaced `if` with `while`**:
+   - The `while` loop ensures that as long as the current window's size minus the maximum frequency of a character exceeds `k`, we keep shrinking the window from the left side.
+   
+2. **Updated `max_freq` inside the `while` block**:
+   - After moving the `left` pointer to the right, the frequency of the characters in the window changes. We recalculate `max_freq` after each shift to reflect the current maximum frequency of any character in the window.
+
+### Example Outputs:
+
+1. **Input**: `"ABAB"`, `k = 2` → **Output**: `4`
+2. **Input**: `"AABABBA"`, `k = 1` → **Output**: `4`
+
+This version of the code should correctly handle the case when the window needs to be resized multiple times, ensuring that `max_freq` is always accurately updated.

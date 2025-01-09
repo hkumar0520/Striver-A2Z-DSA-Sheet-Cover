@@ -1,0 +1,38 @@
+
+
+// same as binary subarrY sum, replace odd with 1, even with 0
+
+class Solution {
+public:
+    int numberSubarrayWithAtMostK(vector<int>& nums, int goal){
+        int n = nums.size(), countSub = 0, l = 0, r = 0, sum = 0;
+        while(r<n){
+            sum += nums[r]%2;
+
+            while(sum > goal && l<=r){
+                sum  = sum - nums[l]%2;
+                l++;
+            }
+
+            if(sum <= goal)
+                countSub = countSub + (r-l+1);
+
+            r++;
+        }
+        return countSub;
+    }
+    int numberOfSubarrays(vector<int>& nums, int k) {
+        return numberSubarrayWithAtMostK(nums, k) - 
+                numberSubarrayWithAtMostK(nums, k-1);
+    }
+};
+
+
+time Complexity - O(2*n)
+space Complexity - O(1)
+
+
+
+
+
+

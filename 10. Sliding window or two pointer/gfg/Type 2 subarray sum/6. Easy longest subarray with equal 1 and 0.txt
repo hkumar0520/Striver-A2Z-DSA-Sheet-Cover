@@ -1,0 +1,28 @@
+
+https://www.geeksforgeeks.org/problems/largest-subarray-of-0s-and-1s/1?page=1&category=sliding-window&company=Amazon,Microsoft,Flipkart,Adobe,Google,Samsung,Paytm,Morgan%20Stanley,D-E-Shaw,Wipro,Uber,Infosys,Atlassian&difficulty=Easy&sortBy=submissions
+
+class Solution {
+  public:
+    int maxLen(vector<int> &arr) {
+        // Your code here
+        
+        unordered_map<int,int> mp;
+        mp[0] = -1;
+        int sum = 0;
+        int maxLen = 0;
+        for(int i = 0; i<arr.size(); i++){
+            
+            sum += (arr[i] == 0)? -1 : 1;
+            
+            if(mp.find(sum) != mp.end()){
+                maxLen = max(maxLen, i-mp[sum]);
+            }
+            else
+                mp[sum] = i;
+        }
+        return maxLen;
+    }
+};
+
+Time C: O(n)
+SC C: O(n)

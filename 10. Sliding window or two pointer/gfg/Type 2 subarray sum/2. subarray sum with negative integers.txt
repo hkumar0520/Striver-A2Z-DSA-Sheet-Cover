@@ -1,0 +1,154 @@
+
+
+
+https://www.geeksforgeeks.org/problems/subarray-with-0-sum-1587115621/1?page=1&category=sliding-window&difficulty=Medium&sortBy=submissions
+
+
+
+class Solution {
+  public:
+    // Complete this function
+    // Function to check whether there is a subarray present with 0-sum or not.
+    bool subArrayExists(vector<int>& arr) {
+        // Your code here
+        
+        map<int,int> mp;
+        
+        // for 0 indexing
+        mp[0] = 1;
+        
+        int n = arr.size(), l = 0, r = 0, sum = 0;
+        
+        while(r<n){
+            sum += arr[r];
+            
+            if(mp.find(sum) != mp.end())
+                return true;
+            
+            mp[sum]++;
+            r++;
+        }
+        return false;
+    }
+};
+
+### Time and Space Complexity Analysis
+
+#### **Code Explanation**
+The code checks if there exists a subarray with a sum of 0 in the given array. It uses a `map` to store the prefix sums encountered so far.
+
+- **Prefix Sum Logic:**  
+  - Calculate the cumulative sum (`sum`) while iterating through the array.
+  - If the same prefix sum is encountered again or if `sum` equals 0, it implies that a subarray with a sum of 0 exists.
+  - The `map` is used to store and check prefix sums efficiently.
+
+---
+
+#### **Time Complexity**
+
+1. **Iteration Over the Array:**  
+   - The code iterates through the array once, making this part O(n), where `n` is the size of the array.
+
+2. **Map Operations (Insertion and Lookup):**  
+   - Insertion and lookup in a `map` (implemented as a balanced binary search tree) take O(log n) time per operation in the worst case.  
+   - Since we perform these operations for every element in the array, the total time complexity for map operations is O(n log n).
+
+**Total Time Complexity:**  
+\[ O(n \log n) \]
+
+---
+
+#### **Space Complexity**
+
+1. **Map Storage:**  
+   - In the worst case, all prefix sums are unique, so the `map` stores up to `n` entries.
+   - This contributes O(n) space complexity.
+
+2. **Auxiliary Variables:**  
+   - Variables like `sum`, `l`, and `r` use O(1) space.
+
+**Total Space Complexity:**  
+\[ O(n) \]
+
+---
+
+### **Summary**
+- **Time Complexity:** \( O(n \log n) \)  
+- **Space Complexity:** \( O(n) \)
+
+
+#####################################################################
+
+
+
+class Solution {
+  public:
+    // Complete this function
+    // Function to check whether there is a subarray present with 0-sum or not.
+    bool subArrayExists(vector<int>& arr) {
+        // Your code here
+        
+        unordered_map<int,int> mp;
+        
+        // for 0 indexing
+        mp[0] = 1;
+        
+        int n = arr.size(), l = 0, r = 0, sum = 0;
+        
+        while(r<n){
+            sum += arr[r];
+            
+            if(mp.find(sum) != mp.end())
+                return true;
+            
+            mp[sum]++;
+            r++;
+        }
+        return false;
+    }
+};
+
+
+### Time and Space Complexity Analysis
+
+#### **Code Explanation**
+The code checks for the existence of a subarray with a sum of 0 using the prefix sum approach and an `unordered_map` for efficient lookup and insertion of prefix sums.
+
+1. **Logic:**
+   - Compute the cumulative sum (`sum`) while iterating through the array.
+   - If the current `sum` has already been seen in the `unordered_map`, it means a subarray with a sum of 0 exists.
+   - The `unordered_map` is used to store and check prefix sums in \( O(1) \) time (on average).
+
+---
+
+### **Time Complexity**
+
+1. **Iteration Over the Array:**
+   - The code iterates through the array once, contributing \( O(n) \), where \( n \) is the size of the array.
+
+2. **Unordered Map Operations:**
+   - Lookup and insertion in an `unordered_map` take \( O(1) \) on average for each element.
+   - For \( n \) elements, the total time for map operations is \( O(n) \) (amortized).
+
+**Total Time Complexity:**  
+\[ O(n) \]
+
+---
+
+### **Space Complexity**
+
+1. **Unordered Map Storage:**
+   - In the worst case, all prefix sums are unique, so the `unordered_map` stores up to \( n \) entries.
+   - This contributes \( O(n) \) space complexity.
+
+2. **Auxiliary Variables:**
+   - Variables like `sum`, `l`, and `r` use \( O(1) \) space.
+
+**Total Space Complexity:**  
+\[ O(n) \]
+
+---
+
+### **Summary**
+- **Time Complexity:** \( O(n) \)  
+- **Space Complexity:** \( O(n) \)

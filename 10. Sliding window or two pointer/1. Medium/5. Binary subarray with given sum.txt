@@ -1,0 +1,33 @@
+
+class Solution {
+public:
+    int numberSubarrayWithAtMostK(vector<int>& nums, int goal){
+        int n = nums.size(), countSub = 0, l = 0, r = 0, sum = 0;
+        while(r<n){
+            sum += nums[r];
+
+            while(sum > goal && l<=r){
+                sum  = sum - nums[l];
+                l++;
+            }
+
+            if(sum <= goal)
+                countSub = countSub + (r-l+1);
+
+            r++;
+        }
+        return countSub;
+    }
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+        return numberSubarrayWithAtMostK(nums, goal) - 
+                numberSubarrayWithAtMostK(nums, goal-1);
+    }
+};
+
+
+time Complexity - O(2*n)
+space Complexity - O(1)
+
+
+
+
