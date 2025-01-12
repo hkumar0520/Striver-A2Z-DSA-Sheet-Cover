@@ -12,7 +12,7 @@ class Solution {
         
         // O(n)
         for(auto  num: arr){
-            pq.push(num);          // log(N)
+            pq.push(num);          // log(k)
             if(pq.size() > k)   
                 pq.pop();
         }
@@ -21,7 +21,7 @@ class Solution {
         
         // O(K)
         while(!pq.empty()){
-            int curr = pq.top();          // logN
+            int curr = pq.top();          // logk
             pq.pop();
             ans.insert(ans.begin(), curr);
         }
@@ -31,7 +31,57 @@ class Solution {
 
 
 /*
-Time Complexity - N*log(N) + K*log(N) =  N*log(N)
-Space Complexity - K (size of pq) + K (size of ans) = 2k
+
+- **Time Complexity**: **O(n log k)**
+- **Space Complexity**: **O(k)**
 
 */
+
+
+Let's break down the **time complexity** and **space complexity** of the given code.
+
+### Code Explanation:
+
+The function `kLargest` takes an array `arr` and an integer `k`, and returns the `k` largest elements from the array.
+
+- **Min-heap usage**: A priority queue (`pq`) is used to maintain the smallest element at the top. If the size of the heap exceeds `k`, the smallest element is popped, ensuring that the heap always contains the `k` largest elements at any point.
+
+### Time Complexity:
+
+1. **Inserting elements into the heap:**
+
+   The priority queue (`pq`) is a min-heap. In the first loop, you iterate over each element in the array `arr` and:
+   - For each element `num`, you push it into the heap, which takes **O(log k)** time (since the heap can have at most `k` elements).
+   - After pushing, if the size of the heap exceeds `k`, you pop the smallest element, which also takes **O(log k)** time.
+
+   Since you are iterating over all `n` elements of the array (`arr`), the time complexity for the first loop is **O(n log k)**.
+
+2. **Extracting the top `k` elements from the heap:**
+
+   After building the heap with the `k` largest elements, you need to extract these elements from the heap:
+   - In the second loop, you pop elements from the heap and insert them into the answer vector (`ans`). Each pop operation takes **O(log k)** time.
+   - You perform this operation `k` times (since you want the `k` largest elements), so the total time for this part is **O(k log k)**.
+
+### Total Time Complexity:
+
+Combining the two parts:
+- Inserting elements into the heap: **O(n log k)**
+- Extracting the top `k` elements from the heap: **O(k log k)**
+
+Thus, the overall **time complexity** of the function is:
+\[ O(n \log k + k \log k) \]
+Since `k` is typically much smaller than `n`, this can be simplified to:
+\[ O(n \log k) \]
+
+### Space Complexity:
+
+- The space used by the priority queue (`pq`) is **O(k)** because at most `k` elements will be stored in the heap at any time.
+- The space used by the result vector (`ans`) is **O(k)**, since it will store exactly `k` elements.
+  
+Thus, the overall **space complexity** is:
+\[ O(k) \]
+
+### Final Complexity Summary:
+
+- **Time Complexity**: **O(n log k)**
+- **Space Complexity**: **O(k)**

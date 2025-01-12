@@ -57,3 +57,25 @@ cout << "~" << "\n";
 
 time complexity: O(n)
 space complexity: O(1)
+
+
+### **Time and Space Complexity Analysis**
+
+#### **Time Complexity: O(n)**
+- The loop iterates over each node in the array exactly once.
+- For each node, it calculates the indices of its left and right children and performs comparisons.
+- Since the loop runs for all `n` nodes, the time complexity is **O(n)**.
+
+---
+
+#### **Space Complexity: O(1)**
+- The algorithm uses a constant amount of extra space:
+  - Variables `lChild` and `rChild` are reused in each iteration.
+  - No additional data structures are used.
+- Hence, the space complexity is **O(1)**.
+
+---
+
+### **Summary**
+- **Time Complexity**: **O(n)** (Linear, as each node is processed once)
+- **Space Complexity**: **O(1)** (Constant, as no extra space is used)

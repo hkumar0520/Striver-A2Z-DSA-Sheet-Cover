@@ -1,0 +1,41 @@
+
+
+
+https://www.geeksforgeeks.org/problems/kth-element-in-matrix/1
+
+struct Element{
+    int val, row, col;
+    
+    bool operator>(const Element& other) const {
+        return val>other.val;
+    }
+};
+
+
+int kthSmallest(int mat[MAX][MAX], int n, int k)
+{
+    priority_queue< Element, vector<Element>, greater<Element> > pq;
+    
+    for(int i = 0; i<n; i++){
+        pq.push({ mat[i][0], i, 0});
+    }
+    
+    int countt = 0;
+    while(!pq.empty()){
+        Element currElement = pq.top();
+        pq.pop();
+        countt++;
+        
+        if(countt == k)
+            return currElement.val;
+            
+        if( (currElement.col + 1) < n)
+            pq.push({ mat[currElement.row][currElement.col+1], currElement.row, currElement.col+1});
+    }
+    return -1;
+}
+
+Time Complexity: Each operation on the heap (insert and extract-min) takes O(log N), where N is the size of the matrix. We perform K extractions, so the overall time complexity is O(K * log N).
+
+Space Complexity: The heap stores at most N elements, so the space complexity is O(N).
+

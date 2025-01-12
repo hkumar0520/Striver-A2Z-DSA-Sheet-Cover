@@ -171,6 +171,8 @@ int main() {
 
 Thus, the time complexity of handling the entire stream of N integers is \(O(N \log N)\), which meets the required time complexity for large inputs.
 
+space complexity - O(n)
+
 ### Example:
 
 #### Input:

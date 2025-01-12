@@ -1,5 +1,5 @@
 
-
+https://www.geeksforgeeks.org/problems/huffman-encoding3345/1?page=1&category=Heap&company=Amazon,Microsoft,Flipkart,Adobe,Google,Samsung,Accolite,MakeMyTrip,Zoho,Snapdeal,Paytm,Walmart,Morgan%20Stanley,Goldman%20Sachs,OYO%20Rooms,FactSet,D-E-Shaw,Oracle,Ola%20Cabs,Facebook,MAQ%20Software,SAP%20Labs,Hike,VMWare,Qualcomm,Intuit,Cisco,Visa,Yahoo,Directi,Linkedin,Payu,Wipro,PayPal,TCS,Bloomberg,Uber,Salesforce,BankBazaar,Citrix,Apple,Synopsys,Codenation,24*7%20Innovation%20Labs,Twitter,InMobi,Infosys,Yatra.com,Accenture,Myntra,GE,Housing.com,Atlassian,Oxigen%20Wallet,Swiggy,Media.net,Nutanix,Teradata,Grofers,Boomerang%20Commerce,Belzabar,CouponDunia,Kritikal%20Solutions,Drishti-Soft,Rockstand,Expedia,One97,IBM,Amdocs,Nvidia,Veritas,Juniper%20Networks,Epic%20Systems,InfoEdge,Times%20Internet,United%20Health%20Group,BrowserStack,Opera,Quikr,Arcesium,Groupon,Cognizant,Moonfrog%20Labs,GreyOrange,Netskope,Brocade,OATS%20Systems,Xome,Sapient,Kuliza,Zillious,ABCO,Airtel,Jabong,Sprinklr,Tejas%20Network,Mahindra%20Comviva,IgniteWorld,HSBC,Medlife,Dell,Target%20Corporation,Monotype%20Solutions,Citicorp,Fab.com,Streamoid%20Technologies,Informatica,Junglee%20Games,Komli%20Media,Taxi4Sure,Pubmatic,CarWale,nearbuy,Polycom,TinyOwl,Philips,Tesco,DE%20Shaw,National%20Instruments,Intel,Dunzo,JUSPAY,Lybrate,redBus,Huawei,Wooker,eBay,PropTiger,Cadence%20India,FreeCharge,Knowlarity,Open%20Solutions,Zopper,American%20Express,Cavisson%20System,Code%20Brew,Yodlee%20Infotech,KLA%20Tencor,Capgemini,MetLife,Zycus,Service%20Now,Unisys,Mobicip,HunanAsset,Vizury%20Interactive%20Solutions,Dailyhunt,Bidgely,HCL,Infinera,Freshokartz,Motlay,Zomato,CGI,PlaySimple&difficulty=Hard&status=solved&sortBy=submissions
 
 //{ Driver Code Starts
 #include<bits/stdc++.h>
@@ -237,3 +237,69 @@ The preOrder function generates Huffman codes by traversing the tree starting fr
 Finally, the huffmanCodes function generates the code for each character in the input string S by looking it up in the map mp.
 Example:
 For the input string S = "abc" and frequencies f = [5, 3, 7], this code will compute the Huffman codes for each character based on the frequencies.
+
+
+
+
+
+
+
+
+
+
+
+
+Let's analyze the **time complexity** and **space complexity** of the provided Huffman coding implementation.
+
+### Code Explanation:
+
+The function `huffmanCodes` implements the Huffman coding algorithm:
+1. **Building the priority queue**: It constructs a priority queue (`pq`) of `Node*` elements, where each node contains a character and its frequency. The priority queue is sorted based on the frequency, with the lowest frequencies at the top.
+2. **Huffman Tree Construction**: The algorithm repeatedly extracts the two nodes with the lowest frequencies, merges them into a new node, and pushes the merged node back into the priority queue. This continues until there is only one node left in the queue, which is the root of the Huffman tree.
+3. **Pre-order Traversal**: Once the tree is built, a pre-order traversal is performed to generate the Huffman codes for each character. The traversal appends `'0'` for left child and `'1'` for right child, building the binary strings representing the Huffman codes.
+
+### Time Complexity:
+
+#### 1. **Building the Priority Queue**:
+   - For each character in the input string `S` (length `N`), a `Node` is created and inserted into the priority queue.
+   - Inserting a node into the priority queue takes **O(log N)** time, so inserting all `N` nodes takes **O(N log N)** time.
+
+#### 2. **Constructing the Huffman Tree**:
+   - The process of constructing the Huffman tree involves repeatedly extracting the two nodes with the smallest frequencies from the priority queue and merging them into a new node. Each operation involves two `pop` operations (which take **O(log N)** time) and one `push` operation (also **O(log N)**).
+   - Since there are `N` nodes, and we perform `N-1` merging steps (each involving 2 pops and 1 push), the time complexity of this step is **O(N log N)**.
+
+#### 3. **Pre-order Traversal**:
+   - The pre-order traversal visits each node in the tree exactly once. Since there are `N` nodes in the Huffman tree, the time complexity of the traversal is **O(N)**.
+   - For each node, we build a string of length proportional to the depth of the node in the tree, which could be up to **O(log N)** for a balanced tree, resulting in **O(N log N)** time complexity for the entire traversal.
+
+### Total Time Complexity:
+Combining all the steps:
+- **Building the priority queue**: **O(N log N)**
+- **Constructing the Huffman tree**: **O(N log N)**
+- **Pre-order traversal**: **O(N log N)**
+
+Thus, the overall **time complexity** of the `huffmanCodes` function is:
+\[
+O(N \log N)
+\]
+
+### Space Complexity:
+
+1. **Priority Queue**:
+   - The priority queue stores `N` nodes at most. Since each node contains a character, frequency, and pointers to left and right children, the space used by the priority queue is **O(N)**.
+
+2. **Huffman Tree**:
+   - The tree itself consists of `N` nodes, and each node contains pointers to its left and right children, as well as the character and frequency. The space required for the tree is **O(N)**.
+
+3. **Pre-order Traversal**:
+   - The pre-order traversal function generates a list of strings (`ans`), where each string corresponds to a Huffman code for a character. Since there are `N` characters and each string can be at most **O(log N)** in length (for a balanced tree), the space used by the result vector is **O(N log N)**.
+
+Thus, the overall **space complexity** is:
+\[
+O(N \log N)
+\]
+
+### Final Complexity Summary:
+
+- **Time Complexity**: **O(N log N)**
+- **Space Complexity**: **O(N log N)**

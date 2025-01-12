@@ -58,3 +58,141 @@ public:
 };
 
 
+
+
+###################################################################
+
+
+
+
+class Solution {
+public:
+
+    class CustomComparator{
+        public:
+        bool operator()(vector<int> a, vector<int> b){
+            if(a[2] != b[2])
+                return a[2]>b[2];
+            
+            return a[1]<b[1];
+        }
+    };
+    vector<int> maximizeArray(int arr1[], int arr2[], int n) {
+            // code here 
+            
+        // vector<int>     
+        priority_queue< vector<int>, vector<vector<int>>, greater<vector<int>> > pq;
+        unordered_set<int> st;
+        
+        // element, index, arr1 or arr2 
+        for(int i = 0; i<n; i++){
+            if(st.find(arr2[i]) == st.end()){
+                pq.push({ arr2[i], i, 2});
+                st.insert(arr2[i]);
+            }
+        }
+        
+        for(int i=0; i<n; i++){
+            if(st.find(arr1[i]) == st.end()){
+                pq.push({ arr1[i], i, 1});
+                if(pq.size() > n)
+                    pq.pop();
+                st.insert(arr1[i]);
+            }
+        }
+        
+        st.clear();
+        vector<vector<int>> storeVec;
+        
+        while(!pq.empty()){
+            storeVec.push_back(pq.top());
+            pq.pop();
+        }
+        
+        sort(storeVec.begin(), storeVec.end() , CustomComparator());
+        
+        vector<int> ans;
+        for(int i=0; i<n; i++){
+            ans.push_back(storeVec[i][0]);
+        }
+        
+        return ans;
+    }
+};
+
+
+
+### **Time Complexity Analysis**
+
+1. **First Loop (Processing `arr2`):**
+   - Iterates over `arr2` (`n` iterations).
+   - For each element, checks if it's in the unordered set (`O(1)` on average).
+   - If not in the set, inserts it into the priority queue (`O(log k)` where `k` is the size of the priority queue) and adds it to the set (`O(1)`).
+   - In the worst case, this loop performs `n` insertions into the priority queue.
+
+   **Time Complexity:** \( O(n \log n) \).
+
+2. **Second Loop (Processing `arr1`):**
+   - Similar to the first loop, iterates over `arr1` (`n` iterations).
+   - Performs a set check and may insert into the priority queue, followed by a potential removal when the queue exceeds size `n`.
+   - Each insertion and removal operation on the priority queue takes \( O(\log n) \).
+
+   **Time Complexity:** \( O(n \log n) \).
+
+3. **Priority Queue to `storeVec`:**
+   - Extracts all elements from the priority queue, which has at most `n` elements.
+   - Each extraction takes \( O(\log n) \).
+
+   **Time Complexity:** \( O(n \log n) \).
+
+4. **Sorting `storeVec`:**
+   - Sorts a vector of size `n` using a custom comparator.
+   - Sorting takes \( O(n \log n) \).
+
+   **Time Complexity:** \( O(n \log n) \).
+
+5. **Final Loop (Constructing `ans`):**
+   - Constructs the result vector by iterating over `storeVec` (`n` iterations).
+
+   **Time Complexity:** \( O(n) \).
+
+---
+
+**Overall Time Complexity:**
+\[
+O(n \log n) \quad \text{(dominated by sorting and priority queue operations)}.
+\]
+
+---
+
+### **Space Complexity Analysis**
+
+1. **Priority Queue:**
+   - Stores at most `n` elements.
+   - Each element is a vector of size 3.
+
+   **Space Complexity:** \( O(n) \).
+
+2. **Unordered Set:**
+   - Stores at most `n` unique elements.
+
+   **Space Complexity:** \( O(n) \).
+
+3. **`storeVec` Vector:**
+   - Stores at most `n` elements, each of size 3.
+
+   **Space Complexity:** \( O(n) \).
+
+4. **Result Vector (`ans`):**
+   - Stores `n` elements.
+
+   **Space Complexity:** \( O(n) \).
+
+---
+
+**Overall Space Complexity:**
+\[
+O(n) \quad \text{(dominated by the priority queue, set, and vectors)}.
+\]
+
+

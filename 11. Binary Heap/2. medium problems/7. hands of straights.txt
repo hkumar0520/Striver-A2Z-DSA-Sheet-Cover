@@ -98,9 +98,55 @@ public:
         return true;        
     }
 };
-########################################################
 
-using vector 503 midSize
+### **Time Complexity Analysis**:
+
+1. **Building the Priority Queue**:
+   - The `for` loop iterates over all elements of `hand` to push them into the priority queue. Each insertion into the priority queue takes \(O(\log n)\), where \(n\) is the number of elements in the queue.
+   - Total cost for this step: \(O(n \log n)\), where \(n\) is the size of the `hand`.
+
+2. **Processing the Priority Queue**:
+   - The `while` loop processes all elements of the priority queue. For each element:
+     - The `pq.pop()` operation takes \(O(\log n)\).
+     - The `for` loop iterates over the `vec` vector to find a group where the current element can be added. In the worst case, this loop iterates over all elements of `vec`.
+     - If the size of `vec` is \(m\), the inner loop has a cost of \(O(m)\). In the worst case, \(m = n\).
+   - Total cost for processing the queue: \(O(n \cdot m) = O(n^2)\) in the worst case.
+
+3. **Checking Group Sizes**:
+   - The final `for` loop iterates over all elements of `vec` to check if all groups have the correct size. This loop has a cost of \(O(m)\), where \(m \leq n\).
+
+   - Total cost for this step: \(O(n)\).
+
+### **Overall Time Complexity**:
+The dominant term is \(O(n^2)\) from processing the priority queue. Hence, the overall time complexity is:
+\[
+O(n^2)
+\]
+
+---
+
+### **Space Complexity Analysis**:
+
+1. **Priority Queue**:
+   - The priority queue stores all elements of `hand`, which requires \(O(n)\) space.
+
+2. **Vector `vec`**:
+   - The vector `vec` stores groups of elements. In the worst case, it can store all elements of `hand`, requiring \(O(n)\) space.
+
+3. **Auxiliary Space**:
+   - A constant amount of extra space is used for variables and the loop iterators.
+
+### **Overall Space Complexity**:
+The space complexity is dominated by the space required for the priority queue and `vec`. Hence, the overall space complexity is:
+\[
+O(n)
+\]
+
+
+####################################################################
+
+using vector instead of pq, 
+ 503 midSize
 
 class Solution {
 public:
@@ -153,6 +199,41 @@ public:
         return true;        
     }
 };
+
+
+### **Time Complexity Analysis**:
+1. **Sorting the Input Array**:
+   - Sorting the `pq` vector requires \( O(n \log n) \), where \( n \) is the size of the `hand` array.
+   
+2. **Processing Each Card**:
+   - The `while` loop iterates through all elements in `pq` (size \( n \)), making it \( O(n) \).
+   - For each card, the `for` loop checks the `vec` vector to find a suitable group. In the worst case, this loop iterates over all groups in `vec`.
+     - The number of groups in `vec` is proportional to \( \frac{n}{\text{groupSize}} \).
+     - Thus, the `for` loop contributes \( O(\frac{n}{\text{groupSize}}) \) per card, and for all cards, this is \( O(n \cdot \frac{n}{\text{groupSize}}) = O(n^2 / \text{groupSize}) \).
+   
+3. **Final Check of Groups**:
+   - The `for` loop that verifies group sizes iterates over all groups in `vec`, which is \( O(\frac{n}{\text{groupSize}}) \).
+
+### **Overall Time Complexity**:
+- The dominating term is \( O(n^2 / \text{groupSize}) \) due to the nested loop structure.
+
+### **Space Complexity Analysis**:
+1. **Storage for the `pq` Vector**:
+   - The `pq` vector stores \( n \) elements, requiring \( O(n) \) space.
+   
+2. **Storage for the `vec` Vector**:
+   - The `vec` vector stores \( O(\frac{n}{\text{groupSize}}) \) groups, each with a pair of integers. This requires \( O(\frac{n}{\text{groupSize}}) \) space.
+   
+3. **Auxiliary Space**:
+   - The sorting operation uses \( O(n) \) additional space for temporary storage during the sort (depending on the sorting algorithm).
+
+### **Overall Space Complexity**:
+- \( O(n) \), dominated by the `pq` vector.
+
+### **Summary**:
+- **Time Complexity**: \( O(n^2 / \text{groupSize}) \) in the worst case.
+- **Space Complexity**: \( O(n) \).
+
 
 #################################################################
 

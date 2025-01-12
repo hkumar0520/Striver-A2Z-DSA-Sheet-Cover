@@ -116,3 +116,155 @@ Thus, the total space complexity is **O(1)**, as the space usage is constant and
 
 - **Time Complexity**: **O(T)**, where `T` is the number of tasks.
 - **Space Complexity**: **O(1)**.
+
+
+
+
+#######################################################################
+
+
+
+
+
+
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> map(26, 0);
+
+        for(int i=0; i<tasks.size(); i++){
+            map[tasks[i] - 'A']++;
+        }
+
+        priority_queue<pair<int,int>> pq;
+        for(int i=0; i<26; i++){
+            if(map[i] != 0){
+                pq.push({map[i], i});
+            }
+        }
+
+        int countPossibleSequence = 0;
+        while(!pq.empty()){
+            int countN = n;
+            vector<pair<int,int>> vec;
+
+            // roundrobin
+            while( countN>=0 ){
+               if(!pq.empty())
+               {
+                    pair<int,int> curr = pq.top();
+                    pq.pop();
+
+                    curr.first = curr.first - 1;
+                    if(curr.first > 0)
+                        vec.push_back(curr);
+
+                    countN--;
+                    countPossibleSequence++;
+                    continue;
+               }
+
+                // reaching end
+                if(vec.size() == 0)
+                    break;
+                
+                countN--;
+                countPossibleSequence++;
+            }
+
+            for(auto curr: vec)
+                pq.push(curr);
+        }
+        return countPossibleSequence;
+    }
+};
+
+
+######################################################################
+
+
+Here’s the improved version of the code for solving the **Task Scheduler** problem. The improvements focus on optimizing readability and reducing redundant operations:
+
+### Optimized Code
+```cpp
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        // Step 1: Count the frequency of each task
+        vector<int> freq(26, 0);
+        for (char task : tasks) {
+            freq[task - 'A']++;
+        }
+
+        // Step 2: Use a max heap to store task frequencies
+        priority_queue<int> pq;
+        for (int f : freq) {
+            if (f > 0) {
+                pq.push(f);
+            }
+        }
+
+        int totalIntervals = 0;
+
+        // Step 3: Process tasks using a cooldown period
+        while (!pq.empty()) {
+            vector<int> temp; // To store tasks that still have remaining frequency
+            int cycleTime = 0;
+
+            for (int i = 0; i <= n; i++) {
+                if (!pq.empty()) {
+                    int curr = pq.top();
+                    pq.pop();
+                    if (curr > 1) {
+                        temp.push_back(curr - 1); // Decrement frequency and store
+                    }
+                    cycleTime++;
+                } else if (temp.empty()) {
+                    break; // No tasks left, no idle time needed
+                } else {
+                    cycleTime++;
+                }
+            }
+
+            // Push remaining tasks back into the heap
+            for (int remaining : temp) {
+                pq.push(remaining);
+            }
+
+            totalIntervals += cycleTime;
+        }
+
+        return totalIntervals;
+    }
+};
+```
+
+---
+
+### Key Improvements:
+1. **Frequency Array**: Directly count the frequency of tasks using a vector of size 26 (for 'A' to 'Z'). This is more efficient than using a `pair` structure.
+2. **Simplified Logic**: The inner loop now processes tasks for a maximum of \( n+1 \) cycles, directly handling idle times when no tasks are available.
+3. **Avoid Redundant Checks**: Reduced redundant checks for empty states by combining conditions.
+4. **Efficient Storage**: Used a temporary vector to store remaining tasks, which are pushed back into the priority queue after processing.
+
+---
+
+### Time Complexity:
+1. **Frequency Count**: \( O(N) \), where \( N \) is the size of `tasks`.
+2. **Heap Operations**:
+   - Building the heap: \( O(26 \log 26) = O(1) \).
+   - Processing tasks: Each task is pushed and popped at most once, \( O(N \log 26) = O(N) \).
+3. **Overall**: \( O(N) \).
+
+### Space Complexity:
+1. **Frequency Array**: \( O(26) = O(1) \).
+2. **Priority Queue**: At most \( O(26) \) elements, \( O(1) \).
+3. **Temporary Vector**: \( O(26) = O(1) \).
+4. **Overall**: \( O(1) \).
+
+This optimized version is cleaner and more efficient while retaining the same logic for solving the problem.
+
+
+
+
+

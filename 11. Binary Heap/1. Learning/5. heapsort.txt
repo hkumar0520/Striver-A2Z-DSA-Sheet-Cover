@@ -72,3 +72,47 @@ Sorted array: 5 6 7 11 12 13
 
 
 
+### **Time and Space Complexity Analysis**
+
+#### **Time Complexity**
+
+1. **Heap Construction**:
+   - The first loop in `heapSort` (building the max heap) iterates from the last non-leaf node to the root.
+   - For each node, `heapify` is called, which has a worst-case time complexity proportional to the height of the node.
+   - The height of a node in a heap is \( \log N \) at most.
+   - Summing over all nodes, the time complexity of heap construction is \( O(N) \) (derived from the summation of the heights of all nodes in a binary tree).
+
+2. **Heap Sort**:
+   - The second loop in `heapSort` extracts the maximum element \( N \) times.
+   - Each extraction involves a swap and a call to `heapify` on the reduced heap.
+   - The time complexity of `heapify` is \( O(\log N) \) since the heap height decreases logarithmically.
+   - Therefore, the time complexity of the heap sort phase is \( O(N \log N) \).
+
+3. **Overall Time Complexity**:
+   - Combining the heap construction and sorting phases:
+     \[
+     O(N) + O(N \log N) = O(N \log N)
+     \]
+
+---
+
+#### **Space Complexity**
+
+1. **Recursive Stack in `heapify`**:
+   - The recursive calls in `heapify` depend on the height of the heap, which is \( \log N \).
+   - Hence, the space complexity due to the recursion stack is **O(\log N)**.
+
+2. **Extra Space**:
+   - The algorithm sorts the array in place, requiring no additional data structures.
+   - Therefore, no extra space is used.
+
+3. **Overall Space Complexity**:
+   - The space complexity is **O(\log N)**.
+
+---
+
+### **Summary**
+- **Time Complexity**: \( O(N \log N) \)  
+  (Heap construction: \( O(N) \), Sorting: \( O(N \log N) \))  
+- **Space Complexity**: \( O(\log N) \)  
+  (Due to the recursive stack in `heapify`)

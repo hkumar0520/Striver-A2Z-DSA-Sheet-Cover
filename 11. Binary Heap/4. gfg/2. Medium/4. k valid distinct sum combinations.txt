@@ -1,4 +1,4 @@
-
+https://www.geeksforgeeks.org/problems/maximum-sum-combination/0
 
 // time limit exceed 1010/1020 passed 
 
@@ -83,3 +83,87 @@ Overall, the time complexity is dominated by O(N log N) due to the sorting step.
 
 Space Complexity:
 We use a priority queue and a set to store combinations, so the space complexity is O(N).
+
+
+Let's analyze the **time complexity** and **space complexity** of the given code, which calculates the `K` largest sums of combinations formed by selecting one element from array `A` and one element from array `B`.
+
+### Code Explanation:
+
+The function `maxCombinations` takes the following inputs:
+- `N`: the size of arrays `A` and `B`.
+- `K`: the number of largest sums to return.
+- `A` and `B`: the two input arrays.
+
+### Steps in the Algorithm:
+
+1. **Sorting arrays `A` and `B`**:
+   - Both arrays are sorted in descending order using `sort()`. This is done to ensure that the largest combinations of elements from `A` and `B` are considered first.
+
+2. **Priority Queue**:
+   - A max-heap (implemented using a priority queue) is used to keep track of the largest sums.
+   - The heap stores pairs of sums and their indices, and each pair is of the form `(sum, (i, j))`, where `sum = A[i] + B[j]`, and `(i, j)` are the indices of the elements in `A` and `B`.
+   - The priority queue is initialized with the sum of the largest elements (`A[0] + B[0]`), and the corresponding indices `(0, 0)` are added to a `set` to keep track of which pairs have already been considered.
+
+3. **Heap Operations**:
+   - The while loop runs `K` times, where in each iteration:
+     - The largest sum is extracted from the heap.
+     - Two new possible combinations `(i+1, j)` and `(i, j+1)` are pushed into the heap if they haven't been visited before.
+     - The pairs `(i+1, j)` and `(i, j+1)` are added to the `vis` set to avoid revisiting the same combinations.
+
+4. **Return the Result**:
+   - After `K` iterations, the `ans` vector contains the largest `K` sums.
+
+### Time Complexity:
+
+1. **Sorting the arrays**:
+   - Sorting both `A` and `B` takes **O(N log N)** time, where `N` is the size of each array (`A` and `B`).
+
+2. **Priority Queue Operations**:
+   - The priority queue stores at most `K` elements at any given time because we are processing the largest `K` sums.
+   - For each of the `K` iterations, the operations on the priority queue (`push` and `pop`) take **O(log K)** time, since the heap can hold at most `K` elements.
+
+3. **Set Operations**:
+   - The `set` is used to track visited index pairs `(i, j)`. Insertions and lookups in a set take **O(log K)** time (since the number of elements in the set can be at most `K`).
+   - For each of the `K` iterations, there are at most two set operations (one for each of `(i+1, j)` and `(i, j+1)`), so the time for set operations in each iteration is **O(log K)**.
+
+Thus, the time complexity is:
+- Sorting the arrays: **O(N log N)**
+- `K` iterations with heap operations: **O(K log K)**
+- Set operations in each iteration: **O(K log K)**
+
+So, the overall time complexity is:
+\[
+O(N \log N + K \log K)
+\]
+Since `K` is usually much smaller than `N`, this can be simplified to:
+\[
+O(N \log N)
+\]
+
+### Space Complexity:
+
+1. **Priority Queue**:
+   - The priority queue can hold at most `K` elements at any time, so the space complexity of the priority queue is **O(K)**.
+
+2. **Set**:
+   - The `set` stores the pairs `(i, j)`, and since there are at most `K` unique pairs, the space complexity of the set is **O(K)**.
+
+3. **Result Vector**:
+   - The result vector `ans` stores the `K` largest sums, so its space complexity is **O(K)**.
+
+Thus, the overall space complexity is:
+\[
+O(K)
+\]
+
+### Final Complexity Summary:
+
+- **Time Complexity**: **O(N log N + K log K)**
+- **Space Complexity**: **O(K)**
+
+
+######################################################################
+
+cannot use unordered_set<pair<int, int>> in above 
+
+

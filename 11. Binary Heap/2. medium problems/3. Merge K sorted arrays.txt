@@ -239,6 +239,7 @@ Merged array: 1 2 2 2 3 3 4 4 5 5 6 6 7 8 9 9
 ```
 
 ### Time and Space Complexity:
+k = size of arr, k = size of vector of arr 
 - **Time Complexity:** O(k² * log k) because we process each element (k² elements) and perform a heap operation (insert or extract) for each element, which takes O(log k) time.
 - **Space Complexity:** O(k), as the heap stores at most `k` elements at any time.
 

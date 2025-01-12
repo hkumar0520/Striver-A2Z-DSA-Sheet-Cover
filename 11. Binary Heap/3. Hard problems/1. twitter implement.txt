@@ -312,3 +312,93 @@ public:
 This should reduce memory usage, as it avoids storing redundant copies of user data, tweets, and reduces the overhead of priority queues.
 
 
+Let's analyze the **time complexity** and **space complexity** of the given code.
+
+### Time Complexity:
+
+#### 1. **`postTweet(int userId, int tweetId)`**:
+
+- **Checking if the user exists**:  
+  `userReference.find(userId)` takes O(1) time on average due to the unordered_map structure.
+  
+- **Creating a new user if not present**:  
+  If the user does not exist, a new `User` object is created. This is a constant-time operation, O(1).
+  
+- **Posting a tweet**:  
+  The `postTweet()` function inside the `User` class performs the following operations:
+  - `tweets.push_front()` takes O(1) time.
+  - If the number of tweets exceeds 10, `tweets.pop_back()` is performed, which is O(1).
+  
+  So, the time complexity of `postTweet()` is O(1).
+
+Thus, the overall time complexity for `postTweet(int userId, int tweetId)` is **O(1)**.
+
+#### 2. **`getNewsFeed(int userId)`**:
+
+- **Checking if the user exists**:  
+  `userReference.find(userId)` takes O(1) time.
+  
+- **Gathering the user's tweets**:  
+  For the user, you iterate through their `tweets` (at most 10 tweets), which takes O(10) = O(1) time.
+
+- **Gathering tweets of followed users**:  
+  You loop over all the users the given user is following (`user->followeed`). For each followed user, you add their tweets (again, at most 10 tweets per user). 
+  If there are `m` users being followed, the total time to gather all the tweets is O(m * 10) = O(m), where `m` is the number of users the given user is following.
+
+- **Sorting all the collected tweets**:  
+  The total number of tweets collected will be at most `(10 + 10 * m)`. Sorting these tweets will take O((10 + 10 * m) log(10 + 10 * m)) time. Since we are interested only in the top 10 tweets, the complexity can be simplified to O(m log m).
+
+Thus, the overall time complexity for `getNewsFeed(int userId)` is **O(m log m)**, where `m` is the number of users the given user is following.
+
+#### 3. **`follow(int followerId, int followeeId)`**:
+
+- **Checking if the users exist**:  
+  `userReference.find(followerId)` and `userReference.find(followeeId)` each take O(1) time.
+  
+- **Adding the followee to the follower's follow list**:  
+  `follower->followedUser(followeeId)` calls `insert()` on an `unordered_set`, which takes O(1) time on average.
+  
+Thus, the overall time complexity for `follow(int followerId, int followeeId)` is **O(1)**.
+
+#### 4. **`unfollow(int followerId, int followeeId)`**:
+
+- **Checking if the users exist**:  
+  `userReference.find(followerId)` and `userReference.find(followeeId)` each take O(1) time.
+
+- **Removing the followee from the follower's follow list**:  
+  `follower->unFollowedUser(followeeId)` calls `erase()` on an `unordered_set`, which takes O(1) time on average.
+
+Thus, the overall time complexity for `unfollow(int followerId, int followeeId)` is **O(1)**.
+
+### Space Complexity:
+
+- **`userReference` unordered_map**:  
+  This stores a `User*` for each unique `userId`. If there are `n` unique users, the space complexity for this map is O(n).
+  
+- **`User` objects**:  
+  Each `User` object has:
+  - `userId`: an integer (O(1) space).
+  - `followeed`: an unordered set, which can contain up to `n` users in the worst case, so space complexity for this is O(n).
+  - `tweets`: a deque that stores up to 10 tweets for each user, which is O(10) = O(1).
+
+  So, the total space used by all `User` objects is O(n) for `userId` and `followeed`, and O(n) for the `userReference` map.
+
+- **Additional space for `getNewsFeed`**:  
+  The `getNewsFeed` function creates a temporary vector `allTweets` to store tweets from the user and their followees. In the worst case, this could store `(1 + m) * 10` tweets, where `m` is the number of users the user is following, leading to a space complexity of O(m * 10) = O(m).
+
+Thus, the overall space complexity is **O(n + m)**, where:
+- `n` is the number of unique users,
+- `m` is the number of users a given user follows.
+
+### Final Complexity Summary:
+
+- **Time Complexity**:
+  - `postTweet(int userId, int tweetId)`: O(1)
+  - `getNewsFeed(int userId)`: O(m log m)
+  - `follow(int followerId, int followeeId)`: O(1)
+  - `unfollow(int followerId, int followeeId)`: O(1)
+
+- **Space Complexity**: O(n + m)
+
+
+

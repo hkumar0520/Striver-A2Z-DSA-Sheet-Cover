@@ -16,10 +16,63 @@ class Solution {
             int currFirst = pq.top();
             pq.pop();
             int currSecond = pq.top();
-            pq.pop();v
+            pq.pop();
             sum = sum + currFirst + currSecond;
             pq.push(currFirst + currSecond);
         }
         return sum;
     }
 };
+
+
+
+Let's analyze the **time complexity** and **space complexity** of the given code, which computes the minimum cost of connecting ropes (similar to the **Huffman coding** problem or the **optimal merge pattern** problem).
+
+### Code Explanation:
+
+The `minCost` function solves the problem of finding the minimum cost to connect all the ropes. The process involves:
+1. **Using a min-heap (priority queue)** to always select the two smallest ropes.
+2. **Combining the two smallest ropes** by summing their lengths, adding that sum to the total cost, and then putting the resulting rope back into the heap.
+3. **Repeating the process** until only one rope remains, and the accumulated sum is returned as the minimum cost.
+
+### Time Complexity:
+
+1. **Building the Priority Queue**:
+   - The algorithm starts by inserting all elements from the input array `arr` into the priority queue.
+   - There are `n` elements in `arr`, and inserting each element into the priority queue takes **O(log n)** time.
+   - So, the time complexity for this step is **O(n log n)**, where `n` is the number of elements in the array.
+
+2. **Processing the Elements in the Priority Queue**:
+   - In the while loop, we repeatedly:
+     - Extract the two smallest elements from the priority queue (each extraction takes **O(log n)** time).
+     - Combine the two elements and push their sum back into the priority queue (which also takes **O(log n)** time).
+   - The loop runs `n - 1` times (since we reduce the number of ropes by one each time). For each iteration, the operations inside the loop take **O(log n)** time.
+   - So, the time complexity for this step is **O(n log n)**.
+
+3. **Overall Time Complexity**:
+   - Building the priority queue: **O(n log n)**
+   - Processing the ropes: **O(n log n)**
+   
+   Therefore, the overall time complexity is:
+   \[
+   O(n \log n)
+   \]
+
+### Space Complexity:
+
+1. **Priority Queue**:
+   - The priority queue stores all the elements from the array, which requires space for `n` elements.
+   - So, the space complexity for the priority queue is **O(n)**.
+
+2. **Auxiliary Space**:
+   - Apart from the priority queue, there are no other significant space-consuming data structures used.
+
+Therefore, the overall space complexity is:
+\[
+O(n)
+\]
+
+### Final Complexity Summary:
+
+- **Time Complexity**: **O(n log n)**
+- **Space Complexity**: **O(n)**
