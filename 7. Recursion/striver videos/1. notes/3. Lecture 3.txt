@@ -1,0 +1,68 @@
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Lecture 3
+
+void parameterizedSum(int i, int sum){
+    if(i<1){
+        cout<<sum<<endl;
+        return;
+    }
+    parameterizedSum(i-1, sum+i);
+    return ;
+}
+
+int functionalSum(int n){
+    if(n == 0)
+        return 0;
+        
+    return  n + functionalSum(n-1);
+}
+
+
+void parameterizedFactorial(int i, int sum){
+    if(i == 1){
+        cout<<sum<<endl;
+        return;
+    }
+    parameterizedFactorial(i-1, sum*i);
+    return ;
+}
+
+int functionalFactorial(int n){
+    if(n == 1)
+        return 1;
+        
+    return  n * functionalFactorial(n-1);
+}
+
+
+int main() {
+	// your code goes here
+	
+	int n;
+	cin>>n;
+	
+	cout<<"Sum of "<<n<<" numbers"<<endl;
+	
+	cout<<"Parameterized Fun : ";
+	parameterizedSum(n,0);
+
+    
+    cout<<"Functional Fun : "<<functionalSum(n)<<endl;
+    
+    cout<<"######################################"<<endl;
+    
+    cout<<"Factorial of "<<n<<" numbers "<<endl;
+    
+	cout<<"Parameterized Fun : ";
+	parameterizedFactorial(n,1);
+
+    
+    cout<<"Functional Fun : "<<functionalFactorial(n)<<endl;
+    
+}
+
+

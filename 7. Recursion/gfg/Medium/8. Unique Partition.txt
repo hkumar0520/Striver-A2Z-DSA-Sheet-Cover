@@ -1,0 +1,69 @@
+
+
+class Solution {
+  public:
+  
+    void backTrack(vector<vector<int>>& ans, vector<int>& path, int sum, int idx){
+        if(sum < 0) 
+            return;
+        
+        if(sum == 0){
+            ans.push_back(path);
+            return;
+        }
+        
+        for(int i = idx; i>=1; i--){
+            
+            path.push_back(i);
+            backTrack(ans, path, sum-i, i);
+            path.pop_back();
+        }
+    }
+  
+    vector<vector<int>> UniquePartitions(int n) {
+        // Code here
+        
+        vector<vector<int>> ans;
+        vector<int> path;
+        backTrack(ans, path, n, n);
+        return ans;
+    }
+};
+
+### **Time Complexity**
+
+1. **Recursive Calls**:
+   - The function explores all possible partitions of \( n \) by recursively subtracting integers from \( n \) to 1.
+   - The number of partitions of \( n \) corresponds to the number of ways \( n \) can be expressed as a sum of positive integers, which is given by the **partition function** \( P(n) \).
+   - The partition function \( P(n) \) grows exponentially. Asymptotically, \( P(n) \) is approximately:
+     \[
+     P(n) \sim \frac{1}{4n\sqrt{3}} e^{\pi \sqrt{\frac{2n}{3}}}
+     \]
+   - Hence, the recursive calls will be proportional to \( P(n) \).
+
+2. **Work Per Call**:
+   - In each recursive call, a loop runs from the current index \( i \) down to 1.
+   - The total number of iterations across all calls depends on \( n \) but is bounded by the size of the partition tree.
+
+3. **Total Complexity**:
+   - **Time Complexity**: \( O(P(n) \cdot n) \), where \( n \) is the maximum depth of recursion and \( P(n) \) is the number of partitions.
+
+---
+
+### **Space Complexity**
+
+1. **Recursion Stack**:
+   - The maximum depth of recursion is \( O(n) \), as the largest partition of \( n \) has \( n \) elements (e.g., \( 1+1+\dots+1 \)).
+
+2. **Auxiliary Space**:
+   - The `path` vector holds at most \( n \) elements at any time.
+   - The `ans` vector stores all partitions, which requires \( O(P(n) \cdot n) \) space.
+
+3. **Total Space Complexity**:
+   - **Space Complexity**: \( O(P(n) \cdot n) \), dominated by the storage of all partitions in `ans`.
+
+---
+
+### **Summary**
+- **Time Complexity**: \( O(P(n) \cdot n) \), where \( P(n) \) is the partition function.
+- **Space Complexity**: \( O(P(n) \cdot n) \), due to the storage of results and recursion stack.

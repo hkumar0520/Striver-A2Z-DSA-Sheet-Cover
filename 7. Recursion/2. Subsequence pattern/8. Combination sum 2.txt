@@ -1,0 +1,122 @@
+
+
+class Solution {
+public:
+    void findsubset(int start, int target, vector<int>& arr, vector<int>& ds, set<vector<int>>& ans) {
+        if (target == 0) {
+            ans.insert(ds);
+            return;
+        }
+
+        for(int i = start; i<arr.size(); i++){
+            if(i>start && arr[i] == arr[i-1])
+                continue;
+
+            if(arr[i]>target)
+                break;
+
+            ds.push_back(arr[i]);
+            findsubset(i+1, target - arr[i], arr, ds, ans); // Include the current element
+            ds.pop_back(); // Backtrack
+        }
+    }
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+
+        set<vector<int>> ans;
+        vector<int> path;
+        findsubset( 0, target, candidates, path, ans);
+        vector<vector<int>> subComb(ans.begin(), ans.end());
+        return subComb;
+    }
+};
+
+### Approach:
+
+The provided code solves the **Combination Sum II** problem using a **backtracking approach**. Let's break down the approach step by step:
+
+1. **Sorting the Candidates**:
+   - The candidates are sorted in non-decreasing order before starting the backtracking process. Sorting helps to efficiently handle duplicates and prune the search space by stopping early when the remaining target is too small.
+
+2. **Backtracking (`findsubset` function)**:
+   - The `findsubset` function tries to find all combinations that sum up to the target.
+   - It starts from the `start` index and explores the array recursively.
+   - If the target becomes `0`, it means a valid combination is found, and it is inserted into a `set` to avoid duplicates.
+   - During the iteration:
+     - If the current element is the same as the previous element (i.e., duplicates), it is skipped to avoid duplicate combinations.
+     - If the current element exceeds the target, further exploration is stopped (since the array is sorted).
+     - The current element is added to the `ds` (current combination), and we recursively explore further.
+     - After exploring, we **backtrack** by removing the last added element (`ds.pop_back()`), ensuring that we explore other possible combinations without the current element.
+
+3. **Storing Results**:
+   - The results are stored in a `set<vector<int>>` called `ans` to automatically handle duplicates. A set is chosen because it only stores unique combinations, ensuring that there are no repeated results.
+   - Finally, the `set` is converted to a `vector<vector<int>>` to return the result in the expected format.
+
+### Time Complexity:
+
+- **Sorting the candidates**: Sorting the input array takes \(O(n \log n)\), where \(n\) is the number of elements in the `candidates` array.
+- **Backtracking**:
+  - In the worst case, we explore all possible combinations of the array, which is \(O(2^n)\), where \(n\) is the length of the input array.
+  - The `set` ensures that only unique combinations are stored, and each insertion into the set takes \(O(k \log k)\), where \(k\) is the size of the current combination. However, since the total number of combinations in the worst case is bounded by \(O(2^n)\), the complexity is dominated by the backtracking process.
+
+- **Overall Time Complexity**:
+  - Sorting: \(O(n \log n)\)
+  - Backtracking: \(O(2^n)\) (worst case when there are \(2^n\) combinations to explore)
+  - Each insertion into the set takes \(O(k \log k)\), where \(k\) is the average length of combinations. In the worst case, \(k\) is \(n\), but we usually have fewer combinations due to pruning.
+  
+  Thus, the overall time complexity is dominated by the backtracking, and can be considered as \(O(2^n \cdot n)\).
+
+### Space Complexity:
+
+1. **Recursive Call Stack**:
+   - The maximum depth of the recursive calls is \(O(n)\), since we can have up to \(n\) elements in the combination.
+   
+2. **Storage for the Result**:
+   - The set `ans` stores all unique combinations. In the worst case, there could be \(O(2^n)\) unique combinations, and each combination could take \(O(n)\) space.
+   - Thus, the space complexity for storing the result is \(O(2^n \cdot n)\).
+
+3. **Total Space Complexity**:
+   - The space complexity includes:
+     - \(O(n)\) for the recursive call stack.
+     - \(O(2^n \cdot n)\) for storing the unique combinations in the set.
+   - Hence, the total space complexity is \(O(2^n \cdot n)\).
+
+### Summary:
+
+- **Time Complexity**: \(O(2^n \cdot n)\)
+- **Space Complexity**: \(O(2^n \cdot n)\)
+
+This approach efficiently handles duplicate combinations and uses backtracking to explore all possible subsets. The use of a set ensures that we only return unique combinations, avoiding the need for additional duplicate checking.
+
+
+##########################################################################
+
+class Solution {
+public:
+    void findsubset(int start, int target, vector<int>& arr, vector<int>& ds, vector<vector<int>>& ans) {
+        if (target == 0) {
+            ans.push_back(ds);
+            return;
+        }
+
+        for(int i = start; i<arr.size(); i++){
+            if(i>start && arr[i] == arr[i-1])
+                continue;
+
+            if(arr[i]>target)
+                break;
+
+            ds.push_back(arr[i]);
+            findsubset(i+1, target - arr[i], arr, ds, ans); // Include the current element
+            ds.pop_back(); // Backtrack
+        }
+    }
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+
+        vector<vector<int>> ans;
+        vector<int> path;
+        findsubset( 0, target, candidates, path, ans);
+        return ans;
+    }
+};

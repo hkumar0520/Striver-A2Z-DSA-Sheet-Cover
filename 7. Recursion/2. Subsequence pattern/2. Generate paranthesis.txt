@@ -1,0 +1,116 @@
+
+
+
+class Solution {
+public:
+    void generateAllParenthesis(pair<int,int> openOrCloseNo, string path, vector<string>& ans){
+        if(openOrCloseNo.first == 0 && openOrCloseNo.second == 0){
+            ans.push_back(path);
+            return ;
+        }
+
+        int openNo = openOrCloseNo.first, closedNo = openOrCloseNo.second;
+
+        if(openNo == 0){
+            generateAllParenthesis({0, closedNo-1}, path + ')', ans);
+            return;
+        }
+
+        if(openNo < closedNo){
+            generateAllParenthesis({openNo-1, closedNo}, path + '(', ans);
+            generateAllParenthesis({openNo, closedNo-1}, path + ')', ans);
+            
+        }
+        else if(openNo == closedNo)
+            generateAllParenthesis({openNo - 1, closedNo}, path + '(', ans);
+
+
+    }
+    vector<string> generateParenthesis(int n) {
+        string path = "";
+        vector<string> ans;
+
+        generateAllParenthesis({n,n}, path, ans);
+
+        return ans;
+    }
+};
+
+time and space complexity 
+
+Let's analyze the time and space complexity of the given code.
+
+### Code Overview:
+
+- **`generateAllParenthesis` function:**
+  - This function generates all valid combinations of parentheses for a given number `n`.
+  - The parameters `openOrCloseNo` are used to track how many open and closed parentheses are left to be added.
+  - The function recursively generates valid parentheses by adding an open parenthesis '(' or a close parenthesis ')', while ensuring that:
+    - The number of open parentheses never exceeds the total number of open parentheses (`openNo`).
+    - The number of close parentheses never exceeds the number of open parentheses at any point in the string (`closedNo`).
+
+- **`generateParenthesis` function:**
+  - This function initializes the necessary variables and starts the recursion with `n` open and `n` closed parentheses.
+  - The result is stored in `ans`, which is returned after all combinations are generated.
+
+### Time Complexity:
+
+1. **Recursive Tree Analysis:**
+   - The recursion tree generates all valid combinations of parentheses. For each step, we either append an open parenthesis '(' or a close parenthesis ')', but we must respect the constraints:
+     - The number of open parentheses can be at most `n`.
+     - The number of closed parentheses can never exceed the number of open parentheses.
+   - This generates a valid set of balanced parentheses, which corresponds to the **Catalan number** for `n` (denoted \( C_n \)).
+   
+   The total number of valid parentheses combinations for `n` pairs is given by the \(n\)-th Catalan number \( C_n \), which asymptotically behaves like:
+   \[
+   C_n = \frac{1}{n+1} \binom{2n}{n} \sim \frac{4^n}{n^{3/2}}
+   \]
+   This means the number of valid parentheses combinations grows exponentially with \( n \), specifically as \( O(4^n / n^{3/2}) \).
+
+2. **Work Done per Recursive Call:**
+   - At each step, we either add an open or a closed parenthesis to the string `path`, which takes constant time \( O(1) \).
+   - The recursion depth is proportional to \( 2n \) because there are `n` open parentheses and `n` close parentheses to add.
+
+3. **Total Time Complexity:**
+   - The number of valid combinations is \( C_n \), and each combination takes \( O(n) \) time to generate (due to the construction of each string `path` of length \( n \)).
+   - Therefore, the total time complexity is:
+   \[
+   O(n \cdot C_n) = O(n \cdot \frac{4^n}{n^{3/2}}) = O\left( \frac{n \cdot 4^n}{n^{3/2}} \right)
+   \]
+   This simplifies to approximately:
+   \[
+   O(4^n / n^{1/2})
+   \]
+   which grows exponentially with \( n \).
+
+Thus, the **time complexity** of the code is:
+\[
+O(4^n / n^{1/2})
+\]
+
+### Space Complexity:
+
+1. **Recursion Stack:**
+   - The depth of the recursion tree is at most \( 2n \), because we are adding parentheses at each level until we reach a complete string of length `2n`.
+   - Thus, the maximum recursion depth is \( 2n \), which contributes \( O(n) \) space for the recursion stack.
+
+2. **Result Storage:**
+   - The `ans` vector stores all valid combinations of parentheses.
+   - There are \( C_n \) valid combinations, and each string is of length \( 2n \). Therefore, the space required to store the result is:
+   \[
+   O(C_n \cdot 2n) = O\left(\frac{4^n}{n^{3/2}} \cdot 2n\right) = O\left(\frac{4^n}{n^{1/2}}\right)
+   \]
+   which grows exponentially with \( n \).
+
+Thus, the **space complexity** of the code is:
+\[
+O(4^n / n^{1/2})
+\]
+
+### Summary:
+
+- **Time complexity:** \( O(4^n / n^{1/2}) \)
+- **Space complexity:** \( O(4^n / n^{1/2}) \)
+
+
+

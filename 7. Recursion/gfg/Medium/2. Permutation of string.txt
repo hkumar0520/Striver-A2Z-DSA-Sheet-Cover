@@ -1,0 +1,111 @@
+
+
+
+class Solution {
+  public:
+    void backTrack(string& str, unordered_set<string>& res){
+        
+        for(int j = 0; j< str.size(); j++){
+            
+            swap(str[0], str[j]);
+            if(res.find(str) == res.end()){
+                res.insert(str);
+                backTrack(str, res);
+            }
+            swap(str[0], str[j]);
+        }
+    }
+    vector<string> findPermutation(string &s) {
+        // Code here there
+        unordered_set<string> res;
+        backTrack(s, res);
+        vector<string> ans(res.begin(), res.end());
+        return ans;
+    }
+};
+
+
+Let's analyze the **time complexity** and **space complexity** of the provided code.
+
+### **Code Breakdown**
+1. The function `findPermutation` takes a string `s` and generates all unique permutations of the string using backtracking.
+2. The `backTrack` function swaps characters in the string to generate permutations and stores them in an `unordered_set` to ensure uniqueness.
+
+---
+
+### **Time Complexity**
+The key operations are:
+1. **Generating permutations**:
+   - For a string of length \( n \), the number of permutations is \( n! \).
+   - In the worst case, the algorithm explores all \( n! \) permutations.
+
+2. **Checking uniqueness**:
+   - The `unordered_set` ensures uniqueness. Inserting a string into the set takes \( O(n) \) (the length of the string) in the average case for a single operation.
+
+3. **Recursive calls**:
+   - At each recursive step, the function iterates through all characters of the string (\( O(n) \)).
+   - The depth of recursion is \( n \).
+
+Overall, the **time complexity** is approximately:
+\[
+O(n \cdot n!)
+\]
+This accounts for \( n! \) permutations, each requiring \( O(n) \) operations to check/set and swap.
+
+---
+
+### **Space Complexity**
+1. **Storage of permutations**:
+   - The `unordered_set` stores up to \( n! \) unique permutations, each of length \( n \).
+   - Space required: \( O(n \cdot n!) \).
+
+2. **Recursive call stack**:
+   - The maximum depth of recursion is \( n \), requiring \( O(n) \) space.
+
+Thus, the **space complexity** is:
+\[
+O(n \cdot n!) + O(n) \approx O(n \cdot n!)
+\]
+
+---
+
+### **Final Complexity**
+- **Time Complexity**: \( O(n \cdot n!) \)
+- **Space Complexity**: \( O(n \cdot n!) \)
+
+This is typical for backtracking algorithms generating all permutations.
+
+
+
+###################################################################################
+
+
+
+class Solution {
+  public:
+    void backTrack(string& str, unordered_set<string>& res){
+        
+        for(int j = 0; j< str.size(); j++){
+            
+            swap(str[0], str[j]);
+            if(!res.count(str)){
+                res.insert(str);
+                backTrack(str, res);
+            }
+            swap(str[0], str[j]);
+        }
+    }
+    vector<string> findPermutation(string &s) {
+        // Code here there
+        unordered_set<string> res;
+        backTrack(s, res);
+        vector<string> ans(res.begin(), res.end());
+        return ans;
+    }
+};
+
+
+
+
+
+##########################################################################

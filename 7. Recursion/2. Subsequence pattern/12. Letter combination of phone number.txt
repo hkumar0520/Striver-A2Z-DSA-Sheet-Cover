@@ -1,0 +1,105 @@
+
+
+
+class Solution {
+public:
+    void backTrack(int index, string digits, string& path, vector<string>& ans,
+                    vector<vector<int>>& map)
+    {
+        if(index == digits.size()){
+            ans.push_back(path);
+            return ;
+        }
+
+        int id = digits[index] - '0';
+        cout<<id<<" ";
+        for(int i = 0; i<map[id].size(); i++){
+            string pathtmp = path + (char)('a'+map[id][i]);
+            cout<<pathtmp<<" ";
+            backTrack(index+1, digits, pathtmp, ans, map);
+        }
+    }
+    vector<string> letterCombinations(string digits) {
+        if(digits.size() == 0)
+            return {};
+        vector<vector<int>> map(10);
+
+        int countt = 0;
+        for(int i = 2; i<=9;i++){
+
+            int limit = 3;
+            if( (i==7) || (i==9))
+                limit = 4;
+            for(int j = 0; j<limit; j++){
+                map[i].push_back(countt);
+                countt++;
+            }
+        }
+
+        vector<string> ans;
+        string path = "";
+        backTrack(0,digits, path, ans, map);
+
+        return ans;
+    }
+};
+
+
+
+Let's analyze the time and space complexity of the provided code step by step.
+
+### 1. **Time Complexity:**
+
+The primary operation of this code occurs within the recursive `backTrack` function. This function is called to explore all possible combinations of letters for a given set of digits, where each digit maps to a set of letters (as shown in the `map` vector).
+
+- For each digit in the `digits` string, the `backTrack` function explores each corresponding character in the mapped list.
+- The `map` vector, which is populated based on the input `digits`, contains mappings of digits to letters. Specifically:
+  - Digits 2-6, 8, and 0 correspond to 3 letters (3 choices),
+  - Digits 7 and 9 correspond to 4 letters (4 choices).
+  
+So, the time complexity can be expressed as:
+- For each digit in the input `digits`, the number of recursive calls depends on the number of choices for that digit (3 or 4, depending on the digit).
+- Therefore, the total number of recursive calls is the product of the number of choices for each digit.
+
+If the input string has length \( n \) and each digit has 3 or 4 possible letters, the total number of combinations of letters is:
+
+\[
+\text{Combinations} = O(3^{\text{num of digits with 3 choices}} \times 4^{\text{num of digits with 4 choices}})
+\]
+
+In the worst case (if all digits correspond to 4 choices), the number of recursive calls (combinations) is \( O(4^n) \), where \( n \) is the length of the input string `digits`.
+
+Each recursive call creates a new string of length up to \( n \) (since `path` grows with each recursive call), and the string concatenation inside the loop (`pathtmp = path + (char)('a'+map[id][i]);`) takes linear time in the length of the string. Hence, each recursive call takes \( O(n) \) time.
+
+Thus, the overall time complexity is:
+
+\[
+O(4^n \times n)
+\]
+
+Where \( n \) is the length of the input string `digits`.
+
+### 2. **Space Complexity:**
+
+- **Recursive Call Stack:** The recursion depth is at most \( n \), where \( n \) is the length of the input string `digits`. In the worst case, there are \( n \) recursive calls stacked on top of each other.
+  
+  Thus, the space complexity for the recursion call stack is \( O(n) \).
+
+- **`map` Vector:** The `map` vector has 10 entries (for digits 0-9). Each entry holds a list of integers. In the worst case, each entry could hold up to 4 values (for digits 7 and 9), resulting in a space requirement of \( O(10 \times 4) = O(40) \).
+
+- **`ans` Vector:** The `ans` vector stores all the possible combinations. The number of combinations is \( O(4^n) \), and each combination is a string of length \( n \). Hence, the space complexity due to the `ans` vector is \( O(4^n \times n) \).
+
+- **Temporary `path` Strings:** Each recursive call creates a temporary string `path`, which takes \( O(n) \) space. However, since these strings are re-used and not stored permanently outside the recursion, they do not contribute additional space complexity outside the recursive stack.
+
+Thus, the overall space complexity is:
+
+\[
+O(4^n \times n) \quad \text{(due to the `ans` vector)}
+\]
+
+### Summary:
+- **Time Complexity:** \( O(4^n \times n) \)
+- **Space Complexity:** \( O(4^n \times n) \)
+
+
+

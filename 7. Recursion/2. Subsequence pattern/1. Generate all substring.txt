@@ -1,0 +1,179 @@
+
+https://www.naukri.com/code360/problems/binary-strings-with-no-consecutive-1s_893001?leftPanelTabValue=SUBMISSION
+
+
+
+void generatAllString(int steps, string path, vector<string>& ans){
+    if(steps == 0){
+        ans.push_back(path);
+        return ;
+    }
+
+    int len = path.size();
+    if(len != 0 && (path[len-1] == '1'))
+        generatAllString(steps-1, path+'0', ans);
+    else{
+        // in case of len ==0 || path[len-1] == '0'
+        generatAllString(steps-1, path+'0', ans);
+        generatAllString(steps-1, path+'1', ans);
+    }
+}
+
+vector<string> generateString(int N) {
+    // Write your code here.
+    vector<string> ans;
+    string path = "";
+    int countt = N;
+    generatAllString(N, path, ans);
+    return ans;
+}
+
+
+Let's analyze the time and space complexity of the given code.
+
+### Code Overview:
+
+- **`generatAllString` function:**
+  - This function generates all binary strings of length `steps` by recursively constructing strings and appending either '0' or '1' to the current path.
+  - If the last character of the current `path` is '1', only a '0' is added to the next path.
+  - Otherwise, both '0' and '1' are considered for the next step.
+
+- **`generateString` function:**
+  - This function initializes an empty `vector` to store the results and calls the `generatAllString` function to generate all binary strings of length `N`.
+
+### Time Complexity:
+
+1. **Recursive Tree Analysis:**
+   - The recursive function `generatAllString` generates binary strings of length `N`. For each step, it either appends '0' or '1' to the current string, creating two possible paths except when the last character is '1' (in which case only '0' is appended).
+   - Essentially, in the worst case (when no restrictions are applied), the recursion explores a binary tree structure where each node has two branches. The height of this tree is `N`, and at each level, two recursive calls are made.
+   - Therefore, the number of distinct binary strings that can be generated is \(2^N\), which corresponds to the number of leaves of the tree.
+
+2. **Number of Operations:**
+   - For each string, the function performs a constant amount of work (either appending '0' or '1' and making a recursive call). Additionally, when the base case (`steps == 0`) is reached, a string of length `N` is added to the result.
+   - The total number of strings generated is \(2^N\), and each string has length \(N\). Therefore, the total number of operations in terms of time complexity is \(O(N \cdot 2^N)\), where:
+     - \(2^N\) represents the number of strings,
+     - \(N\) represents the time taken to construct each string (since the length of each string is `N`).
+
+Thus, the **time complexity** of the code is:
+\[
+O(N \cdot 2^N)
+\]
+
+### Space Complexity:
+
+1. **Recursion Stack:**
+   - The recursion tree has a height of `N` because the function is recursively called with `steps - 1` until `steps` reaches 0.
+   - Therefore, the maximum depth of the recursion stack is `N`.
+
+2. **Result Storage:**
+   - The function stores all the binary strings of length `N` in the `ans` vector.
+   - The number of binary strings generated is \(2^N\), and each string has length `N`.
+   - Thus, the space required to store the result is \(O(N \cdot 2^N)\).
+
+Thus, the **space complexity** of the code is:
+\[
+O(N \cdot 2^N)
+\]
+This accounts for both the recursion stack and the storage of the generated strings.
+
+### Summary:
+
+- **Time complexity:** \( O(N \cdot 2^N) \)
+- **Space complexity:** \( O(N \cdot 2^N) \)
+
+
+
+################################################################
+
+void generatAllString(int steps, string path, vector<string>& ans){
+    if(steps == 0){
+        ans.push_back(path);
+        return ;
+    }
+
+    // path empty
+    if(path.size() == 0){
+        generatAllString(steps-1, path+'0', ans);
+        generatAllString(steps-1, path+'1', ans);
+    }
+    else{
+        int len = path.size();
+        if(path[len-1] == '1')
+            generatAllString(steps-1, path+'0', ans);
+        else{
+            generatAllString(steps-1, path+'0', ans);
+            generatAllString(steps-1, path+'1', ans);
+        }
+    }
+}
+
+vector<string> generateString(int N) {
+    // Write your code here.
+    vector<string> ans;
+    string path = "";
+    int countt = N;
+    generatAllString(N, path, ans);
+    return ans;
+}
+
+
+
+Let's analyze the time and space complexity of the provided code.
+
+### Code Overview:
+
+- **`generatAllString` function:**
+  - This function recursively generates all binary strings of length `steps`. It does this by appending '0' or '1' to the current `path`, and the recursion terminates when `steps == 0`, at which point the complete string is added to the result.
+  - The behavior of the function depends on whether the `path` is empty or not:
+    - If the `path` is empty (i.e., at the start), both '0' and '1' are considered.
+    - If the `path` is not empty, the function checks the last character of `path`:
+      - If it's '1', only '0' is appended.
+      - If it's '0', both '0' and '1' are considered.
+
+- **`generateString` function:**
+  - This function initializes the `ans` vector to store the results and calls `generatAllString` to generate all binary strings of length `N`.
+
+### Time Complexity:
+
+1. **Recursive Tree Analysis:**
+   - The recursion tree generates all binary strings of length `N`. At each level of the recursion, it either appends '0' or '1' to the current `path`, but the behavior is slightly restricted based on the last character of the string.
+   - The number of recursive calls doubles with each step (except when appending '0' after a '1', where only one recursive call is made).
+   - At the first level (starting with an empty path), two recursive calls are made (for '0' and '1'). From then on, depending on the last character of the path, either one or two recursive calls are made at each level.
+
+2. **Number of Calls and Strings:**
+   - The total number of recursive calls is still proportional to \(2^N\), since the function explores all possible combinations of binary strings of length `N`. The restrictions do not change the exponential nature of the problem (they only slightly affect the branching at each level).
+   - The total number of strings generated is \(2^N\), and each string has length \(N\). 
+
+   So, in total:
+   \[
+   O(N \cdot 2^N)
+   \]
+   where:
+   - \(2^N\) is the number of strings,
+   - \(N\) is the length of each string (since each string is constructed recursively).
+
+Thus, the **time complexity** of the code is:
+\[
+O(N \cdot 2^N)
+\]
+
+### Space Complexity:
+
+1. **Recursion Stack:**
+   - The depth of the recursion tree is \(N\), because at each step `steps` is decremented by 1 until it reaches 0.
+   - Hence, the maximum recursion depth is \(N\), which contributes \(O(N)\) space to the recursion stack.
+
+2. **Result Storage:**
+   - The function stores all the generated binary strings in the `ans` vector.
+   - The total number of strings is \(2^N\), and each string has length \(N\). Thus, the space required to store all the strings is \(O(N \cdot 2^N)\).
+
+Thus, the **space complexity** of the code is:
+\[
+O(N \cdot 2^N)
+\]
+This accounts for both the recursion stack and the storage of the generated strings.
+
+### Summary:
+
+- **Time complexity:** \( O(N \cdot 2^N) \)
+- **Space complexity:** \( O(N \cdot 2^N) \)

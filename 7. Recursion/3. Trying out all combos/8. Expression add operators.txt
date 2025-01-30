@@ -1,0 +1,93 @@
+
+
+class Solution {
+public:
+    int findVal(int op1, int op2, char str){
+        if(str == '+')  return (op1 + op2);
+        else if(str == '-') return (op1 - op2);
+
+        return op1 * op2;
+    }
+    int evaluate(string str){
+        stack<char> operators;
+        stack<int > operands;
+
+        // precedence - == +, < *
+        unordered_map<char,int> precedMap;
+        precedMap['+'] = precedMap['-'] =1;
+        precedMap['*'] = 2;
+
+        for(int i = 0; i<str.size(); i++){
+            if(str[i] >= '0' && str[i] <= '9')
+                operands.push(str[i]-'0');
+            else{
+                if(operators.empty())
+                    operators.push(str[i]);
+                else{
+                    char topOperator = operators.top();
+                    if(precedMap[str[i]] > precedMap[topOperator])
+                        operators.push(str[i]);
+                    else{
+                        int op2 = operands.top();
+                        operands.pop();
+                        int  op1 = operands.top();
+                        operands.pop();
+                        int  value = findVal(op1, op2, topOperator);
+                        operands.push(value);
+
+                        operators.pop();
+                        operators.push(str[i]);
+                    }
+                }
+            }
+        }
+
+        while(!operators.empty()){
+            char topOperator = operators.top();
+            operators.pop();
+
+            int op2 = operands.top();
+            operands.pop();
+            int op1 = operands.top();
+            operands.pop();
+
+            int value = findVal(op1, op2, topOperator);
+            operands.push(value);
+        }
+
+        return operands.top();
+    }
+    void backTrack(int idx, int target, string num,
+            string& path, vector<string>& ans)
+    {
+        path = path + num[idx];
+
+        if(idx == num.size()-1){
+            int pathValue = evaluate(path);
+
+            if(pathValue == target)
+                ans.push_back(path);
+            
+            path.pop_back();
+            return ;
+        }
+
+
+        string operators = "+-*";
+        for(int i = 0; i<3; i++){
+
+            path = path + operators[i];
+            backTrack(idx+1, target, num, path, ans);
+            path.pop_back();
+        }
+
+        path.pop_back();
+    }
+    
+    vector<string> addOperators(string num, int target) {
+        string path = "";
+        vector<string> ans;
+        backTrack(0, target, num, path, ans);
+        return ans;
+    }
+};

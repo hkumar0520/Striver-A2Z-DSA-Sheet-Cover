@@ -1,0 +1,61 @@
+
+
+    void deleteMidStack(stack<int>& s, int& totalElements, int countt){
+        if(s.empty())
+            return;
+        
+        int topElement = s.top();
+        s.pop();
+        totalElements++;
+        
+        deleteMidStack(s, totalElements, countt+1);
+        
+        //cout<<countt<<" "<<floor( (totalElements+1) /2 )<<" # "<<topElement<<endl;
+        if( (totalElements - countt +1) == floor( (totalElements+1) /2 )){
+            return ;
+        }
+        
+        s.push(topElement);
+    }
+    void deleteMid(stack<int>& s) {
+        // code here..
+        int totalElements = 0;
+        
+        deleteMidStack(s, totalElements, 1);
+    }
+
+
+### **Time and Space Complexity Analysis**
+
+#### **Understanding the Code**
+The function `deleteMid(stack<int>& s)` is designed to remove the middle element from the stack. It does so by:
+1. Using recursion (`deleteMidStack`) to traverse the stack while keeping track of the total number of elements.
+2. Popping elements recursively until the middle element is reached.
+3. Skipping the middle element and pushing the remaining elements back onto the stack.
+
+#### **Time Complexity Analysis**
+- The function recursively traverses the stack, popping elements one by one until it reaches the middle.
+- This traversal takes **O(N)** time, where **N** is the number of elements in the stack.
+- After skipping the middle element, it pushes back the remaining elements, which also takes **O(N)** time.
+- **Total time complexity:**  
+  \[
+  O(N) + O(N) = O(N)
+  \]
+
+#### **Space Complexity Analysis**
+- The function uses recursion, and the maximum depth of the recursive call stack is **O(N)** (since it processes all elements).
+- No additional data structures are used apart from a few integer variables (`totalElements`, `countt`).
+- **Total space complexity:**  
+  \[
+  O(N) \quad \text{(due to recursive call stack)}
+  \]
+
+---
+
+### **Final Complexity**
+- **Time Complexity:** \( O(N) \)
+- **Space Complexity:** \( O(N) \) (due to recursion)
+
+Let me know if you need further clarification! 🚀
+
+

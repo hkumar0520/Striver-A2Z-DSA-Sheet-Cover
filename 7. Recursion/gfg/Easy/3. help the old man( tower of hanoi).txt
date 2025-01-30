@@ -1,0 +1,37 @@
+
+
+class Solution{
+public:
+
+
+    void towerOfHanoi(int N, int from, int to, int aux, int& n, vector<int>& ans) {
+        // Your code here
+        if(N <= 1)
+        {
+            n--;
+            if(n == 0 && ans.empty()){
+                ans.push_back(from);
+                ans.push_back(to);
+            }
+            return ;
+        }
+            
+        towerOfHanoi(N-1, from, aux, to, n, ans);
+        n--;
+        if(n == 0 && ans.empty()){
+            ans.push_back(from);
+            ans.push_back(to);
+        }
+        towerOfHanoi(N-1, aux, to, from, n, ans);
+        
+    }
+    
+    vector<int> shiftPile(int N, int n){
+        // code here
+        vector<int> ans;
+        towerOfHanoi(N, 1, 3, 2, n, ans);
+        
+        return ans;
+    }
+};
+

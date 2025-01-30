@@ -1,0 +1,97 @@
+
+
+
+class Solution {
+  public:
+    // Function to find the largest number after k swaps.
+    void backTrack(string& s, int k, int idx, string& maxNum) {
+        // Base case: if no swaps left or all digits are processed
+        if (k == 0 || idx == s.size()) 
+            return;
+
+        // Find the maximum digit from the current index to the end
+        char maxDigit = s[idx];
+        for (int i = idx + 1; i < s.size(); i++) {
+            if (s[i] > maxDigit) {
+                maxDigit = s[i];
+            }
+        }
+
+        // If the current digit is already the maximum, no need to reduce k
+        if (maxDigit != s[idx]) {
+            k--;
+        }
+
+        // Try swapping the current digit with all digits equal to maxDigit
+        for (int i = idx; i < s.size(); i++) {
+            if (s[i] == maxDigit) {
+                // Swap to form a new string
+                swap(s[idx], s[i]);
+
+                // Update the maximum number if the new string is larger
+                if (s > maxNum) {
+                    maxNum = s;
+                }
+
+                // Recur for the next index
+                backTrack(s, k, idx + 1, maxNum);
+
+                // Backtrack: undo the swap
+                swap(s[idx], s[i]);
+            }
+        }
+    }
+
+    string findMaximumNum(string& s, int k) {
+        string maxNum = s; // Initialize the maximum number as the original string
+        backTrack(s, k, 0, maxNum);
+        return maxNum;
+    }
+};
+
+
+
+### **Time and Space Complexity Analysis**
+
+#### **Time Complexity**
+1. **Recursive Calls**:
+   - At each index `idx`, the algorithm finds the maximum digit in the substring `s[idx:]`, which takes \( O(n - idx) \) time for each call.
+   - For each maximum digit found, the algorithm tries all occurrences of that digit for swapping. This results in multiple recursive calls.
+
+2. **Number of Recursive Calls**:
+   - In the worst case, the algorithm explores all possible permutations of the string by making swaps. For a string of length \( n \) and \( k \) swaps, the number of recursive calls is bounded by:
+     \[
+     O(n! / (n-k)!)
+     \]
+   - However, the actual number of calls is much smaller due to pruning (only swapping with the maximum digits).
+
+3. **Finding the Maximum Digit**:
+   - Finding the maximum digit at each step takes \( O(n) \), and this is done for each recursive call.
+
+4. **Overall Complexity**:
+   - In the worst case, the time complexity is approximately:
+     \[
+     O(k \cdot n \cdot n!)
+     \]
+   - Practical complexity is significantly lower due to pruning.
+
+---
+
+#### **Space Complexity**
+1. **Recursion Stack**:
+   - The depth of the recursion stack is at most \( O(n) \), where \( n \) is the length of the string.
+
+2. **Auxiliary Space**:
+   - The algorithm uses a few additional variables for comparisons and swaps, which take \( O(1) \) space.
+
+3. **Total Space Complexity**:
+   - The total space complexity is:
+     \[
+     O(n)
+     \]
+
+---
+
+### **Summary**
+- **Time Complexity**: \( O(k \cdot n \cdot n!) \) in the worst case, reduced significantly by pruning.
+- **Space Complexity**: \( O(n) \) due to recursion stack.

@@ -1,0 +1,186 @@
+
+
+class Solution {
+public:
+    void backTrack(vector<string>& ans, string& path, int ind, string str, unordered_set<string> map)
+    {
+        if(ind == str.size()){
+            // due to adding of extra space at starting
+            ans.push_back(path.substr(1));
+            return ;
+        }
+
+        for(int i = ind; i<str.size(); i++){
+            string currentStr = str.substr(ind, i-ind+1);
+            if(map.count( currentStr )){
+                string oldPath = path;
+                path = path + " " + currentStr;
+                backTrack(ans, path, i+1, str, map);
+                path = oldPath;
+            }
+        }
+    }
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> map(wordDict.begin(), wordDict.end());
+        string path = "";
+        vector<string> ans;
+        backTrack(ans, path, 0, s, map);
+        return ans;
+    }
+};
+
+
+Let's analyze the time and space complexity of the given code step by step.
+
+### **Time Complexity:**
+
+#### 1. **Backtracking (`backTrack` function):**
+
+The `backTrack` function is responsible for generating all possible valid ways to break the input string `s` into words from the dictionary `wordDict`.
+
+- **Recursive calls:** The function explores all possible partitions of the string `s`. Each recursive call tries to partition the string starting from the current index `ind`. For each position `ind`, it tries all substrings starting from `ind` to the end of the string (up to \(n\) substrings).
+  
+- **Substrings:** For each index `ind`, the inner loop iterates over all possible end indices `i` to create substrings from `str[ind]` to `str[i]`. The substring operation itself takes \(O(k)\) time, where \(k\) is the length of the substring. In the worst case, the substring can be as large as \(n\), the length of the string.
+
+- **Dictionary lookup:** For each substring generated, the function checks if the substring exists in the dictionary (`map.count(currentStr)`), which takes \(O(1)\) time due to the use of an unordered set (`map`).
+
+- **Recursive Tree:** In the worst case, the number of recursive calls grows exponentially because each call can branch into multiple further calls. Specifically, if we consider the string of length \(n\), in the worst case, the recursion could explore up to \(2^n\) potential ways to break the string.
+
+    The time complexity for exploring all possible partitions is related to the number of ways to partition the string, which can be approximated as \(O(2^n)\). However, since we are checking substrings that are in the dictionary, the actual number of valid recursive calls will be less than this, depending on the content of the dictionary.
+
+    In the worst case, where every substring is a valid word, the algorithm will explore all partitions of the string. So, the time complexity is dominated by the number of ways to partition the string.
+
+    Therefore, the time complexity is approximately \(O(2^n)\) in the worst case, since we can generate up to \(2^n\) possible valid partitions.
+
+#### 2. **Substring Generation:**
+Each call to `str.substr(ind, i-ind+1)` creates a new string, which takes \(O(k)\) time where \(k\) is the length of the substring. Since each substring could be of length up to \(n\), the substring operation contributes an additional factor of \(O(n)\).
+
+#### Overall Time Complexity:
+Considering the above points, the overall worst-case time complexity is:
+\[
+O(2^n \cdot n)
+\]
+This accounts for \(2^n\) possible partitions and the \(O(n)\) time for each substring generation.
+
+### **Space Complexity:**
+
+#### 1. **Answer Vector (`ans`):**
+- The vector `ans` stores all valid combinations of words formed by splitting the string `s`. In the worst case, if every partition of the string is valid, the number of possible partitions can be exponential in the size of the string, specifically \(2^n\) valid partitions. 
+- Each partition can have at most \(n\) words (if every character is a word).
+- Thus, the space used to store all the valid answers is proportional to the number of valid partitions times the maximum number of words in each partition. This contributes \(O(2^n \cdot n)\) space.
+
+#### 2. **Recursive Call Stack:**
+- The recursion depth depends on the length of the string. In the worst case, the recursion depth is proportional to \(n\), as there is one recursive call for each index from 0 to \(n-1\).
+- Thus, the space required for the recursion call stack is \(O(n)\).
+
+#### 3. **Temporary Strings (`path`, `currentStr`):**
+- The `path` string holds the current valid word break, and it grows as substrings are added. In the worst case, the length of `path` can be \(O(n)\) as it stores a full partition of the string.
+- The variable `currentStr` stores a substring, and its length is at most \(O(n)\).
+
+Thus, the overall space complexity is dominated by the space needed to store the final answer and the recursion stack:
+\[
+O(2^n \cdot n)
+\]
+
+### **Summary:**
+
+- **Time Complexity:** \(O(2^n \cdot n)\), where \(n\) is the length of the input string `s`. This arises from the exponential number of possible partitions of the string and the time taken for substring generation.
+  
+- **Space Complexity:** \(O(2^n \cdot n)\), where \(n\) is the length of the input string `s`. This includes the space needed to store the valid word partitions in the answer vector, the recursive call stack, and temporary variables such as `path` and `currentStr`.
+
+
+
+
+
+
+#####################################################################################################
+
+
+class Solution {
+public:
+    void backTrack(vector<string>& ans, string& path, int ind, string str, unordered_set<string> map)
+    {
+        if(ind == str.size()){
+            ans.push_back(path);
+            return ;
+        }
+
+        for(int i = ind; i<str.size(); i++){
+            string currentStr = str.substr(ind, i-ind+1);
+            if(map.count( currentStr )){
+                string oldPath = path;
+                if(!path.empty())
+                    path += " ";
+                path = path + currentStr;
+                backTrack(ans, path, i+1, str, map);
+                path = oldPath;
+            }
+        }
+    }
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> map(wordDict.begin(), wordDict.end());
+        string path = "";
+        vector<string> ans;
+        backTrack(ans, path, 0, s, map);
+        return ans;
+    }
+};
+
+
+###########################################################################
+
+
+memoization 
+
+class Solution {
+public:
+    vector<string> backTrack(int ind, string& str, unordered_set<string>& wordSet,
+     unordered_map<int, vector<string>>& memo) {
+        // If the result for this index is already computed, return it
+        if (memo.find(ind) != memo.end()) {
+            return memo[ind];
+        }
+
+        vector<string> result;
+
+        // Base case: if we've reached the end of the string, return a vector with an empty string
+        if (ind == str.size()) {
+            result.push_back("");
+            return result;
+        }
+
+        // Iterate through the substring starting from the current index
+        for (int i = ind; i < str.size(); i++) {
+            string currentStr = str.substr(ind, i - ind + 1);
+
+            // If the current substring is in the word set
+            if (wordSet.count(currentStr)) {
+                // Recur for the remaining part of the string
+                vector<string> subResults = backTrack(i + 1, str, wordSet, memo);
+
+                // Combine the current word with the results of the recursion
+                for (string subResult : subResults) {
+                    if (subResult.empty()) {
+                        result.push_back(currentStr);
+                    } else {
+                        result.push_back(currentStr + " " + subResult);
+                    }
+                }
+            }
+        }
+
+        // Store the result in the memo table and return it
+        memo[ind] = result;
+        return result;
+    }
+
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> wordSet(wordDict.begin(), wordDict.end());
+        unordered_map<int, vector<string>> memo;
+        return backTrack(0, s, wordSet, memo);
+    }
+};
+
+
+
+

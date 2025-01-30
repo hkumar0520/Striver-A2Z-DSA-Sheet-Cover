@@ -1,0 +1,93 @@
+
+
+class Solution {
+public:
+
+    void backTrack(int& ans, vector<string>& path,
+        unordered_set<int>& col, unordered_set<int>& diag1,
+        unordered_set<int>& diag2, int x, int n)
+    {
+        if(x == n){
+            ans++;
+            return;
+        }
+
+        for(int y = 0; y<n; y++){
+
+            if(col.count(y) || diag1.count(x+y) || diag2.count(x-y))
+                continue;
+            
+            path[x][y] = 'Q';
+            col.insert(y);
+            diag1.insert(x+y);
+            diag2.insert(x-y);
+            backTrack(ans, path, col, diag1, diag2, x+1, n);
+            path[x][y] = '.';
+            col.erase(y);
+            diag1.erase(x+y);
+            diag2.erase(x-y);
+        }
+    }
+    int totalNQueens(int n) {
+        int ans = 0;
+        vector<string> path(n, string(n, '.'));
+        unordered_set<int> col, diag1, diag2;
+        backTrack(ans, path, col, diag1, diag2, 0, n);
+        return ans;
+        
+    }
+};
+
+
+Let's break down the time and space complexity of the given code for solving the **N-Queens** problem.
+
+### **Time Complexity:**
+
+1. **Recursive backtracking (`backTrack` function):**
+   The `backTrack` function explores all possible ways to place queens on the board. It uses three sets (`col`, `diag1`, and `diag2`) to track which columns and diagonals are already under attack, ensuring that no two queens threaten each other.
+
+   - The function is called recursively to place queens one by one. Each call places a queen in one of the available rows (`x`), and for each row, it tries placing the queen in all possible columns (`y`).
+   
+   - For each row `x`, the loop runs over all possible columns `y` (from 0 to `n-1`), which means there are at most \(n\) possible column choices for each queen placement.
+   
+   - **Pruning (Avoiding Invalid Placements):** 
+     The conditions `col.count(y)`, `diag1.count(x + y)`, and `diag2.count(x - y)` check if a queen is already placed in the column or diagonals, which helps prune invalid placements. If the column or diagonal is already occupied, the algorithm skips that column.
+
+   - **Number of recursive calls:**
+     The number of recursive calls is exponential in nature. The algorithm explores all possible ways to place `n` queens on the board, but each call prunes invalid configurations early. In the worst case, the number of valid configurations grows exponentially.
+
+     The worst-case time complexity for the N-Queens problem using backtracking is \(O(n!)\), as in the worst case, we could try every permutation of placing queens across all columns (one queen per row), and each placement might require \(O(n)\) checks.
+
+     Therefore, the time complexity is:
+     \[
+     O(n!)
+     \]
+     This arises from the fact that for each row, there are \(n\) choices, and the algorithm explores all valid configurations of queens recursively.
+
+### **Space Complexity:**
+
+1. **Auxiliary Space (Recursive Call Stack):**
+   - The recursion depth depends on the number of rows (`x`), and the maximum recursion depth will be \(O(n)\) because we are placing one queen per row (and there are `n` rows).
+   - Thus, the space required for the recursion call stack is \(O(n)\).
+
+2. **Auxiliary Space (Sets for Column and Diagonal Tracking):**
+   - The sets `col`, `diag1`, and `diag2` track the columns and diagonals that are under attack. Each set can have at most \(n\) elements (because there are \(n\) columns and diagonals for an \(n \times n\) board).
+   - Therefore, the space complexity for the sets is \(O(n)\).
+
+3. **Board (`path`):**
+   - The board `path` is a 2D grid of size \(n \times n\), which requires \(O(n^2)\) space to store the state of the board.
+   
+Thus, the total space complexity is:
+\[
+O(n^2) \quad (\text{for the board})
++ O(n) \quad (\text{for the recursion stack and sets})
+= O(n^2)
+\]
+
+### **Summary:**
+
+- **Time Complexity:** \(O(n!)\) — The algorithm explores all valid configurations of placing queens, and in the worst case, the number of recursive calls grows factorially with \(n\).
+  
+- **Space Complexity:** \(O(n^2)\) — The space is primarily used by the board (`path`), along with \(O(n)\) space used for the sets (`col`, `diag1`, `diag2`) and the recursion stack.
+
+In conclusion, while the solution efficiently prunes invalid configurations using the sets, the overall complexity is dominated by the factorial growth of possible valid configurations.

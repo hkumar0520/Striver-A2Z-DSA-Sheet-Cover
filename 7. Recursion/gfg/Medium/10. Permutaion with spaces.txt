@@ -1,0 +1,40 @@
+
+
+class Solution {
+  public:
+
+    void backTrack(int ind, string s, string& path, vector<string>& ans){
+        if(ind == s.size()-1){
+            
+            path = path + s[ind];
+            ans.push_back(path);
+            path.pop_back();
+            
+            return ;
+        }
+        
+        path = path + s[ind];
+        
+        //include
+        path = path + " ";
+        backTrack(ind + 1, s, path, ans);
+        path.pop_back();
+        
+        //exclude
+        backTrack(ind+1, s, path, ans);
+        
+        path.pop_back();
+        
+        return ;
+    }
+    vector<string> permutation(string s) {
+        // Code Here
+        string path = "";
+        vector<string> ans;
+        
+        backTrack(0, s, path, ans);
+        
+        return ans;
+    }
+};
+

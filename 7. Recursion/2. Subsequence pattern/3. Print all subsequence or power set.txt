@@ -1,0 +1,158 @@
+
+
+
+class Solution {
+public:
+
+    void backTrack(int index, vector<int>& nums, vector<int>& path, vector<vector<int>>& ans){
+        if(index == nums.size()){
+            ans.push_back(path);
+            return;
+        }
+
+        // exclude
+        backTrack(index+1, nums, path, ans);
+
+        //include
+        path.push_back(nums[index]);
+        backTrack(index+1, nums, path,ans);
+        path.pop_back();
+
+        return;
+    }
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> path;
+        vector<vector<int>> ans;
+        
+        backTrack(0, nums, path, ans);
+        return ans;
+    }
+};
+
+TC: O(2^n) * n
+SC: stack space(n) + 2^n * n
+
+### Time Complexity:
+
+The given code generates all subsets of the input array `nums` using backtracking. To analyze the time complexity, let's look at the process:
+
+1. **Total Number of Subsets**: For an input array of size `n`, the total number of subsets is \( 2^n \). This is because for each element in the array, we have two choices:
+   - Include the element in the subset.
+   - Exclude the element from the subset.
+   
+   Hence, the total number of subsets is \( 2^n \).
+
+2. **Backtracking Process**: The backtracking function makes two recursive calls at each step:
+   - One recursive call excluding the current element (`index + 1`).
+   - One recursive call including the current element (`index + 1`).
+
+   Therefore, the recursion tree has a branching factor of 2, and the depth of the recursion tree is `n` (the size of the input array).
+
+3. **Work Done at Each Level**: At each level of recursion, the work done is constant (pushing an element onto `path` or popping it off), but at the deepest level, when all subsets are generated, we are adding the current subset (`path`) to the answer list.
+
+Given that there are \( 2^n \) subsets, the **time complexity** is \( O(2^n \cdot n) \), where \( 2^n \) accounts for the number of subsets and \( n \) accounts for the length of the subset being added (or popped) at each step.
+
+### Space Complexity:
+
+The space complexity includes two components:
+
+1. **Recursive Stack**: In the worst case, the recursion depth is `n` because the algorithm goes through all `n` elements. So the maximum depth of the recursion stack is \( O(n) \).
+
+2. **Answer Storage**: The `ans` vector stores all subsets, and there are \( 2^n \) subsets. Each subset can be of size at most `n`, so the total space required to store all subsets is \( O(2^n \cdot n) \).
+
+Thus, the **space complexity** is \( O(2^n \cdot n) \).
+
+### Conclusion:
+
+- **Time Complexity**: \( O(2^n \cdot n) \), where \( 2^n \) is the number of subsets and \( n \) is the maximum length of any subset.
+- **Space Complexity**: \( O(2^n \cdot n) \), where \( 2^n \) is the number of subsets and \( n \) is the maximum length of any subset stored in the answer.
+
+
+
+
+############################################################################
+
+
+
+class Solution {
+public:
+
+    void backTrack(int index, vector<int>& nums, vector<int>& path, vector<vector<int>>& ans){
+        ans.push_back(path);
+
+        for(int i = index; i<nums.size(); i++){
+            path.push_back(nums[i]);
+            backTrack(i+1,nums, path, ans);
+            path.pop_back();
+        }
+
+        return;
+    }
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> path;
+        vector<vector<int>> ans;
+        
+        backTrack(0, nums, path, ans);
+        return ans;
+    }
+};
+
+### Time and Space Complexity Analysis
+
+The given code is a backtracking solution to generate all subsets of a given array `nums`. Let's break down the time and space complexity.
+
+### Time Complexity:
+
+1. **Recursive Structure**:
+   - The `backTrack` function explores all subsets of the array `nums`. It does this by iterating over the array starting from the given index `index` and either including or excluding each element.
+   - For each element, there are two choices:
+     1. **Include the element** in the current subset (`path.push_back(nums[i])`).
+     2. **Exclude the element** by not making any changes and moving on to the next recursive call.
+   
+   The function will recursively explore all possible combinations of elements, which will generate all subsets of `nums`.
+
+2. **Number of Subsets**:
+   - For an array of size `n`, there are \( 2^n \) possible subsets (including the empty subset).
+   - For each subset, the function performs constant work to add it to the result `ans` and processes each element of the subset (i.e., it adds and removes elements from `path`).
+
+3. **Time per Recursive Call**:
+   - In the worst case, the size of `path` can grow up to `n` in depth (since the array has `n` elements), and each recursive call adds/removes an element from `path` (which takes \( O(1) \) time).
+   - For each recursive call, the function makes a constant amount of work (adding to `ans` and processing one element).
+
+4. **Total Time Complexity**:
+   - Since we have \( 2^n \) subsets and each subset takes \( O(n) \) time to be added to the result, the total time complexity is:
+
+   \[
+   O(2^n \cdot n)
+   \]
+
+### Space Complexity:
+
+1. **Recursive Call Stack**:
+   - The recursion depth is \( O(n) \) in the worst case because each recursive call processes one element of the array and moves to the next. Thus, the maximum depth of the recursion tree is \( n \), and the space complexity due to recursion stack is \( O(n) \).
+
+2. **Storing the Subsets**:
+   - The `ans` vector stores all subsets. There are \( 2^n \) subsets, and each subset can have up to \( n \) elements.
+   - Therefore, the space required to store all the subsets is \( O(2^n \cdot n) \).
+
+3. **Temporary Storage for Subsets**:
+   - The `path` vector holds the current subset during recursion. In the worst case, it can store up to \( n \) elements (when all elements are included in the subset). Thus, the space for the `path` vector is \( O(n) \) at each level of recursion.
+
+4. **Total Space Complexity**:
+   - The overall space complexity is the sum of:
+     - The space for the recursion stack: \( O(n) \),
+     - The space for storing the subsets: \( O(2^n \cdot n) \),
+     - Temporary space for the `path` vector: \( O(n) \) (already considered as part of the recursion stack).
+
+   Therefore, the total space complexity is dominated by the storage of all subsets:
+
+   \[
+   O(2^n \cdot n)
+   \]
+
+### **Summary**:
+
+- **Time Complexity**: \( O(2^n \cdot n) \), where \( n \) is the size of the input array `nums`.
+- **Space Complexity**: \( O(2^n \cdot n) \), dominated by the storage for all subsets and the recursion stack.
