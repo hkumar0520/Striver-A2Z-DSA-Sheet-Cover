@@ -1,0 +1,149 @@
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int n = s.size();
+        int maxLen = 0;
+
+        for(int i=0;i<n;i++){
+            vector<int> map(256, 0);
+            for(int j = i; j<n;j++){
+                if(map[s[j]]==1)    
+                    break;
+                
+                map[s[j]]=1;
+                maxLen = max(maxLen,j-i+1);
+            }
+        }
+        return maxLen;
+    }
+};
+
+Time Complexity: O(n*n)
+Space Complexity: O(1)
+
+#######################################################################
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int n = s.size();
+        int maxLen = 0, l = 0, r = 0;
+        // 0 means not present
+        vector<int> map(256, -1);
+        while(r<n){
+            while(map[s[r]] != -1 && map[s[r]] == 1){
+                map[s[l]] = 0;
+                l++;
+            }
+
+            int len = r-l+1;
+            maxLen = max(maxLen, len);
+            map[s[r]] = 1;
+            r++;
+        }
+
+
+        return maxLen;
+    }
+};
+
+Time Complexity: O(2*n)
+Space Complexity: O(1)
+
+
+#############################################################################
+
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int n = s.size();
+        int maxLen = 0, l = 0, r = 0;
+        // 0 means not present
+        vector<int> map(256, -1);
+        while(r<n){
+            if(map[s[r]] != -1 && map[s[r]] >= l){
+                l = map[s[r]] + 1;
+            }
+
+            int len = r-l+1;
+            maxLen = max(maxLen, len);
+            map[s[r]] = r;
+            r++;
+        }
+
+
+        return maxLen;
+    }
+};
+
+
+Time Complexity: O(n)
+Space Complexity: O(1)
+
+
+###############################################################################
+
+Here is the C++ code to find the length of the longest substring without repeating characters:
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+int lengthOfLongestSubstring(string s) {
+    unordered_map<char, int> charIndexMap;  // Map to store the last index of each character
+    int maxLength = 0;
+    int start = 0;  // Start of the sliding window
+
+    for (int end = 0; end < s.length(); end++) {
+        // If the character is already in the current window, move the start pointer
+        if (charIndexMap.find(s[end]) != charIndexMap.end() && charIndexMap[s[end]] >= start) {
+            start = charIndexMap[s[end]] + 1;
+        }
+        // Update the last index of the current character
+        charIndexMap[s[end]] = end;
+        // Calculate the length of the current window and update maxLength if needed
+        maxLength = max(maxLength, end - start + 1);
+    }
+
+    return maxLength;
+}
+
+int main() {
+    string s1 = "abcabcbb";
+    cout << "Longest substring length for \"" << s1 << "\" is: " << lengthOfLongestSubstring(s1) << endl;
+    
+    string s2 = "bbbbb";
+    cout << "Longest substring length for \"" << s2 << "\" is: " << lengthOfLongestSubstring(s2) << endl;
+    
+    string s3 = "pwwkew";
+    cout << "Longest substring length for \"" << s3 << "\" is: " << lengthOfLongestSubstring(s3) << endl;
+
+    return 0;
+}
+```
+
+### Explanation:
+
+1. **Sliding Window Approach**: We use a sliding window technique with two pointers (`start` and `end`) to traverse the string. The `start` pointer defines the beginning of the current substring, and the `end` pointer expands the window by moving across the string.
+   
+2. **Tracking Characters**: An unordered map (`charIndexMap`) is used to store the last index of each character encountered.
+
+3. **Adjusting the Start Pointer**: If a character repeats (i.e., it's already in the current window), we move the `start` pointer to the right of the last occurrence of that character.
+
+4. **Updating Maximum Length**: After adjusting the `start` pointer, we update the maximum length of the current substring as `end - start + 1`.
+
+### Time Complexity:
+- The time complexity of this solution is O(n), where `n` is the length of the string, because both `start` and `end` pointers traverse the string only once.
+
+### Example Outputs:
+- Input: `"abcabcbb"` → Output: `3`
+- Input: `"bbbbb"` → Output: `1`
+- Input: `"pwwkew"` → Output: `3`
+
+This solution efficiently handles the constraints, with a maximum string length of 50,000 characters.

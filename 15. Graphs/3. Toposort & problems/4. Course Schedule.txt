@@ -1,0 +1,208 @@
+// bfs
+
+class Solution {
+public:
+    void getIndegree(vector<int>& indegree, vector<vector<int>>& prerequisites)
+    {
+        for(auto edge: prerequisites)
+        {
+            // b->a
+            int a = edge[0], b = edge[1];
+            indegree[a]++;
+        }
+    }
+    bool bfs(vector<int>& indegree, vector<vector<int>>& prerequisites)
+    {
+        int numCourses = indegree.size();
+        queue<int> qtraverse;
+        for(int i=0;i<numCourses;i++)
+        {
+            if(indegree[i] == 0)
+                qtraverse.push(i);
+        }
+        int countt = 0;
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+
+            countt++;
+            for(auto edge: prerequisites)
+            {
+                int a = edge[0], b = edge[1];
+                if(b == node)
+                {
+                    indegree[a]--;
+                    if(indegree[a] == 0)
+                    {
+                        qtraverse.push(a);
+                    }
+                }
+            }
+        }
+        return countt == numCourses? true: false;
+    }
+
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> indegree(numCourses, 0);
+        getIndegree(indegree, prerequisites);
+
+        return bfs(indegree, prerequisites);
+        
+    }
+};
+
+
+Let's calculate the time and space complexity separately.
+
+### **Time Complexity**
+
+#### 1. **`getIndegree` function:**
+```cpp
+void getIndegree(vector<int>& indegree, vector<vector<int>>& prerequisites)
+{
+    for(auto edge: prerequisites)
+    {
+        int a = edge[0], b = edge[1];
+        indegree[a]++;
+    }
+}
+```
+- The function loops through each edge in `prerequisites`.
+- The number of edges is denoted as `E`, so the loop runs `E` times.
+- **Time complexity** of this function: \( O(E) \).
+
+#### 2. **`bfs` function:**
+```cpp
+bool bfs(vector<int>& indegree, vector<vector<int>>& prerequisites)
+{
+    int numCourses = indegree.size();
+    queue<int> qtraverse;
+    for(int i = 0; i < numCourses; i++)
+    {
+        if(indegree[i] == 0)
+            qtraverse.push(i);
+    }
+
+    int countt = 0;
+    while(!qtraverse.empty())
+    {
+        int node = qtraverse.front();
+        qtraverse.pop();
+
+        countt++;
+        for(auto edge: prerequisites)
+        {
+            int a = edge[0], b = edge[1];
+            if(b == node)
+            {
+                indegree[a]--;
+                if(indegree[a] == 0)
+                {
+                    qtraverse.push(a);
+                }
+            }
+        }
+    }
+    return countt == numCourses? true : false;
+}
+```
+- **Initialization of the queue**: The loop runs `V` times (where `V` is the number of courses), and for each course, we check its indegree and possibly push it into the queue. This takes \( O(V) \) time.
+  
+- **BFS traversal**: 
+  - We perform BFS by processing each node in the queue, and each node may potentially push other nodes into the queue. For each node processed, we look at all the edges in the `prerequisites` list.
+  - The inner loop checks all edges in `prerequisites`, which has `E` edges.
+  - The `while` loop runs for at most `V` nodes (as each node is processed at most once), and for each node, we examine `E` edges.
+  - **Time complexity** of this function: \( O(V + E) \).
+
+#### 3. **`canFinish` function:**
+```cpp
+bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+    vector<int> indegree(numCourses, 0);
+    getIndegree(indegree, prerequisites);
+    return bfs(indegree, prerequisites);
+}
+```
+- The function first calls `getIndegree`, which takes \( O(E) \).
+- Then it calls `bfs`, which takes \( O(V + E) \).
+- **Time complexity** of this function: \( O(E) + O(V + E) = O(V + E) \).
+
+### **Final Time Complexity**: 
+- \( O(V + E) \)
+
+---
+
+### **Space Complexity**
+
+#### 1. **`getIndegree` function:**
+- The space complexity is primarily for the `indegree` vector, which stores the indegree of each course. This vector has a size of `V`.
+- **Space complexity** of this function: \( O(V) \).
+
+#### 2. **`bfs` function:**
+- **Queue (`qtraverse`)**: The queue stores nodes that have an indegree of 0. In the worst case, the queue can store all `V` courses, so its space complexity is \( O(V) \).
+- **`indegree` vector**: The `indegree` vector is also used in the `bfs` function, and its size is `V`.
+- **Space complexity** of this function: \( O(V) \).
+
+#### 3. **`canFinish` function:**
+- The function uses the `indegree` vector (size `V`).
+- The function calls `getIndegree` and `bfs`, both of which use space \( O(V) \).
+- **Space complexity** of this function: \( O(V) \).
+
+### **Final Space Complexity**:
+- \( O(V) \)
+
+---
+
+### **Summary**
+- **Time Complexity**: \( O(V + E) \)
+- **Space Complexity**: \( O(V) \)
+
+
+
+##################################################################################
+
+# dfs 53/54 test cases passed ( time limit )
+
+class Solution {
+public:
+
+    bool dfs(int node, vector<int>& vis, vector<vector<int>>& prerequisites)
+    {
+        vis[node] = 1;
+
+        for(auto edge: prerequisites)
+        {
+            int a = edge[0], b = edge[1];
+            if(b == node)
+            {
+                if(!vis[a])
+                {
+                    if(dfs(a, vis, prerequisites))
+                        return true;
+                }
+                else if(vis[a] == 1)
+                    return true;
+            }
+        }
+        // processed
+        vis[node] = 2;
+
+        return false;
+    }
+
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+      
+        vector<int> vis(numCourses, 0);
+        for(int i=0; i<numCourses; i++)
+        {
+            if(!vis[i])
+            {
+                // iscycle
+                if(dfs(i, vis, prerequisites))
+                    return false;
+            }
+        }
+        // notcycle, toposort exists
+        return true;
+    }
+};

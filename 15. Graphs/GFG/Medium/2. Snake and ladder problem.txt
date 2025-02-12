@@ -1,0 +1,261 @@
+
+// User function Template for C++
+
+class Solution{
+public:
+    void getGraph(vector<vector<int>>& graph, int arr[], int N){
+        for(int i=0; i<2*N; i = i+2 ){
+            int u = arr[i], v = arr[i+1];
+            graph[u].push_back(v);
+        }
+    }
+    int bfs(vector<vector<int>>& graph){
+        int start = 1, goal = 30;
+        
+        priority_queue< vector<int>, vector<vector<int>>
+                    , greater<vector<int>> > pq;
+        
+        vector<bool> vis(31, false);
+        
+        // steps, position
+        pq.push({ 0, 1});
+        int minResult = INT_MAX;
+        
+        while(!pq.empty()){
+            vector<int> current = pq.top();
+            pq.pop();
+            
+            int step = current[0], node = current[1];
+            
+            if(node == goal){
+                minResult = step;
+                break;
+            }
+            
+            if(vis[node])   
+                continue;
+                
+            vis[node] = true;
+            
+            // dice throw
+            for(int i=1; i<=6; i++){
+                int nextNode = node + i;
+                
+                if(nextNode > goal)
+                    break;
+                
+                if( nextNode <= goal){
+                     // either snake or ladder 
+                    if(graph[ nextNode ].size() > 0){
+                        for(auto it: graph[ nextNode ]){
+                            pq.push({ step+1, it });
+                        }
+                    }
+                    else
+                        pq.push({ step+1, nextNode });
+                    
+                }
+            }
+        }
+        
+        return minResult;
+    }
+    
+    int minThrow(int N, int arr[]){
+        // code here
+        int totalVertex = 31;
+        vector<vector<int>> graph(totalVertex);
+        getGraph(graph, arr, N);
+        
+        return bfs(graph);
+    }
+    
+};
+
+
+
+### Time Complexity:
+
+1. **Graph Construction** (`getGraph`):
+   - The `getGraph` function iterates over the array `arr[]` of size \(2 \times N\), adding directed edges for snakes and ladders.
+   - **Time Complexity**: \(O(N)\).
+
+2. **Breadth-First Search (BFS)**:
+   - BFS explores the nodes in the graph starting from the source node \(1\).
+   - **Dice Throw Simulation**:
+     - For each node, up to \(6\) dice throws are considered. In the worst case, all \(30\) nodes are explored.
+     - The number of edges is limited by the dice throws (\(6\) per node) and the edges created by snakes and ladders (\(N\)).
+     - **Time Complexity**: \(O(V + E)\), where \(V = 31\) (fixed number of vertices) and \(E = O(N + 6V)\).
+   - **Priority Queue Operations**:
+     - Each push and pop operation in the priority queue has a logarithmic complexity \(O(\log Q)\), where \(Q\) is the size of the queue.
+     - In the worst case, \(Q = O(V + E)\).
+     - **Overall BFS Complexity**: \(O((V + E) \log(V + E))\).
+
+3. **Total Time Complexity**:
+   - \(O(N) + O((V + E) \log(V + E))\).
+   - Since \(V = 31\) and \(E = O(N + 6V)\), this simplifies to \(O(N \log N)\) for large \(N\).
+
+---
+
+### Space Complexity:
+
+1. **Graph Representation**:
+   - The adjacency list `graph` uses \(O(V + E)\) space.
+   - \(V = 31\), \(E = O(N + 6V)\).
+   - **Space Complexity**: \(O(N + V)\).
+
+2. **Visited Array**:
+   - The `vis` array stores \(31\) boolean values.
+   - **Space Complexity**: \(O(V)\).
+
+3. **Priority Queue**:
+   - The priority queue can hold up to \(O(V + E)\) elements in the worst case.
+   - **Space Complexity**: \(O(V + E)\).
+
+4. **Total Space Complexity**:
+   - \(O(V + E) = O(N + 6V)\).
+   - For large \(N\), this simplifies to \(O(N)\).
+
+---
+
+### Final Complexity:
+
+- **Time Complexity**: \(O(N \log N)\).
+- **Space Complexity**: \(O(N)\).
+
+
+
+
+###########################################################################
+
+
+
+
+
+
+// User function Template for C++
+
+class Solution{
+public:
+    void getGraph(vector<vector<int>>& graph, int arr[], int N){
+        for(int i=0; i<2*N; i = i+2 ){
+            int u = arr[i], v = arr[i+1];
+            graph[u].push_back(v);
+        }
+    }
+    int bfs(vector<vector<int>>& graph, int totalVertex){
+        int start = 1, goal = 30;
+        
+        priority_queue< vector<int>, vector<vector<int>>
+                    , greater<vector<int>> > pq;
+        
+        vector<bool> vis(totalVertex, false);
+        
+        // steps, position
+        pq.push({ 0, 1});
+        vis[1] = true;
+        
+        int minResult = INT_MAX;
+        
+        while(!pq.empty()){
+            vector<int> current = pq.top();
+            pq.pop();
+            
+            int step = current[0], node = current[1];
+            
+            if(node == goal){
+                minResult = step;
+                break;
+            }
+            
+            // dice throw
+            for(int i=1; i<=6; i++){
+                int nextNode = node + i;
+                
+                if(nextNode > goal)
+                    break;
+                
+                if( nextNode <= goal && !vis[nextNode]){
+                    
+                    vis[nextNode] = true;
+                    
+                     // either snake or ladder 
+                    if(graph[ nextNode ].size() > 0){
+                        for(auto it: graph[ nextNode ]){
+                            pq.push({ step+1, it });
+                        }
+                    }
+                    else
+                        pq.push({ step+1, nextNode });
+                    
+                }
+            }
+        }
+        
+        return minResult;
+    }
+    
+    int minThrow(int N, int arr[]){
+        // code here
+        int totalVertex = 31;
+        vector<vector<int>> graph(totalVertex);
+        getGraph(graph, arr, N);
+        
+        return bfs(graph, totalVertex);
+    }
+    
+};
+
+
+
+### Time Complexity:
+
+#### **1. Graph Construction (`getGraph`)**:
+- The function iterates over the array `arr[]` of size \(2 \times N\) to create the adjacency list for snakes and ladders.
+- **Time Complexity**: \(O(N)\).
+
+#### **2. Breadth-First Search (`bfs`)**:
+- BFS traverses the graph starting from the source node \(1\).
+  
+  **Dice Throws**:
+  - For each node, up to \(6\) dice throws are simulated.
+  - In the worst case, all \(30\) nodes are explored, and the dice throws generate \(6\) neighbors per node.
+
+  **Priority Queue Operations**:
+  - Each push and pop operation in the priority queue takes \(O(\log Q)\), where \(Q\) is the size of the queue.
+  - In the worst case, \(Q = O(V + E)\), where \(V = 31\) (total vertices) and \(E = O(N + 6V)\) (edges from snakes, ladders, and dice throws).
+
+  **Overall BFS Complexity**:
+  - BFS complexity is \(O((V + E) \log(V + E))\).
+
+#### **3. Total Time Complexity**:
+- \(O(N) + O((V + E) \log(V + E))\).
+- Since \(V = 31\) and \(E = O(N + 6V)\), this simplifies to \(O(N \log N)\) for large \(N\).
+
+---
+
+### Space Complexity:
+
+#### **1. Graph Representation**:
+- The adjacency list `graph` uses \(O(V + E)\) space.
+- \(V = 31\), \(E = O(N + 6V)\).
+- **Space Complexity**: \(O(N + V)\).
+
+#### **2. Visited Array**:
+- The `vis` array stores \(31\) boolean values.
+- **Space Complexity**: \(O(V)\).
+
+#### **3. Priority Queue**:
+- The priority queue can hold up to \(O(V + E)\) elements in the worst case.
+- **Space Complexity**: \(O(V + E)\).
+
+#### **4. Total Space Complexity**:
+- \(O(V + E) = O(N + 6V)\).
+- For large \(N\), this simplifies to \(O(N)\).
+
+---
+
+### Final Complexity:
+
+- **Time Complexity**: \(O(N \log N)\).
+- **Space Complexity**: \(O(N)\).

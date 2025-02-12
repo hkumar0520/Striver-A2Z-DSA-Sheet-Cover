@@ -1,0 +1,379 @@
+
+Intuition
+PS: we need to find at what time we will be able to reach the last location starting from the first location such that time taken is minimum.
+obviously we can't reach any lesser than the height of the last location and not any longer than the max height.
+{Intuition for binary search on answer approach}
+Intutively thinking about the union and find approach is hard.
+
+1. Would describe the approaches:
+Bascially if we could start from the very first and keep on increasing time and see if we can reach the last , if at any time we would be able to reach the last then that time would be minimum.
+//DFS
+
+2. Improved version of the prev approach {DFS+binary search}
+we know that our ans would always be in the range{last height,max heigh}
+we can apply binary search for the answer in this range, and pick the approapriate answer, rather than trying for all the possible times.
+
+3. basically the third approach is pure dikstra,
+we keep on selecting the min, and have a priority queue for the min {rather than selecting all in dfs approach},
+in dikstra we get a path which contains all the min possible nodes to reach the end.
+since the max of the nodes would be the least time required to visit this particular path given by the dikstra algorithm so we could be having the max of it as our time.
+
+4. Now here we can see the connectivity, Union and find intution,
+all the elements got connected at last,
+see if we could be connecting all the elements in increasing time,
+and at a particular time we see that the first and the last element
+also got connected then since we are increasing the time linearly
+we must have got the min time.
+
+
+##################################################################
+using 4th approach 
+
+class DisjointSet{
+    vector<int> size, rank, parent;
+    public:
+
+    DisjointSet(int n)
+    {
+        size.resize(n,1);
+        rank.resize(n,0);
+        parent.resize(n,0);
+        for(int i=0; i<n;i++)
+            parent[i] = i;
+    }
+    
+    int findParent(int x)
+    {
+        if( x == parent[x])
+            return x;
+        
+        return parent[x] = findParent(parent[x]);
+    }
+
+    void unionByRank(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if(ulp_u == ulp_v)  return ;
+
+        if( rank[ulp_u] < rank[ulp_v]){
+            parent[ulp_u] = ulp_v;
+        }
+        else if( rank[ulp_v] < rank[ulp_u]){
+            parent[ulp_v] = ulp_u;
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+    
+    void unionBySize(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if(ulp_u == ulp_v)  return ;
+
+        if( size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+
+    int getSize(int x){
+        return size[x];
+    }
+};
+
+class Solution {
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        
+        int n = grid.size();
+        int totalSize = n*n;
+
+        pair<int, int> adj[totalSize];
+        // O(n*n)
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                adj[ grid[i][j] ] = {i,j};
+            }
+        }
+
+        DisjointSet ds(totalSize);
+        vector<int> vis(totalSize, 0);
+        int xCord[4] = {-1, 0, 1, 0};
+        int yCord[4] = {0, 1, 0, -1};
+
+        // O(n*n)
+        for(int t = 0; t<totalSize; t++)
+        {
+            int x = adj[t].first, y = adj[t].second;
+            vis[x*n + y] = 1;
+
+            // O(4)
+            for(int k=0; k<4; k++){
+                int nx = x + xCord[k];
+                int ny = y + yCord[k];
+
+                // O(4*@)
+                if(nx>=0 && ny>=0 && nx<n && ny<n && vis[nx*n + ny]==1){
+                    ds.unionByRank( x*n + y, nx*n + ny);
+                }
+            }
+            if(ds.findParent( 0 ) == ds.findParent( totalSize -1 )){
+                return t;
+            }
+        }
+
+        return totalSize - 1;
+    }
+};
+
+
+time complexity = O(n*n*4*@)
+space complexity = O(n){
+    n = parent,
+    n = rank,
+    n = size 
+}
+
+
+###################################################################################
+
+removing visit 
+
+class Solution {
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        
+        int n = grid.size();
+        int totalSize = n*n;
+
+        pair<int, int> adj[totalSize];
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                adj[ grid[i][j] ] = {i,j};
+            }
+        }
+
+        DisjointSet ds(totalSize);
+        int xCord[4] = {-1, 0, 1, 0};
+        int yCord[4] = {0, 1, 0, -1};
+
+        for(int t = 0; t<totalSize; t++)
+        {
+            int x = adj[t].first, y = adj[t].second;
+
+            for(int k=0; k<4; k++){
+                int nx = x + xCord[k];
+                int ny = y + yCord[k];
+
+                if(nx>=0 && ny>=0 && nx<n && ny<n && grid[nx][ny] <= t){
+                    ds.unionByRank( x*n + y, nx*n + ny);
+                }
+            }
+            if(ds.findParent( 0 ) == ds.findParent( totalSize -1 )){
+                return t;
+            }
+        }
+
+        return totalSize - 1;
+    }
+};
+
+
+
+###################################################################################
+
+removing visit and indexing
+
+class Solution {
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        
+        int n = grid.size();
+        int totalSize = n*n;
+
+        pair<int, int> adj[totalSize];
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                adj[ grid[i][j] ] = {i,j};
+            }
+        }
+
+        DisjointSet ds(totalSize);
+        int xCord[4] = {-1, 0, 1, 0};
+        int yCord[4] = {0, 1, 0, -1};
+
+        for(int t = 0; t<totalSize; t++)
+        {
+            int x = adj[t].first, y = adj[t].second;
+
+            for(int k=0; k<4; k++){
+                int nx = x + xCord[k];
+                int ny = y + yCord[k];
+
+                if(nx>=0 && ny>=0 && nx<n && ny<n && grid[nx][ny] <= t){
+                    ds.unionByRank( grid[x][y], grid[nx][ny]);
+                }
+            }
+            if(ds.findParent( grid[0][0] ) == ds.findParent( grid[n-1][n-1] )){
+                return t;
+            }
+        }
+
+        return totalSize - 1;
+    }
+};
+
+
+#####################################################################
+
+gpt union and find 
+
+To solve the "Swim in Rising Water" problem using a Union-Find (also called Disjoint Set Union, DSU) approach, we need to simulate the process of swimming from the top-left corner (0, 0) to the bottom-right corner (n-1, n-1) of the grid, considering the water level at each step. The goal is to find the minimum time \( t \) when the top-left and bottom-right corners are connected, meaning you can swim from the starting point to the destination.
+
+### Approach:
+
+1. **Sorting and Union-Find Setup**:
+   - We need to process grid cells in increasing order of their elevation because water level increases over time. The higher the elevation, the later you can swim through that cell.
+   - We use the Union-Find (Disjoint Set Union, DSU) data structure to dynamically merge reachable cells as water levels increase.
+
+2. **Union-Find Structure**:
+   - For each cell, we will associate it with its position in the grid (i.e., its row and column).
+   - If two adjacent cells (that are both reachable by the current water level) are found, we "union" them, which means we mark them as connected.
+   - The main idea is to "union" all adjacent cells whose elevation is less than or equal to the current water level \( t \).
+
+3. **Simulating the Rising Water**:
+   - We simulate the increasing water levels by first sorting all cells in the grid by their elevation.
+   - Then we iterate through these sorted cells, for each cell, we check its four neighbors and attempt to "union" the current cell with its neighbors if the neighbors are also reachable (i.e., their elevation is less than or equal to the current water level).
+
+4. **Early Stopping Condition**:
+   - The process stops early if the top-left corner (0, 0) and the bottom-right corner (n-1, n-1) are in the same set, indicating that a path has been formed between these two points.
+
+### Solution Code in C++:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class UnionFind {
+public:
+    UnionFind(int size) {
+        parent.resize(size);
+        rank.resize(size, 0);
+        for (int i = 0; i < size; ++i) {
+            parent[i] = i;
+        }
+    }
+
+    int find(int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]);  // Path compression
+        }
+        return parent[x];
+    }
+
+    void unionSets(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+        
+        if (rootX != rootY) {
+            // Union by rank
+            if (rank[rootX] > rank[rootY]) {
+                parent[rootY] = rootX;
+            } else if (rank[rootX] < rank[rootY]) {
+                parent[rootX] = rootY;
+            } else {
+                parent[rootY] = rootX;
+                rank[rootX]++;
+            }
+        }
+    }
+
+private:
+    vector<int> parent, rank;
+};
+
+int swimInWater(vector<vector<int>>& grid) {
+    int n = grid.size();
+    vector<pair<int, pair<int, int>>> elevations;  // (elevation, (row, col))
+
+    // Step 1: Collect all cells with their elevations
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            elevations.push_back({grid[i][j], {i, j}});
+        }
+    }
+
+    // Step 2: Sort by elevation
+    sort(elevations.begin(), elevations.end());
+
+    UnionFind uf(n * n);  // Union-Find structure for n x n grid
+
+    // Step 3: Process each cell in increasing order of elevation
+    for (auto& elevation : elevations) {
+        int elev = elevation.first;
+        int row = elevation.second.first;
+        int col = elevation.second.second;
+
+        int cellIndex = row * n + col;  // Unique index for the cell
+
+        // Try to union with neighbors (up, down, left, right)
+        if (row > 0 && grid[row - 1][col] <= elev) {
+            uf.unionSets(cellIndex, (row - 1) * n + col);
+        }
+        if (row < n - 1 && grid[row + 1][col] <= elev) {
+            uf.unionSets(cellIndex, (row + 1) * n + col);
+        }
+        if (col > 0 && grid[row][col - 1] <= elev) {
+            uf.unionSets(cellIndex, row * n + (col - 1));
+        }
+        if (col < n - 1 && grid[row][col + 1] <= elev) {
+            uf.unionSets(cellIndex, row * n + (col + 1));
+        }
+
+        // Check if the top-left and bottom-right corners are connected
+        if (uf.find(0) == uf.find(n * n - 1)) {
+            return elev;  // Return the time when they are connected
+        }
+    }
+
+    return -1;  // In case no solution is found (shouldn't happen)
+}
+
+int main() {
+    vector<vector<int>> grid1 = {{0, 2}, {1, 3}};
+    vector<vector<int>> grid2 = {{0, 1, 2, 3, 4}, {24, 23, 22, 21, 5}, {12, 13, 14, 15, 16}, {11, 17, 18, 19, 20}, {10, 9, 8, 7, 6}};
+    
+    cout << "Result for grid1: " << swimInWater(grid1) << endl;  // Expected: 3
+    cout << "Result for grid2: " << swimInWater(grid2) << endl;  // Expected: 16
+    
+    return 0;
+}
+```
+
+### Explanation:
+
+1. **UnionFind Class**:
+   - `find(int x)`: Finds the root of the set containing `x` with path compression.
+   - `unionSets(int x, int y)`: Unites two sets containing `x` and `y` using union by rank.
+
+2. **Main Logic (swimInWater function)**:
+   - We first create a list of all grid cells along with their elevation values and sort them in ascending order.
+   - For each cell, we try to union it with its valid neighbors (up, down, left, right) if their elevation is less than or equal to the current elevation.
+   - After each union operation, we check if the top-left corner (0, 0) and bottom-right corner (n-1, n-1) are connected by checking if their roots are the same in the Union-Find structure.
+
+3. **Time Complexity**:
+   - Sorting the elevations takes \( O(n^2 \log n) \).
+   - Union-Find operations (with path compression and union by rank) take nearly constant time, specifically \( O(\alpha(n^2)) \), where \( \alpha \) is the inverse Ackermann function, which is very slow-growing and can be considered nearly constant for practical input sizes.
+
+This approach efficiently solves the problem by processing the grid in increasing elevation order and using Union-Find to track connectivity.

@@ -1,0 +1,144 @@
+
+
+similar to 3rd print all subsequences
+
+class Solution {
+  public:
+    void backTrack(int index, vector<int>& nums, int sum, vector<int>& ans){
+        if(index == nums.size()){
+            ans.push_back(sum);
+            return;
+        }
+
+        // exclude
+        backTrack(index+1, nums, sum, ans);
+
+        //include
+        backTrack(index+1, nums, sum+nums[index],ans);
+
+        return;
+    }
+    vector<int> subsetSums(vector<int>& arr) {
+        // code here
+        int sum = 0;
+        vector<int> ans;
+        
+        backTrack(0, arr, sum, ans);
+        return ans;
+    }
+};
+
+### Time Complexity:
+
+The given code generates the sum of all subsets of the input array `arr` using backtracking. Let's analyze the time complexity:
+
+1. **Number of Subsets**: For an input array of size `n`, the number of possible subsets is \( 2^n \), as each element can either be included or excluded from the subset.
+
+2. **Backtracking Process**: 
+   - For each element at index `i`, we have two choices:
+     - Exclude the element.
+     - Include the element.
+   - The function `backTrack` is called recursively for both choices at each level of recursion. Thus, the recursion tree has a branching factor of 2, and the depth of the recursion tree is `n`.
+
+3. **Work Done at Each Level**: 
+   - At each recursive call, the work done involves either excluding or including the current element in the sum.
+   - Once we reach the base case (`index == nums.size()`), we push the current subset sum into the `ans` vector. The sum calculation is done at each leaf node of the recursion tree.
+   - Each subset sum is added to the answer list at the end of the recursion.
+
+Thus, the number of subsets is \( 2^n \), and for each subset, a constant amount of work is done (adding the sum to the answer list). Therefore, the **time complexity** is \( O(2^n) \).
+
+### Space Complexity:
+
+The space complexity includes two components:
+
+1. **Recursive Stack**: In the worst case, the recursion depth is `n`, since we are considering all `n` elements in the array. Therefore, the maximum depth of the recursion stack is \( O(n) \).
+
+2. **Answer Storage**: The answer vector `ans` stores the sum of each subset. There are \( 2^n \) subsets, and each subset sum is a single integer. Therefore, the space required to store the answers is \( O(2^n) \).
+
+Thus, the **space complexity** is \( O(2^n) \), accounting for both the recursion stack and the space required to store the subset sums.
+
+### Conclusion:
+
+- **Time Complexity**: \( O(2^n) \), where \( 2^n \) is the number of subsets.
+- **Space Complexity**: \( O(2^n) \), for storing the subset sums in the `ans` vector and the recursion stack.
+
+
+
+
+
+
+
+
+
+####################################################################
+
+class Solution {
+  public:
+    void backTrack(int index, vector<int>& nums, int sum, vector<int>& ans){
+        ans.push_back(sum);
+        for(int i = index; i<nums.size(); i++){
+            backTrack(i+1, nums, sum + nums[i], ans);
+        }
+    }
+    vector<int> subsetSums(vector<int>& arr) {
+        // code here
+        int sum = 0;
+        vector<int> ans;
+        
+        backTrack(0, arr, sum, ans);
+        return ans;
+    }
+};
+
+
+
+### Time Complexity Analysis
+
+The given code is designed to find all possible subset sums of an input array `arr`. Let's break down the time complexity step by step.
+
+#### 1. **Backtracking (`backTrack` function)**:
+The function `backTrack` is a recursive function that computes the subset sums.
+
+- **Recursion structure**:
+  - The function starts at index `0` and iterates through all the elements of the array.
+  - For each element at index `i`, it adds the element `arr[i]` to the current sum and recursively explores further subsets by calling `backTrack(i+1, ...)`.
+  - The recursion generates subsets by adding elements to the sum as it goes deeper into the recursion tree.
+
+The number of possible subsets of an array of size `n` is \(2^n\). For each subset, the function computes the sum of its elements. This means the recursive function will explore all subsets and compute their sums.
+
+- **Total number of subsets**: There are \(2^n\) subsets of an array of size `n`, including the empty subset.
+
+- **Operations per subset**: 
+  - For each subset, the function does some constant work (adding the sum to the result vector `ans`).
+  - The operations inside the loop (i.e., updating the `sum` and pushing it into the `ans` vector) are \( O(1) \), but the recursive call to `backTrack` happens for every element in the current subset.
+  
+  So for each subset, there is an \( O(1) \) operation (for adding the sum to `ans`), but we perform this for all possible subsets.
+
+#### 2. **Recursion Depth**:
+- The recursion depth is at most \( O(n) \) because in each recursive call, we increment the `index` by 1, and the recursion continues until we have explored all elements.
+  
+#### 3. **Total Time Complexity**:
+- Since the recursion explores all \( 2^n \) subsets, and for each subset, it performs constant work (updating the sum and storing it in the result vector), the time complexity of generating all the subsets and calculating their sums is \( O(2^n) \).
+  
+### Space Complexity:
+
+#### 1. **Recursive Call Stack**:
+- The depth of the recursion tree is at most \( O(n) \), since the function explores each element of the array exactly once.
+  
+#### 2. **Result Storage (`ans`)**:
+- The result vector `ans` stores all the subset sums. Since there are \( 2^n \) subsets, and each subset sum is a single integer, the space required to store all the subset sums is \( O(2^n) \).
+
+#### 3. **Temporary Space for Sum**:
+- The `sum` variable is a single integer, so it takes constant space, \( O(1) \), during each recursion.
+
+#### 4. **Overall Space Complexity**:
+- The space for the recursion stack is \( O(n) \).
+- The space for storing all the subset sums in `ans` is \( O(2^n) \).
+
+Thus, the total space complexity is \( O(2^n) \), dominated by the storage for the subset sums.
+
+### **Summary**:
+
+- **Time Complexity**: \( O(2^n) \), because we generate and process all subsets.
+- **Space Complexity**: \( O(2^n) \), dominated by the storage required for all subset sums.
+

@@ -1,0 +1,72 @@
+
+
+https://www.geeksforgeeks.org/problems/is-binary-tree-heap/1?page=1&category=Heap&difficulty=Medium&sortBy=submissions
+
+class Solution {
+  public:
+    bool isHeap(struct Node* tree) {
+        // code here
+        if(tree->left == NULL && tree->right == NULL)
+            return true;
+            
+        if(tree->left == NULL || tree->right == NULL)
+            return false;
+            
+        bool forCurrent = false;
+        if(tree->data >= tree->left->data && 
+            tree->data >= tree->right->data)
+            forCurrent = true;
+            
+        bool forLeft= isHeap(tree->left);
+        bool forRight = isHeap(tree->right);
+        
+        return forCurrent && forLeft && forRight;
+    }
+};
+
+Let's analyze the **time complexity** and **space complexity** of the provided code, which checks whether a binary tree satisfies the heap property.
+
+### Code Explanation:
+
+The function `isHeap` checks whether a binary tree is a **max-heap**:
+1. A node's value must be greater than or equal to its children.
+2. The binary tree must be a complete binary tree.
+
+The recursive function `isHeap` works as follows:
+- **Base case**: If the node is a leaf (both left and right children are `NULL`), it returns `true`.
+- **Single child case**: If the node has only one child (either left or right is `NULL`), it returns `false` because the tree cannot be a heap.
+- **Heap property check**: For the current node, it checks whether the node’s value is greater than or equal to the values of both its left and right children. If this is true, it recursively checks the left and right subtrees.
+- **Recursive calls**: The function checks both the left and right subtrees recursively to ensure that the entire tree satisfies the heap property.
+
+### Time Complexity:
+
+Let’s denote `n` as the number of nodes in the tree.
+
+1. **Checking the Heap Property**:
+   - For each node, the function performs constant time work:
+     - Comparing the current node's data with its left and right children: **O(1)**
+     - Recursive calls for the left and right subtrees: **O(1)**
+     
+   So, for each node, the heap property check and the recursive calls take constant time.
+
+2. **Recursive Traversal**:
+   - The function recursively visits each node in the tree exactly once.
+   - Since there are `n` nodes in the tree, the total number of recursive calls is `n`.
+
+Thus, the overall **time complexity** is **O(n)**, where `n` is the number of nodes in the tree.
+
+### Space Complexity:
+
+The space complexity is determined by the auxiliary space used by the function, specifically the recursion stack.
+
+1. **Recursion Stack**:
+   - In the worst case (if the tree is unbalanced), the recursion stack will have a depth equal to the height of the tree.
+   - For a completely unbalanced tree, the height of the tree can be `n`, leading to a recursion stack depth of `O(n)`.
+   - For a balanced tree, the height of the tree will be `O(log n)`, leading to a recursion stack depth of `O(log n)`.
+
+Thus, the overall **space complexity** is **O(h)**, where `h` is the height of the tree. In the worst case (unbalanced tree), this is **O(n)**, and in the best case (balanced tree), it is **O(log n)**.
+
+### Final Complexity Summary:
+
+- **Time Complexity**: **O(n)**
+- **Space Complexity**: **O(n)** in the worst case (for an unbalanced tree), **O(log n)** in the best case (for a balanced tree).

@@ -1,0 +1,189 @@
+
+// longest subarray with atmost K zeroes;
+
+class Solution {
+public:
+    int longestOnes(vector<int>& nums, int k) {
+        
+        int i = 0, j = 0, len = 0;
+        int n = nums.size(), countZero = 0;
+
+        for(int i = 0; i<n; i++){
+            countZero = 0;
+            for(int j = i;j<n;j++)
+            {
+                if(nums[j] == 0)
+                    countZero++;
+                
+                if(countZero <=k)
+                    len = max(len, j-i+1);
+                else
+                    break;
+            }
+        }
+        return len;
+    }
+};
+
+time complexity - O(n*n)
+space complexity - O(1)
+
+################################################################
+
+optimized
+
+// longest subarray with atmost K zeroes;
+
+class Solution {
+public:
+    int longestOnes(vector<int>& nums, int k) {
+        
+        int l = 0, r = 0, maxLen = 0;
+        int n = nums.size(), countZero = 0;
+
+        while(r < n){
+            if(nums[r] == 0)
+                countZero++;
+
+            while(countZero > k){
+                if(nums[l] == 0)
+                    countZero--;
+                l++;
+            }
+            int len = r-l+1;
+            if(countZero<=k)
+                maxLen = max(maxLen, len);
+
+            r++;
+        }
+        return maxLen;
+    }
+};
+
+Time complexity - O(2*n)
+Space Complexity - O(1)
+
+
+##################################################################
+
+class Solution {
+public:
+    int longestOnes(vector<int>& nums, int k) {
+        
+        int l = 0, r = 0, maxLen = 0;
+        int n = nums.size(), countZero = 0;
+
+        while(r < n){
+            if(nums[r] == 0)
+                countZero++;
+
+            if(countZero > k){
+                if(nums[l] == 0)
+                    countZero--;
+                l++;
+            }
+            int len = r-l+1;
+            if(countZero<=k)
+                maxLen = max(maxLen, len);
+
+            r++;
+        }
+        return maxLen;
+    }
+};
+
+Time complexity - O(n)
+Space Complexity - O(1)
+
+##################################################################
+
+gpt
+
+You can solve this problem using a sliding window technique. The idea is to maintain a window of consecutive elements in which the number of zeros does not exceed `k`. If the number of zeros exceeds `k`, shrink the window from the left. This approach ensures that you can find the maximum length subarray that can be formed by flipping at most `k` zeros.
+
+Here is the C++ implementation of the solution:
+
+```cpp
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int longestOnes(vector<int>& nums, int k) {
+    int left = 0, right = 0, maxLength = 0, zeroCount = 0;
+    
+    // Sliding window approach
+    while (right < nums.size()) {
+        // If we encounter a 0, we count it
+        if (nums[right] == 0) {
+            zeroCount++;
+        }
+        
+        // If zeroCount exceeds k, we move the left pointer to shrink the window
+        while (zeroCount > k) {
+            if (nums[left] == 0) {
+                zeroCount--;
+            }
+            left++;
+        }
+        
+        // Update the maximum length of the window
+        maxLength = max(maxLength, right - left + 1);
+        
+        // Move the right pointer to the next element
+        right++;
+    }
+    
+    return maxLength;
+}
+
+int main() {
+    vector<int> nums1 = {1,1,1,0,0,0,1,1,1,1,0};
+    int k1 = 2;
+    cout << "Max consecutive 1's (Example 1): " << longestOnes(nums1, k1) << endl; // Output: 6
+
+    vector<int> nums2 = {0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1};
+    int k2 = 3;
+    cout << "Max consecutive 1's (Example 2): " << longestOnes(nums2, k2) << endl; // Output: 10
+    
+    return 0;
+}
+```
+
+### Explanation:
+
+1. **Variables**:
+   - `left`: the left pointer of the sliding window.
+   - `right`: the right pointer of the sliding window.
+   - `maxLength`: stores the maximum length of the subarray where we can flip at most `k` zeros.
+   - `zeroCount`: counts the number of zeros within the current window.
+
+2. **Sliding Window**:
+   - The window is extended by moving the `right` pointer.
+   - If `nums[right]` is 0, increase `zeroCount`.
+   - If `zeroCount` exceeds `k`, move the `left` pointer to shrink the window, ensuring the number of zeros is always `<= k`.
+
+3. **Updating maxLength**:
+   - At each step, update `maxLength` to keep track of the longest valid window found.
+
+4. **Time Complexity**:
+   - The time complexity is O(n), where n is the length of the input array `nums`, because both `left` and `right` pointers only traverse the array once.
+
+### Example Output:
+For the input:
+```
+nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2
+```
+The output will be:
+```
+Max consecutive 1's (Example 1): 6
+```
+
+And for the input:
+```
+nums = [0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], k = 3
+```
+The output will be:
+```
+Max consecutive 1's (Example 2): 10
+```

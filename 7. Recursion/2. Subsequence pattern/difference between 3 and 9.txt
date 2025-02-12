@@ -1,0 +1,57 @@
+
+Code - 1 : 9th question
+Code - 2 : 3rd question 
+
+
+The time complexity of **code-1** and **code-2** differ mainly because of the difference in what is being stored at the base case of recursion. Let’s break down both cases:
+
+### Code 1: **Subset Sums**
+
+- **Purpose**: This code computes the sum of all subsets of the input array `arr` and stores those sums in the `ans` vector.
+  
+- **Recursive Structure**: 
+    - At each index, we recursively explore two options: excluding or including the current element in the sum.
+    - The sum is updated (`sum + nums[index]`) only during the "include" case.
+
+- **Work Done**: 
+    - At the base case, the current sum (for the subset formed by including/excluding the elements) is added to the `ans` vector.
+    - Each subset generates exactly one sum, so we store one integer per subset.
+
+- **Time Complexity**: 
+    - The number of subsets generated is \( 2^n \), where `n` is the size of the array. 
+    - For each subset, the code does a constant amount of work (either excluding or including an element).
+    - At the base case, adding the sum of the subset to the `ans` vector is also constant time.
+    
+    **Thus, the time complexity is \( O(2^n) \)**, as we generate \( 2^n \) subsets and do constant work per subset.
+
+### Code 2: **Subsets**
+
+- **Purpose**: This code computes all possible subsets of the input array `nums` and stores those subsets in the `ans` vector. Each subset is stored as a vector of integers.
+
+- **Recursive Structure**: 
+    - Similar to Code 1, we recursively explore two options: excluding or including the current element in the subset (represented by the `path` vector).
+    - The `path` vector is updated during the "include" case and then reverted using `pop_back` after the recursive call to ensure that we correctly backtrack.
+
+- **Work Done**:
+    - At the base case, the current subset (represented by the `path` vector) is added to the `ans` vector.
+    - Each subset is stored as a vector of integers, and the length of each subset can range from 0 to `n`.
+
+- **Time Complexity**: 
+    - The number of subsets generated is also \( 2^n \).
+    - However, **each subset** is stored as a vector of integers. Since a subset can have at most `n` elements (the entire array), copying or moving a subset to the `ans` vector involves time proportional to the size of the subset.
+    - On average, the total time to store all subsets is \( O(n) \) (since each subset may be as large as `n`).
+    
+    **Thus, the time complexity is \( O(2^n \cdot n) \)** because we generate \( 2^n \) subsets, and for each subset, we do \( O(n) \) work to store it in the answer.
+
+### Key Difference in Time Complexity:
+
+- **Code 1**: Each subset sum is a single integer (constant size), so the time complexity is \( O(2^n) \).
+- **Code 2**: Each subset is a vector of integers (up to size `n`), and the total work to store all subsets is proportional to the number of subsets \( 2^n \) and the maximum size of each subset (`n`). Hence, the time complexity is \( O(2^n \cdot n) \).
+
+### Summary:
+
+- **Code 1 (Subset Sums)**: \( O(2^n) \), since we store only one integer per subset.
+- **Code 2 (Subsets)**: \( O(2^n \cdot n) \), since each subset is a vector of integers (up to `n` elements), and we store them all.
+
+The difference comes from the fact that in **Code 2**, you are storing the full subset (a list of integers) rather than just the sum of the subset, which involves extra work to manage and store the larger data structure.
+

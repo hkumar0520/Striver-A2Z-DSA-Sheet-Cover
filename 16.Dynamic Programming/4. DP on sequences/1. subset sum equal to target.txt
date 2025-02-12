@@ -1,0 +1,125 @@
+
+// recursion
+#include <bits/stdc++.h> 
+
+bool f(int ind, int target, vector<int> &arr)
+{
+    if(target == 0) return true;
+    if (ind == 0) 
+      return (arr[ind] == target) ? true : false;
+   
+
+    bool nonPick = f(ind-1, target,arr);
+    bool pick = false;
+    if(arr[ind]<=target)
+        pick = f(ind-1, target-arr[ind], arr);
+
+    return pick || nonPick;
+}
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+    // Write your code here.
+
+    return f(n-1,k, arr);
+}
+
+###############################################################################################
+// memoization
+#include <bits/stdc++.h> 
+
+bool f(int ind, int target, vector<int> &arr, vector<vector<int>> &dp)
+{
+    if(target == 0) return dp[ind][target] = true;
+    if (ind == 0) 
+      return (arr[ind] == target) ? true : false;
+   
+    if(dp[ind][target] != -1)   return dp[ind][target];
+
+    bool nonPick = f(ind-1, target,arr,dp);
+    bool pick = false;
+    if(arr[ind]<=target)
+        pick = f(ind-1, target-arr[ind], arr,dp);
+
+    dp[ind][target] = (pick || nonPick);
+
+    return  dp[ind][target];
+}
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+    // Write your code here.
+    vector<vector<int>> dp(n, vector<int>(k+1,-1));
+    return f(n-1,k, arr, dp);
+}
+
+###############################################################################################
+// tabular approach 
+
+#include <bits/stdc++.h> 
+
+bool f(int n, int k, vector<int> &arr, vector<vector<bool>> &dp)
+{
+    // target =0 
+    for(int  i=0;i<n;i++)
+        dp[i][0] = true;
+    
+    if(arr[0]<= k)
+        dp[0][arr[0]] = true;
+    for(int i=1;i<n;i++)
+    {
+        for(int j=1;j<k+1;j++)
+        {
+            bool nottaken = dp[i-1][j];
+            bool taken = false;
+            if(arr[i]<=j)
+                taken = dp[i-1][j-arr[i]];
+
+            dp[i][j] = taken || nottaken;
+        }
+    }
+
+    return  dp[n-1][k];
+}
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+    // Write your code here.
+    vector<vector<bool>> dp(n, vector<bool>(k+1,false));
+    return f(n,k, arr, dp);
+}
+
+
+###############################################################################################
+// optimized space
+
+#include <bits/stdc++.h> 
+
+bool f(int n, int k, vector<int> &arr, vector<bool> &dp)
+{
+    // target =0 
+    dp[0] = true;
+    if(arr[0]<= k)
+        dp[arr[0]] = true;
+
+    for(int i=1;i<n;i++)
+    {
+        vector<bool> temp(k+1,false);
+        temp[0] = true;
+        for(int j=1;j<k+1;j++)
+        {
+            bool nottaken = dp[j];
+            bool taken = false;
+            if(arr[i]<=j)
+                taken = dp[j-arr[i]];
+
+            temp[j] = taken || nottaken;
+        }
+        dp = temp;
+    }
+
+    return  dp[k];
+}
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+    // Write your code here.
+    vector<bool> dp(k+1,false);
+    return f(n,k, arr, dp);
+}
+
+
+
+

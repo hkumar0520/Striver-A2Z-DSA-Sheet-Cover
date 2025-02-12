@@ -1,0 +1,131 @@
+
+
+
+class Solution
+{
+    public:
+    void backTrack(vector<string>& ans, int idx, int N){
+        if(idx == N)    return ;
+        
+        // append zero to the front for every string
+        vector<string> appendZero;
+        for(string str: ans){
+            string strTemp = str;
+            strTemp = "0" + strTemp;
+            appendZero.push_back(strTemp);
+        }
+        
+        // append one to the front  for every string in reverse order
+        vector<string> appendOne;
+        reverse(ans.begin(), ans.end());
+        for(string str: ans){
+            string  strTemp = str;
+            strTemp = "1" + strTemp;
+            appendOne.push_back(strTemp);
+        }
+        
+        ans.clear();
+        ans = appendZero;
+        for(string str: appendOne)
+            ans.push_back(str);
+            
+        
+        backTrack(ans, idx+1, N);
+    }
+    vector<string> graycode(int n)
+    {
+        //code here
+        vector<string> res;
+        res.push_back("0");
+        res.push_back("1");
+        
+        backTrack(res,1,n);
+        
+        return res;
+    }
+};
+
+
+
+### **Intuition to Solve the Problem**
+
+The problem is to generate a **Gray code sequence** for a given number \( N \), where successive patterns differ by exactly one bit. Here's the intuition to solve it:
+
+---
+
+### **1. Understanding Gray Code**
+- A **Gray code** sequence is a binary sequence where two successive numbers differ by only one bit.
+- For example:
+  - \( N = 2 \): \( 00, 01, 11, 10 \)
+  - \( N = 3 \): \( 000, 001, 011, 010, 110, 111, 101, 100 \)
+
+---
+
+### **2. Recursive Insight**
+- **Base Case**:
+  - For \( N = 1 \), the Gray code sequence is:
+    \[
+    [0, 1]
+    \]
+- **Recursive Step**:
+  - For \( N \), generate the sequence for \( N-1 \), then:
+    1. Append `0` to the beginning of each code in the sequence for \( N-1 \).
+    2. Reverse the sequence for \( N-1 \) and append `1` to the beginning of each code.
+
+This ensures that:
+- The first half of the sequence is identical to \( N-1 \) but prefixed with `0`.
+- The second half is a mirrored version of \( N-1 \) but prefixed with `1`.
+- Successive numbers differ by exactly one bit.
+
+---
+
+### **3. Example of Recursive Construction**
+#### \( N = 2 \):
+1. Start with \( N = 1 \): \( [0, 1] \)
+2. For \( N = 2 \):
+   - Append `0`: \( [00, 01] \)
+   - Reverse and append `1`: \( [11, 10] \)
+   - Combine: \( [00, 01, 11, 10] \)
+
+#### \( N = 3 \):
+1. Start with \( N = 2 \): \( [00, 01, 11, 10] \)
+2. For \( N = 3 \):
+   - Append `0`: \( [000, 001, 011, 010] \)
+   - Reverse and append `1`: \( [110, 111, 101, 100] \)
+   - Combine: \( [000, 001, 011, 010, 110, 111, 101, 100] \)
+
+---
+
+### **4. Iterative Approach**
+- Instead of recursion, Gray codes can also be generated iteratively:
+  1. Start with \( [0] \).
+  2. For each bit position, reverse the current sequence and prefix `1` to the reversed sequence.
+  3. Append the reversed sequence to the original.
+
+---
+
+### **5. Observations**
+- **Number of Codes**: The total number of Gray codes is \( 2^N \), where \( N \) is the number of bits.
+- **Binary Representation**:
+  - The \( i \)-th Gray code can be derived from the binary representation of \( i \) using:
+    \[
+    \text{Gray}(i) = i \oplus (i >> 1)
+    \]
+  - This approach is efficient and avoids recursion or iteration.
+
+---
+
+### **6. Complexity**
+- **Time Complexity**:
+  - Recursive/Iterative Construction: \( O(2^N) \), as we generate \( 2^N \) codes.
+  - Binary Representation: \( O(2^N) \), as each Gray code is computed in \( O(1) \) for \( 2^N \) numbers.
+- **Space Complexity**:
+  - The space required to store the Gray codes is \( O(2^N) \).
+
+---
+
+### **Algorithm Summary**
+1. Use recursive or iterative construction to generate Gray codes.
+2. Alternatively, compute each Gray code directly using the formula \( i \oplus (i >> 1) \).
+
+This approach ensures efficient generation of the Gray code sequence while adhering to the constraints.

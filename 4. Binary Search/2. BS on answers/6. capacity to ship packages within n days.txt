@@ -1,0 +1,42 @@
+
+
+int f(vector<int> &weights, int d, int mid)
+{
+    int sum = 0, n = weights.size();
+    for(int i=0;i<n;i++)
+    {
+        if(weights[i]>mid)  
+            return false;
+            
+        sum+= weights[i];
+        if(sum > mid)
+        {
+            sum = weights[i];
+            d--;
+        }
+    }
+    if(d<=0) return false;
+    return true;
+}
+
+int leastWeightCapacity(vector<int> &weights, int d)
+{
+    // Write your code here.
+    int lo = INT_MAX, hi = 0;
+    for(auto u:weights)
+    {
+        lo = min(lo,u);
+        hi += u;
+    }
+    while(lo<=hi)
+    {
+        int mid = (lo + hi)/2;
+        bool possible = f(weights,d,mid);
+        if(possible)
+            hi = mid-1;
+        else
+            lo = mid+1;
+    }
+    return lo;
+}
+

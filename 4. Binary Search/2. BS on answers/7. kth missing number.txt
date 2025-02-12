@@ -1,0 +1,33 @@
+
+
+int missingK(vector < int > vec, int n, int k) {
+    // Write your code here.
+    for(auto u: vec)
+    {
+        if(u<=k)
+            k++;
+        else
+            break;
+    }
+    return k;
+}
+
+################################################################################################
+
+
+int missingK(vector < int > vec, int n, int k) {
+    // Write your code here.
+    int i = 0, j = n-1;
+    while(i<=j)
+    {
+        int mid = (i+j)/2;
+        int missing = vec[mid] - (mid+1);
+        if(missing<k)
+            i = mid+1;
+        else
+            j = mid-1;
+    }
+    return i+k;
+}
+
+

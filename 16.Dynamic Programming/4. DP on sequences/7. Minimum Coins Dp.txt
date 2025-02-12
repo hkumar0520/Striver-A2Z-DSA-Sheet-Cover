@@ -1,0 +1,196 @@
+
+// in below one , it is coming like this
+// INT_MAX + 1 = INT_MIN
+int f(int ind, int target, vector<int> num)
+{
+    if(ind == 0)
+        return ((target%num[ind]) ==0 ) ? target/num[ind] : INT_MAX;
+
+    int notpick = f(ind-1, target, num);
+    int pick = INT_MAX;
+    if(num[ind]<=target)
+        pick = 1 + f(ind, target-num[ind], num);
+
+    cout<<pick<<" "<<notpick<<endl;
+    return min(notpick, pick);
+}
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    int val = f(n-1,x,num);
+    return  val == INT_MAX? -1: val;
+}
+
+
+###############################################################################################
+// recursion, time limit exceed
+
+#include <bits/stdc++.h> 
+
+int f(int ind, int target, vector<int> num)
+{
+    if(ind == 0)
+        return ((target%num[ind]) ==0 ) ? target/num[ind] : 1e9;
+
+    int notpick = f(ind-1, target, num);
+    int pick = 1e9;
+    if(num[ind]<=target)
+        pick = 1 + f(ind, target-num[ind], num);
+
+    return min(notpick, pick);
+}
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    int val = f(n-1,x,num);
+    return  val >= 1e9? -1: val;
+}
+
+###############################################################################################
+// memoization 
+#include <bits/stdc++.h> 
+
+int f(int ind, int target, vector<int> num, vector<vector<int>> &dp)
+{
+    if(ind == 0)
+        return ((target%num[ind]) ==0 ) ? target/num[ind] : 1e9;
+
+    if(dp[ind][target] != -1)   return dp[ind][target];
+
+    int notpick = f(ind-1, target, num, dp);
+    int pick = 1e9;
+    if(num[ind]<=target)
+        pick = 1 + f(ind, target-num[ind], num, dp);
+
+    return dp[ind][target] = min(notpick, pick);
+}
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    vector<vector<int>> dp(n,vector<int>(x+1,-1));
+    int val = f(n-1,x,num,dp);
+    return  val >= 1e9? -1: val;
+}
+
+
+###############################################################################################
+
+// tabular
+
+#include <bits/stdc++.h> 
+
+int f(int n, int target, vector<int> num, vector<vector<int>> &dp)
+{
+    // if(ind == 0)
+    //     return ((target%num[ind]) ==0 ) ? target/num[ind] : 1e9;
+    for(int j=0;j<=target;j++)
+        if(j%num[0] == 0)   dp[0][j] = j/num[0];
+
+    for(int i=1;i<n;i++)
+    {
+        for(int j=0;j<=target;j++)
+        {
+            int notpick = dp[i-1][j];
+            int pick = 1e9;
+            if(num[i]<=j)
+                pick = 1+dp[i][j-num[i]];
+
+            dp[i][j] = min(notpick, pick);
+        }
+    }
+
+    return dp[n-1][target];
+}
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    vector<vector<int>> dp(n,vector<int>(x+1,1e9));
+    int val = f(n,x,num,dp);
+    return  val >= 1e9? -1: val;
+}
+
+###############################################################################################
+
+// optimization
+
+#include <bits/stdc++.h> 
+
+int f(int n, int target, vector<int> num)
+{
+
+    vector<int>curr (target+1,1e9);
+
+    // if(ind == 0)
+    //     return ((target%num[ind]) ==0 ) ? target/num[ind] : 1e9;
+    for(int j=0;j<=target;j++)
+        if(j%num[0] == 0)   curr[j] = j/num[0];
+
+    for(int i=1;i<n;i++)
+    {
+        vector<int> temp = curr;
+        for(int j=0;j<=target;j++)
+        {
+            int notpick = curr[j];
+            int pick = 1e9;
+            if(num[i]<=j)
+                pick = 1+temp[j-num[i]];
+
+            temp[j] = min(notpick, pick);
+        }
+        curr = temp;
+    }
+
+    return curr[target];
+}
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    int val = f(n,x,num);
+    return  val >= 1e9? -1: val;
+}
+
+######################################################
+no need of temp
+
+class Solution {
+public:
+
+int f(int n, int target, vector<int> num)
+{
+
+    vector<int>curr (target+1,1e9);
+
+    // if(ind == 0)
+    //     return ((target%num[ind]) ==0 ) ? target/num[ind] : 1e9;
+    for(int j=0;j<=target;j++)
+        if(j%num[0] == 0)   curr[j] = j/num[0];
+
+    for(int i=1;i<n;i++)
+    {
+        for(int j=0;j<=target;j++)
+        {
+            int notpick = curr[j];
+            int pick = 1e9;
+            if(num[i]<=j)
+                pick = 1+curr[j-num[i]];
+
+            curr[j] = min(notpick, pick);
+        }
+    }
+
+    return curr[target];
+}
+int coinChange(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    int val = f(n,x,num);
+    return  val >= 1e9? -1: val;
+}
+   
+};

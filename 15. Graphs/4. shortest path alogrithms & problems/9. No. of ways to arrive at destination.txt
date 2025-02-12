@@ -1,0 +1,421 @@
+
+
+14/55 test cases 
+ time limit exceed 
+
+ class Solution {
+public:
+    int countPaths(int n, vector<vector<int>>& roads) {
+        int src = 0, dst = n-1;
+
+        vector<int> dist(n, INT_MAX);
+        queue<vector<int>> qtraverse;
+
+        qtraverse.push({ 0, src});
+        dist[src] = 0;
+
+
+        int minCostToDst = INT_MAX, countWaysToDst = 0;
+
+        while(!qtraverse.empty())
+        {
+            vector<int> frontNode = qtraverse.front();
+            qtraverse.pop();
+
+            int cost = frontNode[0], node = frontNode[1];
+
+            if(node == dst)
+            {
+                if( cost < minCostToDst )
+                {
+                    minCostToDst = cost;
+                    countWaysToDst = 1;
+                }
+                else if(cost == minCostToDst)
+                    countWaysToDst++;
+                
+                continue;
+            }
+
+            for(vector<int> currNode: roads)
+            {
+                int srcNode = currNode[0], dstNode = currNode[1], wt = currNode[2];
+                if(srcNode == node && dist[dstNode] >= cost + wt)
+                {
+                    dist[dstNode] = cost + wt;
+                    qtraverse.push({ dist[dstNode], dstNode});
+                }
+                else if(dstNode == node && dist[srcNode] >= cost + wt)
+                {
+                    dist[srcNode] = cost + wt;
+                    qtraverse.push({ dist[srcNode], srcNode});
+                }
+            }
+        }
+        return countWaysToDst;
+    }
+};
+
+#######################################################################################################
+
+20/55 test cases passed
+
+// if queue replace by priority_queue same ans from this section login
+
+class Solution {
+public:
+    void getGraph(vector<vector<pair<int,int>>>& graph ,
+                vector<vector<int>>& roads)
+    {
+        for(vector<int> edge: roads)
+        {
+            int u = edge[0], v = edge[1], wt = edge[2];
+
+            graph[u].push_back({v,wt});
+            graph[v].push_back({u,wt});
+        }                
+    }
+    int countPaths(int n, vector<vector<int>>& roads) {
+
+        vector<vector<pair<int,int>>> graph(n);
+        getGraph(graph, roads);
+
+        int src = 0, dst = n-1;
+
+        vector<int> dist(n, INT_MAX);
+        queue<vector<int>> qtraverse;
+
+        qtraverse.push({ 0, src});
+        dist[src] = 0;
+
+
+        int minCostToDst = INT_MAX, countWaysToDst = 0;
+
+        while(!qtraverse.empty())
+        {
+            vector<int> frontNode = qtraverse.front();
+            qtraverse.pop();
+
+            int cost = frontNode[0], node = frontNode[1];
+
+            if(node == dst)
+            {
+                if( cost < minCostToDst )
+                {
+                    minCostToDst = cost;
+                    countWaysToDst = 1;
+                }
+                else if(cost == minCostToDst)
+                    countWaysToDst++;
+                
+                continue;
+            }
+
+            for(pair<int,int> currNode: graph[node])
+            {
+                int dstNode = currNode.first, wt = currNode.second;
+                if(dist[dstNode] >= cost + wt)
+                {
+                    dist[dstNode] = cost + wt;
+                    qtraverse.push({ dist[dstNode], dstNode});
+                }
+            }
+        }
+        return countWaysToDst;
+    }
+};
+
+#######################################################################################
+
+36/55 wrong answer
+
+did not include mod 
+
+class Solution {
+public:
+    void getGraph(vector<vector<pair<int,int>>>& graph ,
+                vector<vector<int>>& roads)
+    {
+        for(vector<int> edge: roads)
+        {
+            int u = edge[0], v = edge[1], wt = edge[2];
+
+            graph[u].push_back({v,wt});
+            graph[v].push_back({u,wt});
+        }                
+    }
+    int countPaths(int n, vector<vector<int>>& roads) {
+
+        vector<vector<pair<int,int>>> graph(n);
+        getGraph(graph, roads);
+
+        int src = 0, dst = n-1;
+
+        vector<int> dist(n, INT_MAX);
+        vector<int> ways(n, 0);
+        priority_queue< vector<int>, vector<vector<int>>,
+                        greater<vector<int>> > qtraverse;
+
+        qtraverse.push({ 0, src});
+        dist[src] = 0;
+        ways[src] = 1;
+
+        int minCostToDst = INT_MAX, countWaysToDst = 0;
+
+        while(!qtraverse.empty())
+        {
+            vector<int> frontNode = qtraverse.top();
+            qtraverse.pop();
+
+            int cost = frontNode[0], node = frontNode[1];
+
+            if(node == dst)
+            {
+                if( cost < minCostToDst )
+                {
+                    minCostToDst = cost;
+                    countWaysToDst = ways[node];
+                }
+                else if(cost == minCostToDst)
+                    countWaysToDst = countWaysToDst + ways[node];
+                
+                continue;
+            }
+
+            for(pair<int,int> currNode: graph[node])
+            {
+                int dstNode = currNode.first, wt = currNode.second;
+                if(dist[dstNode] > cost + wt)
+                {
+                    dist[dstNode] = cost + wt;
+                    ways[dstNode] = ways[dstNode] + ways[node];
+                    qtraverse.push({ dist[dstNode], dstNode});
+                }
+                else if(dist[dstNode] == cost + wt)
+                    ways[dstNode] = ways[dstNode] + ways[node];
+            }
+        }
+        return countWaysToDst;
+    }
+};
+
+#######################################################################################
+53/55
+
+class Solution {
+public:
+    void getGraph(vector<vector<pair<int,int>>>& graph ,
+                vector<vector<int>>& roads)
+    {
+        for(vector<int> edge: roads)
+        {
+            int u = edge[0], v = edge[1], wt = edge[2];
+
+            graph[u].push_back({v,wt});
+            graph[v].push_back({u,wt});
+        }                
+    }
+    int countPaths(int n, vector<vector<int>>& roads) {
+
+        vector<vector<pair<int,int>>> graph(n);
+        getGraph(graph, roads);
+
+        int src = 0, dst = n-1;
+
+        vector<long> dist(n, INT_MAX);
+        vector<long> ways(n, 0);
+        priority_queue< vector<long>, vector<vector<long>>,
+                        greater<vector<long>> > qtraverse;
+
+        qtraverse.push({ 0, src});
+        dist[src] = 0;
+        ways[src] = 1;
+
+        int mod = 1e9+7;
+
+        long minCostToDst = INT_MAX, countWaysToDst = 0;
+
+        while(!qtraverse.empty())
+        {
+            vector<long> frontNode = qtraverse.top();
+            qtraverse.pop();
+
+            long cost = frontNode[0], node = frontNode[1];
+
+            if(node == dst)
+            {
+                if( cost < minCostToDst )
+                {
+                    minCostToDst = cost;
+                    countWaysToDst = ways[node] % mod;
+                }
+                else if(cost == minCostToDst)
+                    countWaysToDst = (countWaysToDst % mod + ways[node] % mod) % mod;
+                
+                continue;
+            }
+
+            for(pair<int,int> currNode: graph[node])
+            {
+                int dstNode = currNode.first, wt = currNode.second;
+                if(dist[dstNode] > cost + wt)
+                {
+                    dist[dstNode] = cost + wt;
+                    ways[dstNode] = ways[node] % mod;
+                    qtraverse.push({ dist[dstNode], dstNode});
+                }
+                else if(dist[dstNode] == cost + wt)
+                    ways[dstNode] = (ways[dstNode]%mod + ways[node]%mod) % mod;
+            }
+        }
+        return countWaysToDst;
+    }
+};
+
+#######################################################################################
+instead of INT_MAX use LONG_MAX
+
+class Solution {
+public:
+    void getGraph(vector<vector<pair<int,int>>>& graph ,
+                vector<vector<int>>& roads)
+    {
+        for(vector<int> edge: roads)
+        {
+            int u = edge[0], v = edge[1], wt = edge[2];
+
+            graph[u].push_back({v,wt});
+            graph[v].push_back({u,wt});
+        }                
+    }
+    int countPaths(int n, vector<vector<int>>& roads) {
+
+        vector<vector<pair<int,int>>> graph(n);
+        getGraph(graph, roads);
+
+        int src = 0, dst = n-1;
+
+        vector<long> dist(n, LONG_MAX);
+        vector<long> ways(n, 0);
+        priority_queue< vector<long>, vector<vector<long>>,
+                        greater<vector<long>> > qtraverse;
+
+        qtraverse.push({ 0, src});
+        dist[src] = 0;
+        ways[src] = 1;
+
+        int mod = 1e9+7;
+
+        long minCostToDst = INT_MAX, countWaysToDst = 0;
+
+        while(!qtraverse.empty())
+        {
+            vector<long> frontNode = qtraverse.top();
+            qtraverse.pop();
+
+            long cost = frontNode[0], node = frontNode[1];
+
+            if(cost > dist[node])
+                continue;
+
+            for(pair<int,int> currNode: graph[node])
+            {
+                int dstNode = currNode.first, wt = currNode.second;
+                if(dist[dstNode] > cost + wt)
+                {
+                    dist[dstNode] = cost + wt;
+                    ways[dstNode] = ways[node] ;
+                    qtraverse.push({ dist[dstNode], dstNode});
+                }
+                else if(dist[dstNode] == cost + wt)
+                    ways[dstNode] = (ways[dstNode] + ways[node]) % mod;
+            }
+        }
+
+        // return countWaysToDst;
+        return ways[dst]%mod;
+    }
+};
+
+Let's analyze the **time complexity** and **space complexity** of the provided code.
+
+### Code Overview
+
+The problem is about finding the number of shortest paths from a source node (node 0) to a destination node (node \(n-1\)) in a graph, where the graph is defined by `roads` (which are bidirectional edges with weights). The solution uses a modified Dijkstra's algorithm to calculate both the shortest distance and the number of ways to reach the destination node.
+
+### Time Complexity
+
+1. **Building the Graph (`getGraph` function)**:
+   ```cpp
+   void getGraph(vector<vector<pair<int, int>>>& graph, vector<vector<int>>& roads)
+   {
+       for (vector<int> edge : roads) {
+           int u = edge[0], v = edge[1], wt = edge[2];
+           graph[u].push_back({v, wt});
+           graph[v].push_back({u, wt});
+       }
+   }
+   ```
+   - The graph is built from the list of `roads`. Each road contains 3 values (source, destination, and weight), and each edge is added twice (since the graph is undirected).
+   - For \(E\) edges in the `roads`, adding edges to the adjacency list takes \(O(1)\) time per edge. So, the time complexity for this part is:
+     \[
+     O(E)
+     \]
+     where \(E\) is the number of roads (edges).
+
+2. **Dijkstra’s Algorithm with Path Counting**:
+   The `countPaths` function implements a modified version of Dijkstra's algorithm to find the shortest path and count the number of ways to reach the destination.
+
+   - **Priority Queue Operations**: We use a priority queue (`qtraverse`) to process nodes. Each node is pushed and popped from the queue at most once. Since the priority queue operations (insertions and deletions) take \(O(\log V)\) time, where \(V\) is the number of vertices, the total number of operations involving the priority queue is \(O((V + E) \log V)\). This comes from the fact that we might push and pop up to \(V\) vertices and \(E\) edges.
+   
+   - **Relaxing Edges**: For each node, we inspect all its neighbors. For each edge, we perform constant-time checks and updates, which results in a total of \(O(E)\) edge relaxations.
+
+   So, the time complexity of the Dijkstra’s algorithm part (including priority queue operations and edge relaxations) is:
+   \[
+   O((V + E) \log V)
+   \]
+   where \(V\) is the number of vertices and \(E\) is the number of edges.
+
+### Total Time Complexity
+
+Combining both the graph construction and Dijkstra’s algorithm, the total time complexity is:
+\[
+O(E + (V + E) \log V) = O(E \log V + V \log V)
+\]
+Since \(E\) can be at most \(V^2\) in a dense graph, we often approximate the time complexity as:
+\[
+O(E \log V)
+\]
+where \(E\) is the number of edges and \(V\) is the number of vertices.
+
+### Space Complexity
+
+1. **Graph Representation**:
+   The graph is stored as an adjacency list, which requires \(O(E)\) space, since there are \(E\) edges and each edge is stored as a pair of integers.
+
+2. **Distance and Path Count Arrays**:
+   The `dist` array stores the shortest distance from the source to each node, and the `ways` array stores the number of ways to reach each node via the shortest path.
+   - Both `dist` and `ways` have a size of \(V\), so each requires \(O(V)\) space.
+
+3. **Priority Queue**:
+   The priority queue stores pairs of `(cost, node)`. In the worst case, it can store all \(V\) vertices, so it requires \(O(V)\) space.
+
+Thus, the overall space complexity is:
+\[
+O(V + E)
+\]
+where \(V\) is the number of vertices and \(E\) is the number of edges.
+
+### Final Answer
+
+- **Time Complexity**: \(O(E \log V)\)
+- **Space Complexity**: \(O(V + E)\)
+
+
+#######################################################################################
+
+
+#######################################################################################
+
+
+

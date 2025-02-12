@@ -1,0 +1,59 @@
+
+
+class Solution {
+public:
+    int maxScore(vector<int>& cardPoints, int k) {
+        int leftSum = 0, n = cardPoints.size();
+        for(int i=0; i<k; i++){
+            leftSum += cardPoints[i];
+        }
+
+        int maxSum = leftSum, rIndex = n-1, rightSum = 0;
+        for(int i = k-1; i>=0; i--){
+            leftSum -= cardPoints[i];
+            rightSum += cardPoints[rIndex];
+            rIndex--;
+            maxSum = max(maxSum, leftSum + rightSum);
+        }
+        return maxSum;
+    }
+};
+
+### **Time and Space Complexity Analysis**
+
+#### **Time Complexity**
+
+1. **Initial Sum Calculation**:
+   - The first loop iterates \( k \) times to compute the sum of the first \( k \) elements (`leftSum`).
+   - Time complexity: \( O(k) \).
+
+2. **Sliding Window Calculation**:
+   - The second loop iterates \( k \) times to adjust `leftSum` and compute `rightSum` while keeping track of the maximum score.
+   - Time complexity: \( O(k) \).
+
+3. **Overall Time Complexity**:
+   - The two loops run sequentially, so the total time complexity is:
+     \[
+     O(k) + O(k) = O(k)
+     \]
+
+---
+
+#### **Space Complexity**
+
+1. **Auxiliary Space**:
+   - The algorithm uses a constant amount of extra space for variables like `leftSum`, `rightSum`, `rIndex`, `maxSum`, and loop counters.
+   - No additional data structures are used.
+
+2. **Overall Space Complexity**:
+   - The space complexity is:
+     \[
+     O(1)
+     \]
+
+---
+
+### **Summary**
+- **Time Complexity**: \( O(k) \)  
+- **Space Complexity**: \( O(1) \)
+

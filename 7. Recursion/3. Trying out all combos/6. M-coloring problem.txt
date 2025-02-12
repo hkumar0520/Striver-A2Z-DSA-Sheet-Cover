@@ -1,0 +1,273 @@
+
+
+// hard version of bipartite graph
+
+class Solution {
+  public:
+  
+    void getGraph(vector<vector<int>>& graph, vector<pair<int, int>>& edges){
+        for(auto edge: edges){
+            int u = edge.first, v = edge.second;
+            graph[u].push_back(v);
+            graph[v].push_back(u);
+        }
+    }
+    bool dfs(vector<vector<int>>& graph,
+            vector<int>& colorVertices, int vertex, int colV, int colSize)
+    {
+        colorVertices[vertex] = colV;
+        
+        for(int u: graph[vertex]){
+            
+            if(colorVertices[u] == -1){
+                for(int color = 1; color <= colSize; color++){
+                    if(color != colV){
+                        if( dfs(graph, colorVertices, u, color, colSize ))
+                            break;
+                    }
+                }
+            }
+            else{
+                // not the same vertex but color are smililar
+                if( (u != vertex) && (colorVertices[u] == colorVertices[vertex]) ){
+                    
+                    colorVertices[vertex] = -1;
+                    
+                    return false;
+                }
+            }
+        }
+        
+        // 0-1, 0-2,  3 colors, 0-1 side clear return true
+        return true;
+    }
+    bool graphColoring(int v, vector<pair<int, int>>& edges, int m) {
+        // code here
+        vector<vector<int>> graph(v);
+        getGraph(graph, edges);
+        
+        vector<int> vis(v, 0);
+        vector<int> colorVertices(v,-1);
+        
+        
+        // handling disconnected components
+        for(int i = 0; i<v; i++){
+            if(colorVertices[i] == -1){
+                if(!dfs(graph, colorVertices, i, 1, m)) 
+                    return false;
+            }
+        }
+        
+        return true;
+    }
+};
+
+
+
+
+###############################################################################
+
+
+
+
+#include<bits/stdc++.h>
+
+using namespace std;
+bool isSafe(int node, int color[], bool graph[101][101], int n, int col) {
+  for (int k = 0; k < n; k++) {
+    if (k != node && graph[k][node] == 1 && color[k] == col) {
+      return false;
+    }
+  }
+  return true;
+}
+bool solve(int node, int color[], int m, int N, bool graph[101][101]) {
+  if (node == N) {
+    return true;
+  }
+
+  for (int i = 1; i <= m; i++) {
+    if (isSafe(node, color, graph, N, i)) {
+      color[node] = i;
+      if (solve(node + 1, color, m, N, graph)) return true;
+      color[node] = 0;
+    }
+
+  }
+  return false;
+}
+
+//Function to determine if graph can be coloured with at most M colours such
+//that no two adjacent vertices of graph are coloured with same colour.
+bool graphColoring(bool graph[101][101], int m, int N) {
+  int color[N] = {
+    0
+  };
+  if (solve(0, color, m, N, graph)) return true;
+  return false;
+}
+
+int main() {
+  int N = 4;
+  int m = 3;
+
+  bool graph[101][101];
+  memset(graph, false, sizeof graph);
+
+  // Edges are (0, 1), (1, 2), (2, 3), (3, 0), (0, 2)
+  graph[0][1] = 1; graph[1][0] = 1;
+  graph[1][2] = 1; graph[2][1] = 1;
+  graph[2][3] = 1; graph[3][2] = 1;
+  graph[3][0] = 1; graph[0][3] = 1;
+  graph[0][2] = 1; graph[2][0] = 1;
+  
+  cout << graphColoring(graph, m, N);
+
+}
+
+
+
+
+########################################################################
+
+
+To determine which code is better for the **m-coloring problem**, let's analyze and compare **Code 1** and **Code 2** based on time complexity, space complexity, and implementation flexibility.
+
+---
+
+### **1. Time Complexity**
+
+#### **Code 1**
+- **Graph Construction (`getGraph`)**: \(O(E)\), where \(E\) is the number of edges.
+- **DFS Traversal (`dfs`)**:
+  - Each vertex is visited once.
+  - For each vertex, it iterates over all \(m\) colors and checks the adjacency list.
+  - Total time complexity: \(O(V \cdot m + E)\), where \(V\) is the number of vertices.
+- **Overall Time Complexity**: 
+  \[
+  O(E + V \cdot m)
+  \]
+
+#### **Code 2**
+- **Graph Construction**: \(O(N^2)\), since the adjacency matrix is initialized and used.
+- **Backtracking (`solve`)**:
+  - For each vertex, all \(m\) colors are tried.
+  - The `isSafe` function checks all \(N\) vertices for adjacency.
+  - Total time complexity: \(O(N \cdot m^N)\) in the worst case.
+- **Overall Time Complexity**:
+  \[
+  O(N^2 + N \cdot m^N)
+  \]
+
+---
+
+### **2. Space Complexity**
+
+#### **Code 1**
+- **Graph Representation**: Adjacency list requires \(O(V + E)\).
+- **Color Array**: \(O(V)\).
+- **Recursive Stack**: \(O(V)\) for the recursion depth.
+- **Overall Space Complexity**:
+  \[
+  O(V + E)
+  \]
+
+#### **Code 2**
+- **Graph Representation**: Adjacency matrix requires \(O(N^2)\).
+- **Color Array**: \(O(N)\).
+- **Recursive Stack**: \(O(N)\) for the recursion depth.
+- **Overall Space Complexity**:
+  \[
+  O(N^2)
+  \]
+
+---
+
+### **3. Flexibility**
+- **Code 1**:
+  - Uses an adjacency list, which is more efficient for sparse graphs.
+  - Handles disconnected components directly.
+  - Easier to adapt to graphs with large numbers of vertices and edges.
+- **Code 2**:
+  - Uses an adjacency matrix, which is better suited for dense graphs.
+  - Less efficient for sparse graphs due to higher space requirements.
+  - Does not handle disconnected components explicitly.
+
+---
+
+### **4. Practical Use Cases**
+- **Code 1** is better for:
+  - Sparse graphs.
+  - Large graphs with a high number of vertices and edges.
+  - Scenarios where memory efficiency is important.
+- **Code 2** is better for:
+  - Dense graphs.
+  - Smaller graphs where simplicity is preferred over efficiency.
+
+---
+
+### **Conclusion**
+**Code 1** is generally better because:
+- It has a lower time complexity (\(O(V \cdot m + E)\) vs. \(O(N \cdot m^N)\)).
+- It uses an adjacency list, which is more space-efficient for sparse graphs.
+- It explicitly handles disconnected components.
+
+**Code 2** may be suitable for small, dense graphs where simplicity is preferred. However, for practical applications involving larger or sparse graphs, **Code 1** is the preferred choice.
+
+
+
+#################################################################
+
+
+class Solution {
+  public:
+  
+    void getGraph(vector<vector<int>>& graph, vector<pair<int, int>>& edges){
+        for(auto edge: edges){
+            int u = edge.first, v = edge.second;
+            graph[u].push_back(v);
+            graph[v].push_back(u);
+        }
+    }
+    bool isSafeToColor(vector<vector<int>>& graph,
+            vector<int>& colorVertices, int color, int vertex)
+    {
+        for(auto u: graph[vertex]){
+            if(colorVertices[u] == color)   return false;
+        }            
+        
+        return true;
+    }
+    bool backTrack(vector<vector<int>>& graph,
+            vector<int>& colorVertices, int vertex, int totalColors)
+    {
+        if(vertex == graph.size()){
+            return true;
+        }
+        
+        
+        for(int i = 1; i<= totalColors; i++){
+            
+            if(isSafeToColor(graph, colorVertices, i, vertex)){
+                
+                colorVertices[vertex] = i;
+                if(backTrack(graph,  colorVertices, vertex+1, totalColors) )
+                    return true;
+                colorVertices[vertex] = 0;
+                
+            }
+            
+        }
+        
+        return false;
+    }
+    bool graphColoring(int v, vector<pair<int, int>>& edges, int m) {
+        // code here
+        vector<vector<int>> graph(v);
+        getGraph(graph, edges);
+        
+        vector<int> colorVertices(v,0);
+        
+        return backTrack(graph, colorVertices, 0, m);
+    }
+};

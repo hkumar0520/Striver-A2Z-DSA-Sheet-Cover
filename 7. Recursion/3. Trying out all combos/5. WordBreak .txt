@@ -1,0 +1,301 @@
+
+Time limit exceed 35/45 test cases passed
+
+class Solution {
+public:
+
+    bool backTrack(int ind, string str, unordered_set<string> map)
+    {
+        if(ind == str.size())
+            return true;
+
+        for(int i = ind; i<str.size(); i++){
+            if(map.count( str.substr(ind, i-ind+1) )){
+                if( backTrack(i+1, str, map) )
+                    return true;
+            }
+        }
+        return false;
+    }
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> map(wordDict.begin(), wordDict.end());
+        return backTrack(0, s, map);
+    }
+};
+
+
+Sure! Let me break down the analysis more thoroughly for both time and space complexity.
+
+### Time Complexity:
+
+To understand the time complexity, let's look at the main components of the algorithm and how they interact.
+
+#### 1. `backTrack` function:
+This function is the core of the solution. It explores all possible ways to partition the string `s` into valid words from the dictionary. The recursive function is designed as follows:
+
+- The first parameter `ind` represents the current index in the string `s` where we are trying to start a substring.
+- The function attempts to create all possible substrings starting at `ind` and checks if they are in the `map` (unordered set of valid words).
+- If a substring exists in the dictionary, the function recursively explores the remaining portion of the string by calling `backTrack(i + 1, s, map)` where `i` is the index after the valid word.
+
+#### 2. Iterating through possible substrings:
+For each call to `backTrack(ind, s, map)`:
+- The function iterates over all possible substrings starting at the current index `ind`. This iteration runs from `i = ind` to `i = n-1`, where `n` is the length of the string `s`.
+- For each substring `s[ind, i]`, the function checks if it is in the dictionary (`map.count`). This check is done in constant time \(O(1)\) since `map` is an unordered set.
+- However, generating the substring `s.substr(ind, i - ind + 1)` takes time proportional to the length of the substring, which is \(O(k)\) where \(k\) is the length of the substring (which could be as large as \(n\)).
+
+#### 3. Recursion:
+- After checking the substring, if it is a valid word (i.e., it exists in the dictionary), the function recurses to the next part of the string by calling `backTrack(i + 1, s, map)`.
+- The recursion will explore all possible ways to break the string down into valid words, and for each valid word, it will make further recursive calls.
+
+In the worst case, the recursion explores all possible ways to split the string. The number of possible substrings starting at each position `ind` is proportional to the length of the string. If we consider every possible way to partition the string, this results in a tree-like recursive structure.
+
+**Worst-case time complexity breakdown**:
+- At each index `ind`, the algorithm iterates through all possible substrings starting from `ind` to the end of the string, resulting in \(O(n)\) iterations at each level of recursion.
+- For each substring, the time complexity to generate the substring is \(O(k)\), where \(k\) is the length of the substring (up to \(O(n)\)).
+- The depth of the recursion tree is at most \(n\), because there are at most \(n\) recursive calls (in the worst case, where we are recursively processing one character at a time).
+
+Thus, in the worst case:
+- For each index `ind`, you iterate through up to \(O(n)\) possible substrings.
+- For each substring, generating the substring and checking if it exists in the map takes \(O(n)\) time.
+
+Therefore, the total time complexity is \(O(n^3)\) because:
+- There are \(O(n)\) recursive calls (depth of recursion),
+- At each level, we generate up to \(O(n)\) substrings,
+- Each substring generation operation takes \(O(n)\) time.
+
+### Space Complexity:
+
+The space complexity of the algorithm is driven by two main factors: the space used for the dictionary and the recursion stack.
+
+#### 1. Dictionary (`unordered_set<string> map`):
+- The unordered set `map` stores the words from the dictionary. If there are \(W\) words in the dictionary and the total length of all the words combined is \(L\), the space used to store the dictionary is proportional to \(L\), the total number of characters across all the words.
+- Therefore, the space complexity for storing the dictionary is \(O(L)\), where \(L\) is the total length of all words in the dictionary.
+
+#### 2. Recursion stack:
+- The recursive calls are the second factor contributing to space complexity. In the worst case, the recursion depth is proportional to the length of the string, as we are splitting the string one character at a time (i.e., there can be up to \(n\) recursive calls).
+- Each recursive call requires a constant amount of space for storing the arguments (the current index `ind` and the string `s`), so the space complexity due to recursion is \(O(n)\), where \(n\) is the length of the string.
+
+Thus, the overall space complexity is:
+- \(O(L)\) for storing the dictionary (all the words in `wordDict`),
+- \(O(n)\) for the recursion stack.
+
+Therefore, the total space complexity is \(O(L + n)\).
+
+### Summary:
+
+- **Time complexity**: \(O(n^3)\), where \(n\) is the length of the string. This is because for each index `ind`, we generate all possible substrings (which takes \(O(n)\)) and each substring generation takes \(O(n)\) time, with recursion exploring all possible splits.
+  
+- **Space complexity**: \(O(L + n)\), where \(L\) is the total length of all the words in the dictionary, and \(n\) is the length of the string `s`. This space complexity accounts for the dictionary storage and the recursion stack.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################################
+
+
+// memoization
+
+class Solution {
+public:
+
+    bool backTrack(int ind, string str, unordered_set<string> map, vector<int>& dp)
+    {
+        if(ind == str.size())
+            return dp[ind] = true;
+        
+        if(dp[ind] != -1) return dp[ind];
+
+        for(int i = ind; i<str.size(); i++){
+            string sub = str.substr(ind, i-ind+1);
+            if(map.count( sub )){
+                if( backTrack(i+1, str, map, dp) )
+                    return dp[ind] = true;
+            }
+        }
+        return dp[ind] = false;
+    }
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> map(wordDict.begin(), wordDict.end());
+        vector<int> dp(s.size()+1, -1);
+        return backTrack(0, s, map, dp);
+    }
+};
+
+Let's analyze the time and space complexity of the given code in detail.
+
+### **Time Complexity:**
+
+1. **backTrack function:**
+   The `backTrack` function is the core of the algorithm. It uses memoization (`dp`) to store the results of previously solved subproblems to avoid redundant computations, which optimizes the recursive solution.
+
+   - The function starts at index `ind` of the string and explores all possible substrings from `ind` to the end of the string. For each substring, it checks if the substring exists in the dictionary (`map.count(sub)`), which takes constant time \(O(1)\), and then recursively checks the remaining portion of the string.
+   
+   - **Memoization:** 
+     The `dp` array stores the results of subproblems. If a substring starting at index `ind` has already been computed, the function simply returns the result from `dp[ind]`, which avoids redundant recursive calls.
+
+   - **Recursive Calls:**
+     Without memoization, there would be \(O(2^n)\) recursive calls (since for each index, we could explore two possibilities — including or excluding a word). However, with memoization, we ensure that each subproblem is solved only once.
+     
+     The key observation is that the algorithm computes each subproblem once for every starting index `ind` in the string `s`. In each recursive call, it tries to match substrings starting from `ind`, and the maximum number of substrings it needs to check is \(O(n)\) (in the worst case where all possible substrings starting at index `ind` need to be checked).
+
+   Therefore, the number of recursive calls is proportional to the number of distinct starting positions in the string, i.e., \(O(n)\), where \(n\) is the length of the string.
+
+   At each index `ind`, the loop iterates through all possible substrings from `ind` to `n-1`, which is \(O(n)\) operations.
+
+   Therefore, the time complexity of the solution is:
+   \[
+   O(n^2)
+   \]
+   This comes from:
+   - \(O(n)\) recursive calls (one for each index),
+   - \(O(n)\) iterations for each call, considering all substrings from `ind` to the end of the string.
+
+### **Space Complexity:**
+
+1. **Memoization Array (`dp`):**
+   The `dp` array is used to store the results of the subproblems for each index in the string. Since the array has one entry for each index (from 0 to \(n\)), the space used by `dp` is \(O(n)\).
+
+2. **Dictionary (`map`):**
+   The `unordered_set<string> map` stores the words in the dictionary. If there are \(W\) words in the dictionary, and the total length of all the words combined is \(L\), the space used by the dictionary is proportional to the sum of the lengths of the words, i.e., \(O(L)\).
+
+3. **Recursion Stack:**
+   The depth of the recursion tree is at most \(n\), since at each recursive step, we increment the index by at least 1. Therefore, the maximum depth of the recursion stack is \(O(n)\).
+
+Thus, the total space complexity is:
+\[
+O(L + n)
+\]
+where:
+- \(O(L)\) is for storing the dictionary (`unordered_set`),
+- \(O(n)\) is for the memoization array (`dp`), and
+- \(O(n)\) is for the recursion stack.
+
+### **Summary:**
+
+- **Time Complexity:** \(O(n^2)\), where \(n\) is the length of the input string. This is because:
+  - There are \(O(n)\) recursive calls (for each index of the string),
+  - Each recursive call involves checking up to \(O(n)\) substrings.
+  
+- **Space Complexity:** \(O(L + n)\), where \(L\) is the total length of all words in the dictionary and \(n\) is the length of the string. This is due to:
+  - \(O(L)\) for storing the dictionary (`unordered_set<string>`),
+  - \(O(n)\) for the memoization array (`dp`),
+  - \(O(n)\) for the recursion stack.
+
+This solution improves over a naive recursive approach by using memoization, which significantly reduces the redundant computation of overlapping subproblems.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#########################################################################
+
+
+using Trie 
+
+struct Node{
+  unordered_map<char, Node*> links;
+  bool isEnd = false;
+  
+  bool isContainsKey(char ch){
+      return links.find(ch) != links.end();
+  }
+  
+  void put(char ch, Node* node){
+      links[ch] = node;
+  }
+  
+  Node* get(char ch){
+      return links[ch];
+  }
+  
+  void setEnd(){
+      isEnd = true;
+  }
+  
+  bool getEnd(){
+      return isEnd;
+  }
+};
+
+class Trie{
+    Node* root;
+    public:
+    Trie(){
+        root = new Node();
+    }
+    
+    void insert(string word){
+        Node* curr = root;
+        for(char ch: word){
+            if(!curr->isContainsKey(ch))
+                curr->put(ch, new Node());
+                
+            curr = curr->get(ch);
+        }
+        curr->setEnd();
+    }
+    
+    bool check(string word){
+        Node* curr = root;
+        for(char ch: word){
+            if(!curr->isContainsKey(ch))    return false;
+            
+            curr = curr->get(ch);
+        }
+        return curr->getEnd();
+    }
+};
+
+class Solution{
+    public:
+    // A : given string to search
+    // B : vector of available strings
+    
+    bool backTrack(int ind, string str, Trie* trie)
+    {
+        if(ind == str.size())
+            return true;
+
+        for(int i = ind; i<str.size(); i++){
+            if(trie->check( str.substr(ind, i-ind+1) )){
+                if( backTrack(i+1, str, trie) )
+                    return true;
+            }
+        }
+        return false;
+    }
+    int wordBreak(string s, vector<string>& wordDict) {
+        Trie *trie = new Trie();
+        for(string str: wordDict)
+            trie->insert(str);
+        return backTrack(0, s, trie);
+    }
+};

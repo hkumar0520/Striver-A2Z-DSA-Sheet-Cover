@@ -1,0 +1,172 @@
+
+https://www.geeksforgeeks.org/problems/maximum-number-of-events-that-can-be-attended--170636/0
+
+6/121 passed not done 
+
+//User function Template for C++
+
+class Solution {
+  public:
+    int maxEvents(int start[], int end[], int N) {
+        // code here
+        vector<pair<int,int>> vec;
+        
+        for(int i=0 ; i<N; i++){
+            vec.push_back({ start[i], end[i]});
+        }
+        
+        sort(vec.begin(), vec.end(), []( pair<int,int> a, pair<int,int> b){
+            if(a.second != b.second)
+                return a.second < b.second;
+            
+            return a.first<b.first;
+        });
+        
+        
+        int eventEnd = 0, countEvent = 0;
+        for(auto currEvent: vec){
+            //cout<<currEvent.first<<" ";
+            if( eventEnd < currEvent.first){
+                eventEnd = currEvent.first;
+                countEvent++;
+            } else if( eventEnd < currEvent.second){
+                eventEnd++;
+                countEvent++;
+            }
+        }
+        //cout<<endl;
+        return countEvent;
+    }
+};
+
+##############################################################
+
+Time limit Exceed 111/121 test cases passed
+
+class Solution {
+  public:
+    int maxEvents(int start[], int end[], int N) {
+        // code here
+        priority_queue< pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>> > pq;
+        
+        for(int i = 0; i<N; i++){
+            pq.push({ end[i], start[i] });
+        }
+        
+        int countInterval = 0;
+        unordered_set<int> vis;
+        while(!pq.empty()){
+            int endElement = pq.top().first, startElement = pq.top().second;
+            pq.pop();
+            
+            for(int day =startElement; day<= endElement; day++){
+                if(vis.find(day) == vis.end()){
+                    vis.insert(day);
+                    countInterval++;
+                    break;
+                }
+            }
+        }
+        return countInterval;
+    }
+};
+
+
+
+
+################################################################
+
+// wrong answer, i sort end-start
+
+//User function Template for C++
+
+class Solution {
+  public:
+    int maxEvents(int start[], int end[], int N) {
+        // code here
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>> > pq;
+        
+        int minRange = INT_MAX, maxRange = INT_MIN;
+        for(int i = 0; i<N; i++){
+            pq.push({end[i]-start[i], i});
+            minRange = min( minRange, start[i]);
+            maxRange = max( maxRange, end[i]);
+        }
+        
+        vector<int> jobSchedule(maxRange-minRange+1, -1);
+        int numberEventsAttend = 0;
+        
+        while(!pq.empty()){
+            pair<int,int> currElement = pq.top();
+            pq.pop();
+            int diff = currElement.first, index = currElement.second;
+            
+            // i is the day between start[index]<= i<= end[index]
+            for(int i = start[index]; i<= end[index]; i++){
+                int dayNorm = i - minRange;
+                if(jobSchedule[dayNorm] == -1){
+                    jobSchedule[dayNorm] = index;
+                    numberEventsAttend++;
+                    break;
+                }
+            }
+        }
+        return numberEventsAttend;
+    }
+};
+
+#################################################################
+
+
+//User function Template for C++
+
+class Solution {
+  public:
+    int maxEvents(int start[], int end[], int N) {
+        // code here
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>> > pq;
+        
+        int minRange = INT_MAX, maxRange = INT_MIN;
+        for(int i = 0; i<N; i++){
+            pq.push({end[i]-start[i], i});
+            minRange = min( minRange, start[i]);
+            maxRange = max( maxRange, end[i]);
+        }
+        
+        vector<int> jobScheduleStart(maxRange-minRange+1, -1);
+        vector<int> jobScheduleEnd(maxRange-minRange+1, -1);
+        int numberEventsAttendStart = 0, numberEventsAttendEnd = 0;
+        
+        while(!pq.empty()){
+            pair<int,int> currElement = pq.top();
+            pq.pop();
+            int diff = currElement.first, index = currElement.second;
+            
+            // i is the day between start[index]<= i<= end[index]
+            for(int i = start[index]; i<= end[index]; i++){
+                int dayNorm = i - minRange;
+                if(jobScheduleStart[dayNorm] == -1){
+                    jobScheduleStart[dayNorm] = index;
+                    numberEventsAttendStart++;
+                    break;
+                }
+            }
+            
+            
+            // i is the day between start[index]<= i<= end[index]
+            for(int i = end[index]; i>= start[index]; i--){
+                int dayNorm = i - minRange;
+                if(jobScheduleEnd[dayNorm] == -1){
+                    jobScheduleEnd[dayNorm] = index;
+                    numberEventsAttendEnd++;
+                    break;
+                }
+            }
+            //cout<<index<<numberEventsAttend<<" ";
+        }
+        //cout<<numberEventsAttendStart<<" "<<numberEventsAttendEnd <<endl;
+        return max( numberEventsAttendStart, numberEventsAttendEnd);
+    }
+};
+
+

@@ -1,0 +1,35 @@
+
+
+https://www.geeksforgeeks.org/problems/smallest-subarray-with-sum-greater-than-x5651/1?page=1&category=sliding-window&company=Amazon,Microsoft,Flipkart,Adobe,Google,Samsung,Paytm,Morgan%20Stanley,D-E-Shaw,Wipro,Uber,Infosys,Atlassian&difficulty=Easy&sortBy=submissions
+
+
+// Template of sum<=x is used
+
+class Solution {
+  public:
+    int smallestSubWithSum(int x, vector<int>& arr) {
+        // Your code goes here
+        int n = arr.size(), l = 0, r = 0, sum = 0, minLen = INT_MAX;
+        
+        while(r<n){
+            sum += arr[r];
+            
+            while(sum > x){
+                if(sum > x)
+                    minLen = min(minLen, (r-l+1));
+                
+                sum -= arr[l];
+                l++;
+                
+            }
+            
+            r++;
+        }
+        if(minLen == INT_MAX)
+            return 0;
+        return minLen;
+    }
+};
+
+TC: O(2*n)
+SC: O(1)

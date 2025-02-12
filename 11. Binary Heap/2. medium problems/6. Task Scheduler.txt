@@ -1,0 +1,270 @@
+
+
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> map(26, 0);
+
+        for(int i=0; i<tasks.size(); i++){
+            map[tasks[i] - 'A']++;
+        }
+
+        priority_queue<pair<int,int>> pq;
+        for(int i=0; i<26; i++){
+            if(map[i] != 0){
+                pq.push({map[i], i});
+            }
+        }
+
+        int countPossibleSequence = 0;
+        while(!pq.empty()){
+            int countN = n+1;
+            priority_queue<pair<int,int>> pqtemp;
+
+            while(countN>0){
+                if(!pq.empty()){
+                    pair<int,int> curr = pq.top();
+                    pq.pop();
+
+                    curr.first = curr.first - 1;
+                    if(curr.first != 0)
+                        pqtemp.push(curr);
+                    countN--;
+                    countPossibleSequence++;
+                    continue;
+                }
+
+                // reached end
+                if(pqtemp.empty())
+                    break;
+            
+                countN--;
+                countPossibleSequence++;
+            }
+
+            while(!pqtemp.empty()){
+                pq.push(pqtemp.top());
+                pqtemp.pop();
+            }
+        }
+        return countPossibleSequence;
+    }
+};
+
+
+Let's analyze the time and space complexity of the given code step-by-step.
+
+### Code Overview:
+
+This code implements a task scheduler where you are given a list of tasks and a cooldown period `n`. The objective is to find the least number of intervals required to complete all the tasks, with the restriction that no two tasks of the same type can be executed in the same interval unless they are spaced by at least `n` intervals.
+
+The approach uses:
+- **Priority Queue**: To always pick the task with the highest frequency (greedy approach).
+- **Temp Priority Queue**: To manage the tasks while respecting the cooldown period `n`.
+
+### Time Complexity:
+
+1. **Counting Task Frequencies**:
+   - The `map` vector of size 26 (for the 26 uppercase English letters) is populated by iterating through the `tasks` vector.
+   - The size of the `tasks` vector is `T`.
+   - **Time complexity for this step**: **O(T)**, where `T` is the number of tasks.
+
+2. **Building the Priority Queue**:
+   - After populating the task frequencies, the code builds the initial priority queue by pushing the frequency of each task into the priority queue.
+   - Since there are at most 26 unique tasks, the number of elements in the priority queue will be at most 26.
+   - **Time complexity for this step**: **O(26 log 26)**, which simplifies to **O(1)** because 26 is constant.
+
+3. **Processing the Tasks**:
+   - The main part of the code involves repeatedly extracting tasks from the priority queue and scheduling them, while maintaining a cooldown period of `n`. This continues until all tasks are scheduled.
+   - In each iteration, a batch of tasks (up to `n + 1` tasks) is processed. Each extraction and insertion from/to the priority queue takes **O(log k)** time, where `k` is the number of tasks in the priority queue.
+   - In the worst case, the number of iterations can be proportional to the total number of tasks, `T`. The `while` loop runs until all tasks are scheduled, which could take **O(T)** steps.
+   - Each operation inside the loop involves pushing and popping from a priority queue, both of which take **O(log k)** time, where `k` is at most 26 (the number of unique tasks).
+   - **Time complexity for processing tasks**: In the worst case, this takes **O(T log k)**, where `k` is at most 26, so this simplifies to **O(T log 26)**, which is effectively **O(T)**.
+
+### Overall Time Complexity:
+Combining the individual steps:
+- **O(T)** for counting task frequencies.
+- **O(1)** for building the initial priority queue.
+- **O(T)** for processing tasks.
+
+Thus, the total time complexity is **O(T)**, where `T` is the number of tasks in the input vector `tasks`.
+
+### Space Complexity:
+
+1. **Task Frequency Array**:
+   - The `map` array holds 26 elements to store the frequency of each task. This is a constant-sized array, so it takes **O(1)** space.
+
+2. **Priority Queue**:
+   - The priority queue holds up to 26 elements (one for each possible task type). In the worst case, if all tasks are unique, the priority queue will store 26 tasks.
+   - Thus, the space complexity for the priority queue is **O(26)**, which simplifies to **O(1)**.
+
+3. **Temporary Priority Queue (`pqtemp`)**:
+   - Similarly, the temporary priority queue `pqtemp` can hold up to `n + 1` tasks at any given time. In the worst case, this is also **O(26)**, which simplifies to **O(1)**.
+
+4. **Count of Intervals**:
+   - The variable `countPossibleSequence` is a simple integer and doesn't contribute to space complexity.
+
+### Overall Space Complexity:
+Combining the individual space complexities:
+- **O(1)** for the task frequency array.
+- **O(1)** for the priority queues.
+- **O(1)** for temporary variables.
+
+Thus, the total space complexity is **O(1)**, as the space usage is constant and does not depend on the size of the input.
+
+### Conclusion:
+
+- **Time Complexity**: **O(T)**, where `T` is the number of tasks.
+- **Space Complexity**: **O(1)**.
+
+
+
+
+#######################################################################
+
+
+
+
+
+
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> map(26, 0);
+
+        for(int i=0; i<tasks.size(); i++){
+            map[tasks[i] - 'A']++;
+        }
+
+        priority_queue<pair<int,int>> pq;
+        for(int i=0; i<26; i++){
+            if(map[i] != 0){
+                pq.push({map[i], i});
+            }
+        }
+
+        int countPossibleSequence = 0;
+        while(!pq.empty()){
+            int countN = n;
+            vector<pair<int,int>> vec;
+
+            // roundrobin
+            while( countN>=0 ){
+               if(!pq.empty())
+               {
+                    pair<int,int> curr = pq.top();
+                    pq.pop();
+
+                    curr.first = curr.first - 1;
+                    if(curr.first > 0)
+                        vec.push_back(curr);
+
+                    countN--;
+                    countPossibleSequence++;
+                    continue;
+               }
+
+                // reaching end
+                if(vec.size() == 0)
+                    break;
+                
+                countN--;
+                countPossibleSequence++;
+            }
+
+            for(auto curr: vec)
+                pq.push(curr);
+        }
+        return countPossibleSequence;
+    }
+};
+
+
+######################################################################
+
+
+Here’s the improved version of the code for solving the **Task Scheduler** problem. The improvements focus on optimizing readability and reducing redundant operations:
+
+### Optimized Code
+```cpp
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        // Step 1: Count the frequency of each task
+        vector<int> freq(26, 0);
+        for (char task : tasks) {
+            freq[task - 'A']++;
+        }
+
+        // Step 2: Use a max heap to store task frequencies
+        priority_queue<int> pq;
+        for (int f : freq) {
+            if (f > 0) {
+                pq.push(f);
+            }
+        }
+
+        int totalIntervals = 0;
+
+        // Step 3: Process tasks using a cooldown period
+        while (!pq.empty()) {
+            vector<int> temp; // To store tasks that still have remaining frequency
+            int cycleTime = 0;
+
+            for (int i = 0; i <= n; i++) {
+                if (!pq.empty()) {
+                    int curr = pq.top();
+                    pq.pop();
+                    if (curr > 1) {
+                        temp.push_back(curr - 1); // Decrement frequency and store
+                    }
+                    cycleTime++;
+                } else if (temp.empty()) {
+                    break; // No tasks left, no idle time needed
+                } else {
+                    cycleTime++;
+                }
+            }
+
+            // Push remaining tasks back into the heap
+            for (int remaining : temp) {
+                pq.push(remaining);
+            }
+
+            totalIntervals += cycleTime;
+        }
+
+        return totalIntervals;
+    }
+};
+```
+
+---
+
+### Key Improvements:
+1. **Frequency Array**: Directly count the frequency of tasks using a vector of size 26 (for 'A' to 'Z'). This is more efficient than using a `pair` structure.
+2. **Simplified Logic**: The inner loop now processes tasks for a maximum of \( n+1 \) cycles, directly handling idle times when no tasks are available.
+3. **Avoid Redundant Checks**: Reduced redundant checks for empty states by combining conditions.
+4. **Efficient Storage**: Used a temporary vector to store remaining tasks, which are pushed back into the priority queue after processing.
+
+---
+
+### Time Complexity:
+1. **Frequency Count**: \( O(N) \), where \( N \) is the size of `tasks`.
+2. **Heap Operations**:
+   - Building the heap: \( O(26 \log 26) = O(1) \).
+   - Processing tasks: Each task is pushed and popped at most once, \( O(N \log 26) = O(N) \).
+3. **Overall**: \( O(N) \).
+
+### Space Complexity:
+1. **Frequency Array**: \( O(26) = O(1) \).
+2. **Priority Queue**: At most \( O(26) \) elements, \( O(1) \).
+3. **Temporary Vector**: \( O(26) = O(1) \).
+4. **Overall**: \( O(1) \).
+
+This optimized version is cleaner and more efficient while retaining the same logic for solving the problem.
+
+
+
+
+

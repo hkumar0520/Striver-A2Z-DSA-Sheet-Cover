@@ -1,0 +1,260 @@
+
+// dfs
+
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+class Solution {
+  public:
+    void dfs(int node, stack<int>& st, vector<int>& vis
+    ,vector<vector<int>>& adj )
+    {
+        vis[node] = 1;
+        for(auto v: adj[node])
+        {
+            if(!vis[v])
+                dfs(v,st,vis,adj);
+        }
+        st.push(node);
+    }
+    // Function to return list containing vertices in Topological order.
+    vector<int> topologicalSort(vector<vector<int>>& adj) {
+        // Your code here
+        stack<int> st;
+        int n = adj.size();
+        vector<int> vis(n,0);
+        for(int  i=0;i<n;i++)
+        {
+            if(!vis[i])
+                dfs(i, st, vis, adj);
+        }
+        vector<int> ans;
+        while(!st.empty())
+        {
+            ans.push_back(st.top());
+            st.pop();
+        }
+        return ans;
+    }
+};
+
+//{ Driver Code Starts.
+
+/*  Function to check if elements returned by user
+ *   contains the elements in topological sorted form
+ *   V: number of vertices
+ *   *res: array containing elements in topological sorted form
+ *   adj[]: graph input
+ */
+int check(int V, vector<int> &res, vector<vector<int>> adj) {
+
+    if (V != res.size())
+        return 0;
+
+    vector<int> map(V, -1);
+    for (int i = 0; i < V; i++) {
+        map[res[i]] = i;
+    }
+    for (int i = 0; i < V; i++) {
+        for (int v : adj[i]) {
+            if (map[i] > map[v])
+                return 0;
+        }
+    }
+    return 1;
+}
+
+int main() {
+    int T;
+    cin >> T;
+    while (T--) {
+        int N, E;
+        cin >> E >> N;
+        int u, v;
+
+        vector<vector<int>> adj(N);
+
+        for (int i = 0; i < E; i++) {
+            int u, v;
+            cin >> u >> v;
+            adj[u].push_back(v);
+        }
+
+        Solution obj;
+        vector<int> res = obj.topologicalSort(adj);
+
+        cout << check(N, res, adj) << endl;
+
+        cout << "~"
+             << "\n";
+    }
+
+    return 0;
+}
+// } Driver Code Ends
+
+
+Let's analyze the **time complexity** and **space complexity** of the given code step by step:
+
+### Code Overview:
+This code implements **Topological Sort** of a directed graph using **Depth-First Search (DFS)**. 
+
+### Key Components:
+1. **`dfs` function**: This is a standard DFS traversal of the graph. It explores the graph recursively for each unvisited node and pushes nodes to a stack (`st`) once all adjacent nodes are processed.
+2. **`topologicalSort` function**: 
+   - It iterates over all the nodes of the graph and initiates a DFS from each unvisited node.
+   - After all nodes are visited, it pops elements from the stack to form the topological order.
+
+### 1. **Time Complexity Analysis**:
+
+The time complexity depends on two main operations:
+- **DFS Traversal**:
+  - The DFS function visits each node exactly once.
+  - For each node, the DFS explores all its neighbors (edges), so the total time for DFS across all nodes is proportional to the number of nodes (`n`) and the number of edges (`m`).
+  - In the worst case, the DFS explores all `n` nodes and all `m` edges, so the time complexity of DFS is **O(n + m)**.
+
+- **Popping from Stack**:
+  - After the DFS completes, we pop all elements from the stack to generate the topological sort. This involves **O(n)** operations (popping and adding to the result list).
+
+Combining both, the overall **time complexity** is **O(n + m)**, where:
+- `n` is the number of nodes (vertices).
+- `m` is the number of edges.
+
+### 2. **Space Complexity Analysis**:
+
+The space complexity consists of the following components:
+- **`vis` vector**:
+  - This vector stores a boolean flag for each node to indicate whether it has been visited or not.
+  - The space required for this vector is **O(n)**, where `n` is the number of nodes.
+  
+- **Stack `st`**:
+  - The stack stores nodes while performing DFS. In the worst case, it can store up to `n` nodes.
+  - The space required for the stack is **O(n)**.
+
+- **Adjacency List `adj`**:
+  - The adjacency list stores all edges of the graph.
+  - The space required for the adjacency list is **O(n + m)**, since there are `n` nodes and `m` edges.
+
+- **Result vector `ans`**:
+  - This vector stores the topologically sorted nodes.
+  - The space required for this vector is **O(n)**.
+
+### Total Space Complexity:
+Combining all the space requirements, the overall **space complexity** is **O(n + m)**, where:
+- `n` is the number of nodes.
+- `m` is the number of edges.
+
+### Summary:
+- **Time Complexity**: **O(n + m)**, where `n` is the number of nodes and `m` is the number of edges.
+- **Space Complexity**: **O(n + m)**, where `n` is the number of nodes and `m` is the number of edges.
+
+
+#####################################################################################
+
+bfs
+
+class Solution {
+  public:
+    // Function to return list containing vertices in Topological order.
+    
+    void getIndegree(vector<int>& indegree, vector<vector<int>>& adj)
+    {
+        for(auto U: adj)
+        {
+            for(auto v: U)
+                indegree[v]++;
+        }
+    }
+    void bfs(vector<int>& ans, vector<int>& indegree
+            , vector<vector<int>>& adj)
+    {
+        int n = adj.size();
+        queue<int> qtraverse;
+        
+        for(int i = 0;i<indegree.size();i++)
+        {
+            if(indegree[i] == 0)    
+                qtraverse.push(i);
+        }
+        
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+            
+            ans.push_back(node);
+            
+            for(auto v: adj[node])
+            {
+                indegree[v]--;
+                if(indegree[v] == 0)
+                    qtraverse.push(v);
+            }
+        }
+    }
+    vector<int> topologicalSort(vector<vector<int>>& adj) {
+        // Your code here
+        int n = adj.size();
+        vector<int> indegree(n,0);
+        getIndegree(indegree, adj);
+        
+        vector<int> ans;
+        bfs(ans, indegree, adj);
+        return ans;
+    }
+};
+
+
+### Time Complexity:
+
+To analyze the time complexity of the given code, let's break it down step by step:
+
+1. **`getIndegree` function:**
+   - In this function, we traverse the adjacency list `adj`. The outer loop iterates over each list in `adj` (which represents the outgoing edges from each node), and the inner loop iterates over the vertices that are adjacent to each node.
+   - If there are `n` vertices and `m` edges in the graph, the total number of iterations in the `getIndegree` function is proportional to the number of edges, i.e., \( O(m) \).
+
+2. **`bfs` function:**
+   - In this function, we first loop over all `n` nodes to find the nodes with zero in-degree and push them into the queue. This step is \( O(n) \).
+   - Next, we perform a BFS traversal. The queue will contain each node at most once. For each node, we visit its outgoing edges, which are represented by the adjacency list `adj`. Each edge is processed exactly once during the BFS traversal.
+   - The BFS traversal involves iterating over all the edges in the graph. So, the time complexity of the BFS traversal is \( O(m) \).
+
+3. **`topologicalSort` function:**
+   - The `topologicalSort` function calls the `getIndegree` and `bfs` functions.
+   - `getIndegree` runs in \( O(m) \) time, and `bfs` runs in \( O(n + m) \) time (since it processes all nodes and edges).
+   
+Thus, the **total time complexity** of the algorithm is:
+\[
+O(m) + O(n + m) = O(n + m)
+\]
+where:
+- `n` is the number of nodes (vertices),
+- `m` is the number of edges.
+
+### Space Complexity:
+
+1. **Adjacency List (`adj`)**:
+   - The adjacency list takes up space to store the graph. Since the graph has `n` vertices and `m` edges, the space complexity of the adjacency list is \( O(n + m) \).
+
+2. **Indegree Array (`indegree`)**:
+   - The `indegree` array stores the in-degree of each of the `n` nodes. So, the space complexity for this array is \( O(n) \).
+
+3. **Answer Array (`ans`)**:
+   - The `ans` array stores the topological ordering of the nodes, which will contain `n` nodes. Therefore, the space complexity for the `ans` array is \( O(n) \).
+
+4. **Queue (`qtraverse`)**:
+   - The queue in the BFS can store at most `n` nodes at any point. So, the space complexity for the queue is \( O(n) \).
+
+Thus, the **total space complexity** is:
+\[
+O(n + m)
+\]
+where:
+- `n` is the number of nodes,
+- `m` is the number of edges.
+
+### Conclusion:
+- **Time Complexity**: \( O(n + m) \)
+- **Space Complexity**: \( O(n + m) \)

@@ -1,0 +1,97 @@
+
+https://www.geeksforgeeks.org/problems/smallest-distant-window3132/1?page=1&category=sliding-window&difficulty=Medium&sortBy=submissions
+
+class Solution {
+  public:
+    int findSubString(string& s) {
+        // Your code goes here
+        int n = s.size(), minLen = INT_MAX;
+        vector<int> hash(256, 0);
+        
+        int subSize = 0;
+        for(char ch: s ){
+            if(hash[ch] == 0){
+                subSize++;
+                hash[ch] = 1;
+            }
+        }
+        
+        for(int i = 0; i<n; i++){
+            vector<int> tempHash = hash;
+            int tempCounter = 0;
+            
+            for(int j = i; j<n; j++){
+                if(tempHash[s[j]] == 1){
+                    tempCounter++;
+                }
+                tempHash[s[j]]--;
+                
+                if(tempCounter == subSize){
+                    int len = j-i+1;
+                    if(len < minLen)
+                        minLen = len;
+                    
+                    break;
+                }
+            }
+        }
+        return minLen;
+    }
+};
+
+
+
+Time Complexity = O(n*n)
+Space Complexity = O(256);
+
+
+
+#######################################################################
+
+class Solution {
+  public:
+    int findSubString(string& s) {
+        // Your code goes here
+        int n = s.size(), minLen = INT_MAX;
+        vector<int> hash(256, 0);
+        
+        int subSize = 0;
+        for(char ch: s ){
+            if(hash[ch] == 0){
+                subSize++;
+                hash[ch] = 1;
+            }
+        }
+        
+        int l = 0, r = 0, tempCounter = 0;
+        while(r<n){
+            if(hash[s[r]] > 0)
+                tempCounter++;
+                
+            hash[s[r]]--;
+            
+            while(tempCounter == subSize){
+                int len = r-l+1;
+                if(len < minLen)
+                    minLen = len;
+                    
+                hash[s[l]]++;
+                if(hash[s[l]] > 0)
+                    tempCounter--;
+                
+                l++;
+            }
+            r++;
+        }
+        
+        return minLen;
+    }
+};
+
+
+
+Time complexity - O(2*n)
+Space Complexity - O(256)
+
+
+

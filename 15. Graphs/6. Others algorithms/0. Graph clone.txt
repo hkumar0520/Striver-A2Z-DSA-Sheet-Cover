@@ -1,0 +1,232 @@
+
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> neighbors;
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val, vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* cloneGraph(Node* node) {
+        if(node == NULL)    return {};
+
+        // keeping a reference of already created node
+        map<int, Node*> mp;
+
+        // keeping a reference of already created node
+        unordered_map<int, bool> vis;
+
+        // queue to traverse
+        queue<Node*> qtraverse;
+
+        Node* current = new Node(node->val);
+        Node* root = current;
+
+        qtraverse.push(node);
+        mp[node->val] = current;
+        vis[node->val] = 1;
+
+        while(!qtraverse.empty()){
+            Node* qTop = qtraverse.front();
+            qtraverse.pop();
+
+            Node* currTop = mp[qTop->val];
+
+            for(Node* qit: qTop->neighbors){
+                
+                // not visited
+                if(vis.find(qit->val) == vis.end()){
+                    Node* tmp = new Node(qit->val);
+
+                    vis[qit->val] = 1;
+                    mp[qit->val] = tmp;
+
+                    qtraverse.push(qit);
+                } 
+
+                // inserting into neighbors
+                currTop->neighbors.push_back(mp[qit->val]);
+            }
+        }
+
+        return root;
+    }
+};
+
+
+
+### **Time and Space Complexity Analysis**
+
+#### **Time Complexity: O(V + E)**
+
+1. **Initialization**:
+   - The `while` loop processes each node and its neighbors exactly once. This ensures that each node is visited once (`O(V)`), and all edges are traversed once (`O(E)`).
+
+2. **Queue Operations**:
+   - Nodes are added to and removed from the queue, contributing to `O(V)` operations in total.
+
+3. **Neighbor Iteration**:
+   - For each node, the `for` loop iterates through its neighbors. The sum of these iterations over all nodes equals the total number of edges `E`.
+
+Thus, the overall time complexity is **O(V + E)**, where `V` is the number of vertices (nodes) and `E` is the number of edges in the graph.
+
+---
+
+#### **Space Complexity: O(V)**
+
+1. **Map `mp`**:
+   - The `mp` map stores a clone of each node, requiring **O(V)** space.
+
+2. **Map `vis`**:
+   - The `vis` map stores a boolean value for each node, requiring **O(V)** space.
+
+3. **Queue `qtraverse`**:
+   - At most, all nodes could be in the queue at the same time, requiring **O(V)** space.
+
+4. **Graph Clones**:
+   - The cloned graph also requires space proportional to the original graph, which is **O(V + E)**.
+
+The total space complexity is dominated by the graph clone and auxiliary structures, resulting in **O(V + E)**.
+
+---
+
+### **Summary**
+- **Time Complexity**: **O(V + E)**
+- **Space Complexity**: **O(V + E)**
+
+This complexity is optimal for graph traversal and cloning using BFS.
+
+
+
+
+
+#################################################################################
+
+
+improved version of the above code 
+
+
+Here's an improved version of your code for cloning a graph. The improvements include:
+
+1. **Simplified Data Structures**:
+   - Use a single `unordered_map` to store both visited nodes and the mapping from original to cloned nodes, eliminating the need for a separate `vis` map.
+
+2. **Enhanced Readability**:
+   - Simplify variable names for clarity.
+   - Remove redundant comments and use concise ones.
+
+3. **Optimized Logic**:
+   - Avoid unnecessary checks by leveraging the `unordered_map` directly for both visitation and mapping.
+
+4. **Modern C++ Practices**:
+   - Use `nullptr` instead of `NULL`.
+
+---
+
+### Improved Code
+
+```cpp
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> neighbors;
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val, vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* cloneGraph(Node* node) {
+        if (node == nullptr) return nullptr;
+
+        // Map to store the mapping of original nodes to their clones
+        unordered_map<Node*, Node*> nodeMap;
+
+        // Queue for BFS traversal
+        queue<Node*> q;
+        q.push(node);
+
+        // Create the clone for the root node
+        nodeMap[node] = new Node(node->val);
+
+        while (!q.empty()) {
+            Node* curr = q.front();
+            q.pop();
+
+            // Traverse all neighbors of the current node
+            for (Node* neighbor : curr->neighbors) {
+                // If the neighbor hasn't been cloned yet
+                if (nodeMap.find(neighbor) == nodeMap.end()) {
+                    // Create the clone and map it
+                    nodeMap[neighbor] = new Node(neighbor->val);
+                    // Add the neighbor to the queue for further processing
+                    q.push(neighbor);
+                }
+                // Add the cloned neighbor to the current node's clone's neighbors
+                nodeMap[curr]->neighbors.push_back(nodeMap[neighbor]);
+            }
+        }
+
+        // Return the clone of the root node
+        return nodeMap[node];
+    }
+};
+```
+
+---
+
+### Key Improvements Explained
+
+1. **Unified Map for Visited and Cloned Nodes**:
+   - `unordered_map<Node*, Node*> nodeMap` handles both checking if a node is visited and retrieving its clone.
+
+2. **Clearer Logic**:
+   - The code directly checks and creates clones in the BFS loop, avoiding redundant operations.
+
+3. **Modern C++ Practices**:
+   - Use of `nullptr` instead of `NULL`.
+   - Simplified initialization and usage of STL containers.
+
+---
+
+### Complexity Analysis
+
+#### Time Complexity:
+- **O(V + E)**: Each node and edge is processed once during the BFS traversal.
+
+#### Space Complexity:
+- **O(V)**: For the `unordered_map` and the BFS queue.
+
+This improved code is more efficient, readable, and adheres to modern C++ practices while maintaining the same functionality.
+
+
+

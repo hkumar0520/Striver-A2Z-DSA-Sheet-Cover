@@ -1,0 +1,157 @@
+
+
+
+class Solution {
+public:
+    void findsubset(int ind, int target, vector<int>& arr, vector<int>& ds, vector<vector<int>>& ans) {
+        if (ind == arr.size()) {
+            if (target == 0)
+                ans.push_back(ds);
+            return;
+        }
+
+        if (arr[ind] <= target) {
+            ds.push_back(arr[ind]);
+            findsubset(ind, target - arr[ind], arr, ds, ans); // Include the current element
+            ds.pop_back(); // Backtrack
+        }
+
+        findsubset(ind + 1, target, arr, ds, ans); // Exclude the current element
+    }
+
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> ans;
+        vector<int> ds;
+        findsubset(0, target, candidates, ds, ans);
+        return ans;
+    }
+};
+
+### Time Complexity:
+
+1. **Recursive Function Calls:**
+   - At each index, the algorithm makes two recursive calls: 
+     - One to include the current element (`findsubset(ind, target - arr[ind], ...)`).
+     - One to exclude the current element (`findsubset(ind + 1, target, ...)`).
+   - This creates a binary recursion tree.
+   - However, since the algorithm includes elements multiple times (as the same element can be reused), the total number of combinations explored is not strictly \(2^n\) but depends on the number of valid subsets formed.
+
+2. **Subset Generation:**
+   - In the worst case, where all elements can be repeatedly included to sum up to the target, the depth of the recursion tree can go up to \(target / \min(arr)\), where \(\min(arr)\) is the smallest element in the array.
+   - The total number of combinations explored is bounded by \(\text{O}(2^{n+k})\), where \(n\) is the number of elements and \(k\) is the number of recursive calls influenced by the size of the target.
+
+3. **Result Storage:**
+   - Each valid combination is stored in `ans`. If there are \(m\) valid combinations and the average size of each combination is \(l\), then the storage cost is \(O(m \cdot l)\).
+
+4. **Sorting (if required):**
+   - If the array `candidates` is sorted before use, the sorting cost would be \(O(n \log n)\). However, the provided code does not sort the array.
+
+### Overall Time Complexity:
+The time complexity is approximately:
+\[ O(2^n \cdot t) \]
+where \(n\) is the size of the array, and \(t\) is proportional to \(target / \min(arr)\), accounting for the recursive depth.
+
+---
+
+### Space Complexity:
+
+1. **Recursive Stack:**
+   - The maximum depth of the recursion tree is bounded by \(O(target / \min(arr))\), where \(\min(arr)\) is the smallest element in the array.
+
+2. **Temporary Storage (`ds`):**
+   - The space used by the temporary vector `ds` is proportional to the depth of the recursion, i.e., \(O(target / \min(arr))\).
+
+3. **Result Storage (`ans`):**
+   - The space used to store the results depends on the number of valid subsets and their sizes. If there are \(m\) subsets and the average size is \(l\), the space is \(O(m \cdot l)\).
+
+### Overall Space Complexity:
+The space complexity is approximately:
+\[ O(target / \min(arr) + m \cdot l) \]
+where \(m\) is the number of valid subsets and \(l\) is the average size of each subset.
+
+
+
+########################################################################
+
+
+Let's analyze the **time complexity** and **space complexity** of the provided code step by step.
+
+### Code Overview:
+The function `combinationSum` finds all subsets of the given `candidates` array that sum up to a specified `target`. The recursive function `findsubset` explores two options for each candidate:
+1. **Include** the current candidate in the subset.
+2. **Exclude** the current candidate from the subset.
+
+This process explores all possible combinations, and subsets that sum to the target are pushed into the result.
+
+---
+
+### Time Complexity:
+
+To determine the time complexity, we need to consider the number of recursive calls made by the `findsubset` function and the work done at each call.
+
+1. **Recursive Function (`findsubset`):**
+   - The recursion explores all possible combinations of the candidates. 
+   - At each index `ind`, there are two choices:
+     1. **Include** the current element (`arr[ind]`), which reduces the target by the value of the element.
+     2. **Exclude** the current element and move to the next index.
+   
+   - In the worst case, for each element in the array, we have to consider two choices (whether to include or exclude it). This leads to an exponential number of recursive calls. Thus, the total number of recursive calls is at most **2^n**, where `n` is the number of elements in the `arr` (the candidates array).
+   
+2. **Pruning:**
+   - The recursion prunes paths where the remaining target becomes negative (`target - arr[ind]`), which means those paths will not lead to valid solutions. However, this pruning doesn't significantly reduce the time complexity in the worst case, as it still needs to explore all possible combinations.
+   
+3. **Subset Generation:**
+   - At each recursive call, the function might add an element to the `ds` vector and remove it later (backtracking). In the worst case, this can lead to the creation of subsets of length up to the `target`. Each valid subset that sums to the target is added to the result list.
+
+4. **Worst-Case Time Complexity:**
+   - In the worst case, the function explores all possible combinations, which is **2^n** (since each element can either be included or excluded).
+   - For each combination, the function stores the subset in the `ans` vector, and each subset can have at most `target` elements in the worst case.
+   
+   Therefore, the **time complexity** of this approach is:
+   \[
+   O(2^n \cdot target)
+   \]
+   Where:
+   - \(n\) is the number of elements in the `candidates` array.
+   - `target` is the maximum number of elements in any subset (in the worst case, a subset could contain all elements in the array).
+
+---
+
+### Space Complexity:
+
+1. **Recursive Stack:**
+   - The depth of the recursion is bounded by `n`, the number of elements in `arr`, because in the worst case, each recursion either includes or excludes one element at each level. Thus, the recursion stack has a maximum depth of **O(n)**.
+
+2. **Result Storage (`ans`):**
+   - The `ans` vector stores all valid subsets that sum to the target. In the worst case, the number of valid subsets is **2^n** (since every combination of the elements could potentially form a valid subset).
+   - Each subset can have at most `target` elements (in the worst case), so the space needed to store the subsets is **O(2^n * target)**.
+
+3. **Subset Storage (`ds`):**
+   - The temporary `ds` vector stores the current subset. In the worst case, `ds` could hold up to `target` elements. Therefore, the space complexity for the temporary storage is **O(target)**.
+
+4. **Worst-Case Space Complexity:**
+   The space complexity is dominated by the space needed to store the subsets in the result (`ans`) and the recursion stack. Therefore, the overall **space complexity** is:
+   \[
+   O(2^n \cdot target) + O(n)
+   \]
+   - The term \(O(n)\) comes from the recursion stack, and the term \(O(2^n \cdot target)\) comes from the result storage.
+
+---
+
+### Summary:
+
+- **Time Complexity:**  
+  \[
+  O(2^n \cdot target)
+  \]
+  Where:
+  - `n` is the number of elements in the `candidates` array.
+  - `target` is the maximum number of elements in any subset.
+
+- **Space Complexity:**  
+  \[
+  O(2^n \cdot target)
+  \]
+  For storing the valid subsets and the recursion stack.
+
+This solution is exponential in nature because it explores all combinations of the candidates, and the result set can grow exponentially with respect to the number of elements and the target.

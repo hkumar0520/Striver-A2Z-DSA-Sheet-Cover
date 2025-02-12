@@ -1,0 +1,189 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+class Solution {
+  public:
+    // Function to detect cycle in an undirected graph.
+    bool dfs(vector<vector<int>>& adj, vector<int> node, vector<int>& vis)
+    {
+        int element = node[0], parent = node[1];
+        
+        vis[element] = 1;
+     
+        for(auto v: adj[element])
+        {
+            if(!vis[v])
+            {
+                if(dfs(adj,{v,element},vis))
+                    return true;
+                
+            }
+            else
+            {
+                // in case of 1 -- 2
+                if(v != parent) 
+                    return true;
+            }
+        }
+        return false;
+    }
+    bool bfs(vector<vector<int>>& adj, int startnode, vector<int>& vis)
+    {
+        // 0th  element node, 1st element parent
+        queue<vector<int>>  qtraverse;
+        qtraverse.push({startnode,-1});
+        vis[startnode] = 1;
+        while(!qtraverse.empty())
+        {
+            vector<int> node = qtraverse.front();
+            qtraverse.pop();
+            int element = node[0], parent = node[1];
+            for(auto v: adj[element])
+            { 
+                if(!vis[v])
+                {
+                    vis[v] = 1;
+                    qtraverse.push({v,element});
+                }
+                else
+                {
+                    // in case of 1 -- 2
+                    if(v != parent) return true;
+                }
+            }
+        }
+        return false;
+    }
+    bool isCycle(vector<vector<int>>& adj) {
+        // Code here
+        int n = adj.size();
+        vector<int>  vis(n,0);
+        for(int i=0;i<n;i++)
+        {
+            if(!vis[i])
+            {
+                //if(bfs(adj,i,vis))  
+                //    return true;
+                if(dfs(adj,{i,-1},vis))
+                    return true;
+            }
+        }
+        return false;
+    }
+};
+
+//{ Driver Code Starts.
+int main() {
+    int tc;
+    cin >> tc;
+    while (tc--) {
+        int V, E;
+        cin >> V >> E;
+        vector<vector<int>> adj(V);
+        for (int i = 0; i < E; i++) {
+            int u, v;
+            cin >> u >> v;
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        Solution obj;
+        bool ans = obj.isCycle(adj);
+        if (ans)
+            cout << "1\n";
+        else
+            cout << "0\n";
+
+        cout << "~"
+             << "\n";
+    }
+    return 0;
+}
+// } Driver Code Ends
+
+### Time Complexity:
+
+1. **DFS Function:**
+   - Each node is visited once, and for each node, we traverse all its adjacent nodes.
+   - The total number of operations is proportional to the sum of the degrees of all nodes, which is \( O(V + E) \), where \( V \) is the number of vertices and \( E \) is the number of edges in the graph.
+
+2. **BFS Function:**
+   - Similarly, each node is visited once, and all edges are processed. The time complexity is also \( O(V + E) \).
+
+3. **isCycle Function:**
+   - The function iterates over all nodes, and for each unvisited node, it calls either the DFS or BFS function.
+   - Since DFS or BFS visits all nodes and edges in the connected component of the graph, the overall complexity of the `isCycle` function remains \( O(V + E) \).
+
+### Space Complexity:
+
+1. **DFS Function:**
+   - Uses a recursion stack that can go as deep as the number of vertices in the worst case (in case of a single connected component). The space complexity for the recursion stack is \( O(V) \).
+   - Additionally, the `vis` array requires \( O(V) \) space.
+
+2. **BFS Function:**
+   - Uses a queue to store nodes during traversal. In the worst case, the queue can contain all vertices, resulting in \( O(V) \) space usage.
+   - The `vis` array also requires \( O(V) \) space.
+
+3. **Overall Space Complexity:**
+   - Both DFS and BFS contribute \( O(V) \) space for the `vis` array.
+   - DFS has an additional \( O(V) \) recursion stack, while BFS has an \( O(V) \) queue.
+   - Thus, the overall space complexity is \( O(V) \).
+
+### Final Complexity:
+- **Time Complexity:** \( O(V + E) \)
+- **Space Complexity:** \( O(V) \)
+
+###########################################################################
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+  private: 
+    bool dfs(int node, int parent, int vis[], vector<int> adj[]) {
+        vis[node] = 1; 
+        // visit adjacent nodes
+        for(auto adjacentNode: adj[node]) {
+            // unvisited adjacent node
+            if(!vis[adjacentNode]) {
+                if(dfs(adjacentNode, node, vis, adj) == true) 
+                    return true; 
+            }
+            // visited node but not a parent node
+            else if(adjacentNode != parent) return true; 
+        }
+        return false; 
+    }
+  public:
+    // Function to detect cycle in an undirected graph.
+    bool isCycle(int V, vector<int> adj[]) {
+       int vis[V] = {0}; 
+       // for graph with connected components 
+       for(int i = 0;i<V;i++) {
+           if(!vis[i]) {
+               if(dfs(i, -1, vis, adj) == true) return true; 
+           }
+       }
+       return false; 
+    }
+};
+
+int main() {
+    
+    // V = 4, E = 2
+    vector<int> adj[4] = {{}, {2}, {1, 3}, {2}};
+    Solution obj;
+    bool ans = obj.isCycle(4, adj);
+    if (ans)
+        cout << "1\n";
+    else
+        cout << "0\n";
+    return 0;
+}
+Output:  0
+
+Time Complexity: O(N + 2E) + O(N), Where N = Nodes, 2E is for total degrees as we traverse all adjacent nodes. In the case of connected components of a graph, it will take another O(N) time.
+
+Space Complexity: O(N) + O(N) ~ O(N), Space for recursive stack space and visited array.

@@ -1,0 +1,50 @@
+
+
+
+int makebanquets(vector<int> arr, int k, int m, int mid)
+{
+	int n = arr.size(), countt = 0;
+	for(int i=0;i<n;i++)
+	{
+		arr[i] = arr[i] - mid;
+		if(arr[i]<=0)
+		{
+			countt++;
+			if(countt == k)
+			{
+				m--;
+				countt = 0;
+			}
+		}
+		else
+			countt = 0;
+
+		if(m == 0)
+			return true;
+	}
+	return false;
+}
+
+int roseGarden(vector<int> arr, int k, int m)
+{
+	// Write your code here
+	// total roses less than required roses
+	if(arr.size()<k*m)	return -1;
+
+	int maxx = -1;
+	for(auto u:arr)
+		maxx = max(u, maxx);
+	
+	int lo = 0, hi = maxx;
+	while(lo <= hi)
+	{
+		int mid = (lo + hi) /2;
+		bool possible = makebanquets(arr,k,m,mid);
+		if(possible)
+			hi = mid-1;
+		else
+			lo = mid+1;
+	}
+	return lo;
+}
+

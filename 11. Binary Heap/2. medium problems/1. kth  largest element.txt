@@ -1,0 +1,156 @@
+
+
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int> pq;
+
+        // O(n)
+        for(int num: nums)
+            pq.push(num);      // logN
+
+        int countK = 0, kLargestElement = 0;
+        while(!pq.empty() && countK < k){
+            int topElement = pq.top();
+            pq.pop();
+            countK++;
+            kLargestElement = topElement;
+        }
+        
+        return kLargestElement;
+    }
+};
+
+Time Complexity = O(nlogn)
+space complexity = O(n)
+
+
+
+#######################################################################
+
+
+
+
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int, vector<int> , greater<int>> pq;
+
+        for(int num: nums){
+            pq.push(num);
+            if(pq.size() > k)
+                pq.pop();
+        }
+
+        return pq.top();
+    }
+};
+
+
+Time Complexity = O(nlogk)
+space complexity = O(k)
+
+
+
+
+########################################################################
+
+
+
+
+
+gpt 
+
+To solve the problem of finding the kth largest element in an array without sorting, we can use a **min-heap** (also called a priority queue in some implementations). The idea is to maintain a heap of size `k` to keep track of the largest `k` elements in the array. Once the heap is built, the smallest element in the heap will be the kth largest element in the array.
+
+### Approach:
+
+1. **Min-Heap**:
+   - Use a min-heap of size `k` to store the largest `k` elements encountered.
+   - For each element in the array, we add it to the heap.
+   - If the size of the heap exceeds `k`, we remove the smallest element (because we're interested in keeping the `k` largest elements).
+   - After processing all the elements, the root of the heap will give the kth largest element.
+
+### C++ Code Implementation:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+int findKthLargest(vector<int>& nums, int k) {
+    // Min-heap to store the largest k elements
+    priority_queue<int, vector<int>, greater<int>> minHeap;
+
+    // Iterate through the array
+    for (int num : nums) {
+        // Push the current number into the min-heap
+        minHeap.push(num);
+
+        // If the size of the heap exceeds k, remove the smallest element
+        if (minHeap.size() > k) {
+            minHeap.pop();
+        }
+    }
+
+    // The root of the heap is the kth largest element
+    return minHeap.top();
+}
+
+int main() {
+    vector<int> nums = {3, 2, 1, 5, 6, 4};
+    int k = 2;
+    cout << "The " << k << "th largest element is: " << findKthLargest(nums, k) << endl;
+
+    nums = {3, 2, 3, 1, 2, 4, 5, 5, 6};
+    k = 4;
+    cout << "The " << k << "th largest element is: " << findKthLargest(nums, k) << endl;
+
+    return 0;
+}
+```
+
+### Explanation:
+- **Priority Queue (Min-Heap)**:
+  - The priority queue is implemented in C++ using `std::priority_queue` with the `greater<int>` comparator, which ensures that the smallest element is always at the top of the heap (min-heap).
+  
+- **Iterating through `nums`**:
+  - For each element in the array, we add it to the heap.
+  - If the size of the heap exceeds `k`, we remove the smallest element using `pop()` to ensure that only the `k` largest elements remain in the heap.
+  
+- **Final Answer**:
+  - After processing all the elements, the smallest element in the heap (top of the min-heap) is the `k`th largest element.
+
+### Time Complexity:
+- **Building the heap**: 
+  - Inserting an element into the heap takes \(O(\log k)\).
+  - For each element in the array (there are `n` elements), we do an insertion operation.
+  - So, the overall time complexity is \(O(n \log k)\), where `n` is the length of the array.
+
+### Space Complexity:
+- **Space for the heap**:
+  - We maintain a heap of size `k`. Hence, the space complexity is \(O(k)\).
+
+### Example Walkthrough:
+
+#### Example 1:
+- **Input**: `nums = [3,2,1,5,6,4]`, `k = 2`
+- The algorithm will iterate through the array:
+  - After inserting `3`, heap = [3]
+  - After inserting `2`, heap = [2, 3]
+  - After inserting `1`, heap = [1, 3, 2] → heap size exceeds `k`, so we pop `1` → heap = [2, 3]
+  - After inserting `5`, heap = [2, 3, 5] → heap size exceeds `k`, so we pop `2` → heap = [3, 5]
+  - After inserting `6`, heap = [3, 5, 6] → heap size exceeds `k`, so we pop `3` → heap = [5, 6]
+  - After inserting `4`, heap = [4, 6, 5] → heap size exceeds `k`, so we pop `4` → heap = [5, 6]
+  
+- **Output**: The `2`nd largest element is `5`.
+
+#### Example 2:
+- **Input**: `nums = [3,2,3,1,2,4,5,5,6]`, `k = 4`
+- The algorithm will process the elements and maintain a heap of the largest `k` elements. The root of the heap will eventually be `4` after all elements have been processed.
+
+- **Output**: The `4`th largest element is `4`.
+
+### Conclusion:
+This approach solves the problem efficiently without sorting the entire array, with time complexity \(O(n \log k)\) and space complexity \(O(k)\), which is ideal for large arrays.

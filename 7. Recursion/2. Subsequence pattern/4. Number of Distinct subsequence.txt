@@ -1,0 +1,106 @@
+
+
+
+class Solution {
+  public:
+    int subseqNumber(string str){
+        unordered_map<char, int> map;
+        
+        int count = 1;
+        
+        for(char ch: str){
+            
+            int newCount = 2 * count;
+            
+            if(map.find(ch) != map.end())
+                newCount = newCount - map[ch];
+                
+            map[ch] = count;
+            count = newCount;
+        }
+        return count;
+    }
+    string betterString(string str1, string str2) {
+        // code here
+        
+        int noOfSequenceStr1 = subseqNumber(str1);
+        int noOfSequenceStr2 = subseqNumber(str2);
+        
+        return (noOfSequenceStr1 >= noOfSequenceStr2) ? str1 : str2;
+    }
+};
+
+
+
+
+Let's analyze the time and space complexity of the given code in both parts: the `subseqNumber` method and the `betterString` method.
+
+### 1. `subseqNumber` method:
+
+#### Code:
+```cpp
+int subseqNumber(string str){
+    unordered_map<char, int> map;
+
+    int count = 1;
+
+    for(char ch: str){
+
+        int newCount = 2 * count;
+
+        if(map.find(ch) != map.end())
+            newCount = newCount - map[ch];
+
+        map[ch] = count;
+        count = newCount;
+    }
+    return count;
+}
+```
+
+#### Time Complexity:
+- The method iterates over each character in the string `str`. Let `n` be the length of the string `str`.
+- For each character, we perform operations on an `unordered_map`:
+  - `map.find(ch)` checks for the existence of the character `ch` in constant time on average, i.e., **O(1)**.
+  - Inserting and updating a key in the `unordered_map` also happens in **O(1)** average time.
+- Thus, each iteration of the loop takes **O(1)** time on average, and since there are `n` iterations, the overall time complexity is **O(n)**.
+
+#### Space Complexity:
+- The `unordered_map` stores one entry for each distinct character in the string `str`. In the worst case, the string contains all distinct characters.
+- The space complexity of the `unordered_map` is therefore **O(k)**, where `k` is the number of distinct characters in the string `str`. In the worst case (e.g., if `str` contains only unique characters), `k` can be as large as the length of the string `n`. Thus, the space complexity is **O(n)**.
+
+### 2. `betterString` method:
+
+#### Code:
+```cpp
+string betterString(string str1, string str2) {
+    int noOfSequenceStr1 = subseqNumber(str1);
+    int noOfSequenceStr2 = subseqNumber(str2);
+
+    return (noOfSequenceStr1 >= noOfSequenceStr2) ? str1 : str2;
+}
+```
+
+#### Time Complexity:
+- The method calls the `subseqNumber` method twice, once for each string `str1` and `str2`.
+  - The time complexity of `subseqNumber(str)` is **O(n)**, where `n` is the length of the string.
+  - For two strings, `str1` and `str2`, with lengths `n1` and `n2` respectively, the overall time complexity for calling `subseqNumber` twice will be **O(n1 + n2)**.
+- The comparison `noOfSequenceStr1 >= noOfSequenceStr2` is an **O(1)** operation.
+- Therefore, the overall time complexity of the `betterString` method is **O(n1 + n2)**, where `n1` and `n2` are the lengths of `str1` and `str2`, respectively.
+
+#### Space Complexity:
+- The space complexity is dominated by the space used for the two input strings `str1` and `str2`. Each call to `subseqNumber` also uses an `unordered_map`, which has space complexity of **O(n1)** for `str1` and **O(n2)** for `str2`.
+- Thus, the space complexity of the `betterString` method is **O(n1 + n2)**, considering both the space required for the `unordered_map` and the space for the input strings.
+
+### Summary:
+
+- **`subseqNumber` method:**
+  - Time Complexity: **O(n)**, where `n` is the length of the string `str`.
+  - Space Complexity: **O(n)**, where `n` is the number of distinct characters in `str`.
+
+- **`betterString` method:**
+  - Time Complexity: **O(n1 + n2)**, where `n1` and `n2` are the lengths of `str1` and `str2`.
+  - Space Complexity: **O(n1 + n2)**, where `n1` and `n2` are the lengths of `str1` and `str2`.
+
+
+  

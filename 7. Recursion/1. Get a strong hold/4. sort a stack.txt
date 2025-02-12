@@ -1,0 +1,91 @@
+
+
+void InsertCorrectPosition(stack<int>& st, int x)
+{
+    if(st.empty()){
+        st.push(x);
+        return;
+    }
+    
+    if(st.top() > x){
+        int topElement = st.top();
+        st.pop();
+        
+        InsertCorrectPosition(st, x);
+        st.push(topElement);
+    }
+    else
+        st.push(x);
+}
+
+void SortedStack :: sort()
+{
+    if(s.empty())
+        return;
+   //Your code here
+   int topElement = s.top();
+   s.pop();
+   sort();
+   
+   InsertCorrectPosition(s, topElement);
+
+}
+
+Let's analyze the time and space complexity of the given code.
+
+### Code Overview:
+
+- **`InsertCorrectPosition` function:**
+  - This function inserts the given element `x` in its correct position in a stack such that the stack remains sorted in descending order.
+  - It recursively pops elements from the stack until it finds the correct position for `x` and then pushes the popped elements back.
+  
+- **`sort` function:**
+  - This function performs a recursive sorting of the stack. It pops the top element, recursively sorts the remaining stack, and then inserts the popped element at its correct position using `InsertCorrectPosition`.
+
+### Time Complexity:
+
+1. **`InsertCorrectPosition` function:**
+   - In the worst case, the function will recursively pop all elements from the stack and push them back. Therefore, the time complexity of `InsertCorrectPosition` is \(O(n)\) where \(n\) is the current size of the stack.
+
+2. **`sort` function:**
+   - The `sort` function is recursive. It pops one element, recursively calls `sort()` on the remaining stack, and then calls `InsertCorrectPosition` to place the popped element at its correct position.
+   - In each recursive call to `sort`, the stack size reduces by one.
+   - For each element popped by `sort`, `InsertCorrectPosition` is called, and in the worst case, it takes \(O(n)\) time for each insertion.
+   
+   So, let's break this down:
+   - The first time the `sort` function is called, it pops the top element, which is followed by a recursive call to `sort()` for the remaining \(n-1\) elements.
+   - When inserting the popped element back using `InsertCorrectPosition`, it may take \(O(n)\) time (if the stack is empty or the elements are ordered in such a way that the insertion requires popping all other elements).
+   - After that, `sort` is called recursively on a stack of size \(n-1\), and so on, until the stack is empty.
+   
+   Thus, the total time complexity is the sum of the times taken to sort the stack and insert each element:
+   \[
+   O(n) + O(n-1) + O(n-2) + \dots + O(1)
+   \]
+   This is the sum of an arithmetic series, which simplifies to:
+   \[
+   O(n^2)
+   \]
+   where \(n\) is the number of elements in the stack.
+
+### Space Complexity:
+
+1. **`InsertCorrectPosition` function:**
+   - The space complexity of `InsertCorrectPosition` is \(O(n)\) in the worst case, due to the recursion depth when popping elements until the correct position for `x` is found. However, since the function only uses the stack passed as an argument, it doesn't use extra space aside from the recursion stack.
+
+2. **`sort` function:**
+   - The space complexity of the `sort` function is determined by the recursion depth. Each recursive call to `sort` adds one frame to the call stack.
+   - Since the function recursively calls `sort` for the remaining \(n-1\) elements, the maximum depth of recursion is \(n\).
+   
+Thus, the overall space complexity is:
+\[
+O(n)
+\]
+where \(n\) is the number of elements in the stack.
+
+### Summary:
+
+- **Time complexity:** \( O(n^2) \)
+- **Space complexity:** \( O(n) \)
+
+
+

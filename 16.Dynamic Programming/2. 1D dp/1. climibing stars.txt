@@ -1,0 +1,75 @@
+#include <bits/stdc++.h> 
+
+// recursion time limit exceeded
+#include <bits/stdc++.h> 
+
+int f(int n)
+{
+    if(n<= 1)   return 1;
+
+    return f(n-1) + f(n-2);
+}
+int countDistinctWays(int nStairs) {
+    //  Write your code here.
+   return f(nStairs);
+}
+
+
+###############################################################################################
+// memoization approach
+#include <bits/stdc++.h> 
+
+int f(int n, vector<int>& dp)
+{
+    if(n<= 1)   return 1;
+
+    if(dp[n] != -1)   return dp[n];
+
+    dp[n] = f(n-1, dp) + f(n-2, dp);
+    return dp[n];
+    
+}
+int countDistinctWays(int nStairs) {
+    //  Write your code here.
+
+    vector<int> dp(nStairs+1, -1);
+
+   return f(nStairs,dp);
+}
+
+
+###############################################################################################
+//  tabular approach
+int countDistinctWays(int nStairs) {
+    //  Write your code here.
+
+    vector<int> dp(nStairs+1, 0);
+
+    dp[0] = dp[1] = 1;
+
+    for(int i=2;i<nStairs+1;i++)
+        dp[i] = dp[i-1]+dp[i-2];
+
+    return dp[nStairs];
+}
+
+
+
+#################################################################################
+// optimized approach
+
+#include <bits/stdc++.h> 
+int countDistinctWays(int nStairs) {
+    //  Write your code here.
+
+    int prev = 1, curr = 1;
+
+    for(int i=2;i<nStairs+1;i++){
+        int next = prev + curr;
+        prev = curr;
+        curr = next;
+    }
+
+    return curr;
+}
+

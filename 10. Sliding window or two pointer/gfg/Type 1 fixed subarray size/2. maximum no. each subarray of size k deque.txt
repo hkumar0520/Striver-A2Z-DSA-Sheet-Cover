@@ -1,0 +1,206 @@
+
+https://www.geeksforgeeks.org/problems/ipl-2021-match-day-2--141634/1?page=1&category=sliding-window&difficulty=Medium&sortBy=submissions
+
+
+https://www.geeksforgeeks.org/problems/maximum-of-all-subarrays-of-size-k3101/1?page=1&category=sliding-window&difficulty=Medium&sortBy=submissions
+
+timit limit exceed 
+
+
+class Solution {
+  public:
+    vector<int> max_of_subarrays(vector<int> arr, int n, int k) {
+        // your code here
+        
+        map<int,int> hash;
+        vector<int> ans;
+        for(int i = 0; i<k; i++)
+            hash[arr[i]]++;
+            
+        ans.push_back((--hash.end())->first);
+        
+        for(int i=k; i<n; i++){
+            hash[arr[i-k]]--;
+            if(hash[arr[i-k]] == 0)
+                hash.erase(arr[i-k]);
+                
+            hash[arr[i]]++;
+            
+            ans.push_back((--hash.end())->first);
+        }
+        
+        return ans;
+    }
+};
+
+### Time Complexity
+
+1. **Initialization (first `k` elements):**
+   - Inserting the first `k` elements into the `map` takes \(O(\log k)\) per element. 
+   - Total time: \(O(k \log k)\).
+
+2. **Sliding Window (remaining \(n-k\) elements):**
+   - For each iteration:
+     - Removing an element from the `map` takes \(O(\log k)\).
+     - Inserting a new element into the `map` takes \(O(\log k)\).
+     - Accessing the maximum element with `(--hash.end())->first` takes \(O(1)\).
+   - Total time for \(n-k\) iterations: \(O((n-k) \log k)\).
+
+3. **Overall Time Complexity:**
+   \[
+   O(k \log k) + O((n-k) \log k) = O(n \log k)
+   \]
+
+---
+
+### Space Complexity
+
+1. **Map Storage:**
+   - The `map` stores at most \(k\) elements at any time.
+   - Space complexity for the `map`: \(O(k)\).
+
+2. **Output Vector:**
+   - The output vector `ans` stores \(n-k+1\) elements.
+   - Space complexity for `ans`: \(O(n-k+1) \approx O(n)\).
+
+3. **Overall Space Complexity:**
+   \[
+   O(k) + O(n) = O(n)
+   \]
+
+---
+
+### Summary
+- **Time Complexity:** \(O(n \log k)\)
+- **Space Complexity:** \(O(n)\)
+
+
+########################################################################
+
+
+class Solution {
+  public:
+    vector<int> max_of_subarrays(vector<int> arr, int n, int k) {
+        // your code here
+        
+        vector<int> ans;
+        deque<int> dq;
+            
+        
+        for(int i=0; i<n; i++){
+            
+            // 1, 2, 4, 6 
+            while(!dq.empty() && arr[i] > arr[dq.back()])
+                dq.pop_back();
+                
+            if(!dq.empty() && ( dq.front() == (i-k)  ))
+                dq.pop_front();
+                
+            dq.push_back(i);
+            
+            if(i >= (k-1) )
+                ans.push_back(arr[dq.front()]);
+        }
+        
+        return ans;
+    }
+};
+
+
+### Time Complexity:
+1. **Deque Operations**:
+   - Each element is added to and removed from the deque exactly once.
+   - Adding or removing an element from the deque takes \(O(1)\) time.
+   - For \(n\) elements, the total time complexity for deque operations is \(O(n)\).
+
+2. **Sliding Window**:
+   - The loop iterates over the array of size \(n\), so the traversal contributes \(O(n)\).
+
+Overall time complexity: **\(O(n)\)**.
+
+---
+
+### Space Complexity:
+1. **Deque**:
+   - The deque stores at most \(k\) indices at any given time.
+   - Space complexity for the deque is \(O(k)\).
+
+2. **Output Vector**:
+   - The result vector `ans` stores \(n-k+1\) elements, contributing \(O(n)\) space.
+
+Overall space complexity: **\(O(k)\)** (dominant term is deque storage).
+
+
+### Summary
+- **Time Complexity:** \(O(n)\)
+- **Space Complexity:** \(O(n)\)
+
+
+
+
+##############
+'
+another response of above code 
+
+Let's analyze the time and space complexity of the provided code step by step.
+
+### **Code Overview**
+The function `max_of_subarrays` computes the maximum values of all sliding windows of size `k` in the given array `arr` of size `n`. It uses a **deque** (`dq`) to maintain the indices of the elements in the current sliding window. The deque is maintained in such a way that the elements in it are in decreasing order, ensuring that the maximum of the current window is always at the front of the deque.
+
+### **Time Complexity Analysis:**
+
+1. **Outer loop (Iterating over the array):**
+   - The outer loop runs from `i = 0` to `i = n-1`, iterating through each element of the array.
+   - This loop runs \( n \) times, where \( n \) is the length of the array.
+
+2. **Deque Operations:**
+   - **Removing elements from the deque:**  
+     - The `while` loop at the beginning of each iteration removes elements from the back of the deque until we find an element that is greater than the current element `arr[i]`. The condition `arr[i] > arr[dq.back()]` ensures that the deque only contains useful elements (i.e., those that could potentially be the maximum for the next window).
+     - Each element is added to and removed from the deque at most once during the iteration. Therefore, the total number of operations related to removing elements from the deque is \( O(n) \).
+   
+   - **Adding elements to the deque:**  
+     - After removing elements from the back of the deque, the current element's index `i` is pushed to the back of the deque using `dq.push_back(i)`. This operation is \( O(1) \) for each element.
+   
+   - **Removing front elements from the deque (when the window moves past the current element):**
+     - If the element at the front of the deque is outside the current window (i.e., its index is `i - k`), it is removed with `dq.pop_front()`. Since each element is removed from the front at most once, this operation contributes an overall \( O(n) \).
+
+3. **Result vector update:**
+   - After updating the deque, we add the maximum of the current window (which is always `arr[dq.front()]`) to the result vector `ans`. This operation is \( O(1) \) for each window, and we perform this for each window starting from index `k-1` to `n-1`. This gives us a total of \( O(n-k+1) \), which is \( O(n) \) as \( k \) is constant or relatively small compared to \( n \).
+
+**Total Time Complexity:**
+- The total time complexity for the outer loop and all deque operations is \( O(n) \).
+- There are no nested loops, and each deque operation is \( O(1) \), so the overall time complexity is **\( O(n) \)**.
+
+### **Space Complexity Analysis:**
+
+1. **Deque:**
+   - The deque stores indices of the array elements. The size of the deque is at most `k` at any given time, because the window size is `k` and we only keep indices within the current window.
+   - Therefore, the space used by the deque is \( O(k) \).
+
+2. **Result Vector:**
+   - The result vector `ans` will store one value for each sliding window. Since there are \( n-k+1 \) windows, the result vector will have \( O(n) \) elements.
+
+3. **Auxiliary Variables:**
+   - The algorithm uses a constant amount of extra space for variables like `i`, `dq`, and others. These use \( O(1) \) space.
+
+**Total Space Complexity:**
+- The space complexity is dominated by the deque and the result vector:
+  \[
+  O(k) \text{ (deque)} + O(n) \text{ (result vector)} = O(k + n)
+  \]
+So, the overall space complexity is **\( O(k + n) \)**.
+
+---
+
+### **Final Complexity Summary:**
+
+| **Operation**       | **Time Complexity** | **Space Complexity** |
+|---------------------|---------------------|----------------------|
+| Array Iteration     | \( O(n) \)          | \( O(1) \)           |
+| Deque Operations    | \( O(n) \)          | \( O(k) \)           |
+| Result Storage      | \( O(n) \)          | \( O(n) \)           |
+| **Total**           | \( O(n) \)          | \( O(k + n) \)       |
+
+### **Conclusion:**
+- **Time Complexity:** \( O(n) \)
+- **Space Complexity:** \( O(k + n) \)

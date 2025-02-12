@@ -1,0 +1,157 @@
+
+
+// brute force
+
+// 58/61 testcases passed
+
+class Solution {
+public:
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+
+        int sum = 0, countGoal = 0, numsLen = nums.size();
+        vector<int> prefixSum(numsLen+1, 0);
+        
+        for(int i=0; i<numsLen;i++){
+            prefixSum[i+1] = prefixSum[i] + nums[i];
+        }
+
+        // 0, 1, 1, 2, 2, 3 
+        for(int len = 1; len<=numsLen; len++){
+            for(int right = len; right<numsLen+1; right++){
+                if( (prefixSum[right]-prefixSum[right-len]) == goal)
+                    countGoal++;
+            }
+        }
+        return countGoal;
+    }
+};
+
+time limit = O(n*n)
+space limit = O(n)
+
+############################################################################
+
+class Solution {
+public:
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+
+        int countGoal = 0, numsLen = nums.size(), prefixSum = 0;
+        unordered_map<int,int> mp;
+        // for index 0
+        mp[0] = 1;
+
+        int i = 0;
+
+        while( i < numsLen ){
+            prefixSum += nums[i];
+
+            if(mp.find(prefixSum - goal) != mp.end()){
+                countGoal += mp[prefixSum-goal];
+            }
+
+            mp[prefixSum]++;
+            i++;
+        }
+        return  countGoal;
+    }
+};
+
+Time Complexity: O(N)
+space Complexity: O(N)
+
+
+##########################################################################
+
+gpt 
+
+To solve this problem efficiently, we can use a **prefix sum** technique combined with a **hash map** to keep track of the cumulative sum as we iterate through the array. The key idea is to find subarrays whose sum equals the given `goal` by utilizing the prefix sum.
+
+### Approach:
+1. **Prefix Sum**: As we iterate through the array, we maintain a running sum of the elements (prefix sum).
+2. **HashMap**: Use a hash map (`prefix_sum_map`) to store the count of each prefix sum we've encountered so far. The key observation is that if the difference between the current prefix sum and a previously encountered prefix sum equals `goal`, then there is a subarray whose sum is equal to `goal`.
+3. **Count Valid Subarrays**: For each element, we calculate the current prefix sum. If `(prefix_sum - goal)` has been encountered before, it means there is a valid subarray ending at the current index whose sum is `goal`. We increase the count by the number of times this difference has appeared.
+
+### Code Implementation:
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+using namespace std;
+
+int numSubarraysWithSum(vector<int>& nums, int goal) {
+    unordered_map<int, int> prefix_sum_map;  // Map to store frequency of prefix sums
+    int prefix_sum = 0;  // Running sum of elements in nums
+    int result = 0;  // The result to store the number of valid subarrays
+    
+    // Initialize the map with 0 sum frequency as 1 to handle subarrays starting from index 0
+    prefix_sum_map[0] = 1;
+
+    // Traverse the array
+    for (int num : nums) {
+        // Update the running sum
+        prefix_sum += num;
+        
+        // Check if there is a prefix sum that matches prefix_sum - goal
+        if (prefix_sum_map.find(prefix_sum - goal) != prefix_sum_map.end()) {
+            // If it exists, add the frequency of that prefix sum to result
+            result += prefix_sum_map[prefix_sum - goal];
+        }
+        
+        // Add/update the frequency of the current prefix_sum in the map
+        prefix_sum_map[prefix_sum]++;
+    }
+
+    return result;
+}
+
+int main() {
+    // Example 1
+    vector<int> nums1 = {1, 0, 1, 0, 1};
+    int goal1 = 2;
+    cout << "Example 1: " << numSubarraysWithSum(nums1, goal1) << endl;  // Expected output: 4
+
+    // Example 2
+    vector<int> nums2 = {0, 0, 0, 0, 0};
+    int goal2 = 0;
+    cout << "Example 2: " << numSubarraysWithSum(nums2, goal2) << endl;  // Expected output: 15
+
+    return 0;
+}
+```
+
+### Explanation:
+
+1. **Initialization**: 
+   - We initialize `prefix_sum_map` with `{0: 1}` because the sum of an empty subarray is 0, and it helps in cases where the subarray itself starts from the beginning and equals the `goal`.
+
+2. **Prefix Sum Calculation**:
+   - As we loop through the `nums` array, we keep a running sum (`prefix_sum`) of all the elements we've seen so far.
+   
+3. **Finding Valid Subarrays**:
+   - For each `num` in the array, we update the running sum (`prefix_sum`).
+   - We then check if the difference `(prefix_sum - goal)` is present in the `prefix_sum_map`. If it is, it means there exists a previous prefix sum such that the subarray from the previous index to the current index has a sum equal to `goal`.
+   - We add the frequency of `(prefix_sum - goal)` to `result` because it represents the number of subarrays that sum up to `goal` up to the current index.
+
+4. **Update the Map**:
+   - After processing the current number, we increment the frequency of `prefix_sum` in the `prefix_sum_map` to track how many times we've encountered that sum.
+
+### Time Complexity:
+- The time complexity is **O(n)**, where `n` is the length of the input array `nums`, because we are iterating through the array once and performing constant time operations (map lookup and insertion) for each element.
+
+### Space Complexity:
+- The space complexity is **O(n)** in the worst case due to the storage of prefix sums in the hash map.
+
+### Example Outputs:
+
+1. **Input**: `nums = [1,0,1,0,1]`, `goal = 2`
+   - **Output**: `4`
+     - The subarrays with sum 2 are: `[1,0,1]`, `[0,1,0]`, `[1,0,1]`, and `[1,0,1]`.
+
+2. **Input**: `nums = [0,0,0,0,0]`, `goal = 0`
+   - **Output**: `15`
+     - Every possible subarray sums to 0 in this case, and the total number of subarrays is 15.
+
+This solution is efficient and works within the problem's constraints.
+
+

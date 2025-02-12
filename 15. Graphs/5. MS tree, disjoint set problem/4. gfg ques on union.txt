@@ -1,0 +1,152 @@
+
+https://www.geeksforgeeks.org/problems/union-find/1?page=1&category=Graph,union-find&difficulty=Easy&sortBy=submissions
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution
+{
+    public:
+    int find(int par[], int x)
+    {
+        if(x == par[x])
+            return x;
+        
+        return par[x] = find(par, par[x]);
+    }
+    
+    //Function to merge two nodes a and b.
+    void union_( int a, int b, int par[], int rank1[]) 
+    {
+        //code here
+        int ulp_a = find(par, a);
+        int ulp_b = find(par, b);
+        if (ulp_a == ulp_b) return;
+        if(rank1[ulp_a] < rank1[ulp_b])
+        {
+            par[ulp_a] = ulp_b;
+        }
+        else if(rank1[ulp_b] < rank1[ulp_a])
+        {
+            par[ulp_b] = ulp_a;
+        }
+        else
+        {
+            par[ulp_b] = ulp_a;
+            rank1[ulp_a]++;
+        }
+    }
+    
+    //Function to check whether 2 nodes are connected or not.
+    bool isConnected(int x,int y, int par[], int rank1[])
+    {
+        //code here
+        
+        int ulp_x = find(par, x);
+        int ulp_y = find(par, y);
+        
+        return ulp_x == ulp_y ? 1: 0;
+    }
+};
+
+//{ Driver Code Starts.
+
+int main() {
+    //taking number of testcases
+    int t;
+    cin>>t;
+    while(t--) {
+        
+        //taking number of elements
+        int n;
+        cin>>n;
+        
+        
+        int par[n+1];
+        int rank1[n+1];
+
+        //initializing the parent and
+        //the rank array
+        for(int i=1; i<=n; i++) {
+            par[i] = i;
+            rank1[i] = 1;
+    }
+    
+    //taking number of queries
+    Solution obj;
+    int q;
+    cin>>q;
+    while(q--) {    
+        int a,b;
+        char c;
+        cin>>c>>a>>b;
+        
+        //if query type is 'U'
+        //then calling union_ method
+        if(c=='U')
+        {
+            obj.union_(a,b, par, rank1);
+        }
+        else//else calling isConnected() method
+        cout<<obj.isConnected(a,b, par, rank1)<<endl;
+    }
+    
+cout << "~" << "\n";
+}
+    return 0;
+}
+
+// } Driver Code Ends
+
+
+##################################################################################
+
+
+easy just practice question
+https://www.geeksforgeeks.org/problems/maximum-weight-node--170645/1?page=1&category=Graph&difficulty=Easy&sortBy=submissions
+
+class Solution {
+  public:
+    int maxWeightCell(vector<int> &exits) {
+        // code here
+        int lenOfExits = exits.size();
+        vector<int> weights(lenOfExits,0);
+        
+        for(int i=0;i<lenOfExits;i++)
+        {
+            if(exits[i] == -1)
+                continue;
+                
+            int exit = exits[i];
+            weights[exit] = weights[exit] + i;
+        }
+        
+        int maxWeightNode = 0, maxIndex = 0;
+        for(int i=0;i<lenOfExits; i++)
+        {
+            if( weights[i] > maxWeightNode)
+            {
+                maxWeightNode = weights[i];
+                maxIndex = i;
+            }
+            else if(weights[i] == maxWeightNode)
+                maxIndex = i;
+        }
+        return maxIndex;
+    }
+};
+
+#############################################################################
+
+
+https://www.geeksforgeeks.org/problems/sum-of-dependencies-in-a-graph5311/1?page=1&category=Graph,union-find&difficulty=Easy&sortBy=submissions
+
+class Solution {
+  public:
+    // Function to calculate the sum of dependencies.
+    int sumOfDependencies(int V, vector<vector<int>> &edges) {
+        // code here
+        // total outdgree in directed graph
+        return edges.size();
+    }
+};

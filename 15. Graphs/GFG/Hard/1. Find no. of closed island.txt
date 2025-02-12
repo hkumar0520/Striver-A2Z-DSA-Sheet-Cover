@@ -1,0 +1,133 @@
+
+https://www.geeksforgeeks.org/problems/find-number-of-closed-islands/1?page=1&category=union-find&difficulty=Hard&sortBy=submissions
+
+class Solution {
+    public:
+    
+    void bfs(vector<vector<int>>& matrix, vector<vector<int>>& vis,
+            pair<int,int> index){
+        
+        int xindex = index.first, yindex = index.second;
+        int m = matrix.size(), n = matrix[0].size();
+        
+        // x cordinate, y cordinate
+        queue<pair<int,int>> qtraverse;
+        
+        qtraverse.push({ xindex, yindex });
+        vis[xindex][yindex] = 1;
+        
+        
+        int xtraverse[4] = {-1,0,1,0};
+        int ytraverse[4] = {0,1,0,-1};
+        
+        while(!qtraverse.empty()){
+            pair<int,int> currentTop = qtraverse.front();
+            qtraverse.pop();
+            int xCordinate = currentTop.first,  yCordinate = currentTop.second;
+            
+            for(int i=0; i<4; i++){
+                int newX = xCordinate + xtraverse[i];
+                int newY = yCordinate + ytraverse[i];
+                if(newX>=0 && newY>=0 && newX<m && newY<n 
+                    && matrix[newX][newY] == 1 && !vis[newX][newY]){
+                    vis[newX][newY] = 1;
+                    qtraverse.push({ newX, newY });
+                }
+            }
+            
+        }
+    }
+    int closedIslands(vector<vector<int>>& matrix, int N, int M) {
+        // Code here
+        vector<vector<int>> vis(N, vector<int>(M, 0));
+        
+        for(int i= 0; i<N;i++){
+            
+            // first col
+            if(matrix[i][0] == 1 && !vis[i][0])
+                bfs(matrix, vis, {i,0});
+                
+            // last col    
+            if(matrix[i][M-1] == 1 && !vis[i][M-1])
+                bfs(matrix, vis, {i, M-1});
+        }
+        
+        for(int i=0; i<M; i++){
+            
+            // first row
+            if(matrix[0][i] == 1 && !vis[0][i])
+                bfs(matrix, vis, {0,i});
+                
+            // last row   
+            if(matrix[N-1][i] == 1 && !vis[N-1][i])
+                bfs(matrix, vis, {N-1, i});
+        }
+        
+        int countClosedIslands = 0;
+        for(int i= 0; i<N; i++){
+            for(int j=0; j<M; j++){
+                 if(matrix[i][j] == 1 && !vis[i][j]){
+                     bfs(matrix, vis, {i,j});
+                     countClosedIslands++;
+                 }
+            }
+        }
+        return countClosedIslands;
+    }
+};
+
+
+Let's analyze the time and space complexity of the code step by step.
+
+### Code Breakdown
+
+The function `closedIslands` in the given code aims to count the number of closed islands in a 2D matrix, where each cell can either be land (`1`) or water (`0`). A closed island is surrounded by water (i.e., no part of it touches the matrix border).
+
+1. **BFS Traversal (`bfs` function)**:
+   - The `bfs` function explores all the land cells (`1`) connected to a given starting cell. It uses a queue to implement the breadth-first search. The BFS ensures that all connected cells are marked as visited (`vis`).
+
+2. **Outer Loops**:
+   - The function performs BFS on the boundary cells of the matrix. It first processes the first and last columns and then the first and last rows to mark all land cells connected to the border. These will not be part of any closed island.
+   
+3. **Counting Closed Islands**:
+   - The main part of the `closedIslands` function then iterates over the remaining cells of the matrix. For each unvisited land cell, it starts a BFS to mark all connected land cells and counts it as a closed island.
+
+### Time Complexity
+
+Let's determine the time complexity based on the number of operations performed:
+
+1. **Initialization**:
+   - Initializing the `vis` matrix takes \(O(N \times M)\), where \(N\) is the number of rows and \(M\) is the number of columns in the matrix.
+
+2. **Boundary BFS Traversals**:
+   - The code performs BFS for each land cell on the boundary (first and last rows and columns). This involves iterating through each of the boundary cells:
+     - For the first and last rows, there are \(M\) cells each.
+     - For the first and last columns, there are \(N\) cells each.
+     - However, the corners of the matrix are counted twice, so we have \(2N + 2M - 4\) cells.
+   
+   Each BFS on the boundary will visit all reachable land cells connected to the boundary, and since every cell is visited only once during this part, the total time complexity for all boundary BFS operations is proportional to the number of boundary cells, i.e., \(O(N + M)\).
+
+3. **Counting Islands**:
+   - After marking boundary land cells, the algorithm iterates through the entire matrix once more to count the closed islands. For each unvisited land cell, the BFS is called, and it explores the entire connected land region. In the worst case, the BFS explores all cells of the matrix. Since each cell is visited exactly once across all BFS calls (both boundary and island counting), the time complexity for this step is \(O(N \times M)\).
+
+   Thus, the total time complexity is dominated by the BFS traversal, which is \(O(N \times M)\).
+
+### Space Complexity
+
+The space complexity arises from the following:
+
+1. **Visited Matrix**:
+   - The `vis` matrix is of size \(N \times M\), so the space complexity for storing the visited information is \(O(N \times M)\).
+
+2. **Queue in BFS**:
+   - In the worst case, the queue used in the BFS can store all cells of the matrix in a single traversal. Therefore, the space required by the queue is also \(O(N \times M)\).
+
+Thus, the overall space complexity is \(O(N \times M)\), considering both the `vis` matrix and the queue used in BFS.
+
+### Final Answer
+
+- **Time Complexity**: \(O(N \times M)\)
+- **Space Complexity**: \(O(N \times M)\)
+
+
+##############################################################################

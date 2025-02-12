@@ -1,0 +1,38 @@
+6/1000 test cases passed
+
+
+//User function Template for C++
+
+class Solution{
+    public:
+    int  mod = 1e9 + 7;
+    
+    int findTotalWays(int idx, int target, int x, vector<vector<int>>& dp)
+    {
+        
+        if(target < 0 || (idx>=dp.size() ) )
+            return 0;
+        
+        if(target == 0)
+            return dp[idx][target] = 1;
+        
+            
+        if(dp[idx][target] != -1)   return dp[idx][target];
+        
+        int ways = 0;
+        for(int i = idx ; pow(i, x) <= target; i++){
+            ways = (ways%mod + findTotalWays(i+1, target-pow(i,x), x, dp)%mod) %mod;
+        }
+        
+        return dp[idx][target] = (ways % mod);
+    }
+    int numOfWays(int n, int x)
+    {
+        // code here
+        
+        vector<vector<int>> dp(n+1, vector<int>(n+1, -1));
+        
+        return findTotalWays(1, n, x, dp);
+        
+    }
+};

@@ -1,0 +1,299 @@
+
+https://www.geeksforgeeks.org/problems/shortest-unique-prefix-for-every-word/0
+
+
+1003/1005
+// failed becoz of links[26], memory limit exceed 
+
+struct Node{
+    // by default links[26] is NULL for all 26 Node*
+    Node* links[26];
+    // with each char insert nCountStart increase
+    int nCountStart = 0;
+
+    bool isContainsKey(char ch)
+    {
+        return links[ch-'a'] != NULL;
+    }
+
+    void put(char ch, Node* node)
+    {
+        links[ch-'a'] = node;
+    }
+
+    Node* get(char ch)
+    {
+        return links[ch-'a'];
+    }
+
+    void increaseCountStart()
+    {
+        nCountStart++;
+    }
+
+    void decreaseCountStart()
+    {
+        nCountStart--;
+    }
+
+    int getCountStart()
+    {
+        return nCountStart;
+    }
+};
+
+class Trie{
+    Node* root;
+    
+    public:
+    Trie(){
+        root = new Node();
+    }
+  
+    void insert(string &word){
+        // Write your code here.
+        Node* curr = root;
+        for(int i=0;i<word.size();i++)
+        {
+            if(!curr->isContainsKey(word[i])){
+                curr->put(word[i], new Node());
+            }
+            curr = curr->get(word[i]);
+            // every countstart increase to keep no. of prefixes
+            curr->increaseCountStart();
+        }
+    }  
+    
+    string findUniquePreference(string word){
+        
+        Node* curr = root;
+        for(int i=0; i<word.size(); i++){
+            curr = curr->get(word[i]);
+            if(curr->getCountStart() == 1){
+                return word.substr(0, i+1);
+            }
+        }
+        return word;
+    }
+};
+
+class Solution
+{
+    public:
+    vector<string> findPrefixes(string arr[], int n)
+    {
+        //code here
+        Trie* trie = new Trie();
+        for(int i=0; i<n; i++){
+            trie->insert(arr[i]);
+        }
+        
+        vector<string> ans;
+        for(int i=0; i<n; i++){
+            string prefix = trie->findUniquePreference(arr[i]);
+            ans.push_back(prefix);
+        }
+        
+        return ans;
+    }
+};
+
+
+
+### Time Complexity
+
+1. **Trie Insertion**:
+   - Each word in the array is inserted into the Trie.
+   - For a word of length \(L\), each character requires \(O(1)\) operations to insert into the Trie.
+   - For \(n\) words with an average length \(L\), the insertion complexity is \(O(n \cdot L)\).
+
+2. **Finding Unique Prefix**:
+   - For each word, traversing the Trie to find the unique prefix takes \(O(L)\).
+   - For \(n\) words, the total complexity is \(O(n \cdot L)\).
+
+3. **Overall**:
+   - Total time complexity is \(O(n \cdot L + n \cdot L) = O(n \cdot L)\).
+
+---
+
+### Space Complexity
+
+1. **Trie Storage**:
+   - The Trie stores all characters of all words.
+   - In the worst case (no shared prefixes), it requires \(O(n \cdot L)\) space.
+   - In the best case (maximum shared prefixes), the space is reduced but still proportional to the input size.
+
+2. **Auxiliary Storage**:
+   - The result array `ans` stores \(n\) strings, requiring \(O(n \cdot L)\) space in the worst case.
+
+3. **Overall**:
+   - Total space complexity is \(O(n \cdot L)\).
+
+---
+
+### Summary
+
+- **Time Complexity**: \(O(n \cdot L)\), where \(n\) is the number of words and \(L\) is the average length of the words.
+- **Space Complexity**: \(O(n \cdot L)\), accounting for the Trie storage and the result array.
+
+
+
+
+##################################################################################
+
+
+struct Node{
+    // by default links[26] is NULL for all 26 Node*
+    unordered_map<char, Node*> links;
+    // with each char insert nCountStart increase
+    int nCountStart = 0;
+
+    bool isContainsKey(char ch)
+    {
+        return links.find(ch) != links.end();
+    }
+
+    void put(char ch, Node* node)
+    {
+        links[ch] = node;
+    }
+
+    Node* get(char ch)
+    {
+        return links[ch];
+    }
+
+    void increaseCountStart()
+    {
+        nCountStart++;
+    }
+
+    void decreaseCountStart()
+    {
+        nCountStart--;
+    }
+
+    int getCountStart()
+    {
+        return nCountStart;
+    }
+};
+
+class Trie{
+    Node* root;
+    
+    public:
+    Trie(){
+        root = new Node();
+    }
+  
+    void insert(string &word){
+        // Write your code here.
+        Node* curr = root;
+        for(int i=0;i<word.size();i++)
+        {
+            if(!curr->isContainsKey(word[i])){
+                curr->put(word[i], new Node());
+            }
+            curr = curr->get(word[i]);
+            // every countstart increase to keep no. of prefixes
+            curr->increaseCountStart();
+        }
+    }  
+    
+    string findUniquePreference(string word){
+        
+        Node* curr = root;
+        for(int i=0; i<word.size(); i++){
+            curr = curr->get(word[i]);
+            if(curr->getCountStart() == 1){
+                return word.substr(0, i+1);
+            }
+        }
+        return word;
+    }
+};
+
+class Solution
+{
+    public:
+    vector<string> findPrefixes(string arr[], int n)
+    {
+        //code here
+        Trie* trie = new Trie();
+        for(int i=0; i<n; i++){
+            trie->insert(arr[i]);
+        }
+        
+        vector<string> ans;
+        for(int i=0; i<n; i++){
+            string prefix = trie->findUniquePreference(arr[i]);
+            ans.push_back(prefix);
+        }
+        
+        return ans;
+    }
+};
+
+
+
+
+Let's analyze the time and space complexity of the given code step by step.
+
+### Time Complexity:
+
+1. **Insert operation (`insert` method)**:
+   - For each word, the `insert` method iterates over each character of the word (let the length of the word be `m`).
+   - Inside the loop, there are two main operations: checking if a character exists in the `unordered_map` (`isContainsKey`), and inserting a new node if needed (`put`).
+   - Both of these operations (`isContainsKey` and `put`) are \( O(1) \) on average because they are performed using a hash map (`unordered_map`).
+   - So, for a word of length `m`, the time complexity is \( O(m) \).
+   - The `insert` operation is called for each word, and for `n` words, the total time complexity for all insertions is \( O(n \times m) \), where `n` is the number of words and `m` is the average length of the words.
+
+2. **Find Unique Prefix (`findUniquePreference` method)**:
+   - The `findUniquePreference` method iterates over the characters of a given word (length `m`) and performs constant-time operations (getting a node using `get` and checking the count with `getCountStart`).
+   - Each of these operations is \( O(1) \), so for a word of length `m`, the time complexity of this method is \( O(m) \).
+   - The method is called for each of the `n` words, so the total time complexity for all find operations is \( O(n \times m) \).
+
+3. **Overall Time Complexity**:
+   - The time complexity for inserting all `n` words is \( O(n \times m) \).
+   - The time complexity for finding the unique prefix for each word is also \( O(n \times m) \).
+   - Therefore, the total time complexity is:
+     \[
+     O(n \times m) + O(n \times m) = O(n \times m)
+     \]
+
+### Space Complexity:
+
+1. **Trie Data Structure**:
+   - The `Trie` uses nodes, each containing an `unordered_map<char, Node*>` and an `int nCountStart`.
+   - For each unique character across all words, we create a new node. In the worst case, if all characters in the words are unique (and there are no shared prefixes), the space required for the nodes will be proportional to the total number of characters across all words.
+   - Let `N` be the total number of characters across all words. Each `Node` stores an `unordered_map` which, in the worst case, will store as many entries as there are unique characters for that node. In the worst case, each `unordered_map` will have up to 26 entries (one for each letter of the alphabet). However, since we are only storing characters that are actually used in the trie, the average space for each node will be significantly smaller than this upper bound.
+
+2. **Other Variables**:
+   - The space for the `Trie` root node is constant, as it's the starting point of the trie structure.
+   - The space for the `unordered_map` in each node depends on the number of unique children for each node, which is \( O(k) \), where \( k \) is the number of unique children at a given node.
+   - In total, the space complexity for storing the entire trie will be proportional to the number of nodes and the number of unique characters. If the total number of unique characters across all words is \( N \), the space complexity is \( O(N) \).
+
+3. **Space for Output**:
+   - We are storing the result in a vector of strings, where each string corresponds to the unique prefix of a word. The space required for the result is \( O(n \times m) \), where `n` is the number of words and `m` is the average length of the words.
+
+4. **Overall Space Complexity**:
+   - The space complexity for storing the trie structure is \( O(N) \), where `N` is the total number of unique characters across all words.
+   - The space complexity for storing the result is \( O(n \times m) \), where `n` is the number of words and `m` is the average length of the words.
+   - Therefore, the overall space complexity is:
+     \[
+     O(N + n \times m)
+     \]
+     where `N` is the total number of unique characters across all words.
+
+### Summary:
+
+- **Time Complexity**: \( O(n \times m) \), where `n` is the number of words and `m` is the average length of the words.
+- **Space Complexity**: \( O(N + n \times m) \), where `N` is the total number of unique characters across all words, and `n \times m` accounts for the space required to store the result.
+
+
+
+
+
+
+

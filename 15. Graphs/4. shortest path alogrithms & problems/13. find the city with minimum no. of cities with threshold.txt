@@ -1,0 +1,144 @@
+
+
+class Solution {
+public:
+    int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
+        
+        vector<vector<int>> graph(n,vector<int>(n, 1e9));
+
+        // bidirectional graph
+        for(vector<int> edge: edges)
+        {
+            int src = edge[0], dst = edge[1], wt = edge[2];
+            graph[src][dst] = wt;
+            graph[dst][src] = wt;
+        }
+        // i==j, same vertex graph[i][i] = 0;
+        for(int i=0;i<n;i++)
+            graph[i][i] = 0;
+
+        // floyd warshll algo
+        for(int k=0;k<n;k++)
+        {
+            for(int i=0;i<n;i++)
+            {
+                for(int j=0;j<n;j++)
+                    graph[i][j] = min(graph[i][j], graph[i][k]+graph[k][j]);
+            }
+        }
+        // calculation answer
+        int minCitiesCount = INT_MAX, greateCityWithMinCount = 0;
+        for(int i=0;i<n;i++)
+        {
+            int currCitiesCount = 0;
+            for(int j=0;j<n;j++)
+            {
+                if(graph[i][j] <= distanceThreshold)
+                    currCitiesCount++;
+            }
+            if(currCitiesCount < minCitiesCount)
+            {
+                minCitiesCount = currCitiesCount;
+                greateCityWithMinCount = i;
+            }
+            else if(currCitiesCount == minCitiesCount)
+                greateCityWithMinCount = i;
+        }
+        return greateCityWithMinCount;
+    }
+};
+
+
+
+Let's break down the time and space complexity of the provided code step by step.
+
+### Code Overview
+
+The problem is about finding the city that has the smallest number of neighboring cities within a given distance threshold using the Floyd-Warshall algorithm. The city with the smallest such count is returned.
+
+### Time Complexity
+
+1. **Graph Construction**: 
+   ```cpp
+   vector<vector<int>> graph(n, vector<int>(n, 1e9));
+   for (vector<int> edge: edges) {
+       int src = edge[0], dst = edge[1], wt = edge[2];
+       graph[src][dst] = wt;
+       graph[dst][src] = wt;
+   }
+   ```
+   - The graph is represented as an adjacency matrix of size \(n \times n\). 
+   - The for-loop iterates over the edges array, which has \(E\) edges (where \(E\) is the number of edges).
+   - Thus, constructing the graph will take \(O(E)\) time.
+
+2. **Floyd-Warshall Algorithm**:
+   The algorithm iterates over three nested loops (for \(k\), \(i\), and \(j\)) to compute the shortest path between all pairs of nodes:
+   ```cpp
+   for(int k=0;k<n;k++) {
+       for(int i=0;i<n;i++) {
+           for(int j=0;j<n;j++)
+               graph[i][j] = min(graph[i][j], graph[i][k]+graph[k][j]);
+       }
+   }
+   ```
+   - This is a triple nested loop over \(n\), meaning the time complexity for this part is \(O(n^3)\), since for each combination of \(k\), \(i\), and \(j\), we perform a constant time operation.
+
+3. **Calculating the City with the Minimum Neighboring Cities**:
+   ```cpp
+   for(int i=0;i<n;i++) {
+       int currCitiesCount = 0;
+       for(int j=0;j<n;j++) {
+           if(graph[i][j] <= distanceThreshold)
+               currCitiesCount++;
+       }
+       if(currCitiesCount < minCitiesCount) {
+           minCitiesCount = currCitiesCount;
+           greateCityWithMinCount = i;
+       }
+       else if(currCitiesCount == minCitiesCount)
+           greateCityWithMinCount = i;
+   }
+   ```
+   - The outer loop runs \(n\) times (for each city).
+   - The inner loop also runs \(n\) times (to check the neighbors of the current city).
+   - Hence, the time complexity for this part is \(O(n^2)\).
+
+### Total Time Complexity
+
+Combining all the components:
+- The time complexity for graph construction is \(O(E)\).
+- The time complexity for the Floyd-Warshall algorithm is \(O(n^3)\).
+- The time complexity for calculating the city with the minimum count is \(O(n^2)\).
+
+Thus, the overall time complexity is:
+
+\[
+O(E + n^3 + n^2)
+\]
+
+Since \(n^3\) dominates \(n^2\) and \(E\) is generally less than or equal to \(n^2\) (in sparse graphs, \(E \leq n^2\)), the final time complexity can be expressed as:
+
+\[
+O(n^3)
+\]
+
+### Space Complexity
+
+1. **Graph Storage**:
+   - The graph is stored as a 2D adjacency matrix with dimensions \(n \times n\).
+   - Thus, the space complexity for the graph is \(O(n^2)\).
+
+2. **Other Variables**:
+   - The only other variables used are a few integers for iteration and tracking the result. These take constant space \(O(1)\).
+
+Thus, the overall space complexity is:
+
+\[
+O(n^2)
+\]
+
+### Final Answer
+
+- **Time Complexity**: \(O(n^3)\)
+- **Space Complexity**: \(O(n^2)\)
+

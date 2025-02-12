@@ -1,0 +1,122 @@
+class Solution {
+public:
+    void dfs(vector<vector<int>>& grid, vector<vector<int>>& vis,
+             vector<int> startNode) {
+        vis[startNode[0]][startNode[1]] = 1;
+
+        int m = grid.size(), n = grid[0].size();
+        int a[4] = {-1, 0, 1, 0};
+        int b[4] = {0, 1, 0, -1};
+        int x = startNode[0], y = startNode[1];
+        for (int i = 0; i < 4; i++) {
+            int nx = x + a[i];
+            int ny = y + b[i];
+            if (nx >= 0 && ny >= 0 && nx < m && ny < n && grid[nx][ny] &&
+                !vis[nx][ny]) {
+                dfs(grid, vis, {nx, ny});
+            }
+        }
+    }
+    void bfs(vector<vector<int>>& grid, vector<vector<int>>& vis,
+             vector<int> startNode) {
+        int m = grid.size(), n = grid[0].size();
+        queue<vector<int>> qtraverse;
+        vis[startNode[0]][startNode[1]] = 1;
+        qtraverse.push(startNode);
+
+        int a[4] = {-1, 0, 1, 0};
+        int b[4] = {0, 1, 0, -1};
+
+        while (!qtraverse.empty()) {
+            vector<int> node = qtraverse.front();
+            qtraverse.pop();
+            int x = node[0], y = node[1];
+            for (int i = 0; i < 4; i++) {
+                int nx = x + a[i];
+                int ny = y + b[i];
+                if (nx >= 0 && ny >= 0 && nx < m && ny < n && grid[nx][ny] &&
+                    !vis[nx][ny]) {
+                    vis[nx][ny] = 1;
+                    qtraverse.push({nx, ny});
+                }
+            }
+        }
+    }
+
+    int numEnclaves(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<int>> vis(m, vector<int>(n, 0));
+        // check first and last row
+        for (int j = 0; j < n; j++) {
+            if (grid[0][j] && !vis[0][j])
+                bfs(grid, vis, {0, j});
+            if (grid[m - 1][j] && !vis[m - 1][j])
+                bfs(grid, vis, {m - 1, j});
+        }
+        // check first and last col
+        for (int i = 0; i < m; i++) {
+            if (grid[i][0] && !vis[i][0])
+                bfs(grid, vis, {i, 0});
+            if (grid[i][n - 1] && !vis[i][n - 1])
+                bfs(grid, vis, {i, n - 1});
+        }
+        int ans = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (!vis[i][j] && grid[i][j])
+                    ans++;
+            }
+        }
+        return ans;
+    }
+};
+
+
+### **Time Complexity**
+
+1. **Boundary Traversal:**
+   - The first two loops check the boundary rows and columns:
+     - First and last rows are checked in \( O(n) \) time.
+     - First and last columns are checked in \( O(m) \) time.
+   - Total boundary checks take \( O(m + n) \) time.
+
+2. **BFS/DFS Traversals:**
+   - Each cell in the grid is visited at most once during a BFS or DFS traversal.
+   - For each visited cell, its 4 neighbors are explored, which is constant work per cell.
+   - Across all traversals, the total time spent is \( O(m \times n) \).
+
+3. **Counting Unvisited Cells:**
+   - The final nested loops iterate through all cells in the grid to count unvisited land cells, taking \( O(m \times n) \) time.
+
+4. **Overall Time Complexity:**
+   - Dominated by the BFS/DFS traversals and final counting, so the overall time complexity is:
+     \[
+     O(m \times n)
+     \]
+
+---
+
+### **Space Complexity**
+
+1. **Visited Array:**
+   - The `vis` array requires \( O(m \times n) \) space to store the visited status of each cell.
+
+2. **BFS Queue:**
+   - In the worst case, the queue in BFS can hold all the cells in a connected component of land cells, which is \( O(m \times n) \).
+
+3. **DFS Recursion Stack:**
+   - In the worst case, the recursion stack in DFS can go as deep as the number of cells in a connected component of land cells, which is \( O(m \times n) \).
+
+4. **Overall Space Complexity:**
+   - The total space complexity is dominated by the `vis` array and the BFS queue or DFS stack, resulting in:
+     \[
+     O(m \times n)
+     \]
+
+---
+
+### **Final Complexity**
+
+- **Time Complexity:** \( O(m \times n) \)
+- **Space Complexity:** \( O(m \times n) \)
+

@@ -1,0 +1,102 @@
+
+
+
+class Solution {
+  public:
+    void backTrack(vector<int>& res, string& path, int idx, int n){
+        if(idx == n){
+            //cout<<path<<" ";
+            res.push_back(stoi(path));
+            return ;
+        }
+        
+        int i = 0;
+        // handling current element larger than previous element case
+        if(idx > 0)
+            i = (path[idx-1] - '0') + 1;
+        else 
+        {
+            // if n == 1, we can also include 0
+            if(n == 1)
+                i = 0;
+            else
+                i = 1;
+            
+        }
+            
+        for(; i<= 9; i++){
+            
+            path[idx] = (char)('0' + i);
+            backTrack(res, path, idx+1, n);
+            path[idx] = '0';
+        }
+    }
+    vector<int> increasingNumbers(int n) {
+        // Write Your Code here
+        
+        vector<int> res;
+        string path = "";
+        for(int i =0 ; i<n; i++)
+            path += "0";
+            
+        backTrack(res, path, 0, n);
+        return res;
+    }
+};
+
+### **Time and Space Complexity Analysis**
+
+#### **Time Complexity**
+
+1. **Recursive Calls**:
+   - At each index \( \text{idx} \), the algorithm explores all possible digits that can be placed at that position, starting from \( i = (\text{path[idx-1]} + 1) \) up to \( 9 \).
+   - For \( n \)-digit numbers, the number of valid combinations depends on the increasing sequence condition, leading to:
+     \[
+     \binom{9}{n} = \frac{9!}{n!(9-n)!}
+     \]
+   - This is the total number of \( n \)-digit increasing numbers.
+
+2. **Work Per Recursive Call**:
+   - At each recursive call, a single digit is processed (e.g., assigned to `path[idx]`), which takes \( O(1) \) time.
+   - The total work done across all recursive calls is proportional to the total number of \( n \)-digit increasing numbers.
+
+3. **Overall Time Complexity**:
+   - The time complexity is:
+     \[
+     O\left(\binom{9}{n} \cdot n\right)
+     \]
+   - The \( n \) factor comes from the depth of the recursion stack, as each valid combination is constructed one digit at a time.
+
+---
+
+#### **Space Complexity**
+
+1. **Recursion Stack**:
+   - The maximum depth of the recursion stack is \( O(n) \), as the recursion proceeds one digit at a time.
+
+2. **Auxiliary Space**:
+   - The `path` string takes \( O(n) \) space.
+   - The result vector `res` stores all valid \( n \)-digit increasing numbers, which is \( O\left(\binom{9}{n}\right) \) in size.
+
+3. **Total Space Complexity**:
+   - The total space complexity is:
+     \[
+     O(n + \binom{9}{n})
+     \]
+
+---
+
+### **Summary**
+- **Time Complexity**: \( O\left(\binom{9}{n} \cdot n\right) \)
+- **Space Complexity**: \( O(n + \binom{9}{n}) \)
+
+---
+
+### **Example**
+For \( n = 2 \):
+- Total valid numbers: \( \binom{9}{2} = 36 \).
+- Time complexity: \( O(36 \cdot 2) = O(72) \).
+- Space complexity: \( O(2 + 36) = O(38) \).
+
+
+

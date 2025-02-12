@@ -1,0 +1,372 @@
+
+Two question
+1. Find no. of Scc in a graph.
+2. Is Graph is SCC 
+
+Kosaraju's Algorithm is a graph algorithm used to find all strongly connected components (SCCs) in a directed graph. An SCC is a maximal subgraph in which any two vertices are reachable from each other.
+
+### Steps of Kosaraju's Algorithm:
+1. **Perform a DFS to determine the finishing order**:
+   - Run a Depth First Search (DFS) on the graph.
+   - Store vertices in a stack in the order of their finishing times (when the DFS for a vertex finishes).
+
+2. **Transpose the graph**:
+   - Reverse the direction of all edges in the graph.
+
+3. **Perform DFS on the transposed graph**:
+   - Pop vertices one by one from the stack and perform a DFS on the transposed graph.
+   - Each DFS run will give one SCC.
+
+### Implementation in C++:
+Here is the C++ implementation of Kosaraju's Algorithm:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <algorithm>
+using namespace std;
+
+class Graph {
+    int V; // Number of vertices
+    vector<vector<int>> adj; // Adjacency list
+
+    void dfs(int v, vector<bool>& visited, stack<int>& st) {
+        visited[v] = true;
+        for (int u : adj[v]) {
+            if (!visited[u]) {
+                dfs(u, visited, st);
+            }
+        }
+        st.push(v);
+    }
+
+    void reverseDFS(int v, vector<bool>& visited, vector<int>& component, vector<vector<int>>& transpose) {
+        visited[v] = true;
+        component.push_back(v);
+        for (int u : transpose[v]) {
+            if (!visited[u]) {
+                reverseDFS(u, visited, component, transpose);
+            }
+        }
+    }
+
+public:
+    Graph(int V) : V(V), adj(V) {}
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+    }
+
+    vector<vector<int>> findSCCs() {
+        stack<int> st;
+        vector<bool> visited(V, false);
+
+        // Step 1: Perform DFS and store vertices in stack by finishing time
+        for (int i = 0; i < V; ++i) {
+            if (!visited[i]) {
+                dfs(i, visited, st);
+            }
+        }
+
+        // Step 2: Transpose the graph
+        vector<vector<int>> transpose(V);
+        for (int u = 0; u < V; ++u) {
+            for (int v : adj[u]) {
+                transpose[v].push_back(u);
+            }
+        }
+
+        // Step 3: Perform DFS on the transposed graph
+        fill(visited.begin(), visited.end(), false);
+        vector<vector<int>> sccs;
+
+        while (!st.empty()) {
+            int v = st.top();
+            st.pop();
+            if (!visited[v]) {
+                vector<int> component;
+                reverseDFS(v, visited, component, transpose);
+                sccs.push_back(component);
+            }
+        }
+
+        return sccs;
+    }
+};
+
+int main() {
+    Graph g(5);
+    g.addEdge(0, 2);
+    g.addEdge(2, 1);
+    g.addEdge(1, 0);
+    g.addEdge(0, 3);
+    g.addEdge(3, 4);
+
+    vector<vector<int>> sccs = g.findSCCs();
+
+    cout << "Strongly Connected Components:\n";
+    for (const auto& scc : sccs) {
+        for (int v : scc) {
+            cout << v << " ";
+        }
+        cout << "\n";
+    }
+
+    return 0;
+}
+```
+
+### Example:
+#### Input:
+Graph edges:  
+0 → 2, 2 → 1, 1 → 0, 0 → 3, 3 → 4
+
+#### Output:
+```
+Strongly Connected Components:
+0 1 2 
+3 
+4
+```
+
+### Time Complexity:
+- **Step 1 (DFS)**: \(O(V + E)\), where \(V\) is the number of vertices and \(E\) is the number of edges.
+- **Step 2 (Transpose)**: \(O(V + E)\).
+- **Step 3 (DFS on transposed graph)**: \(O(V + E)\).
+
+Overall: \(O(V + E)\).
+
+### Space Complexity:
+- \(O(V + E)\) for the adjacency list and transpose graph.
+- \(O(V)\) for the stack and visited array.
+
+
+
+
+
+
+
+
+
+
+
+###############################################################################
+
+
+
+
+
+
+
+
+
+If a graph is SCC using Kosaru algorithm 
+
+
+A **Strongly Connected Graph** is a directed graph in which every vertex is reachable from every other vertex. In other words, for any two vertices \( u \) and \( v \) in the graph, there is a directed path from \( u \) to \( v \) and a directed path from \( v \) to \( u \).
+
+### Key Characteristics:
+1. **Connectivity**: Every vertex can reach every other vertex via directed paths.
+2. **Subgraph**: A strongly connected component (SCC) is a maximal subgraph of a directed graph that is strongly connected.
+
+### Examples:
+#### Strongly Connected Graph:
+- A directed graph with edges forming a cycle, such as \( A \to B \to C \to A \).
+
+#### Not Strongly Connected:
+- A directed graph where some vertices cannot be reached from others.
+
+---
+
+### Checking if a Graph is Strongly Connected:
+To check if a graph is strongly connected:
+1. **Perform a DFS** starting from any vertex:
+   - If all vertices are not reachable, the graph is not strongly connected.
+2. **Transpose the Graph**:
+   - Reverse all edges.
+3. **Perform another DFS** on the transposed graph:
+   - If all vertices are reachable again, the graph is strongly connected.
+
+---
+
+### C++ Code to Check Strong Connectivity:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+
+class Graph {
+    int V; // Number of vertices
+    vector<vector<int>> adj; // Adjacency list
+
+    void dfs(int v, vector<bool>& visited) {
+        visited[v] = true;
+        for (int u : adj[v]) {
+            if (!visited[u]) {
+                dfs(u, visited);
+            }
+        }
+    }
+
+    vector<vector<int>> transposeGraph() {
+        vector<vector<int>> transpose(V);
+        for (int u = 0; u < V; ++u) {
+            for (int v : adj[u]) {
+                transpose[v].push_back(u);
+            }
+        }
+        return transpose;
+    }
+
+public:
+    Graph(int V) : V(V), adj(V) {}
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+    }
+
+    bool isStronglyConnected() {
+        vector<bool> visited(V, false);
+
+        // Step 1: Perform DFS from the first vertex
+        dfs(0, visited);
+        for (bool v : visited) {
+            if (!v) return false; // Not all vertices are reachable
+        }
+
+        // Step 2: Transpose the graph
+        vector<vector<int>> transpose = transposeGraph();
+
+        // Step 3: Perform DFS on the transposed graph
+        fill(visited.begin(), visited.end(), false);
+        Graph transposedGraph(V);
+        transposedGraph.adj = transpose;
+        transposedGraph.dfs(0, visited);
+
+        for (bool v : visited) {
+            if (!v) return false; // Not all vertices are reachable in the transposed graph
+        }
+
+        return true;
+    }
+};
+
+int main() {
+    Graph g(5);
+    g.addEdge(0, 1);
+    g.addEdge(1, 2);
+    g.addEdge(2, 0);
+    g.addEdge(0, 3);
+    g.addEdge(3, 4);
+    g.addEdge(4, 0);
+
+    if (g.isStronglyConnected()) {
+        cout << "The graph is strongly connected.\n";
+    } else {
+        cout << "The graph is not strongly connected.\n";
+    }
+
+    return 0;
+}
+```
+
+---
+
+### Example:
+#### Input:
+Graph edges:
+- \( 0 \to 1 \), \( 1 \to 2 \), \( 2 \to 0 \), \( 0 \to 3 \), \( 3 \to 4 \), \( 4 \to 0 \)
+
+#### Output:
+```
+The graph is strongly connected.
+```
+
+---
+
+### Time Complexity:
+- DFS: \( O(V + E) \)
+- Transposing the graph: \( O(V + E) \)
+
+Overall: \( O(V + E) \).
+
+### Space Complexity:
+- \( O(V + E) \) for adjacency list and transpose graph.
+- \( O(V) \) for visited array.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#####################################################################
+
+mygfg code 
+
+class Solution {
+  public:
+  
+    void dfs(int u, vector<bool>& vis, stack<int>& st, vector<vector<int>>& adj){
+        vis[u] = true;
+        for(auto v: adj[u]){
+            if(!vis[v])
+                dfs(v, vis, st, adj);
+        }
+        st.push(u);
+    }
+    void dfsTranspose(int u, vector<bool>& vis, vector<vector<int>>& adj){
+        vis[u] = true;
+        for(auto v: adj[u]){
+            if(!vis[v])
+                dfsTranspose(v, vis, adj);
+        }
+    }
+    int kosaraju(vector<vector<int>> &adj) {
+        // code here
+        int V = adj.size();
+        vector<bool> vis(V, false);
+        
+        stack<int> st;
+        for(int i=0; i<V; i++){
+            if(!vis[i])
+                dfs(i, vis, st, adj);
+        }
+        
+        vector<vector<int>> transpose(V);
+        
+        for(int i=0; i<V; i++){
+            for(int j=0; j<adj[i].size(); j++){
+                int u = i, v = adj[i][j];
+                transpose[v].push_back(u);
+            }
+        }
+        
+        fill(vis.begin(), vis.end(), false);
+        
+        int noConnectedComponents = 0;
+        while(!st.empty()){
+            int current = st.top();
+            st.pop();
+            
+            if(!vis[current]){
+                noConnectedComponents++;
+                dfsTranspose(current, vis, transpose);
+            }
+        }
+        return noConnectedComponents;
+    }
+};

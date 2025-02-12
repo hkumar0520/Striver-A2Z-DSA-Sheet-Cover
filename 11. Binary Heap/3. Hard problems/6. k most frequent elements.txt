@@ -1,0 +1,90 @@
+
+
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        priority_queue<pair<int,int> > pq;
+        
+        map<int,int> mp;
+        for(int num: nums)
+            mp[num]++;
+
+        for(auto it: mp)
+            pq.push({it.second, it.first});
+
+        vector<int> ans;
+        int countk = 0;
+        while(!pq.empty() && countk < k){
+            ans.push_back(pq.top().second);
+            pq.pop();
+            countk++;
+        }
+        return ans;
+    }
+};
+
+Let's analyze the time and space complexity of the provided code.
+
+### Code Explanation:
+- **Step 1: Counting frequencies**  
+  You loop through the `nums` vector to count the frequency of each element using a `map<int, int> mp`.
+  
+- **Step 2: Pushing elements into a priority queue**  
+  You then loop through the `map` and push the frequency and element pairs into a max-heap (`priority_queue<pair<int, int>> pq`).
+  
+- **Step 3: Extracting the top K elements**  
+  After filling the priority queue, you pop the top K elements from the queue and add their second element (the number) to the result vector `ans`.
+
+### Time Complexity:
+
+1. **Counting Frequencies:**
+   - Iterating through the `nums` vector takes O(n), where `n` is the number of elements in `nums`.
+   - The operation `mp[num]++` for each element takes O(log m) time due to the underlying balanced tree structure of the `map` (where `m` is the number of unique elements in `nums`).
+
+   So, the total time for this step is O(n log m), where `m` is the number of unique elements in `nums`.
+
+2. **Pushing Elements into Priority Queue:**
+   - The number of unique elements is `m`, so you iterate over the `map` and push `m` pairs into the priority queue.
+   - Each `pq.push()` operation takes O(log m) time (since there can be at most `m` elements in the queue).
+   
+   Therefore, the time complexity for this step is O(m log m).
+
+3. **Extracting Top K Elements:**
+   - The `while` loop runs for `k` iterations (since you are extracting the top `k` elements).
+   - Each `pq.pop()` operation takes O(log m) time.
+   
+   Hence, the time complexity for this step is O(k log m).
+
+### Total Time Complexity:
+Combining all the steps:
+- O(n log m) for counting frequencies,
+- O(m log m) for pushing elements into the priority queue, and
+- O(k log m) for extracting the top K elements.
+
+Thus, the overall time complexity is:
+\[ O(n \log m + m \log m + k \log m) \]
+
+In the worst case, `m` can be at most `n`, so the time complexity can be simplified to:
+\[ O(n \log n) \]
+
+### Space Complexity:
+
+1. **Frequency Map (`mp`):**
+   - The map stores `m` unique elements, so the space complexity is O(m).
+
+2. **Priority Queue (`pq`):**
+   - The priority queue stores at most `m` elements, so the space complexity is O(m).
+
+3. **Answer Vector (`ans`):**
+   - The answer vector stores `k` elements, so the space complexity is O(k).
+
+Thus, the overall space complexity is:
+\[ O(m + k) \]
+Since in the worst case, `m` can be as large as `n`, the space complexity can be simplified to:
+\[ O(n) \]
+
+### Final Complexity:
+- **Time Complexity:** O(n log n)
+- **Space Complexity:** O(n)
+
+

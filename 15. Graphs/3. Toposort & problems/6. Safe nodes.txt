@@ -1,0 +1,253 @@
+
+//  brute force 103/112 test cases passed 
+class Solution {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        queue<int> qtraverse;
+        int n = graph.size();
+        for(int i=0;i<n;i++)
+        {
+            // outdegree 0
+            if(graph[i].size() == 0)
+                qtraverse.push(i);
+        }
+        vector<int> ans;
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+            ans.push_back(node);
+            for(int i=0;i<n;i++)
+            {
+                if(i != node)
+                {
+                    vector<int> connections = graph[i];
+                    if(find(connections.begin(),connections.end(), node) != connections.end())
+                    {
+                        int index = find(connections.begin(),connections.end(), node) - connections.begin();
+                        connections.erase(connections.begin()+index);
+                        graph[i] = connections;
+                        if(connections.size() == 0)
+                            qtraverse.push(i);
+                    }
+                }
+            }
+        }
+        sort(ans.begin(),ans.end());
+        return ans;
+    }
+};
+
+#######################################################################################
+
+// dfs approach
+
+class Solution {
+public:
+    bool dfs(int node, vector<int>& vis, vector<vector<int>>& graph)
+    {
+        vis[node] = 1;
+
+        for(auto v: graph[node])
+        {
+            if(!vis[v])
+            {
+                if(dfs(v, vis, graph))
+                    return true;
+            }
+            else if(vis[v] == 1)
+                return true;
+        }
+
+        //processed
+        vis[node] = 2;
+        return false;
+    }
+    bool dfsapproach(int ind, vector<vector<int>>& graph)
+    {
+        int n = graph.size();
+        vector<int> vis(n,0);
+        return dfs(ind, vis, graph);
+    }
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<int> ans;
+        for(int i=0;i<n;i++)
+        {
+            // is one of the path of i contains cycle
+            if(!dfsapproach(i, graph ))
+                ans.push_back(i);
+        }
+        sort(ans.begin(),ans.end());
+        return  ans;
+    }
+};
+
+
+Let's break down the time and space complexity of the given code.
+
+### 1. **`dfs(int node, vector<int>& vis, vector<vector<int>>& graph)`**
+   - **Time Complexity**:  
+     - The `dfs` function is a depth-first search that traverses each node and its neighbors recursively.
+     - For each node, the function iterates over its neighbors. The total number of neighbors (edges) in the graph is `E`. Therefore, the time complexity of this function is proportional to the total number of edges and nodes.
+     - **Time Complexity**: **O(n + E)**, where `n` is the number of nodes and `E` is the number of edges in the graph. Every node and every edge is visited at most once.
+
+   - **Space Complexity**:  
+     - The space complexity is dominated by the recursion stack in DFS, which can go as deep as the number of nodes `n` in the worst case (if the graph is a linear chain). The `vis` array also takes `O(n)` space.
+     - **Space Complexity**: **O(n)** for the `vis` array and recursion stack.
+
+---
+
+### 2. **`dfsapproach(int ind, vector<vector<int>>& graph)`**
+   - **Time Complexity**:  
+     - This function simply calls the `dfs` function. The time complexity is determined by the `dfs` call, which is **O(n + E)**, as explained above.
+     - **Overall Time Complexity**: **O(n + E)**.
+
+   - **Space Complexity**:  
+     - This function creates the `vis` array of size `n`, so the space complexity is **O(n)**.
+
+---
+
+### 3. **`eventualSafeNodes(vector<vector<int>>& graph)`**
+   - **Time Complexity**:  
+     - This function iterates over all nodes `n` (in the loop `for(int i = 0; i < n; i++)`), and for each node, it calls `dfsapproach(i, graph)`, which has a time complexity of **O(n + E)**.
+     - The loop runs for `n` iterations, and for each iteration, `dfsapproach` runs in **O(n + E)** time.
+     - **Overall Time Complexity**: **O(n * (n + E))**. This is because the DFS is called for each node, and for each call, we explore all the neighbors.
+
+   - **Space Complexity**:  
+     - The space complexity is determined by the space required for the `vis` array and the recursion stack in `dfs` (both are `O(n)`), as well as the space required to store the final result (`ans`), which can store up to `n` nodes.
+     - **Overall Space Complexity**: **O(n)**, where `n` is the number of nodes, due to the space used for `vis`, the recursion stack, and the `ans` array.
+
+---
+
+### Final Summary
+
+- **Time Complexity**: The overall time complexity of the code is **O(n * (n + E))**, where `n` is the number of nodes and `E` is the number of edges in the graph. This arises because the DFS is called for each node, and each DFS operation processes all nodes and edges in the graph.
+
+- **Space Complexity**: The overall space complexity is **O(n)**, primarily due to the space required for the `vis` array and the recursion stack in DFS.
+
+
+
+########################################################################################
+
+bfs 
+
+class Solution {
+public:
+    void getIndegree(vector<int>& indegree, vector<vector<int>>& graph)
+    {
+        for(auto u: graph)
+        {
+            for(auto v: u)
+                indegree[v]++;
+        }
+    }
+    void getNewGraph(vector<vector<int>>& newgraph, vector<vector<int>>& graph)
+    {
+        for(int i = 0; i<graph.size(); i++)
+        {
+            for(int j=0; j<graph[i].size(); j++)
+            {
+                int u = graph[i][j], v = i;
+                newgraph[u].push_back(i);
+            }
+        }
+    }
+    vector<int> bfs(vector<int>& indegree, vector<vector<int>>& graph)
+    {
+        queue<int> qtraverse;
+        int n = indegree.size();
+        vector<int> ans;
+
+        for(int i=0;i<n;i++)
+        {
+            if(indegree[i] == 0)
+                qtraverse.push(i);
+        }
+
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+
+            ans.push_back(node);
+            for(auto v: graph[node])
+            {
+                indegree[v]--;
+                if(indegree[v] == 0)
+                    qtraverse.push(v);
+            }
+        }
+        sort(ans.begin(), ans.end());
+        return ans;
+    }
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<vector<int>> newgraph(n);
+        vector<int> indegree(n,0);
+
+        getNewGraph(newgraph, graph);
+        getIndegree(indegree, newgraph);
+
+        return bfs(indegree, newgraph);
+    }
+};
+
+Let's calculate the time and space complexity separately for each function and then summarize the overall complexities.
+
+### 1. `getIndegree(vector<int>& indegree, vector<vector<int>>& graph)`
+   - **Time Complexity**:  
+     - The outer loop iterates over the `graph` which has `n` nodes, i.e., `graph.size()` which is `O(n)`. 
+     - The inner loop iterates over the neighbors of each node. If the total number of neighbors (edges) is `E`, the total number of iterations in the inner loop will be `O(E)`.
+     - **Overall time complexity**: **O(E)**, since we traverse all edges.
+
+   - **Space Complexity**:  
+     - The function does not use any extra space other than the input `indegree` vector and `graph`. Therefore, the space complexity is **O(1)** (excluding the space used by the input).
+
+---
+
+### 2. `getNewGraph(vector<vector<int>>& newgraph, vector<vector<int>>& graph)`
+   - **Time Complexity**:  
+     - The outer loop iterates over all `n` nodes in the graph (`O(n)`).
+     - The inner loop iterates over the neighbors of each node. The total number of edges in the graph is `E`. Therefore, the inner loop will iterate `E` times in total.
+     - **Overall time complexity**: **O(E)**, since each edge is processed once.
+
+   - **Space Complexity**:  
+     - The function uses the `newgraph`, which is a new graph with the same size as the input graph. The space for `newgraph` is `O(n + E)` because there are `n` nodes, and each node can have `E` edges in total.
+     - **Overall space complexity**: **O(n + E)**.
+
+---
+
+### 3. `bfs(vector<int>& indegree, vector<vector<int>>& graph)`
+   - **Time Complexity**:  
+     - The first loop that pushes all nodes with an indegree of 0 into the queue iterates over all `n` nodes, which takes **O(n)**.
+     - The BFS loop processes each node exactly once. For each node, it visits all its neighbors (edges). The total number of edges is `E`.
+     - **Overall time complexity**: **O(n + E)**, since every node is processed once and every edge is visited once.
+
+   - **Space Complexity**:  
+     - The queue can store at most `n` nodes at any time, so the space complexity for the queue is **O(n)**.
+     - The space used by the `ans` vector is also **O(n)**, as it will store the final result.
+     - Therefore, the space complexity is **O(n)**.
+
+---
+
+### 4. `eventualSafeNodes(vector<vector<int>>& graph)`
+   - **Time Complexity**:  
+     - This function calls `getNewGraph`, `getIndegree`, and `bfs` in sequence. The total time complexity is the sum of the time complexities of these functions:
+       - `getNewGraph`: **O(E)**
+       - `getIndegree`: **O(E)**
+       - `bfs`: **O(n + E)**
+     - **Overall time complexity**: **O(n + E)** (since we combine `O(E)` and `O(n + E)` terms).
+
+   - **Space Complexity**:  
+     - The function creates a `newgraph` of size `n + E` and an `indegree` array of size `n`. The space complexity for `newgraph` is **O(n + E)**, and for `indegree`, it's **O(n)**.
+     - The BFS function uses an extra **O(n)** space for the queue.
+     - **Overall space complexity**: **O(n + E)**, since the `newgraph` and `indegree` vectors are the primary contributors to space usage.
+
+---
+
+### Final Summary
+
+- **Time Complexity**: The overall time complexity of the code is **O(n + E)**, where `n` is the number of nodes and `E` is the number of edges in the graph.
+
+- **Space Complexity**: The overall space complexity of the code is **O(n + E)**, due to the space required for `newgraph`, `indegree`, and the BFS queue.

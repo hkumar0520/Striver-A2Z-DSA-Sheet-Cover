@@ -1,0 +1,193 @@
+
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+class Solution {
+  public:
+    // Function to detect cycle in an undirected graph.
+    bool bfs(vector<vector<int>>& adj, int startnode, vector<int>& vis)
+    {
+        // 0th  element node, 1st element parent
+        queue<vector<int>>  qtraverse;
+        qtraverse.push({startnode,-1});
+        vis[startnode] = 1;
+        while(!qtraverse.empty())
+        {
+            vector<int> node = qtraverse.front();
+            qtraverse.pop();
+            int element = node[0], parent = node[1];
+            for(auto v: adj[element])
+            { 
+                if(!vis[v])
+                {
+                    vis[v] = 1;
+                    qtraverse.push({v,element});
+                }
+                else
+                {
+                    // in case of 1 -- 2
+                    if(v != parent) return true;
+                }
+            }
+        }
+        return false;
+    }
+    bool isCycle(vector<vector<int>>& adj) {
+        // Code here
+        int n = adj.size();
+        vector<int>  vis(n,0);
+        for(int i=0;i<n;i++)
+        {
+            if(!vis[i])         // for handling different components case
+            {
+                if(bfs(adj,i,vis))  
+                    return true;
+            }
+        }
+        return false;
+    }
+};
+
+### Time Complexity
+
+#### 1. **Outer Loop in `isCycle`**:
+- The loop iterates over all vertices to ensure all connected components are visited.
+- The `bfs` function is called for each unvisited node.
+- Since each node is processed only once during BFS, the total contribution from this loop is \(O(V)\), where \(V\) is the number of vertices.
+
+#### 2. **BFS Traversal**:
+- Inside the `bfs` function, each vertex is enqueued and processed at most once, contributing \(O(V)\).
+- For each vertex, its adjacency list is traversed. Since the graph is represented as an adjacency list, the total number of edges across all vertices is \(E\), where \(E\) is the number of edges.
+- Thus, traversing the adjacency list contributes \(O(E)\).
+
+**Total Time Complexity**:
+\[
+O(V + E)
+\]
+
+This is because each vertex and edge is processed exactly once in the BFS traversal.
+
+---
+
+### Space Complexity
+
+#### 1. **Visited Array**:
+- A `vis` array of size \(V\) is used to track visited vertices. This requires \(O(V)\) space.
+
+#### 2. **Queue for BFS**:
+- In the worst case, the queue can store all vertices in a connected component. This requires \(O(V)\) space.
+
+#### 3. **Adjacency List**:
+- The adjacency list representation of the graph is passed as input and requires \(O(V + E)\) space.
+
+**Total Space Complexity**:
+\[
+O(V + E)
+\]
+
+---
+
+### Summary
+- **Time Complexity**: \(O(V + E)\)
+- **Space Complexity**: \(O(V + E)\)
+
+This is optimal for detecting cycles in an undirected graph using BFS.
+
+//{ Driver Code Starts.
+int main() {
+    int tc;
+    cin >> tc;
+    while (tc--) {
+        int V, E;
+        cin >> V >> E;
+        vector<vector<int>> adj(V);
+        for (int i = 0; i < E; i++) {
+            int u, v;
+            cin >> u >> v;
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        Solution obj;
+        bool ans = obj.isCycle(adj);
+        if (ans)
+            cout << "1\n";
+        else
+            cout << "0\n";
+
+        cout << "~"
+             << "\n";
+    }
+    return 0;
+}
+// } Driver Code Ends
+
+
+###############################################################################
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+  private: 
+  bool detect(int src, vector<int> adj[], int vis[]) {
+      vis[src] = 1; 
+      // store <source node, parent node>
+      queue<pair<int,int>> q; 
+      q.push({src, -1}); 
+      // traverse until queue is not empty
+      while(!q.empty()) {
+          int node = q.front().first; 
+          int parent = q.front().second; 
+          q.pop(); 
+          
+          // go to all adjacent nodes
+          for(auto adjacentNode: adj[node]) {
+              // if adjacent node is unvisited
+              if(!vis[adjacentNode]) {
+                  vis[adjacentNode] = 1; 
+                  q.push({adjacentNode, node}); 
+              }
+              // if adjacent node is visited and is not it's own parent node
+              else if(parent != adjacentNode) {
+                  // yes it is a cycle
+                  return true; 
+              }
+          }
+      }
+      // there's no cycle
+      return false; 
+  }
+  public:
+    // Function to detect cycle in an undirected graph.
+    bool isCycle(int V, vector<int> adj[]) {
+        // initialise them as unvisited 
+        int vis[V] = {0};
+        for(int i = 0;i<V;i++) {
+            if(!vis[i]) {
+                if(detect(i, adj, vis)) return true; 
+            }
+        }
+        return false; 
+    }
+};
+
+int main() {
+    
+    // V = 4, E = 2
+    vector<int> adj[4] = {{}, {2}, {1, 3}, {2}};
+    Solution obj;
+    bool ans = obj.isCycle(4, adj);
+    if (ans)
+        cout << "1\n";
+    else
+        cout << "0\n";
+    return 0;
+}
+Output:  0
+
+Time Complexity: O(N + 2E) + O(N), Where N = Nodes, 2E is for total degrees as we traverse all adjacent nodes. In the case of connected components of a graph, it will take another O(N) time.
+
+Space Complexity: O(N) + O(N) ~ O(N), Space for queue data structure and visited array.

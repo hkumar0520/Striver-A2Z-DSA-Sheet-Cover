@@ -1,0 +1,277 @@
+
+// correct
+
+    vector<int> bfs(vector<vector<int>>& edges, int n, int src)
+    {
+        vector<int> ans(n,INT_MAX);
+        
+        queue<int> qtraverse;
+        qtraverse.push(src);
+        ans[src] = 0;
+        
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+            for(vector<int> edge: edges)
+            {
+                // u-->v (weight)
+                int u = edge[0], v = edge[1], weight = edge[2];
+                if(u == node)
+                {
+                   if(ans[v] > ans[node] + weight)
+                   {
+                       ans[v] = ans[node] + weight;
+                       qtraverse.push(v);
+                   }
+                }
+            }
+        }
+        for(int i = 0; i<ans.size(); i++)
+        {
+            if(ans[i] == INT_MAX)
+                ans[i] = -1;
+        }
+        return ans;
+    }
+    
+    vector<int> shortestPath(int V, int E, vector<vector<int>>& edges) {
+        // code here
+        return bfs(edges,V,0);
+    }
+
+###############################################################################
+
+//{ Driver Code Starts
+// Initial Template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+// User function Template for C++
+class Solution {
+  public:
+  
+    vector<int> bfs(vector<vector<pair<int,int>>>& graph, int n, int src)
+    {
+        vector<int> ans(n,INT_MAX);
+        
+        queue<int> qtraverse;
+        qtraverse.push(src);
+        ans[src] = 0;
+        
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+            for(pair<int,int> currnode: graph[node])
+            {
+                int v = currnode.first, weight = currnode.second;
+                if(ans[v] > ans[node] + weight)
+                {
+                   ans[v] = ans[node] + weight;
+                   qtraverse.push(v);
+               }
+            }
+        }
+        for(int i = 0; i<ans.size(); i++)
+        {
+            if(ans[i] == INT_MAX)
+                ans[i] = -1;
+        }
+        return ans;
+    }
+    
+    void getGraph(vector<vector<pair<int,int>>>& graph, vector<vector<int>>& edges)
+    {
+        for(auto edge: edges)
+        {
+            // u-->v(weight)
+            int u = edge[0], v = edge[1], weight = edge[2];
+            graph[u].push_back({v, weight});
+        }
+    }
+    
+    vector<int> shortestPath(int V, int E, vector<vector<int>>& edges) {
+        
+        vector<vector<pair<int,int>>> graph(V);
+        getGraph(graph, edges);
+        
+        return bfs(graph, V, 0);
+    }
+};
+
+
+Let's break down the time and space complexity of the provided code for the `shortestPath` function, which implements a **Breadth-First Search (BFS)** algorithm for finding the shortest path in a graph with weighted edges.
+
+### Time Complexity:
+
+1. **Building the graph (`getGraph` function):**
+   - The function iterates through all the edges of the graph.
+   - There are \( E \) edges in the graph, and for each edge, we are performing an insertion into the adjacency list (which takes constant time).
+   
+   Thus, the time complexity for building the graph is \( O(E) \).
+
+2. **BFS (`bfs` function):**
+   - The BFS is implemented using a queue to traverse the graph. We start from the source node and explore all its neighbors.
+   - In the worst case, we visit every node and edge exactly once. For each node, we check each of its neighbors (edges). If the node hasn't been visited or its shortest path is improved, we update the distance and enqueue it.
+   - In the worst case:
+     - There are \( V \) nodes.
+     - There are \( E \) edges.
+     - For each edge, we perform constant-time operations (checking and updating the distance).
+   
+   Thus, the time complexity for the BFS traversal is \( O(V + E) \), where:
+   - \( O(V) \) is the time to visit all nodes.
+   - \( O(E) \) is the time to traverse all edges.
+
+3. **Final Adjustment (`shortestPath` function):**
+   - After the BFS traversal, we loop through the `ans` array to replace any unvisited node's distance (i.e., `INT_MAX`) with `-1`. This loop runs over all nodes, so it has a time complexity of \( O(V) \).
+
+### Overall Time Complexity:
+Combining the time complexities from all parts:
+- Building the graph: \( O(E) \)
+- BFS traversal: \( O(V + E) \)
+- Final adjustment: \( O(V) \)
+
+Thus, the overall time complexity is:
+\[
+O(V + E)
+\]
+This is the time complexity for the entire function.
+
+### Space Complexity:
+
+1. **Graph Representation:**
+   - The graph is represented as an adjacency list, which stores \( E \) edges. In the worst case, we need \( O(E) \) space to store the graph.
+
+2. **Auxiliary Data Structures:**
+   - The `ans` array stores the shortest distances for each of the \( V \) nodes, requiring \( O(V) \) space.
+   - The queue used for BFS (`qtraverse`) can hold at most \( V \) nodes at once in the worst case, so it also requires \( O(V) \) space.
+
+3. **Graph Construction:**
+   - The adjacency list representation of the graph also requires space for storing pairs of nodes and their respective edge weights. This requires \( O(E) \) space.
+
+### Overall Space Complexity:
+Combining the space used by all components:
+- Graph storage: \( O(E) \)
+- `ans` array: \( O(V) \)
+- BFS queue: \( O(V) \)
+
+Thus, the overall space complexity is:
+\[
+O(V + E)
+\]
+
+### Final Complexity Summary:
+- **Time Complexity:** \( O(V + E) \)
+- **Space Complexity:** \( O(V + E) \)
+
+
+//{ Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        vector<vector<int>> edges;
+        for (int i = 0; i < m; ++i) {
+            vector<int> temp;
+            for (int j = 0; j < 3; ++j) {
+                int x;
+                cin >> x;
+                temp.push_back(x);
+            }
+            edges.push_back(temp);
+        }
+        Solution obj;
+        vector<int> res = obj.shortestPath(n, m, edges);
+        for (auto x : res) {
+            cout << x << " ";
+        }
+        cout << "\n";
+
+        cout << "~"
+             << "\n";
+    }
+}
+
+// } Driver Code Ends
+
+###################################################################################################
+
+// toposrt dfs ans 
+
+    O(N+E)
+    void dfs(vector<vector<pair<int,int>>>& graph, int node
+    , stack<int>& st, vector<int>& vis)
+    {
+        vis[node] = 1;
+        for(pair<int,int> currnode: graph[node])
+        {
+            int v = currnode.first;
+            if(!vis[v])
+                dfs(graph, v, st, vis);    
+        }
+        st.push(node);
+    }
+    
+    // O(E)
+    void getGraph(vector<vector<pair<int,int>>>& graph, vector<vector<int>>& edges)
+    {
+        for(auto edge: edges)
+        {
+            // u-->v(weight)
+            int u = edge[0], v = edge[1], weight = edge[2];
+            graph[u].push_back({v, weight});
+        }
+    }
+    
+    // 
+    vector<int> shortestPath(int V, int E, vector<vector<int>>& edges) {
+        
+        vector<vector<pair<int,int>>> graph(V);
+        getGraph(graph, edges);
+        
+        stack<int> st;
+        vector<int> vis(V,0);
+        
+        dfs(graph, 0, st, vis);
+        
+        vector<int> dist(V,INT_MAX);
+        dist[0] = 0;
+        // O(N+E)
+        while(!st.empty())
+        {
+            int node = st.top();
+            st.pop();
+            
+            for(auto currnode: graph[node])
+            {
+                int v = currnode.first, wt = currnode.second;
+                if(dist[v] > dist[node] + wt)
+                    dist[v] = dist[node] + wt;
+            }
+        }
+        // O(N)
+        for(int i=0;i<V;i++)
+        {
+            if(dist[i] == INT_MAX)
+                dist[i] = -1;
+        }
+        return dist;
+    }
+
+Time Complexity - O(N+M)
+space Complexity - O(N + M)
+
+Time Complexity: O(N+M) {for the topological sort} + O(N+M) {for relaxation of vertices, each node and its adjacent nodes get traversed} ~ O(N+M).
+
+Where N= number of vertices and M= number of edges.
+
+Space Complexity:  O( N) {for the stack storing the topological sort} + O(N) {for storing the shortest distance for each node} + O(N) {for the visited array} + O( N+2M) {for the adjacency list} ~ O(N+M) .
+
+Where N= number of vertices and M= number of edges.
+

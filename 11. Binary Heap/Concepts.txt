@@ -1,0 +1,112 @@
+
+
+Here’s a comprehensive list of problems to master **Priority Queues**, covering all major topics:
+
+---
+
+### **1. Basics of Priority Queue**
+#### Problems:
+1. Implement a max heap and a min heap. - done
+2. Sort an array using a priority queue. - done
+3. Find the k largest or smallest elements in an array. - done
+4. Merge k sorted arrays into a single sorted array. - done
+5. Check if a binary tree is a valid max heap or min heap. - done
+
+---
+
+### **2. Applications of Priority Queue**
+#### Problems:
+1. **Top k Frequent Elements**: - done
+   - Given an array, find the k most frequent elements.
+2. **Kth Largest Element in a Stream**: - done
+   - Continuously find the k-th largest element as new elements are added.
+3. **Connect Ropes to Minimize Cost**: - done
+   - Combine ropes with given lengths to minimize the total cost.
+4. **Sort Characters by Frequency**: - done
+   - Rearrange characters in a string based on their frequency.
+5. **Reorganize String**: - done
+   - Rearrange characters so that no two adjacent characters are the same.
+
+---
+
+### **3. Graph Problems Using Priority Queue**
+#### Problems:
+1. **Dijkstra’s Algorithm**: - done
+   - Find the shortest path from a source to all vertices in a weighted graph.
+2. **Prim’s Algorithm**: - done
+   - Find the Minimum Spanning Tree (MST) of a graph.
+3. **Kruskal’s Algorithm**: - done
+   - Use a priority queue to sort edges by weight for MST.
+4. **A* Search Algorithm**:
+   - Solve pathfinding problems using a priority queue for heuristic-based search.
+
+---
+
+### **4. Sliding Window Problems**
+#### Problems:
+1. **Sliding Window Maximum**: - done
+   - Find the maximum in every subarray of size k.
+2. **Median of a Sliding Window**: - done
+   - Continuously calculate the median of numbers in a sliding window.
+
+---
+
+### **5. Advanced Problems**
+#### Problems:
+1. **Task Scheduler**:
+   - Given tasks and cooldown intervals, find the minimum time to complete all tasks.
+2. **Meeting Rooms II**:
+   - Find the minimum number of meeting rooms required given intervals.
+3. **Minimum Cost to Hire K Workers**:
+   - Find the minimum cost to hire k workers with quality and wage constraints.
+4. **IPO Problem**:
+   - Maximize capital given initial capital and projects with profits and costs.
+
+---
+
+### **6. Multi-Queue Problems**
+#### Problems:
+1. **Merge K Sorted Linked Lists**: - done
+   - Use a priority queue to merge multiple sorted linked lists.
+2. **Kth Smallest Element in a Sorted Matrix**:
+   - Use a priority queue to find the k-th smallest element in a matrix.
+
+---
+
+### **7. Game/Simulation Problems**
+#### Problems:
+1. **The K Weakest Rows in a Matrix**:
+   - Find the k weakest rows based on the number of soldiers.
+2. **Process Scheduling**:
+   - Simulate a CPU scheduling process with tasks and priorities.
+3. **Minimize Deviation in Array**:
+   - Minimize the maximum difference between array elements.
+
+---
+
+### **8. Miscellaneous Problems**
+#### Problems:
+1. **Reduce Array Size to Half**:
+   - Find the minimum number of elements to remove to reduce the array size to half.
+2. **Top K Frequent Words**:
+   - Find the k most frequent words in a text, sorted lexicographically.
+3. **Furthest Building You Can Reach**:
+   - Use ladders and bricks to maximize the distance in a building sequence.
+4. **K Closest Points to Origin**:
+   - Find the k closest points to the origin in a 2D plane.
+5. **Maximum Performance of a Team**:
+   - Maximize the performance of a team with speed and efficiency constraints.
+
+---
+
+### **9. Custom Implementations**
+#### Problems:
+1. Implement a priority queue from scratch using:
+   - Binary Heap
+   - Pairing Heap
+   - Fibonacci Heap
+2. Solve problems using custom comparators (e.g., for strings, tuples).
+
+---
+
+Would you like to explore any specific problem or need help with code implementations?

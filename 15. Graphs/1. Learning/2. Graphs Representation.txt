@@ -1,0 +1,179 @@
+
+Input 
+
+Input:
+5 6
+1 2
+1 3
+2 4
+3 4 
+3 5 
+4 5
+
+Explanation:
+Number of nodes, n = 5
+Number of edges, m = 6
+Next m lines represent the edges.
+
+
+*****Using Adjacency Matrix(undirected graph)
+
+using namespace std;
+
+int main()
+{
+    int n, m;
+    cin >> n >> m;
+    // adjacency matrix for undirected graph
+    // time complexity: O(n)
+    int adj[n+1][n+1];
+    for(int i = 0; i < m; i++)
+    {
+        int u, v;
+        cin >> u >> v;
+        adj[u][v] = 1;    
+        adj[v][u] = 1  // this statement will be removed in case of directed graph
+    }
+    return 0;
+}
+
+space complexity - O(N*N);
+N - no. of nodes
+
+##################################################################################################
+
+vector <int> adj[n+1]; // similar to vector<vector<int>> adj(n+1);
+Now every index is containing an empty vector/ list. With respect to the 
+example, 6 indexes contain empty vectors.
+
+****Undirected graph Adjacency list
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int n, m;
+    cin >> n >> m;
+    // adjacency list for undirected graph
+    // time complexity: O(2E)
+    vector<int> adj[n+1];
+    for(int i = 0; i < m; i++)
+    {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    return 0;
+}
+
+space complexity - O(2*E)
+E - no. of Edges 
+
+#################################################################################
+
+******For Directed Graph 
+Space complexity - O(E)
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int n, m;
+    cin >> n >> m;
+    // adjacency list for directed graph
+    // time complexity: O(E)
+    vector<int> adj[n+1];
+    for(int i = 0; i < m; i++)
+    {
+        int u, v;
+        // u —> v
+        cin >> u >> v;
+        adj[u].push_back(v);
+    }
+    return 0;
+}
+
+Space complexity - O(E)
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+****
+For Weighted Graph refer pdf
+also
+use this for weighted graph for adjacency list
+vector<pair<int,int>> adj[n+1];
+
+Weighted undirected graph adjacecny matrix
+
+int main()
+{
+    int n, m;
+    cin >> n >> m;
+    // adjacency matrix for undirected graph
+    // time complexity: O(n)
+    int adj[n+1][n+1];
+    for(int i = 0; i < m; i++)
+    {
+        int u, v;
+        cin >> u >> v;
+        adj[u][v] = w;    
+        adj[v][u] = w  // this statement will be removed in case of directed graph
+    }
+    return 0;
+}
+
+
+###############################################################################
+
+weighted undirected adjacncy list
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int n, m;
+    cin >> n >> m;
+    // adjacency list for undirected graph
+    // time complexity: O(2E)
+    vector<pair<int,int>> adj[n+1];
+    for(int i = 0; i < m; i++)
+    {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(make_pair(v,w));
+        adj[v].push_back(make_pair(u,w));  // this will remove in case of directed graph
+    }
+    return 0;
+}
+
+
+
+
+
+####################################################################
+
+https://www.geeksforgeeks.org/problems/print-adjacency-list-1587115620/1?page=1&category=Graph&difficulty=Easy&sortBy=submissions
+
+class Solution {
+  public:
+    // Function to return the adjacency list for each vertex.
+    vector<vector<int>> printGraph(int V, vector<pair<int, int>>& edges) {
+        // Code here
+        vector<vector<int>> adj(V);
+        for(auto edge: edges)
+        {
+            int u = edge.first , v = edge.second;
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        return adj;
+    }
+};
+

@@ -1,0 +1,131 @@
+
+
+class Solution {
+public:
+    void backTrack(vector<vector<string>>& ans, vector<string>& path,
+        unordered_set<int>& col, unordered_set<int>& diag1,
+        unordered_set<int>& diag2, int x, int n)
+    {
+        if(x == n){
+            ans.push_back(path);
+            return;
+        }
+
+        for(int y = 0; y<n; y++){
+
+            if(col.count(y) || diag1.count(x+y) || diag2.count(x-y))
+                continue;
+            
+            path[x][y] = 'Q';
+            col.insert(y);
+            diag1.insert(x+y);
+            diag2.insert(x-y);
+            backTrack(ans, path, col, diag1, diag2, x+1, n);
+            path[x][y] = '.';
+            col.erase(y);
+            diag1.erase(x+y);
+            diag2.erase(x-y);
+        }
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> ans;
+        vector<string> path(n, string(n, '.'));
+        unordered_set<int> col, diag1, diag2;
+        backTrack(ans, path, col, diag1, diag2, 0, n);
+        return ans;
+    }
+};
+
+Let's analyze the time and space complexity of the provided `solveNQueens` solution. This solution uses **backtracking** to solve the N-Queens problem by recursively placing queens on the board while ensuring that no two queens threaten each other (i.e., no two queens share the same row, column, or diagonal).
+
+### **Time Complexity:**
+
+The backtracking approach explores all possible configurations of placing queens on the board, and the recursive depth of the solution corresponds to placing queens row by row.
+
+#### Recursive Tree Analysis:
+- At each level (or row), there are `n` possible columns where we can place a queen.
+- The recursion explores these possibilities by trying to place a queen in each of the `n` columns in the current row, and proceeds to the next row (depth + 1).
+- The recursion continues for `n` rows, and at each row, the number of possible placements depends on whether the column or diagonal is under attack.
+
+For each recursive call:
+- **Checking column and diagonal conflicts** takes constant time due to the use of the `unordered_set` data structure. Checking if a column or diagonal is under attack is an O(1) operation because the `unordered_set::count()` method checks the presence of an element in constant time on average.
+- **Placing and removing the queen** (updating the board and backtracking) takes constant time as well.
+
+Given that the algorithm explores all configurations of placing queens on the board, we need to consider the number of recursive calls. The worst-case time complexity occurs when we try every possible configuration.
+
+#### Number of Recursive Calls:
+- At each level, there are `n` choices, and the recursion will go `n` levels deep (one for each row).
+- In the worst case, the algorithm will explore all `n!` configurations (since in each row we are placing a queen in one of `n` columns, and no two queens can share the same column).
+
+Thus, the **time complexity** is approximately \(O(n!)\), because there are `n!` different ways to place `n` queens on the board.
+
+### **Space Complexity:**
+
+The space complexity is determined by the storage used in the recursion stack, the board configuration, and the auxiliary data structures used for conflict checking.
+
+#### 1. **Recursion Stack:**
+- The recursion depth is `n`, as we are placing one queen per row. The maximum depth of recursion occurs when the queens are placed in all `n` rows, resulting in a recursion stack of size **O(n)**.
+
+#### 2. **Auxiliary Data Structures:**
+- **`unordered_set<int> col`:** This set tracks which columns are under attack. It can have at most `n` elements, so the space used is **O(n)**.
+- **`unordered_set<int> diag1` and `diag2`:** These sets track the major and minor diagonals under attack, respectively. Each set can also have at most `n` elements, so the space used by both is **O(n)**.
+
+#### 3. **Board Configuration (`path`):**
+- The `path` vector stores the configuration of the board, which is a 2D grid of size `n x n`. The space used by the board is **O(n^2)**.
+
+Thus, the **total space complexity** is the sum of:
+- **O(n)** for the recursion stack,
+- **O(n)** for each of the three `unordered_set`s,
+- **O(n^2)** for the board configuration.
+
+Therefore, the **overall space complexity** is **O(n^2)**.
+
+### **Summary:**
+
+- **Time Complexity:** \(O(n!)\), due to the backtracking approach exploring all possible configurations.
+- **Space Complexity:** \(O(n^2)\), due to the board storage and auxiliary data structures (sets for columns and diagonals).
+
+This is typical for backtracking solutions to the N-Queens problem, where the time complexity is dominated by the number of potential solutions (which grows factorially with `n`), and space complexity is primarily determined by the board size and the recursion depth.
+
+
+
+##################################################################
+
+
+class Solution {
+public:
+    void backTrack(vector<vector<string>>& ans, vector<string>& path,
+        vector<int>& col, vector<int>& diag1,
+        vector<int>& diag2, int x, int n)
+    {
+        if(x == n){
+            ans.push_back(path);
+            return;
+        }
+
+        for(int y = 0; y<n; y++){
+
+            if(col[y] || diag1[x+y] || diag2[n-1 + x-y])
+                continue;
+            
+            path[x][y] = 'Q';
+            col[y] = 1;
+            diag1[x+y] = 1;
+            diag2[n-1 + (x-y)] = 1;
+
+            backTrack(ans, path, col, diag1, diag2, x+1, n);
+
+            path[x][y] = '.';
+            col[y] = 0;
+            diag1[x+y] = 0;
+            diag2[n-1 + (x-y)] = 0;
+        }
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> ans;
+        vector<string> path(n, string(n, '.'));
+        vector<int> col(n, 0), diag1(2*n-1, 0), diag2(2*n-1, 0);
+        backTrack(ans, path, col, diag1, diag2, 0, n);
+        return ans;
+    }
+};

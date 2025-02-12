@@ -1,0 +1,190 @@
+
+// included 0 in  testcase as well
+
+//recursion
+#include <bits/stdc++.h> 
+
+int mod = 1000000007;
+
+int f(int ind, int target, vector<int> &arr)
+{
+    if (ind == 0) 
+    {
+        if(target == 0 && arr[ind] == 0)
+            return 2;
+        if(target == 0 || target == arr[ind])
+            return 1;
+        
+        return 0;
+    }
+
+    int nonPick = f(ind-1, target,arr);
+    int pick = 0;
+    if(arr[ind]<=target)
+        pick = f(ind-1, target-arr[ind], arr);
+
+    return (pick%mod + nonPick%mod)%mod;
+}
+
+int countPartitions(int n, int d, vector<int> &arr) {
+    // Write your code here.
+    int totalsum = 0;
+    for(int i=0;i<n;i++)
+        totalsum += arr[i];
+
+    if((totalsum-d) < 0)    return 0;
+    if((totalsum-d)%2 ==1)        return 0;
+    
+    int k = (totalsum-d)/2;
+
+    return f(n-1,k,arr);
+
+}
+
+###############################################################################################
+// memoization
+#include <bits/stdc++.h> 
+
+int mod = 1000000007;
+
+int f(int ind, int target, vector<int> &arr, vector<vector<int>> &dp)
+{
+    if (ind == 0) 
+    {
+        if(target == 0 && arr[ind] == 0)
+            return 2;
+        if(target == 0 || target == arr[ind])
+            return 1;
+        
+        return 0;
+    }
+
+	if(dp[ind][target] != -1)	return dp[ind][target];
+   
+
+    int nonPick = f(ind-1, target,arr,dp);
+    int pick = 0;
+    if(arr[ind]<=target)
+        pick = f(ind-1, target-arr[ind], arr,dp);
+
+    return dp[ind][target] = (pick%mod + nonPick%mod)%mod;
+}
+
+int countPartitions(int n, int d, vector<int> &arr) {
+    // Write your code here.
+    int totalsum = 0;
+    for(int i=0;i<n;i++)
+        totalsum += arr[i];
+
+    if((totalsum-d) < 0)    return 0;
+    if((totalsum-d)%2 ==1)        return 0;
+    
+    int k = (totalsum-d)/2;
+
+    vector<vector<int>> dp(n, vector<int>(k+1,-1));
+
+    return f(n-1,k,arr,dp);
+
+}
+
+
+###############################################################################################
+// tabular
+
+#include <bits/stdc++.h> 
+int mod =(int)1e9+7;
+
+int f(int n, int target, vector<int> &arr, vector<vector<int>> &dp)
+{
+
+  //          
+    if(arr[0] == 0)     dp[0][0] = 2;     //     if(target == 0 && arr[ind] == 0)
+    else                dp[0][0] = 1;     //     if(target == 0)
+
+    if(arr[0]!=0 && arr[0]<=target)      dp[0][arr[0]]  = 1;
+    
+    for(int i=1;i<n;i++)
+    {
+        for(int j=0;j<=target;j++)
+        {
+            int notpick = dp[i-1][j];
+            int pick = 0;
+            if(arr[i]<=j)
+                pick = dp[i-1][j-arr[i]];
+            
+            dp[i][j] = (pick%mod + notpick%mod)%mod;
+        }
+    }
+    return dp[n-1][target];
+     
+}
+
+int countPartitions(int n, int d, vector<int> &arr) {
+    // Write your code here.
+    int totalsum = 0;
+    for(int i=0;i<n;i++)
+        totalsum += arr[i];
+
+    if((totalsum-d) < 0)    return 0;
+    if((totalsum-d)%2 ==1)        return 0;
+    
+    int k = (totalsum-d)/2;
+
+    vector<vector<int>> dp(n, vector<int>(k+1,0));
+
+    return f(n,k,arr,dp);
+
+}
+
+###############################################################################################
+// optimiation
+
+#include <bits/stdc++.h> 
+int mod =(int)1e9+7;
+
+int f(int n, int target, vector<int> &arr)
+{
+    vector<int> curr(target+1,0);
+
+    if(arr[0] == 0)     curr[0] = 2;
+    else                curr[0] = 1;
+
+    if(arr[0]!=0 && arr[0]<=target)      curr[arr[0]]  = 1;
+    
+    for(int i=1;i<n;i++)
+    {
+        vector<int> temp(target+1,0);
+        for(int j=0;j<=target;j++)
+        {
+            int notpick = curr[j];
+            int pick = 0;
+            if(arr[i]<=j)
+                pick = curr[j-arr[i]];
+            
+            temp[j] = (pick%mod + notpick%mod)%mod;
+        }
+        curr = temp;
+    }
+    return curr[target];
+     
+}
+
+
+int countPartitions(int n, int d, vector<int> &arr) {
+    // Write your code here.
+    int totalsum = 0;
+    for(int i=0;i<n;i++)
+        totalsum += arr[i];
+
+    if((totalsum-d) < 0)    return 0;
+    if((totalsum-d)%2 ==1)        return 0;
+    
+    int k = (totalsum-d)/2;
+
+    return f(n,k,arr);
+
+}
+
+
+
+

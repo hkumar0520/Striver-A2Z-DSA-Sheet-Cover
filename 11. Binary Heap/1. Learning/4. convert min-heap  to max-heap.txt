@@ -1,0 +1,84 @@
+
+
+class Solution{
+public:
+    int getLeftChild(int i){
+        return 2*i+1;
+    }
+    int getRightChild(int i){
+        return 2*i+2;
+    }
+    void MaxHeapifyDown(int i, vector<int>& arr){
+        int lChild = getLeftChild(i);
+        int rChild = getRightChild(i);
+        int largest = i;
+        
+        if(lChild < arr.size() && arr[lChild] > arr[largest]){
+            largest = lChild;
+        }
+        if(rChild < arr.size() && arr[rChild] > arr[largest]){
+            largest = rChild;
+        }
+        
+        if( i != largest){
+            swap(arr[i], arr[largest]);
+            MaxHeapifyDown( largest, arr );
+        }
+    }
+    
+    
+    void convertMinToMaxHeap(vector<int> &arr, int N){
+        
+        for(int i=(N/2)-1 ; i>=0 ; i--){
+            MaxHeapifyDown(i, arr);
+        }
+    }
+    
+};
+
+
+### **Time and Space Complexity Analysis**
+
+#### **Time Complexity**
+
+1. **`MaxHeapifyDown` Function**:
+   - For a node at index `i`, the function compares it with its left and right children and swaps if necessary.
+   - The recursion continues down the tree until the heap property is restored.
+   - In the worst case, the function runs for the height of the heap:
+     - Height of the heap = \( \log N \), where \( N \) is the number of elements.
+
+2. **`convertMinToMaxHeap` Function**:
+   - This function calls `MaxHeapifyDown` for all non-leaf nodes.
+   - The number of non-leaf nodes in a heap is approximately \( \frac{N}{2} \).
+   - The cost of heapifying a node depends on its height:
+     - Nodes near the bottom require fewer comparisons.
+     - Nodes near the root require more comparisons.
+
+   - Total cost of heapifying all nodes:
+     \[
+     O(N) \quad \text{(Derivation comes from summing up the heights of all nodes in a complete binary tree)}.
+     \]
+
+3. **Overall Time Complexity**:
+   - The time complexity of `convertMinToMaxHeap` is **O(N)**.
+
+---
+
+#### **Space Complexity**
+
+1. **Recursive Stack in `MaxHeapifyDown`**:
+   - The recursion depth is proportional to the height of the heap, which is \( \log N \).
+   - Hence, the space complexity due to the recursion stack is **O(\log N)**.
+
+2. **Extra Space**:
+   - The algorithm does not use any additional data structures apart from the input array.
+   - Hence, no extra space is required.
+
+3. **Overall Space Complexity**:
+   - The space complexity is **O(\log N)**.
+
+---
+
+### **Summary**
+- **Time Complexity**: **O(N)** (Linear, due to heapify process for all non-leaf nodes)
+- **Space Complexity**: **O(\log N)** (Due to recursive stack in `MaxHeapifyDown`)

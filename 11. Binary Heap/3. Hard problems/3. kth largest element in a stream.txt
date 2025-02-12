@@ -1,0 +1,126 @@
+
+
+class KthLargest {
+    priority_queue<int, vector<int>, greater<int>>  pq;
+    int nk;
+    public:
+    KthLargest(int k, vector<int>& nums) {
+        nk = k;
+        for(int num: nums){
+            pq.push(num);
+            if(pq.size() > k)
+                pq.pop();
+        }
+    } 
+    
+    int add(int val) {
+        pq.push(val);
+        if(pq.size() > nk)  pq.pop();
+        
+        return pq.top();
+    }
+};
+
+
+The provided code implements a data structure for finding the **Kth largest element** in a stream of integers. Let's analyze the time and space complexity of the code in more detail, focusing on both the constructor and the `add` method.
+
+### Constructor (`KthLargest(int k, vector<int>& nums)`):
+- **Time Complexity**:
+  - The constructor initializes a priority queue (`pq`), and iterates over each element in the input vector `nums`.
+  - For each element in `nums`:
+    - **Push Operation**: We push the element into the priority queue. Since the priority queue is implemented as a binary heap, the `push` operation takes \( O(\log m) \), where \( m \) is the current size of the priority queue.
+    - **Pop Operation**: After pushing an element, if the size of the priority queue exceeds \( k \), we pop the top element. The `pop` operation also takes \( O(\log m) \).
+    - However, since we ensure the priority queue always maintains at most \( k \) elements, the size of the priority queue never exceeds \( k \). Thus, the time complexity of each push and pop operation is \( O(\log k) \).
+  - Since there are \( n \) elements in `nums`, the time complexity for the constructor is:
+  \[
+  O(n \log k)
+  \]
+  where \( n \) is the number of elements in `nums` and \( k \) is the maximum size of the priority queue.
+
+- **Space Complexity**:
+  - The space required for the priority queue is \( O(k) \), as the queue stores at most \( k \) elements.
+  - The input vector `nums` takes \( O(n) \) space.
+  
+  Hence, the space complexity for the constructor is:
+  \[
+  O(k)
+  \]
+  because the priority queue holds at most \( k \) elements at any time.
+
+### `add(int val)` Method:
+- **Time Complexity**:
+  - The `add` method pushes the value `val` into the priority queue. The push operation on a priority queue (implemented as a binary heap) takes \( O(\log k) \), where \( k \) is the maximum size of the priority queue.
+  - If the size of the priority queue exceeds \( k \), we pop the top element, which also takes \( O(\log k) \).
+  
+  Thus, the time complexity of the `add` method is:
+  \[
+  O(\log k)
+  \]
+
+- **Space Complexity**:
+  - The space complexity of the `add` method is dominated by the priority queue, which holds at most \( k \) elements.
+  
+  Thus, the space complexity of the `add` method is:
+  \[
+  O(k)
+  \]
+
+### Overall Complexity Summary:
+- **Constructor**:
+  - Time complexity: \( O(n \log k) \)
+  - Space complexity: \( O(k) \)
+
+- **`add` Method**:
+  - Time complexity: \( O(\log k) \)
+  - Space complexity: \( O(k) \)
+
+Where:
+- \( n \) is the number of elements in the input vector `nums`.
+- \( k \) is the number of largest elements we are maintaining in the priority queue.
+
+
+#############################################################################
+
+10/12 test cases 
+
+
+class KthLargest {
+    priority_queue<int>  pq;
+    int nk;
+public:
+    KthLargest(int k, vector<int>& nums) {
+        nk = k;
+        for(int num: nums)
+            pq.push(num);
+    } 
+    
+    
+    int add(int val) {
+        pq.push(val);
+
+        int countk = 0, kLargest = 0;
+        priority_queue<int>  pqtemp;
+        while(!pq.empty() && countk < nk){
+            kLargest = pq.top();
+            pqtemp.push(pq.top());
+            pq.pop();
+
+            countk++;
+        }
+        if(pqtemp.size() < pq.size()){
+            while(!pqtemp.empty()){
+                pq.push(pqtemp.top());
+                pqtemp.pop();
+            }
+        }
+        else{
+            while(!pq.empty()){
+                pqtemp.push(pq.top());
+                pq.pop();
+            }
+            pq = pqtemp;
+        }
+        return kLargest;
+    }
+};
+

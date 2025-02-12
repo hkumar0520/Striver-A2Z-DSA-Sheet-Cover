@@ -1,0 +1,48 @@
+
+class Solution {
+public:
+    bool isPredecessor(string pre, string succ)
+    {
+        int pre_size = pre.size();
+        int succ_size = succ.size();
+        if(!((pre_size +1) == succ_size))   return false;
+        int i=0,j=0;
+        while(i<pre_size && j<succ_size)
+        {
+            if(pre[i]==succ[j])
+            {
+                i++;
+                j++;
+            }
+            else
+                j++;
+        }
+        return  ((j-i) <= 1)? true:false;
+    }
+    int f(vector<string>& words)
+    {
+        int n = words.size();
+        sort(words.begin(),words.end(),[](string a,string b){
+            return a.size()<b.size();
+        });
+        
+        vector<int> dp(n,1);
+        int  maxans = 1;
+        for(int i=1;i<n;i++)
+        {
+            for(int j =i-1;j>=0;j--)
+            {
+                if(isPredecessor(words[j],words[i]) )
+                {
+                    dp[i] = max(dp[i],dp[j]+1);
+                }
+            }
+            maxans = max(maxans,dp[i]);
+        }
+        
+        return maxans;
+    }
+    int longestStrChain(vector<string>& words) {
+        return  f(words);
+    }
+};

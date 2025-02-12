@@ -1,0 +1,200 @@
+// bfs 
+
+
+class Solution {
+public:
+    void getIndegree(vector<int>& indegree, vector<vector<int>>& prerequisites)
+    {
+        for(auto edge: prerequisites)
+        {
+            // b->a
+            int a = edge[0], b = edge[1];
+            indegree[a]++;
+        }
+    }
+    vector<int> bfs(vector<int>& indegree, vector<vector<int>>& prerequisites)
+    {
+        int numCourses = indegree.size();
+        queue<int> qtraverse;
+        for(int i=0;i<numCourses;i++)
+        {
+            if(indegree[i] == 0)
+                qtraverse.push(i);
+        }
+        vector<int> ans;
+        while(!qtraverse.empty())
+        {
+            int node = qtraverse.front();
+            qtraverse.pop();
+
+            ans.push_back(node);
+            for(auto edge: prerequisites)
+            {
+                int a = edge[0], b = edge[1];
+                if(b == node)
+                {
+                    indegree[a]--;
+                    if(indegree[a] == 0)
+                    {
+                        qtraverse.push(a);
+                    }
+                }
+            }
+        }
+        return ans.size() == numCourses? ans : vector<int>{};
+    }
+
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> indegree(numCourses, 0);
+        getIndegree(indegree, prerequisites);
+
+        return bfs(indegree, prerequisites);
+    }
+};
+
+
+
+### Time Complexity
+
+#### 1. **`getIndegree` Function:**
+- The function iterates over each edge in the `prerequisites` list.
+- Each edge represents a course pair `[a, b]` where course `b` is a prerequisite for course `a`.
+- **Time Complexity:** O(E), where `E` is the number of edges in the `prerequisites` list.
+
+#### 2. **`bfs` Function:**
+- In the `bfs` function:
+  - **Initialization:** The loop iterates over all the courses (i.e., `numCourses`) to push courses with zero indegree into the queue. This step takes O(V), where `V` is the number of courses.
+  - **Queue Processing:** The while loop processes nodes in the queue. Every node is processed once, and for each processed node, all outgoing edges are examined (i.e., iterating over all the prerequisites). Thus, for each node, the inner loop runs for all edges.
+    - Therefore, in the worst case, the total number of iterations over all edges is O(E).
+  
+- **Time Complexity of `bfs`:** O(V + E), where `V` is the number of courses (vertices) and `E` is the number of prerequisite pairs (edges).
+
+#### 3. **`findOrder` Function:**
+- The `findOrder` function calls `getIndegree` and `bfs` in sequence.
+- Since `getIndegree` takes O(E) and `bfs` takes O(V + E), the total time complexity is the sum of these:
+  
+- **Overall Time Complexity:** O(V + E), where:
+  - `V` is the number of courses (`numCourses`).
+  - `E` is the number of prerequisites (`prerequisites` list size).
+
+### Space Complexity
+
+#### 1. **Space for `indegree`:**
+- The `indegree` vector stores the indegree for each course, which takes O(V) space.
+
+#### 2. **Space for `qtraverse` (queue):**
+- The queue holds courses with zero indegree and can at most hold all courses in the worst case (when all courses have zero indegree initially). Hence, the space for the queue is O(V).
+
+#### 3. **Space for `ans`:**
+- The `ans` vector stores the topological order of the courses, which in the worst case will hold all the courses, taking O(V) space.
+
+#### 4. **Space for `prerequisites`:**
+- The `prerequisites` input itself takes O(E) space, but this space is considered part of the input and is not additional space used by the algorithm.
+
+#### 5. **Auxiliary Space:**
+- The algorithm does not use any other data structures that grow with the input size apart from `indegree`, `qtraverse`, and `ans`.
+
+- **Overall Space Complexity:** O(V + E), where:
+  - `V` is the number of courses (vertices).
+  - `E` is the number of prerequisites (edges).
+
+### Summary:
+- **Time Complexity:** O(V + E)
+- **Space Complexity:** O(V + E)
+
+
+
+
+################################################################################################
+
+// dfs 
+
+
+class Solution {
+public:
+
+    bool dfs(int node, vector<int>& vis, vector<vector<int>>& prerequisites, vector<int>& ans)
+    {
+        vis[node] = 1;
+
+        for(auto edge: prerequisites)
+        {
+            int a = edge[0], b = edge[1];
+            if(b == node)
+            {
+                if(!vis[a])
+                {
+                    if(dfs(a, vis, prerequisites, ans))
+                        return true;
+                }
+                else if(vis[a] == 1)
+                    return true;
+            }
+        }
+        // processed
+        vis[node] = 2;
+        ans.insert(ans.begin()+0, node);
+
+        return false;
+    }
+
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+      
+        vector<int> vis(numCourses, 0);
+        vector<int> ans;
+        for(int i=0; i<numCourses; i++)
+        {
+            if(!vis[i])
+            {
+                // iscycle
+                if(dfs(i, vis, prerequisites,ans))
+                    return vector<int>{};
+            }
+        }
+        // notcycle, toposort exists
+        return ans;
+    }
+};
+
+
+### Time Complexity
+
+#### 1. **`dfs` Function:**
+- The DFS function is called for each course (node) in the graph. 
+- Inside the `dfs` function:
+  - **Visiting Neighbors:** The function iterates through all edges in the `prerequisites` list to find any edges where the second node (b) matches the current node. The edges are checked in a loop that runs for each edge in the graph. This results in O(E) time for every DFS call, where `E` is the number of edges in `prerequisites`.
+  - **Cycle Detection:** In the DFS process, the function checks if a node is in the current path (i.e., `vis[a] == 1`), which helps detect cycles. The check is constant time, O(1).
+  - **Backtracking and Topological Sorting:** Once a node is processed and all its neighbors are visited, it is added to the topological order (inserted at the beginning of the `ans` vector, which takes O(V) time in the worst case, where `V` is the number of courses). 
+
+- **DFS Complexity:** The DFS function processes each node once, and for each node, it processes all of its edges, resulting in a time complexity of O(V + E), where `V` is the number of courses and `E` is the number of edges (prerequisites).
+
+#### 2. **`findOrder` Function:**
+- The `findOrder` function iterates over all the nodes (courses), and for each unvisited node, it invokes the `dfs` function.
+  - This involves calling the `dfs` function `V` times, but each node and edge is processed only once due to the cycle check (`vis` array).
+  
+- **Time Complexity of `findOrder`:** O(V + E), since the DFS runs in O(V + E) time and we check all nodes once.
+
+### Space Complexity
+
+#### 1. **Space for `vis`:**
+- The `vis` vector keeps track of the state of each node (0: unvisited, 1: visiting, 2: processed). It requires O(V) space.
+
+#### 2. **Space for `ans`:**
+- The `ans` vector stores the topologically sorted order of courses, which requires O(V) space in the worst case.
+
+#### 3. **Recursion Stack in DFS:**
+- The recursion stack of the DFS function stores the current path of nodes. In the worst case, the recursion depth can be as deep as the number of courses, i.e., O(V).
+
+#### 4. **Space for `prerequisites`:**
+- The input `prerequisites` itself takes O(E) space, but this is not counted as additional space since it is part of the input.
+
+#### 5. **Auxiliary Space:**
+- Aside from the `vis`, `ans`, and the recursion stack, there are no other significant data structures being used.
+
+- **Overall Space Complexity:** O(V + E), where:
+  - `V` is the number of courses.
+  - `E` is the number of prerequisites (edges).
+
+### Summary:
+- **Time Complexity:** O(V + E)
+- **Space Complexity:** O(V + E)

@@ -1,0 +1,109 @@
+
+https://www.geeksforgeeks.org/problems/subarray-with-given-sum-1587115621/1?page=1&category=sliding-window&difficulty=Medium&sortBy=submissions
+
+
+class Solution {
+  public:
+    vector<int> subarraySum(vector<int> &arr, int target) {
+        // code here
+        int n = arr.size(), l = 0, r = 0, sum = 0;
+        
+        for(int i = 0; i<n; i++){
+            int sum = 0;
+            for(int j = i; j<n; j++){
+                sum += arr[j];
+                
+                if(sum > target)
+                    break;
+                
+                if(sum == target)
+                    return { i+1, j+1} ;
+            }
+        }
+        
+        return {-1};
+    }
+};
+
+
+### Time Complexity:
+- The code uses two nested loops to find the subarray with the given target sum:
+  1. The outer loop runs from `i = 0` to `n-1` (\(O(n)\)).
+  2. The inner loop starts from `j = i` and iterates until `n` or until the sum exceeds the target (\(O(n)\) in the worst case for each iteration of the outer loop).
+- Thus, the total time complexity is \(O(n^2)\).
+
+### Space Complexity:
+- The space complexity is \(O(1)\) since no additional data structures are used, and only a few variables are declared.
+
+---
+
+### Key Observations:
+- The **time complexity** can be reduced to \(O(n)\) using a sliding window approach for non-negative numbers or a prefix sum + hash map approach for arrays with negative numbers. 
+- The given code iterates over all possible subarrays, making it less efficient for large input sizes.
+
+
+Time and Space Complexity 
+
+
+###################################################################################
+
+class Solution {
+  public:
+    vector<int> subarraySum(vector<int> &arr, int target) {
+        // code here
+        int n = arr.size(), l = 0, r = 0, sum = 0;
+        
+        
+        while(r<n){
+            sum += arr[r];
+            
+            while(sum > target && l<=r){
+                sum = sum - arr[l];
+                l++;
+            }
+            
+            if(sum == target){
+                return { l+1, r+1};
+            }
+            
+            r++;
+        }
+        return {-1};
+    }
+};
+
+### Time Complexity
+
+1. **Outer Loop (variable `r`):**
+   - The variable `r` iterates through the array from 0 to \(n-1\). This loop runs \(O(n)\) times.
+
+2. **Inner Loop (variable `l`):**
+   - The variable `l` adjusts to ensure the current subarray's sum does not exceed the target. Each element is added to and removed from the `sum` at most once.
+   - Total iterations of the inner loop across all iterations of the outer loop: \(O(n)\).
+
+3. **Overall Time Complexity:**
+   \[
+   O(n) + O(n) = O(n)
+   \]
+
+---
+
+### Space Complexity
+
+1. **Variables:**
+   - The code uses a few integer variables (`sum`, `l`, `r`, `mStart`, `mEnd`) which require \(O(1)\) space.
+
+2. **Output Vector:**
+   - The output vector stores at most two integers, requiring \(O(1)\) space.
+
+3. **Overall Space Complexity:**
+   \[
+   O(1)
+   \]
+
+---
+
+### Summary
+- **Time Complexity:** \(O(n)\)
+- **Space Complexity:** \(O(1)\)
+

@@ -1,0 +1,113 @@
+#include <bits/stdc++.h>
+
+// recursion
+
+#include <bits/stdc++.h>
+
+int f(int ind, vector<int> hgs)
+{
+    if(ind == 0) return 0;
+
+    int oneStep = f(ind-1,hgs) + abs(hgs[ind]-hgs[ind-1]);
+    int twoStep = INT_MAX;
+
+    if(ind>1)
+        twoStep = f(ind-2, hgs) + abs(hgs[ind]-hgs[ind-2]);
+
+    return min(oneStep,twoStep);
+
+}
+int frogJump(int n, vector<int> &heights)
+{
+    // Write your code here.
+
+    return f(n-1, heights);
+}
+
+//Memoization
+
+int f(int ind, vector<int> hgs, vector<int> & dp)
+{
+    if(ind == 0) return 0;
+
+    if(dp[ind]!=-1) return dp[ind];
+
+    int oneStep = f(ind-1,hgs, dp) + abs(hgs[ind]-hgs[ind-1]);
+    int twoStep = INT_MAX;
+
+    if(ind>1)
+        twoStep = f(ind-2, hgs, dp) + abs(hgs[ind]-hgs[ind-2]);
+
+
+    dp[ind] = min(oneStep,twoStep);
+
+    return dp[ind] = min(oneStep,twoStep);
+
+}
+int frogJump(int n, vector<int> &heights)
+{
+    // Write your code here.
+    vector<int> dp(n,-1);
+
+    return f(n-1, heights, dp);
+}
+
+
+###############################################################################################
+// tabular form 
+
+#include <bits/stdc++.h>
+
+int f(vector<int> &heights)
+{
+    int n = heights.size();
+    vector<int> dp(n,-1);
+    dp[0] = 0;
+    for(int i=1;i<n;i++)
+    {
+        int pickOne = dp[i-1] + abs(heights[i]-heights[i-1]);
+        int pickTwo = INT_MAX;
+        if(i>1)
+            pickTwo = dp[i-2] + abs(heights[i]-heights[i-2]);
+
+        dp[i] = min(pickOne, pickTwo);
+    }
+    return dp[n-1];
+}
+
+int frogJump(int n, vector<int> &heights)
+{
+    // Write your code here.
+    return f(heights);
+}
+
+###############################################################################################
+// optimization method
+
+#include <bits/stdc++.h>
+
+int f(vector<int> &heights)
+{
+    int n = heights.size();
+    int prev = 0;
+    int prevtwo = 0; // for two steps
+    for(int i=1;i<n;i++)
+    {
+        int pickOne = prev + abs(heights[i]-heights[i-1]);
+        int pickTwo = INT_MAX;
+        if(i>1)
+            pickTwo = prevtwo + abs(heights[i]-heights[i-2]);
+
+        prevtwo = prev;
+        prev = min(pickOne, pickTwo);
+    }
+    return prev;
+}
+
+int frogJump(int n, vector<int> &heights)
+{
+    // Write your code here.
+    return f(heights);
+}
+
+

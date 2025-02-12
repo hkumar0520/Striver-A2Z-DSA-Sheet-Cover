@@ -1,0 +1,86 @@
+
+
+struct Node{
+    // cannot write this Node* links[2] = NULL;
+    Node* links[2];
+    bool isEnd = false;
+    
+    bool isContainsKey(int ind){
+        return links[ind] != NULL;
+    }
+    
+    Node* get(int ind){
+        return links[ind];
+    }
+    
+    void put(int ind, Node* node){
+        links[ind] = node;
+    }
+    
+    bool getEnd(){
+        return isEnd;
+    }
+    
+    void setEnd(){
+        isEnd = true;
+    }
+    
+    
+};
+
+class Trie{
+    Node* root;
+    
+    public:
+    Trie(){
+        root = new Node();
+    }
+    
+    vector<int> Insert(int vec[], int col){
+        Node* curr = root;
+        vector<int> path;
+        
+        for(int i=0; i<col; i++){
+            path.push_back(vec[i]);
+            if( !curr->isContainsKey(vec[i]))
+                curr->put(vec[i], new Node());
+                
+            curr = curr->get(vec[i]);
+        }
+        curr->setEnd();
+        return path;
+    }
+    
+    bool Check(int vec[], int col){
+        Node* curr = root;
+        
+        for(int i=0; i<col; i++){
+            if( !curr->isContainsKey(vec[i]))   return false;
+                
+            curr = curr->get(vec[i]);
+        }
+        return curr->getEnd();
+    }
+};
+
+
+class Solution
+{
+    public:
+    // #define MAX 1000
+    vector<vector<int>> uniqueRow(int M[MAX][MAX],int row,int col)
+    {
+        //Your code here
+        // Your code here
+        Trie* trie = new Trie();
+        
+        vector<vector<int>> ans;
+        for(int i=0; i<row; i++){
+            if(!trie->Check(M[i], col)){
+                vector<int> path = trie->Insert(M[i], col);
+                ans.push_back( path );
+            }
+        }
+        return ans;
+    }
+};

@@ -1,0 +1,42 @@
+
+
+
+#include<bits/stdc++.h>
+
+int f(vector<int>& arr, int n)
+{
+    vector<int> dpinc(n,1);
+	vector<int> dpdec(n,1);
+    int maxAns = INT_MIN;
+
+    for(int i=1;i<n;i++)
+    {
+        for(int j=i-1;j>=0;j--)
+        {
+            if(arr[i]>arr[j])
+                dpinc[i] = max(dpinc[i],dpinc[j]+1);
+        }
+    }
+
+	for(int i=n-2;i>=0;i--)
+	{
+		for(int j=i+1;j<n;j++)
+		{
+            if(arr[i]>arr[j])
+                dpdec[i] = max(dpdec[i],dpdec[j]+1);
+		}
+	}
+
+	for(int i=0;i<n;i++)
+		maxAns = max(maxAns, dpinc[i]+dpdec[i]-1);
+
+    return maxAns;
+}
+
+int longestBitonicSubsequence(vector<int>& arr, int n)
+{
+	// Write your code here.
+    return f(arr,n);
+}
+
+

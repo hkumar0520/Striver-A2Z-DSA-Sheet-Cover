@@ -1,0 +1,149 @@
+not dfs problem , 2 = rotten, 1 = fresh, 0 - wall
+
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        int n = grid.size(),m = grid[0].size(), totalcnt = 0, cnt = 0, days = 0;
+        queue<vector<int>> qtraverse;
+        for(int i=0;i<n;i++)
+        {
+            for(int j = 0;j<m;j++)
+            {
+                // totalcnt is total of rotten + fresh oranges
+                if(grid[i][j] != 0) totalcnt++;
+                if(grid[i][j] == 2) qtraverse.push({i,j});
+            }
+        }
+        int ax[4] = {-1,0,1,0};
+        int by[4] = {0,1,0,-1};
+        while(!qtraverse.empty())
+        {
+            int k = qtraverse.size();
+            cnt += k;
+            while(k--)
+            {
+                vector<int> node = qtraverse.front();
+                qtraverse.pop();
+                int x= node[0], y = node[1];
+                for(int i=0;i<4;i++)
+                {
+                    int nx = x + ax[i], ny = y + by[i];
+                    if(nx>=0 && ny>=0 && nx<n && ny<m && grid[nx][ny] == 1)
+                    {
+                        grid[nx][ny] = 2;
+                        qtraverse.push({nx,ny});
+                    }
+                }
+            }
+            if(!qtraverse.empty())  days++;
+        }
+        // compare cnt(rotten+fresh(which rot)) == totalcnt
+        return totalcnt == cnt? days:-1;
+    }
+};
+
+### Time Complexity
+
+The time complexity of the code can be analyzed as follows:
+
+1. **Initialization Loop**:
+   - The nested loop traverses the entire grid to count the total oranges (`totalcnt`) and enqueue the initially rotten oranges.
+   - This operation takes \(O(n \times m)\), where \(n\) is the number of rows and \(m\) is the number of columns.
+
+2. **Breadth-First Search (BFS)**:
+   - Each cell in the grid is processed at most once (either as an initially rotten orange or when it becomes rotten during the BFS).
+   - For each cell, we check its four neighbors, which is a constant operation (\(O(1)\)).
+   - Thus, the BFS also takes \(O(n \times m)\).
+
+**Overall Time Complexity**:
+\[
+O(n \times m)
+\]
+
+---
+
+### Space Complexity
+
+The space complexity depends on:
+
+1. **Queue Storage**:
+   - The queue `qtraverse` stores the positions of rotten oranges. In the worst case, all oranges in the grid could be rotten, so the queue size could grow to \(O(n \times m)\).
+
+2. **Auxiliary Storage**:
+   - The code uses constant space for variables (`ax`, `by`, etc.).
+
+**Overall Space Complexity**:
+\[
+O(n \times m)
+\]
+
+---
+
+### Summary
+- **Time Complexity**: \(O(n \times m)\)
+- **Space Complexity**: \(O(n \times m)\)
+
+###################################################################
+
+my earlier soln 
+
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        int countt=0,m=grid.size(),n=grid[0].size();
+        queue<vector<int>> q;
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j]==2)
+                {
+                    // x,y,steps 
+                    q.push(vector<int>{i,j,0});
+                }
+                else if(grid[i][j]==1)
+                    countt++;
+            }
+        }
+        if(countt==0)
+            return 0;
+        int minsteps=INT_MIN;
+        int a[4]={-1,0,1,0};
+        int b[4]={0,1,0,-1};
+        while(!q.empty())
+        {
+            vector<int> current=q.front();
+            q.pop();
+            int x=current[0],y=current[1],steps=current[2];
+            minsteps=max(minsteps,steps+1);
+            if(countt==0)
+                break;
+            for(int i=0;i<4;i++)
+            {
+                int newx=x+a[i];
+                int newy=y+b[i];
+                if(newx>=0 && newy>=0 && newx<m && newy<n && grid[newx][newy]==1)
+                {
+                    grid[newx][newy]=2;
+                    q.push(vector<int>{newx,newy,steps+1});
+                    countt--;
+                }
+            }
+        }
+        if(countt==0)
+            return minsteps;
+        return -1;
+    }
+};
+
+
+Time Complexity: O ( n x n ) x 4    
+
+Reason: Worst-case - We will be making each fresh orange rotten in the grid and for each rotten orange will check in 4 directions
+
+Space Complexity: O ( n x n )
+
+Reason: worst-case -  If all oranges are Rotten, we will end up pushing all rotten oranges into the Queue data structure
+
+
+##################################3

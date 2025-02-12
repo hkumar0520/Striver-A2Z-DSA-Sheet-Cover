@@ -1,0 +1,127 @@
+https://www.geeksforgeeks.org/problems/circular-tour-1587115620/1?page=1&category=sliding-window&company=Amazon,Microsoft,Flipkart,Adobe,Google,Samsung,Paytm,Morgan%20Stanley,D-E-Shaw,Wipro,Uber,Infosys,Atlassian&difficulty=Medium&sortBy=submissions
+
+class Solution {
+  public:
+    int circularTour(vector<int>& a1, vector<int>& a2) {
+        // Your code here
+        int n = a1.size();
+        
+        for(int i=0; i<n; i++){
+            
+            int sum = (a1[i]-a2[i]);
+            int minIndex = i;
+            
+            if(sum < 0)
+                continue;
+            
+            for(int j = i+1; (j%n)!=i; j++ ){
+                
+                sum = sum + (a1[j%n]-a2[j%n]);
+                if(sum < 0)
+                    break;;
+            }
+            
+            if(sum >= 0)
+                return minIndex;
+        }
+        return -1;
+    }
+};
+
+### Time Complexity
+
+1. **Outer Loop:**  
+   - The outer loop iterates \( n \) times, once for each index \( i \) of the arrays \( a1 \) and \( a2 \).
+
+2. **Inner Loop:**  
+   - For each \( i \), the inner loop potentially iterates \( n \) times in the worst case (if the subarray starting at \( i \) has no negative sum).  
+   - Therefore, the total number of iterations across both loops in the worst case is \( O(n^2) \).
+
+**Total Time Complexity:**  
+\[ O(n^2) \]
+
+---
+
+### Space Complexity
+
+1. **Auxiliary Variables:**  
+   - The algorithm uses a constant number of variables: `sum`, `minIndex`, `n`, and loop counters.
+   - **Space Complexity:** \( O(1) \).
+
+2. **Input Arrays:**  
+   - The input arrays \( a1 \) and \( a2 \) are passed as references, so no additional space is used for them.
+
+**Total Space Complexity:**  
+\[ O(1) \]
+
+---
+
+### Final Complexity Summary
+
+| **Operation**       | **Time Complexity** | **Space Complexity** |
+|----------------------|---------------------|-----------------------|
+| Outer Loop           | \( O(n) \)         | \( O(1) \)           |
+| Inner Loop           | \( O(n) \) (per iteration) | \( O(1) \) |
+| **Total**            | \( O(n^2) \)       | \( O(1) \)           |
+
+
+#########################################################################
+
+
+
+class Solution {
+  public:
+    int circularTour(vector<int>& a1, vector<int>& a2) {
+        // Your code here
+        int sum = 0, minIndex = 0, isPossibleSum = 0, n = a1.size();
+        for(int i=0; i<n; i++){
+            sum += (a1[i]-a2[i]);
+            isPossibleSum += (a1[i]-a2[i]);
+            
+            if(sum<0){
+                sum = 0;
+                minIndex = i+1;
+            }
+        }
+        
+        if(isPossibleSum < 0)
+            return -1;
+            
+        return minIndex;
+    }
+};
+
+
+### Time Complexity
+
+1. **Single Loop Iteration:**
+   - The loop runs once over the arrays \( a1 \) and \( a2 \), both of size \( n \).
+   - Operations within the loop, such as arithmetic and condition checks, are \( O(1) \) each.
+   - **Time Complexity:** \( O(n) \).
+
+**Total Time Complexity:**  
+\[ O(n) \]
+
+---
+
+### Space Complexity
+
+1. **Auxiliary Variables:**
+   - The algorithm uses a constant number of variables: `sum`, `minIndex`, `isPossibleSum`, and `n`.
+   - **Space Complexity:** \( O(1) \).
+
+2. **Input Arrays:**
+   - The input arrays \( a1 \) and \( a2 \) are passed as references, so no additional space is used for them.
+
+**Total Space Complexity:**  
+\[ O(1) \]
+
+---
+
+### Final Complexity Summary
+
+| **Operation**       | **Time Complexity** | **Space Complexity** |
+|----------------------|---------------------|-----------------------|
+| Loop Iteration       | \( O(n) \)         | \( O(1) \)           |
+| Auxiliary Variables  | \( O(1) \)         | \( O(1) \)           |
+| **Total**            | \( O(n) \)         | \( O(1) \)           |

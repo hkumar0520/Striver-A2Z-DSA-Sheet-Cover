@@ -1,0 +1,135 @@
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	for(int i =0; i<4; i++){
+	    for(int j=0; j<4; j++){
+	        cout<<i+j<<" ";
+	    }
+	    cout<<endl;
+	}
+	
+	cout<<endl;
+	
+	
+	for(int i =0; i<4; i++){
+	    for(int j=0; j<4; j++){
+	        cout<<i-j<<" ";
+	    }
+	    cout<<endl;
+	}
+
+}
+
+/*
+
+output
+
+0 1 2 3 
+1 2 3 4 
+2 3 4 5 
+3 4 5 6 
+
+0 -1 -2 -3 
+1 0 -1 -2 
+2 1 0 -1 
+3 2 1 0 
+
+*/
+
+
+##########################################################
+
+
+In C++, both `unordered_set::count` and `unordered_set::find` are used to check whether an element exists in an `unordered_set`, but they are used in different ways and have different performance implications. Here's a detailed comparison:
+
+### 1. **`unordered_set::count`**:
+
+- **Purpose**: This function is used to check if an element exists in the set. It returns the number of occurrences of the given element in the set.
+  
+  - For `unordered_set`, which stores unique elements (i.e., no duplicates), the result will always be either `0` (if the element is not present) or `1` (if the element is present).
+  
+  - **Syntax**: 
+    ```cpp
+    size_t count(const Key& key) const;
+    ```
+    - It returns the number of occurrences of `key` in the set, which will either be `0` or `1` for `unordered_set`.
+
+- **Usage**:
+    ```cpp
+    unordered_set<int> s = {1, 2, 3, 4};
+    if (s.count(3)) {
+        cout << "3 is present!" << endl;
+    }
+    ```
+
+- **Performance**: 
+  - `count` internally uses hashing to check if the element exists, so it has an average time complexity of **O(1)**.
+  - However, it needs to perform a lookup to count the occurrences, which could take more time than `find` if the element is found early in the search, as it checks the number of occurrences rather than just returning the iterator.
+
+### 2. **`unordered_set::find`**:
+
+- **Purpose**: This function is used to find an element in the set. It returns an iterator to the element if found, and to the `end()` iterator if not found.
+
+  - **Syntax**:
+    ```cpp
+    iterator find(const Key& key);
+    ```
+    - It returns an iterator to the element in the set if the element is found, otherwise, it returns `end()`.
+
+- **Usage**:
+    ```cpp
+    unordered_set<int> s = {1, 2, 3, 4};
+    auto it = s.find(3);
+    if (it != s.end()) {
+        cout << "3 is present!" << endl;
+    }
+    ```
+
+- **Performance**: 
+  - `find` also uses hashing internally to check if the element exists. The average time complexity is **O(1)**.
+  - `find` returns an iterator to the found element, which can be used to access or modify the element directly, and may be more efficient if you need to work with the element, not just check its existence.
+
+### Key Differences:
+
+| Aspect               | `unordered_set::count` | `unordered_set::find` |
+|----------------------|------------------------|-----------------------|
+| **Return Type**       | `size_t` (either 0 or 1) | Iterator (`end()` if not found) |
+| **Purpose**           | Checks for presence of an element and returns how many times it appears (always 0 or 1 for `unordered_set`) | Returns an iterator to the element if found, or `end()` if not found |
+| **Performance**       | Average **O(1)**, but performs an extra check for the count | Average **O(1)**, faster when you need to access or modify the element |
+| **Use Case**          | When you need to check if an element exists but don't need access to it | When you need to access or modify the element once you find it |
+
+### Which one to use?
+
+- **`find`**: Use `find` when you need to access the element directly or when you only care about whether the element exists, but might need more than just a boolean result. It is also useful when you want to modify the element after finding it.
+  
+- **`count`**: Use `count` when you only care about whether the element exists or not and do not need to access it. It's simple and convenient for just checking presence.
+
+### Example Comparison:
+
+```cpp
+#include <iostream>
+#include <unordered_set>
+
+int main() {
+    std::unordered_set<int> s = {1, 2, 3, 4};
+
+    // Using count
+    if (s.count(3)) {
+        std::cout << "3 is present using count!" << std::endl;
+    }
+
+    // Using find
+    auto it = s.find(3);
+    if (it != s.end()) {
+        std::cout << "3 is present using find!" << std::endl;
+    }
+
+    return 0;
+}
+```
+
+Both approaches will give the same result, but `find` allows you to do more (e.g., modify the element) if needed.

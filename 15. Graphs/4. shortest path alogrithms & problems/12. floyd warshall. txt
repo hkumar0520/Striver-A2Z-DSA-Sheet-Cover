@@ -1,0 +1,114 @@
+
+/* If we want to check for a negative cycle:
+After completing the steps(outside those three loops), we will run a loop 
+and check if any cell having the row and column the same(i = j) contains a 
+value less than 0. */
+
+    void shortestDistance(vector<vector<int>>& mat) {
+        // Code here
+        int  rowSize = mat.size(), colSize = mat[0].size();
+        for(int i=0; i<rowSize; i++)
+        {
+            for(int j=0; j<colSize; j++)
+            {
+                if(mat[i][j] == -1)
+                    mat[i][j] = 1e9;
+                    
+                if(i == j)
+                    mat[i][j] = 0;
+            }
+        }
+        
+        // rowsize & colsize are equal
+        
+        for(int k=0; k<rowSize; k++)
+        {
+            for(int i=0; i<rowSize; i++)
+            {
+                for(int j=0; j<colSize; j++)
+                {
+                    mat[i][j] = min(mat[i][j], mat[i][k] + mat[k][j]);
+                }
+            }
+        }
+        
+        for(int i=0; i<rowSize; i++)
+        {
+            for(int j=0; j<colSize; j++)
+            {
+                if(mat[i][j] == 1e9)
+                    mat[i][j] = -1;
+            }
+        }
+    }
+
+
+    Let's analyze the time and space complexity of the given code step-by-step.
+
+### Code Breakdown:
+
+The function `shortestDistance` appears to implement the **Floyd-Warshall Algorithm** to calculate the shortest distances between all pairs of vertices in a graph. The matrix `mat` represents the distances (with `-1` indicating no path).
+
+### Step 1: Initial Setup
+```cpp
+int  rowSize = mat.size(), colSize = mat[0].size();
+for(int i = 0; i < rowSize; i++) {
+    for(int j = 0; j < colSize; j++) {
+        if(mat[i][j] == -1)
+            mat[i][j] = 1e9;
+        if(i == j)
+            mat[i][j] = 0;
+    }
+}
+```
+Here, the code loops over each element of the `mat` matrix and does the following:
+- Converts `-1` to a large value (`1e9`), representing that there is no direct path.
+- Sets the diagonal elements (i.e., `mat[i][i]`) to `0`, representing that the distance from a node to itself is `0`.
+
+- **Time Complexity:** The two nested loops over `i` and `j` iterate through each element of the `mat` matrix. The total number of elements is `rowSize * colSize`. Therefore, the time complexity is **O(rowSize * colSize)**.
+- **Space Complexity:** This step does not use any additional space apart from modifying the input matrix. Hence, the space complexity is **O(1)** (ignoring the space used by the input matrix).
+
+### Step 2: Floyd-Warshall Algorithm
+```cpp
+for(int k = 0; k < rowSize; k++) {
+    for(int i = 0; i < rowSize; i++) {
+        for(int j = 0; j < colSize; j++) {
+            mat[i][j] = min(mat[i][j], mat[i][k] + mat[k][j]);
+        }
+    }
+}
+```
+This section implements the core of the Floyd-Warshall algorithm, which computes the shortest paths between all pairs of nodes.
+
+- The outer loop (over `k`) runs `rowSize` times.
+- The middle loop (over `i`) runs `rowSize` times.
+- The inner loop (over `j`) runs `colSize` times.
+
+Therefore, the total number of iterations is `O(rowSize * rowSize * colSize)`.
+
+- **Time Complexity:** This step has a time complexity of **O(rowSize * rowSize * colSize)**.
+- **Space Complexity:** This part does not use any additional space apart from the input matrix, so the space complexity remains **O(1)**.
+
+### Step 3: Final Adjustments
+```cpp
+for(int i = 0; i < rowSize; i++) {
+    for(int j = 0; j < colSize; j++) {
+        if(mat[i][j] == 1e9)
+            mat[i][j] = -1;
+    }
+}
+```
+This loop checks all the elements in the matrix `mat` again, and changes any values equal to `1e9` back to `-1` (indicating no path).
+
+- **Time Complexity:** Again, this involves two nested loops over `i` and `j`, iterating through all elements of the matrix, resulting in **O(rowSize * colSize)** time complexity.
+- **Space Complexity:** No additional space is used, so the space complexity remains **O(1)**.
+
+### Overall Complexity:
+
+- **Time Complexity:** The time complexity is dominated by the Floyd-Warshall algorithm step, which is **O(rowSize * rowSize * colSize)**. So the overall time complexity is **O(rowSize^2 * colSize)**.
+- **Space Complexity:** Since the algorithm modifies the input matrix `mat` in-place and doesn't allocate extra space, the overall space complexity is **O(1)**, ignoring the input matrix.
+
+### Summary:
+
+- **Time Complexity:** **O(rowSize^2 * colSize)**
+- **Space Complexity:** **O(1)** (ignoring the input matrix)

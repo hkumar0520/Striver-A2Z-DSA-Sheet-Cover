@@ -1,0 +1,133 @@
+// working optimiation, approach , same f function in 1st question
+bool f(int ind, int target, vector<int> &arr, vector<vector<int>> &dp)
+{
+    if(target == 0) return dp[ind][target] = true;
+    if (ind == 0) 
+      return (arr[ind] == target) ? true : false;
+   
+    if(dp[ind][target] != -1)   return dp[ind][target];
+
+    bool nonPick = f(ind-1, target,arr,dp);
+    bool pick = false;
+    if(arr[ind]<=target)
+        pick = f(ind-1, target-arr[ind], arr,dp);
+
+    dp[ind][target] = (pick || nonPick);
+
+    return  dp[ind][target];
+}
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	// Write your code here.
+	int totalsum = 0;
+	for(int i=0;i<n;i++)
+		totalsum += arr[i];
+
+	 vector<vector<int>> dp(n, vector<int>(totalsum+1,-1));
+	for(int i=0;i<totalsum+1;i++)
+		f(n-1,i,arr,dp);
+
+	int minium = INT_MAX;
+	for(int i=0;i<totalsum+1;i++)
+	{
+		if(dp[n-1][i] == 1)
+			minium = min(minium,abs(i - (totalsum-i)));
+	}
+	return minium;
+}
+
+
+###############################################################################################
+// tabular approach , time limit exceed ( 25/50)
+
+bool f(int n, int k, vector<int> &arr, vector<vector<bool>> &dp)
+{
+    // target =0 
+    for(int  i=0;i<n;i++)
+        dp[i][0] = true;
+    
+    if(arr[0]<= k)
+        dp[0][arr[0]] = true;
+    for(int i=1;i<n;i++)
+    {
+        for(int j=1;j<k+1;j++)
+        {
+            bool nottaken = dp[i-1][j];
+            bool taken = false;
+            if(arr[i]<=j)
+                taken = dp[i-1][j-arr[i]];
+
+            dp[i][j] = taken || nottaken;
+        }
+    }
+
+    return  dp[n-1][k];
+}
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	// Write your code here.
+	int totalsum = 0;
+	for(int i=0;i<n;i++)
+		totalsum += arr[i];
+
+	 vector<vector<bool>> dp(n, vector<bool>(totalsum+1,false));
+	for(int i=0;i<totalsum+1;i++)
+		f(n,i,arr,dp);
+
+	int minium = INT_MAX;
+	for(int i=0;i<totalsum+1;i++)
+	{
+		if(dp[n-1][i])
+			minium = min(minium,abs(i - (totalsum-i)));
+	}
+	return minium;
+}
+
+
+
+###############################################################################################
+// not working , we are replacing dp = temp, so that's why
+void f(int n, int k, vector<int> &arr, vector<bool> &dp)
+{
+    // target =0 
+    dp[0] = true;
+    if(arr[0]<= k)
+        dp[arr[0]] = true;
+
+    for(int i=1;i<n;i++)
+    {
+        vector<bool> temp(k+1,false);
+        temp[0] = true;
+        for(int j=1;j<k+1;j++)
+        {
+            bool nottaken = dp[j];
+            bool taken = false;
+            if(arr[i]<=j)
+                taken = dp[j-arr[i]];
+
+            temp[j] = taken || nottaken;
+        }
+        dp = temp;
+    }
+
+}
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	// Write your code here.
+	int totalsum = 0;
+	for(int i=0;i<n;i++)
+		totalsum += arr[i];
+
+	vector<bool> dp(totalsum+1, false);
+
+	for(int i=0;i<totalsum+1;i++)
+		f(n,i,arr,dp);
+
+	int minium = INT_MAX;
+	for(int i=0;i<totalsum+1;i++)
+	{
+		if(dp[i])
+			minium = min(minium,abs(i - (totalsum-i)));
+	}
+	return minium;
+}

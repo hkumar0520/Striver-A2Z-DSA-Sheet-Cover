@@ -1,0 +1,113 @@
+
+
+
+class Solution {
+  public:
+    void removeDuplicates(string& str,int idx){
+        if( idx >= str.size())
+            return ;
+            
+        
+        int j = idx;
+        while(j<str.size() && str[idx] == str[j]){
+            j++;
+        }
+        
+        // after removing element start from same idx
+        if( (j-idx) >= 2){
+            str.erase(idx, j-idx);
+            removeDuplicates(str, idx);
+        }
+        else{
+            // if not removing elements go to next index
+            removeDuplicates(str, idx+1);
+        }
+    }
+    string removeUtil(string &s) {
+        // code here
+        
+        string str = s;
+        while(true){
+            string str2 = str;
+            removeDuplicates(str2, 0);
+            if(str == str2)
+                break;
+            
+            str = str2;
+        }
+        return str;
+    }
+};
+
+### **Time and Space Complexity Analysis**
+
+Let’s analyze the provided code step by step.
+
+---
+
+### **Key Operations**
+1. **`removeDuplicates` Function**:
+   - This function recursively removes adjacent duplicates in the string.
+   - If duplicates are found, it erases them and restarts from the same index (`idx`).
+   - If no duplicates are found, it moves to the next index (`idx + 1`).
+
+2. **`removeUtil` Function**:
+   - It repeatedly calls `removeDuplicates` until no changes occur in the string.
+
+---
+
+### **Time Complexity**
+#### 1. **Inner Function (`removeDuplicates`)**:
+   - In the worst case, the function iterates through the entire string, and each `erase` operation takes \( O(n) \) (where \( n \) is the length of the string).
+   - If duplicates are found and removed, the recursion restarts from the same index.
+
+#### 2. **Outer Function (`removeUtil`)**:
+   - The outer loop continues until no changes are made to the string. In the worst case, the string length decreases by at least 1 in each iteration.
+   - For a string of initial length \( n \), there can be at most \( n \) iterations of the outer loop.
+
+#### **Combined Time Complexity**:
+   - Each iteration of `removeUtil` involves a call to `removeDuplicates`, which may traverse the entire string and perform an `erase` operation, both of which take \( O(n) \).
+   - Thus, the total time complexity is:
+     \[
+     O(n^2)
+     \]
+
+---
+
+### **Space Complexity**
+1. **Recursive Call Stack**:
+   - The depth of recursion in `removeDuplicates` is proportional to the length of the string in the worst case, i.e., \( O(n) \).
+
+2. **Temporary Strings**:
+   - The `removeUtil` function creates a temporary copy of the string (`str2`) in each iteration. This requires \( O(n) \) space.
+
+#### **Combined Space Complexity**:
+   - The total space complexity is dominated by the recursion stack and the temporary string, resulting in:
+     \[
+     O(n)
+     \]
+
+---
+
+### **Final Complexity**
+- **Time Complexity**: \( O(n^2) \)
+- **Space Complexity**: \( O(n) \)
+
+---
+
+### **Example Walkthrough**
+#### Input:
+```cpp
+string s = "abbaca";
+Solution sol;
+cout << sol.removeUtil(s); // Output: "ca"
+```
+
+#### Execution:
+1. First Pass:
+   - Remove "bb" → "aaca".
+   - Remove "aa" → "ca".
+2. Second Pass:
+   - No duplicates → Stop.
+
+Each pass involves iterating through the string and removing duplicates, leading to \( O(n^2) \) total time complexity.

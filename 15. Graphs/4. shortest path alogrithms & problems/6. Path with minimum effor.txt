@@ -1,0 +1,308 @@
+
+// 2893ms
+
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+
+        queue<vector<int>> pq;
+
+        int rowsize = heights.size(), colsize = heights[0].size();
+
+        vector<vector<int>> dist(rowsize, vector<int>(colsize, INT_MAX));
+
+        pq.push({0, 0, 0});
+        dist[0][0] = 0;
+
+        int xchange[4] = {-1, 0, 1, 0};
+        int ychange[4] = {0, 1, 0, -1};
+        int minAbsDiff = INT_MAX;
+        while (!pq.empty()) {
+            vector<int> currNode = pq.front();
+            pq.pop();
+            int AbsDiff = currNode[0], xcordinate = currNode[1],
+                ycordinate = currNode[2];
+
+            if (xcordinate == rowsize - 1 && ycordinate == colsize - 1) {
+                minAbsDiff = min(minAbsDiff, AbsDiff);
+                continue;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int xnew = xcordinate + xchange[i];
+                int ynew = ycordinate + ychange[i];
+                if (xnew >= 0 && ynew >= 0 && xnew < rowsize &&
+                    ynew < colsize) {
+                    int newdist =
+                        max(AbsDiff, abs(heights[xnew][ynew] -
+                                         heights[xcordinate][ycordinate]));
+                    if (dist[xnew][ynew] > newdist) {
+                        dist[xnew][ynew] = newdist;
+                        pq.push({dist[xnew][ynew], xnew, ynew});
+                    }
+                }
+            }
+        }
+
+        return minAbsDiff;
+    }
+};
+
+
+Let's analyze the time and space complexity of the provided code. The code uses a breadth-first search (BFS)-like approach for finding the minimum effort path in a grid of heights. Although the code uses a `queue`, it behaves similarly to Dijkstra's algorithm, where it updates distances and explores neighboring nodes in the grid.
+
+### Time Complexity
+
+1. **Main Loop:**
+   The main loop iterates over all the grid cells by dequeuing from the `queue`. Each cell in the grid is processed at most once. Since the grid has `rowsize * colsize` cells, the number of iterations will be proportional to `rowsize * colsize`.
+
+2. **Neighbor Exploration:**
+   For each cell, the algorithm checks all four possible neighboring cells (up, down, left, right). This exploration of neighbors occurs in constant time, i.e., \( O(1) \), for each cell.
+
+3. **Priority Queue Operations:**
+   Even though a `queue` is used, we need to consider how the distance is updated and enqueued for exploration. Each time we push a new cell into the queue, this operation takes constant time for enqueue and dequeue (as no priority ordering is maintained in the queue here). 
+
+   - In the worst case, each of the `rowsize * colsize` cells will be enqueued and dequeued at most once.
+   - The complexity of a `push` or `pop` operation on the queue is \( O(1) \).
+
+Thus, the **overall time complexity** is dominated by the number of cells in the grid and the number of operations performed for each cell. This gives us:
+
+\[
+O(\text{{rowsize}} \times \text{{colsize}})
+\]
+
+### Space Complexity
+
+1. **Distance Matrix (`dist`):**
+   The `dist` matrix is a 2D array of size `rowsize * colsize` to store the minimum effort required to reach each cell. Therefore, the space complexity for `dist` is:
+
+   \[
+   O(\text{{rowsize}} \times \text{{colsize}})
+   \]
+
+2. **Queue:**
+   The queue stores tuples of the form `{AbsDiff, x, y}`, representing the state of each cell being processed. In the worst case, all cells will be in the queue simultaneously, leading to a space requirement of \( O(\text{{rowsize}} \times \text{{colsize}}) \).
+
+Thus, the **overall space complexity** is dominated by the space used for the `dist` matrix and the `queue`, which gives:
+
+\[
+O(\text{{rowsize}} \times \text{{colsize}})
+\]
+
+### Summary
+
+- **Time Complexity:** \( O(\text{{rowsize}} \times \text{{colsize}}) \)
+- **Space Complexity:** \( O(\text{{rowsize}} \times \text{{colsize}}) \)
+
+This is the expected complexity for this type of grid traversal and dynamic programming approach.
+
+
+
+###############################################################################################
+
+// 179ms 
+
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+
+        // sort based on vectro[0] element
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>>
+            pq;
+
+        int rowsize = heights.size(), colsize = heights[0].size();
+
+        vector<vector<int>> dist(rowsize, vector<int>(colsize, INT_MAX));
+
+        pq.push({0, 0, 0});
+        dist[0][0] = 0;
+
+        int xchange[4] = {-1, 0, 1, 0};
+        int ychange[4] = {0, 1, 0, -1};
+        int minAbsDiff = INT_MAX;
+        while (!pq.empty()) {
+            vector<int> currNode = pq.top();
+            pq.pop();
+            int AbsDiff = currNode[0], xcordinate = currNode[1],
+                ycordinate = currNode[2];
+
+            if (xcordinate == rowsize - 1 && ycordinate == colsize - 1) {
+                minAbsDiff = min(minAbsDiff, AbsDiff);
+                continue;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int xnew = xcordinate + xchange[i];
+                int ynew = ycordinate + ychange[i];
+                if (xnew >= 0 && ynew >= 0 && xnew < rowsize &&
+                    ynew < colsize) {
+                    int newdist =
+                        max(AbsDiff, abs(heights[xnew][ynew] -
+                                         heights[xcordinate][ycordinate]));
+                    if (dist[xnew][ynew] > newdist) {
+                        dist[xnew][ynew] = newdist;
+                        pq.push({dist[xnew][ynew], xnew, ynew});
+                    }
+                }
+            }
+        }
+
+        return minAbsDiff;
+    }
+};
+
+The provided code implements a solution to find the minimum "effort" path in a 2D grid. The effort is defined as the maximum absolute difference between the heights of two adjacent cells on the path. The goal is to return the minimum effort required to travel from the top-left corner to the bottom-right corner of the grid, where you can move in four possible directions (up, down, left, right).
+
+### Time Complexity
+
+Let's break down the time complexity of each part of the code:
+
+1. **Priority Queue Operations:**
+   - The code uses a **priority queue** (`pq`) to always process the cell with the smallest effort (i.e., the smallest "maximum difference").
+   - Each time a node is popped from the priority queue, the algorithm explores its 4 possible neighbors (up, down, left, right).
+   - For each node, the distance (maximum effort) is updated, and the node is pushed back into the priority queue if the new distance is smaller than the previously recorded distance.
+
+2. **Priority Queue Size:**
+   - The priority queue holds a maximum of **`rowsize * colsize`** nodes, where each node represents a cell in the grid.
+   - Since each node is pushed at most once, there will be at most **`rowsize * colsize`** `push` and `pop` operations.
+
+3. **Complexity of Each Priority Queue Operation:**
+   - Both `push` and `pop` operations on a priority queue (implemented as a binary heap) take **O(log(n))** time, where `n` is the number of elements in the priority queue.
+   - In the worst case, `n` can be **`rowsize * colsize`**.
+
+4. **Neighbor Exploration:**
+   - For each node, the algorithm explores 4 neighboring cells, which involves constant time work for each neighbor.
+
+Thus, the total time complexity is dominated by the priority queue operations and neighbor explorations. For each of the **`rowsize * colsize`** cells, the priority queue `push` and `pop` operations take **O(log(rowsize * colsize))** time, and the exploration of the neighbors takes **O(1)** time.
+
+Therefore, the overall **time complexity** is:
+
+\[
+O((rowsize \times colsize) \times \log(rowsize \times colsize))
+\]
+
+This is the time complexity for solving the problem using the priority queue-based approach.
+
+### Space Complexity
+
+The space complexity of the algorithm is determined by the following factors:
+
+1. **Priority Queue:**
+   - The priority queue stores at most **`rowsize * colsize`** nodes, where each node stores an integer and two coordinates (the x and y positions).
+   - So, the space complexity for the priority queue is **O(rowsize * colsize)**.
+
+2. **Distance Matrix (`dist`):**
+   - The `dist` matrix holds the minimum effort required to reach each cell, and its size is **`rowsize * colsize`**.
+
+3. **Other Variables:**
+   - The space used by variables like `xchange`, `ychange`, and `minAbsDiff` is constant **O(1)**.
+
+Thus, the overall **space complexity** is:
+
+\[
+O(rowsize \times colsize)
+\]
+
+### Summary
+
+- **Time Complexity:** \( O((rowsize \times colsize) \times \log(rowsize \times colsize)) \)
+- **Space Complexity:** \( O(rowsize \times colsize) \)
+
+########################################################################################
+
+// 179 ms 
+
+class Solution {
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+
+        // sort based on vectro[0] element
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>>
+            pq;
+
+        int rowsize = heights.size(), colsize = heights[0].size();
+
+        vector<vector<int>> dist(rowsize, vector<int>(colsize, INT_MAX));
+
+        pq.push({0, 0, 0});
+        dist[0][0] = 0;
+
+        int xchange[4] = {-1, 0, 1, 0};
+        int ychange[4] = {0, 1, 0, -1};
+        while (!pq.empty()) {
+            vector<int> currNode = pq.top();
+            pq.pop();
+            int AbsDiff = currNode[0], xcordinate = currNode[1],
+                ycordinate = currNode[2];
+
+            if (xcordinate == rowsize - 1 && ycordinate == colsize - 1) {
+                return AbsDiff;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int xnew = xcordinate + xchange[i];
+                int ynew = ycordinate + ychange[i];
+                if (xnew >= 0 && ynew >= 0 && xnew < rowsize &&
+                    ynew < colsize) {
+                    int newdist =
+                        max(AbsDiff, abs(heights[xnew][ynew] -
+                                         heights[xcordinate][ycordinate]));
+                    if (dist[xnew][ynew] > newdist) {
+                        dist[xnew][ynew] = newdist;
+                        pq.push({dist[xnew][ynew], xnew, ynew});
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+};
+
+### Time Complexity
+
+Let's break down the time complexity of the code step by step.
+
+1. **Priority Queue Operations:**
+   - The main operation inside the `while (!pq.empty())` loop is pushing and popping from the priority queue. Each time a node is added to the queue or removed from the queue, the time complexity is \( O(\log K) \), where \( K \) is the number of elements in the priority queue at that point.
+   - The total number of elements in the priority queue will be at most \( R \times C \), where \( R \) is the number of rows and \( C \) is the number of columns (because we are processing each cell of the grid once).
+   - Thus, the time complexity for each push and pop operation is \( O(\log (R \times C)) \).
+
+2. **Number of Iterations (in the `while` loop):**
+   - In the worst case, every cell in the grid will be visited at least once. Therefore, the `while` loop will run at most \( R \times C \) times.
+
+3. **Inside the For Loop (Checking 4 Directions):**
+   - Each time a node is processed from the priority queue, the code checks the 4 possible neighbors (up, down, left, right). Each of these 4 directions takes constant time, i.e., \( O(1) \).
+
+4. **Total Time Complexity:**
+   - Since there are \( R \times C \) nodes and each node is pushed and popped from the priority queue at most once, the total time complexity for processing the priority queue is \( O((R \times C) \log (R \times C)) \).
+
+Thus, the overall **time complexity** is:
+
+\[
+O((R \times C) \log (R \times C))
+\]
+
+### Space Complexity
+
+1. **Priority Queue (`pq`):**
+   - In the worst case, all the grid cells might be pushed into the priority queue. So, the space used by the priority queue is \( O(R \times C) \).
+
+2. **Distance Matrix (`dist`):**
+   - The `dist` matrix stores the minimum distance (or effort) to reach each cell. This matrix has \( R \times C \) entries, so the space complexity for the matrix is \( O(R \times C) \).
+
+3. **Auxiliary Variables:**
+   - The auxiliary arrays `xchange` and `ychange` are constant in size (4 elements), contributing \( O(1) \) to the space complexity.
+   
+Thus, the overall **space complexity** is:
+
+\[
+O(R \times C)
+\]
+
+### Summary:
+- **Time Complexity:** \( O((R \times C) \log (R \times C)) \)
+- **Space Complexity:** \( O(R \times C) \)
+
+
+

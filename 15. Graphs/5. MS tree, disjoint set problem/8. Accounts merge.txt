@@ -1,0 +1,297 @@
+13/50 testcases passed
+
+class DisjointSet{
+    vector<int> size, rank, parent;
+    public:
+
+    DisjointSet(int n)
+    {
+        size.resize(n,1);
+        rank.resize(n,0);
+        parent.resize(n,0);
+        for(int i=0; i<n;i++)
+            parent[i] = i;
+    }
+    
+    int findParent(int x)
+    {
+        if( x == parent[x])
+            return x;
+        
+        return parent[x] = findParent(parent[x]);
+    }
+
+    void unionByRank(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+
+        if( rank[ulp_u] < rank[ulp_v]){
+            parent[ulp_u] = ulp_v;
+        }
+        else if( rank[ulp_v] < rank[ulp_u]){
+            parent[ulp_v] = ulp_u;
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+    
+    void unionBySize(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+
+        if( size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+
+    vector<int> getParent(){
+        return parent;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        
+        int V = accounts.size();
+        DisjointSet ds(V);
+
+        for(int i=0; i<V; i++)
+        {
+            vector<string> vec_i = accounts[i];
+            int ulp_i = ds.findParent(i);
+            for(int j=i+1; j<V; j++)
+            {
+                vector<string> vec_j = accounts[j];
+
+                // checking if edge can be present or not
+                for(int k=1; k<vec_i.size();k++)
+                {
+                    if( find(vec_j.begin(), vec_j.end(), vec_i[k]) != vec_j.end())
+                    {
+                        // vec_i[k] is present in vec_j
+
+                        int vec_i_kindex = find(vec_j.begin(), vec_j.end(), vec_i[k]) 
+                                            - vec_j.begin();
+
+                        // deleting vec_i[k] string, so duplicate not occurs
+                        vec_j.erase(vec_j.begin() + vec_i_kindex);
+                        accounts[j] = vec_j;
+
+                        int ulp_j =  ds.findParent(j);
+                        if( ulp_i != ulp_j)
+                            ds.unionByRank(i, j);
+                    }
+                }
+            }
+        }
+
+        // doing path compression
+        for(int i = 0; i<V;i++)
+            ds.findParent(i);
+
+        vector<int> vec_parent = ds.getParent();
+
+        int newSize = 0;
+        for(int i=0;i<vec_parent.size();i++){
+            if( vec_parent[i] == i)
+                newSize++;
+        }
+
+        vector<vector<string>> ans(newSize);
+        vector<int> newIndex(V, -1);
+
+        int index = 0;
+        for(int i=0;i<V;i++)
+        {
+            int parent_i = vec_parent[i];
+            if(newIndex[parent_i] == -1){
+                newIndex[parent_i] = index;
+                index++;
+                ans[ newIndex[parent_i] ].insert( ans[ newIndex[parent_i] ].begin(),
+                                         accounts[i].begin(), accounts[i].end() );
+            }
+            else{
+                ans[ newIndex[parent_i] ].insert( ans[ newIndex[parent_i] ].begin(),
+                                        accounts[i].begin()+1, accounts[i].end() );
+            }
+        }
+        for(int i=0; i<ans.size();i++)
+            sort(ans[i].begin(), ans[i].end());
+
+        return ans;
+    }
+};
+
+##################################################################################
+
+47/50 time limit exceed
+
+class DisjointSet{
+    vector<int> size, rank, parent;
+    public:
+
+    DisjointSet(int n)
+    {
+        size.resize(n,1);
+        rank.resize(n,0);
+        parent.resize(n,0);
+        for(int i=0; i<n;i++)
+            parent[i] = i;
+    }
+    
+    int findParent(int x)
+    {
+        if( x == parent[x])
+            return x;
+        
+        return parent[x] = findParent(parent[x]);
+    }
+
+    void unionByRank(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if (ulp_u == ulp_v) return;
+        
+        if( rank[ulp_u] < rank[ulp_v]){
+            parent[ulp_u] = ulp_v;
+        }
+        else if( rank[ulp_v] < rank[ulp_u]){
+            parent[ulp_v] = ulp_u;
+        }
+        else{
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+    
+    void unionBySize(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if (ulp_u == ulp_v) return;
+
+        if( size[ulp_u] < size[ulp_v]){
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+
+    vector<int> getParent(){
+        return parent;
+    }
+};
+
+class Solution {
+public:
+    vector<string> InsertVector(vector<string> vec, vector<string> res)
+    {
+        map<string,int> dictionary;
+        vector<int> ans;
+
+        for(auto str: vec){
+            dictionary[str] = 1;
+        }
+        int i = 0;
+        if(vec.size() > 0)
+            i = 1;
+
+        for(; i<res.size(); i++){
+            string str = res[i];
+            if(dictionary.find(str) == dictionary.end()){
+                dictionary[str] = 1;
+                vec.push_back(str);
+            }
+        }
+        return vec;
+    }
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        
+        int V = accounts.size();
+        DisjointSet ds(V);
+
+        for(int i=0; i<V; i++)
+        {
+            vector<string> vec_i = accounts[i];
+            int ulp_i = ds.findParent(i);
+            for(int j=i+1; j<V; j++)
+            {
+                vector<string> vec_j = accounts[j];
+
+                // checking if edge can be present or not
+                for(int k=1; k<vec_i.size();k++)
+                {
+                    if( find(vec_j.begin(), vec_j.end(), vec_i[k]) != vec_j.end())
+                    {
+                        // vec_i[k] is present in vec_j
+
+                        int vec_i_kindex = find(vec_j.begin(), vec_j.end(), vec_i[k]) 
+                                            - vec_j.begin();
+
+                        // deleting vec_i[k] string, so duplicate not occurs
+                        vec_j.erase(vec_j.begin() + vec_i_kindex);
+                        accounts[j] = vec_j;
+
+                        int ulp_j =  ds.findParent(j);
+                        if( ulp_i != ulp_j)
+                            ds.unionByRank(i, j);
+                    }
+                }
+            }
+        }
+
+        // doing path compression
+        for(int i = 0; i<V;i++)
+            ds.findParent(i);
+
+        vector<int> vec_parent = ds.getParent();
+
+        int newSize = 0;
+        for(int i=0;i<vec_parent.size();i++){
+            if( vec_parent[i] == i)
+                newSize++;
+        }
+
+        vector<vector<string>> ans(newSize);
+        vector<int> newIndex(V, -1);
+
+        int index = 0;
+        for(int i=0;i<V;i++)
+        {
+            int parent_i = vec_parent[i];
+            if(newIndex[parent_i] == -1){
+                newIndex[parent_i] = index;
+                index++;
+                // ans[ newIndex[parent_i] ].insert( ans[ newIndex[parent_i] ].begin(),
+                //                          accounts[i].begin(), accounts[i].end() );
+                ans[ newIndex[parent_i] ] = InsertVector( ans[ newIndex[parent_i] ],
+                                         accounts[i] );
+            }
+            else{
+                // ans[ newIndex[parent_i] ].insert( ans[ newIndex[parent_i] ].begin(),
+                //                         accounts[i].begin()+1, accounts[i].end() );
+                ans[ newIndex[parent_i] ] = InsertVector( ans[ newIndex[parent_i] ],
+                                         accounts[i] );
+            }
+        }
+        for(int i=0; i<ans.size();i++)
+            sort(ans[i].begin(), ans[i].end());
+
+        return ans;
+    }
+
+};

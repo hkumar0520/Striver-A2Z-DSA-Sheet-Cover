@@ -1,0 +1,203 @@
+class Solution {
+public:
+    void dfs(vector<vector<char>>& board,  vector<vector<int>>&  vis, vector<int> startNode)
+    {
+        vis[startNode[0]][startNode[1]] = 1;
+
+        int m = board.size(), n = board[0].size();
+        int a[4] = {-1,0,1,0};
+        int b[4] = {0,1,0,-1};
+        int x = startNode[0], y = startNode[1];
+        for(int i=0;i<4;i++)
+        {
+            int nx = x + a[i];
+            int ny = y + b[i];
+            if(nx >=0 && ny >= 0 && nx<m && ny<n && board[nx][ny] == 'O' && !vis[nx][ny])
+            {
+                dfs(board,vis,{nx,ny});
+            }
+        }
+        
+    }
+    void bfs(vector<vector<char>>& board,  vector<vector<int>>&  vis, vector<int> startNode)
+    {
+        int m = board.size(), n = board[0].size();
+        queue<vector<int>> qtraverse;
+        vis[startNode[0]][startNode[1]] = 1;
+        qtraverse.push(startNode);
+
+        int a[4] = {-1,0,1,0};
+        int b[4] = {0,1,0,-1};
+
+        while(!qtraverse.empty())
+        {
+            vector<int> node = qtraverse.front();
+            qtraverse.pop();
+            int x = node[0], y = node[1];
+            for(int i=0;i<4;i++)
+            {
+                int nx = x + a[i];
+                int ny = y + b[i];
+                if(nx >=0 && ny >= 0 && nx<m && ny<n && board[nx][ny] == 'O' && !vis[nx][ny])
+                {
+                    vis[nx][ny] = 1;
+                    qtraverse.push({nx,ny});
+                }
+            }
+
+        }
+    }
+    void solve(vector<vector<char>>& board) {
+        int m = board.size(), n = board[0].size();
+        vector<vector<int>>  vis(m,vector<int>(n,0));
+        //check first and last row
+        for(int j=0;j<n;j++)
+        {
+            if(board[0][j] == 'O' && !vis[0][j])
+                dfs(board,vis,{0,j});
+            if(board[m-1][j] == 'O' && !vis[m-1][j])
+                dfs(board,vis,{m-1,j});
+        }
+        // check first and last col
+        for(int i=0;i<m;i++)
+        {
+            if(board[i][0] == 'O' && !vis[i][0])
+                dfs(board,vis,{i,0});
+            if(board[i][n-1] == 'O' && !vis[i][n-1])
+                dfs(board,vis,{i,n-1});
+        }
+
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(!vis[i][j] && board[i][j] == 'O')
+                    board[i][j] = 'X';
+            }
+        }
+    }
+};
+
+
+### **Time Complexity**
+
+1. **DFS/BFS Traversal:**
+   - Each DFS or BFS call starts from a boundary cell containing 'O' and explores all reachable 'O' cells.
+   - Each cell in the grid is visited at most once during these traversals.
+   - For each cell, constant work is done to explore its 4 neighbors.
+   - The total time complexity for all DFS or BFS calls is \( O(m \times n) \), where \( m \) is the number of rows and \( n \) is the number of columns.
+
+2. **Boundary Checks:**
+   - The loops to check the first and last rows and columns iterate over \( O(m + n) \) boundary cells.
+   - For each boundary cell, a DFS or BFS call is made if it contains 'O', but the work done inside these calls is already accounted for in the traversal step.
+
+3. **Final Grid Update:**
+   - The nested loop to update the grid iterates over all \( m \times n \) cells, resulting in \( O(m \times n) \) work.
+
+4. **Overall Time Complexity:**
+   - The dominant term is the traversal of all cells, so the overall time complexity is:
+     \[
+     O(m \times n)
+     \]
+
+---
+
+### **Space Complexity**
+
+1. **Visited Array:**
+   - The `vis` array requires \( O(m \times n) \) space to store the visited status of each cell.
+
+2. **DFS Recursion Stack:**
+   - In the worst case, the recursion stack for DFS can go as deep as the number of cells in a connected component of 'O', which is \( O(m \times n) \).
+
+3. **BFS Queue:**
+   - The BFS queue can hold all cells in a connected component of 'O' in the worst case, which is also \( O(m \times n) \).
+
+4. **Overall Space Complexity:**
+   - The total space complexity is dominated by the `vis` array and either the DFS stack or BFS queue, resulting in:
+     \[
+     O(m \times n)
+     \]
+
+---
+
+### **Final Complexity**
+
+- **Time Complexity:** \( O(m \times n) \)
+- **Space Complexity:** \( O(m \times n) \)
+
+
+
+###############################################################################
+Format Code 
+
+class Solution {
+public:
+    void dfs(vector<vector<char>>& board, vector<vector<int>>& vis,
+             vector<int> startNode) {
+        vis[startNode[0]][startNode[1]] = 1;
+
+        int m = board.size(), n = board[0].size();
+        int a[4] = {-1, 0, 1, 0};
+        int b[4] = {0, 1, 0, -1};
+        int x = startNode[0], y = startNode[1];
+        for (int i = 0; i < 4; i++) {
+            int nx = x + a[i];
+            int ny = y + b[i];
+            if (nx >= 0 && ny >= 0 && nx < m && ny < n &&
+                board[nx][ny] == 'O' && !vis[nx][ny]) {
+                dfs(board, vis, {nx, ny});
+            }
+        }
+    }
+    void bfs(vector<vector<char>>& board, vector<vector<int>>& vis,
+             vector<int> startNode) {
+        int m = board.size(), n = board[0].size();
+        queue<vector<int>> qtraverse;
+        vis[startNode[0]][startNode[1]] = 1;
+        qtraverse.push(startNode);
+
+        int a[4] = {-1, 0, 1, 0};
+        int b[4] = {0, 1, 0, -1};
+
+        while (!qtraverse.empty()) {
+            vector<int> node = qtraverse.front();
+            qtraverse.pop();
+            int x = node[0], y = node[1];
+            for (int i = 0; i < 4; i++) {
+                int nx = x + a[i];
+                int ny = y + b[i];
+                if (nx >= 0 && ny >= 0 && nx < m && ny < n &&
+                    board[nx][ny] == 'O' && !vis[nx][ny]) {
+                    vis[nx][ny] = 1;
+                    qtraverse.push({nx, ny});
+                }
+            }
+        }
+    }
+    void solve(vector<vector<char>>& board) {
+        int m = board.size(), n = board[0].size();
+        vector<vector<int>> vis(m, vector<int>(n, 0));
+        // check first and last row
+        for (int j = 0; j < n; j++) {
+            if (board[0][j] == 'O' && !vis[0][j])
+                dfs(board, vis, {0, j});
+            if (board[m - 1][j] == 'O' && !vis[m - 1][j])
+                dfs(board, vis, {m - 1, j});
+        }
+        // check first and last col
+        for (int i = 0; i < m; i++) {
+            if (board[i][0] == 'O' && !vis[i][0])
+                dfs(board, vis, {i, 0});
+            if (board[i][n - 1] == 'O' && !vis[i][n - 1])
+                dfs(board, vis, {i, n - 1});
+        }
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (!vis[i][j] && board[i][j] == 'O')
+                    board[i][j] = 'X';
+            }
+        }
+    }
+};

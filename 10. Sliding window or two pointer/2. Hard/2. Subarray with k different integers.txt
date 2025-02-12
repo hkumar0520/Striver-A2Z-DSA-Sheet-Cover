@@ -1,0 +1,32 @@
+
+
+class Solution {
+public:
+    int subarrayWithKAtMost(vector<int>& nums, int k) {
+        int n = nums.size(), countSub = 0, l = 0, r = 0;
+        map<int,int> mp;
+        while(r<n){
+            mp[nums[r]]++;
+            while(mp.size() > k){
+                mp[nums[l]]--;
+                if(mp[nums[l]] == 0)
+                    mp.erase(nums[l]);
+                
+                l++;
+            }
+
+            if(mp.size() <= k)
+                countSub += r-l+1;
+
+            r++;
+        }
+        return countSub;
+    }
+    int subarraysWithKDistinct(vector<int>& nums, int k) {
+        return subarrayWithKAtMost(nums,k) - subarrayWithKAtMost(nums,k-1);
+    }
+};
+
+
+Time complexity - O(4*n)
+Space Complexity - O(1)

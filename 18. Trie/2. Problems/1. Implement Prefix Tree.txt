@@ -1,0 +1,180 @@
+
+
+#include <bits/stdc++.h> 
+
+struct Node{
+    // by default links[26] is NULL for all 26 Node*
+    Node* links[26];
+    // no. words with ending nCount keeps count
+    int nCount = 0;
+    // with each char insert nCountStart increase
+    int nCountStart = 0;
+
+    bool isContainsKey(char ch)
+    {
+        return links[ch-'a'] != NULL;
+    }
+
+    void put(char ch, Node* node)
+    {
+        links[ch-'a'] = node;
+    }
+
+    Node* get(char ch)
+    {
+        return links[ch-'a'];
+    }
+
+    void incCount()
+    {
+        nCount++;
+    }
+
+    void decCount()
+    {
+        nCount--;
+    }
+
+    void incCountStart()
+    {
+        nCountStart++;
+    }
+
+    void decCountStart()
+    {
+        nCountStart--;
+    }
+
+    int  getCount()
+    {
+        return  nCount;
+    }
+
+    int getCountStart()
+    {
+        return nCountStart;
+    }
+};
+class Trie{
+    Node* root;
+    public:
+
+    Trie(){
+        // Write your code here.
+        root = new Node();
+    }
+
+    void insert(string &word){
+        // Write your code here.
+        Node* curr = root;
+        for(int i=0;i<word.size();i++)
+        {
+            if(!curr->isContainsKey(word[i]))
+            {
+                curr->put(word[i], new Node());
+            }
+            curr = curr->get(word[i]);
+            // every countstart increase to keep no. of prefixes
+            curr->incCountStart();
+        }
+        // no. of word increase with ending word
+        curr->incCount();
+    }
+
+    int countWordsEqualTo(string &word){
+        // Write your code here.
+        Node* curr = root;
+        for(int i=0;i<word.size();i++)
+        {
+            if(!curr->isContainsKey(word[i]))   return 0;
+            curr = curr->get(word[i]);
+        }
+        return curr->getCount();
+    }
+
+    int countWordsStartingWith(string &word){
+        // Write your code here.
+        Node* curr = root;
+        for(int i=0;i<word.size();i++)
+        {
+            if(!curr->isContainsKey(word[i]))   return 0;
+            curr = curr->get(word[i]);
+        }
+        return curr->getCountStart();
+    }
+
+    void erase(string &word){
+        // Write your code here.
+        // in question given word to be erased should exist
+
+        Node* curr = root;
+        for(int i=0;i<word.size();i++)
+        {
+            // if one occurrence is there, should delete here
+            if(curr->get(word[i])->getCountStart() == 1)
+            {
+                Node* nodeDel = curr->get(word[i]);
+                curr->put(word[i], NULL);
+                delete nodeDel;
+                return ;
+            }
+            curr = curr->get(word[i]);
+            curr->decCountStart();
+        }
+        curr->decCount();
+    }
+};
+
+
+Time & space Complexity
+
+
+Let's analyze the **time complexity** and **space complexity** of the provided code.
+
+### Time Complexity
+
+1. **`insert(string &word)`**:
+   - The time complexity of the `insert` function is determined by the length of the word being inserted.
+   - In the worst case, for each character of the word, we check whether a node exists (`isContainsKey`), and if it doesn't, we create a new node (`put`).
+   - For each character in the word, we also perform updates to the `nCountStart` and `nCount` counters.
+   - So the time complexity for inserting a word of length `L` is **O(L)**.
+
+2. **`countWordsEqualTo(string &word)`**:
+   - The function traverses the trie character by character for the given word.
+   - For each character, we check if the corresponding node exists and move to the next node.
+   - The time complexity is proportional to the length of the word, so for a word of length `L`, the time complexity is **O(L)**.
+
+3. **`countWordsStartingWith(string &word)`**:
+   - Similar to `countWordsEqualTo`, we traverse the trie for the given prefix.
+   - The only difference is that we return the `nCountStart` value at the end of the traversal.
+   - The time complexity is **O(L)**, where `L` is the length of the prefix.
+
+4. **`erase(string &word)`**:
+   - The function traverses the trie character by character to find the word to erase.
+   - For each character, it checks the `nCountStart` of the current node, and if it's 1, it deletes the node.
+   - The deletion occurs only when there is a single occurrence of the prefix, so the function stops early.
+   - The time complexity is **O(L)**, where `L` is the length of the word to be erased.
+
+### Space Complexity
+
+1. **Trie Data Structure**:
+   - Each node in the trie has:
+     - An array `links[26]` for 26 possible child nodes (for each letter of the alphabet).
+     - Two integer variables: `nCount` and `nCountStart`.
+   - For each word inserted, we may create up to `L` new nodes (where `L` is the length of the word). In the worst case, if all the words in the trie are unique, the total number of nodes can be proportional to the total number of characters in all the inserted words.
+   - Since each node contains 26 pointers (one for each letter of the alphabet) and two integers, the space used by each node is constant (i.e., **O(1)** per node in terms of the size of the node structure).
+   - Therefore, the space complexity is proportional to the total number of nodes in the trie, which depends on the total number of characters in all words inserted.
+
+   If `N` is the total number of characters inserted across all words, the space complexity is **O(N)**.
+
+### Summary
+
+- **Time Complexity**:
+  - `insert(word)`: O(L), where L is the length of the word.
+  - `countWordsEqualTo(word)`: O(L), where L is the length of the word.
+  - `countWordsStartingWith(word)`: O(L), where L is the length of the prefix.
+  - `erase(word)`: O(L), where L is the length of the word.
+
+- **Space Complexity**: **O(N)**, where N is the total number of characters inserted into the trie.
+
+This analysis assumes that we are using an alphabet with a constant size (26 lowercase English letters), so the space complexity for each node remains constant.

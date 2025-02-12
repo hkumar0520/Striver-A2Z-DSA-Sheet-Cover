@@ -1,0 +1,345 @@
+
+
+class Solution {
+  public:
+    int power(int num, int powerRaised)
+    {
+        if(powerRaised == 1)
+            return num;
+        
+        int val = power(num, powerRaised/2);
+        
+        if(powerRaised % 2 == 1)
+            return num*val*val;
+            
+        return val*val;
+    }
+    int reverseExponentiation(int n) {
+        // code here
+        if(n == 10) return 10;
+        
+        return power(n,n);
+        
+    }
+};
+
+
+
+
+### **Time Complexity**
+
+The `power` function computes \( \text{num}^{\text{powerRaised}} \) using a **divide-and-conquer approach**, where the exponent is halved at each recursive step. 
+
+1. **Number of Recursive Calls:**
+   - The recursion depth is proportional to \( \log_2(\text{powerRaised}) \) because the exponent is divided by 2 at each step.
+   
+2. **Work per Recursive Call:**
+   - At each step, the function performs constant-time operations such as multiplication and assignment.
+
+Thus, the **time complexity** of the `power` function is:
+\[
+O(\log(\text{powerRaised}))
+\]
+
+In the `reverseExponentiation` function, the `power` function is called with \( \text{powerRaised} = n \). Therefore, the **overall time complexity** of the code is:
+\[
+O(\log(n))
+\]
+
+---
+
+### **Space Complexity**
+
+1. **Recursive Stack Space:**
+   - The recursion depth is \( O(\log_2(\text{powerRaised})) \), as explained above.
+   - Each recursive call uses a constant amount of space.
+
+2. **Auxiliary Space:**
+   - No additional space (e.g., arrays or data structures) is used apart from the recursion stack.
+
+Thus, the **space complexity** of the code is:
+\[
+O(\log(n))
+\]
+
+---
+
+### **Summary**
+- **Time Complexity:** \( O(\log(n)) \)
+- **Space Complexity:** \( O(\log(n)) \)
+
+This is an efficient implementation of exponentiation using the **exponentiation by squaring** technique.
+
+
+
+
+
+
+
+
+
+
+
+########################################################################################
+
+
+
+
+
+
+
+
+
+
+
+Binary Exponention - chatgpt
+
+### **Binary Exponentiation**
+
+Binary Exponentiation is an efficient algorithm to compute \( \text{base}^{\text{exponent}} \mod \text{modulus} \) or just \( \text{base}^{\text{exponent}} \). It uses the idea of **divide-and-conquer** to reduce the number of multiplications required.
+
+---
+
+### **Algorithm Explanation**
+The main idea is:
+1. Write the exponent in binary form.
+2. Use the fact that:
+   \[
+   a^b =
+   \begin{cases} 
+   (a^{b/2})^2 & \text{if } b \text{ is even} \\
+   a \cdot (a^{b/2})^2 & \text{if } b \text{ is odd}
+   \end{cases}
+   \]
+3. Multiply only the powers of \( a \) corresponding to set bits in the binary representation of \( b \).
+
+---
+
+### **Steps**
+1. Start with \( \text{result} = 1 \).
+2. Iterate through the binary representation of \( \text{exponent} \) from the least significant bit to the most significant bit:
+   - If the current bit is \( 1 \), multiply \( \text{result} \) by \( \text{base} \).
+   - Square \( \text{base} \) at every step.
+3. Continue until the exponent becomes \( 0 \).
+
+---
+
+### **Iterative Implementation**
+
+```cpp
+class Solution {
+public:
+    long long binaryExponentiation(long long base, long long exponent, long long mod) {
+        long long result = 1; // Initialize result
+        base = base % mod;   // Take mod of the base to avoid overflow
+
+        while (exponent > 0) {
+            // If the current bit of the exponent is 1, multiply result by base
+            if (exponent & 1) {
+                result = (result * base) % mod;
+            }
+
+            // Square the base
+            base = (base * base) % mod;
+
+            // Shift the exponent to the right (divide by 2)
+            exponent >>= 1;
+        }
+
+        return result;
+    }
+};
+```
+
+---
+
+### **Recursive Implementation**
+
+```cpp
+class Solution {
+public:
+    long long binaryExponentiation(long long base, long long exponent, long long mod) {
+        if (exponent == 0) return 1; // Base case: a^0 = 1
+
+        long long half = binaryExponentiation(base, exponent / 2, mod);
+
+        // If exponent is even
+        if (exponent % 2 == 0) {
+            return (half * half) % mod;
+        }
+        // If exponent is odd
+        else {
+            return (base * ((half * half) % mod)) % mod;
+        }
+    }
+};
+```
+
+---
+
+### **Time Complexity**
+1. **Iterative:** \( O(\log(\text{exponent})) \)
+   - Each iteration reduces the exponent by half.
+2. **Recursive:** \( O(\log(\text{exponent})) \)
+   - Each recursive call reduces the exponent by half.
+
+### **Space Complexity**
+1. **Iterative:** \( O(1) \)
+   - No extra space is used apart from variables.
+2. **Recursive:** \( O(\log(\text{exponent})) \)
+   - Due to the recursion stack.
+
+---
+
+### **Example**
+#### Input:
+\[
+\text{base} = 3, \text{exponent} = 13, \text{mod} = 1000000007
+\]
+
+#### Binary Representation of 13:
+\[
+13 = 1101_2
+\]
+
+#### Steps:
+1. Start with \( \text{result} = 1 \), \( \text{base} = 3 \), \( \text{exponent} = 13 \).
+2. Process each bit of \( \text{exponent} \):
+   - \( \text{Bit 1: } \text{result} = 1 \cdot 3 = 3 \).
+   - \( \text{Square base: } 3^2 = 9 \).
+   - \( \text{Bit 0: Skip. Square base: } 9^2 = 81 \).
+   - \( \text{Bit 1: } \text{result} = 3 \cdot 81 = 243 \).
+   - \( \text{Bit 1: } \text{result} = 243 \cdot 3 = 729 \).
+
+Final Result:
+\[
+3^{13} \mod 1000000007 = 729
+\]
+
+
+
+
+
+
+
+
+
+
+############################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Binary Exponentiation
+( Visual Expanation and complexity analysis
+with logic - On point Solution  )
+ 
+
+After reading this explanation, hopefully you don't have to google for code of Binary exponention/ Fast exponentition in future.
+ 
+
+Here, it is clearly evident that normal pow() function / loop / normal recursive function won't work as we have to perform mod at each and every step to limit our answer in long long (1e18). Thus, i'll only explain the main approach which is Binary exponentiation.
+
+ 
+
+Suppose we have to find a^b, we can't simply run loop for b times as we can only perform 1e8 operations in 1 sec and b can be much larger than long long(1e18).
+
+ 
+
+Here, we have to work smartly, So basic idea is:
+
+ 
+
+Even power of a number can be formed by mutiplication of that number's half power with itself.
+( a^6 = a^3 * a^3 )
+ 
+
+Odd power of a number can be formed by multiplication of that number's half power with itself and then with that number.
+( a^7 = a^3 * a^3 * a)
+ 
+
+
+
+ 
+
+                 Steps in our Approach : -
+ 
+
+1)- If R=0 , then anything to the power of 0 is 1 , so return 1 .
+ 
+2)- If R=1, then anything to the power of 1 is that number itself, so return N.
+ 
+3)- Recursive call for half power of that number and storing it in some variable and performing mod.
+ 
+4)- At every call whether it's power is odd or even we have to find multiplication of that no's half power with itself. Thus finding recursive call value * recursive call value and then performing mod.
+ 
+5)- If power is odd then we just have to multiple found value with that no to compensate for 1 power and then performing mod.
+ 
+6)- Returning our final answer so that it could be used by previous recursive calls to calculate final answer.
+ 
+
+Talking about mod(1e9+7) and how to bring answer in limit:-
+Value would be increasing gradually so whenever it's getting higher than 1e9 , our mod operation would bring it in the limits of 1e9 , there could be worst case scenario when we have to do 1e9 * 1e9 i.e 1e18 , then again doing mod would bring it in range of 1e9. So, in any case our answer won't be exceeding 1e18 , which it would have been if mod is not done at each step.
+ 
+
+Below is a dry run for 2 examples :-
+ 
+
+1)- N = 9 , R =10 (power is even )
+
+
+ 
+
+2)- N = 9 , R = 9 ( power is odd ) 
+
+
+ 
+
+ Code :-
+class Solution{
+    public:
+     int mod=1000000007;
+    long long power(int N,int R)
+    {
+      if(R==1) return N;
+      if(R==0) return 1;
+      
+      long long val=power(N,R/2)%mod;
+      val=(val*val)%mod;
+      
+      if(R&1) val=(val*N)%mod;
+      
+      return val;
+    }
+ 
+
+                       Complexity Analysis :-
+Here, b is the power. (a^b)
+
+ 
+
+Time Complexity - O( log(b) )
+As we have to divide b continuously until it becomes 1. Assume we divide b by 2 for k times until it becomes 1.
+
+Thus, b/(2^k) =1 
+
+b = 2 ^ k
+
+k= log(b)  (In coding , whenever log is written , it is simply log base 2 ).
+
+ 
+
+Space Complexity - O ( log(b) ) 
+As recursive calls are made, so at max log(b) recusive stack calls are made to store values until b is not 1.
+
+

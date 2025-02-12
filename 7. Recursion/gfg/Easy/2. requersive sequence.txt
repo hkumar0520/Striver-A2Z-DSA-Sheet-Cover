@@ -1,0 +1,85 @@
+
+
+class Solution{
+public:
+    int mod = 1e9+7;
+    long long sequenceCalculate(int n, int length, int idx){
+        
+        if(length>n)
+            return 0;
+            
+        
+        long long fact = 1, i = idx;
+        for(; (i-idx+1)<= length; i++){
+            fact = ( fact * i) % mod;
+        }
+        
+        return (fact%mod + sequenceCalculate(n, length+1, i)%mod)%mod;
+    }
+    long long sequence(int n){
+        // code her
+        
+        return sequenceCalculate(n, 1, 1);
+    }
+};
+
+TC: O(n*n)
+SC: O(N)(stack space) + O(1)
+
+
+Let's analyze the **time and space complexity** of the given code.
+
+---
+
+### **Understanding the Code**
+The function `sequenceCalculate(int n, int length, int idx)` recursively computes a sequence by:
+1. Multiplying `fact` with values from `idx` up to `idx + length - 1` modulo `1e9+7`.
+2. Recursively calling itself with `length + 1` and `i` (which is `idx + length` after the loop).
+
+The function `sequence(int n)` starts the recursion with `length = 1` and `idx = 1`.
+
+---
+
+### **Time Complexity Analysis**
+Let's break down the function:
+
+1. **Loop Complexity:**  
+   - The loop runs `length` times, where `length` starts from `1` and increases up to `n`.
+   - In the worst case, the total iterations across all recursive calls would be:  
+     \[
+     1 + 2 + 3 + ... + n = \frac{n(n+1)}{2} = O(n^2)
+     \]
+
+2. **Recursive Calls:**  
+   - Each recursive call increases `length` by `1`, leading to at most `O(n)` recursive calls.
+
+Since each recursive call also contains a loop that runs up to `O(n)`, the total worst-case complexity is:
+
+\[
+O(n^2)
+\]
+
+---
+
+### **Space Complexity Analysis**
+1. **Recursive Stack Space:**  
+   - The recursion depth can go up to `O(n)`, so the space used by the call stack is `O(n)`.
+  
+2. **Auxiliary Space:**  
+   - Only a few integer variables (`fact`, `i`, `idx`, `length`, etc.), which take `O(1)` space.
+
+Thus, the total space complexity is:
+
+\[
+O(n)
+\]
+
+---
+
+### **Final Complexity**
+- **Time Complexity:** \( O(n^2) \)
+- **Space Complexity:** \( O(n) \)
+
+Let me know if you need further clarifications! 🚀
+
+

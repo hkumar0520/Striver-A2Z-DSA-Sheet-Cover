@@ -1,0 +1,58 @@
+
+// recursion
+
+void f(vector<int> arr, int x, int i, int j, int &floorr, int &ceill)
+{
+	if(i>j)
+		return ;
+	
+	int mid = (i+j)/2;
+	if(arr[mid] == x)
+		floorr = ceill = arr[mid];
+	else if(arr[mid] > x)
+	{
+		ceill = arr[mid];
+		f(arr,x,i,mid-1,floorr, ceill);
+	}
+	else
+	{	
+		floorr = arr[mid];
+		f(arr,x,mid+1,j, floorr, ceill);
+	}
+	return ;
+}
+
+pair<int, int> getFloorAndCeil(vector<int> &a, int n, int x) {
+	// Write your code here.
+	int floorr = -1, ceill = -1,i = 0, j= n-1;
+	f(a,x,0,n-1,floorr, ceill);
+	return pair<int,int>{floorr, ceill};
+}
+
+################################################################################################
+
+// iteration
+
+pair<int, int> getFloorAndCeil(vector<int> &a, int n, int x) {
+	// Write your code here.
+	int floorr = -1, ceill = -1,i = 0, j= n-1;
+	while(i<=j)
+	{
+		int mid = (i+j)/2;
+		if(a[mid] == x)
+			return pair<int,int>{a[mid], a[mid]};
+		else if(a[mid] > x)
+		{
+			ceill = a[mid];
+			j = mid-1;
+		}
+		else
+		{
+			floorr = a[mid];
+			i = mid+1;
+		}
+	}
+	return pair<int,int>{floorr, ceill};
+}
+
+

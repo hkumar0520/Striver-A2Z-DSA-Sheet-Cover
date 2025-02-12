@@ -1,0 +1,130 @@
+
+
+// recursion 
+
+
+long f(int ind, int buy, long *values, int n)
+{
+    if(ind == n)    return 0;
+
+    long opt1 = 0, opt2 = 0;
+    if(buy == 0)
+    {
+        opt1 = f(ind+1,buy,values,n);
+        opt2 = -values[ind] + f(ind+1,1,values,n);
+    }
+    else
+    {
+        opt1 = f(ind+1,buy,values,n);
+        opt2 = values[ind] + f(ind+1,0,values,n);
+    }
+    return max(opt1,opt2);
+}
+
+long getMaximumProfit(long *values, int n)
+{
+    //Write your code here
+    return f(0, 0, values, n);
+}
+
+###############################################################################################
+//memoization
+
+#include <bits/stdc++.h>
+
+long f(int ind, int buy, long *values, int n, vector<vector<long>> &dp)
+{
+    
+    if(ind == n)    return 0;
+
+    if(dp[ind][buy] != -1)   return dp[ind][buy];
+
+    long opt1 = 0, opt2 = 0;
+    if(buy == 0)
+    {
+        opt1 = f(ind+1,buy,values,n,dp);
+        opt2 = -values[ind] + f(ind+1,1,values,n,dp);
+    }
+    else
+    {
+        opt1 = f(ind+1,buy,values,n,dp);
+        opt2 = values[ind] + f(ind+1,0,values,n,dp);
+    }
+    return dp[ind][buy] = max(opt1,opt2);
+}
+
+long getMaximumProfit(long *values, int n)
+{
+    //Write your code here
+    vector<vector<long>> dp(n,vector<long>(2,-1));
+    return f(0, 0, values, n,dp);
+}
+
+
+###############################################################################################
+// tabular
+
+#include <bits/stdc++.h>
+
+long f(long *values, int n, vector<vector<long>> &dp)
+{
+    for(int ind=n-1;ind>=0;ind--)
+    {
+        for(int buy = 0;buy<=1;buy++)
+        {
+            if(buy==0)
+            {
+                dp[ind][buy] = max(0+dp[ind+1][buy],
+                                    -values[ind]+dp[ind+1][1]);
+            }
+            else
+            {
+                dp[ind][buy] = max(0+dp[ind+1][buy],
+                                    values[ind]+dp[ind+1][0]);
+            }
+        }
+    }
+    return dp[0][0];
+}
+
+long getMaximumProfit(long *values, int n)
+{
+    //Write your code here
+    vector<vector<long>> dp(n+1,vector<long>(2,0));
+    return f(values, n,dp);
+}
+
+###############################################################################################
+// optimization
+
+#include <bits/stdc++.h>
+
+long f(long *values, int n)
+{
+    vector<long> curr(2,0);
+    vector<long> ahead(2,0);
+    for(int ind=n-1;ind>=0;ind--)
+    {
+        for(int buy = 0;buy<=1;buy++)
+        {
+            if(buy==0)
+            {
+                curr[buy] = max(0+ahead[buy],
+                                    -values[ind]+ahead[1]);
+            }
+            else
+            {
+                curr[buy] = max(0+ahead[buy],
+                                    values[ind]+ahead[0]);
+            }
+        }
+        ahead = curr;
+    }
+    return curr[0];
+}
+
+long getMaximumProfit(long *values, int n)
+{
+    //Write your code here
+    return f(values, n);
+}

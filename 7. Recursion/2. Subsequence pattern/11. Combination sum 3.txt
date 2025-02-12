@@ -1,0 +1,114 @@
+
+
+class Solution {
+public:
+    void backTrack(vector<int> arr, vector<int>& path, set<vector<int>>& subset){
+        int num = arr[0], countNum = arr[1], target = arr[2];
+        if(target == 0 && countNum == 0){
+            subset.insert(path);
+            return;
+        }
+
+        if( (target == 0 ) || ( countNum == 0) || (num>=10))
+            return ;
+
+        // exclude
+        backTrack({ num+1, countNum, target}, path, subset);
+
+        // include
+        if(num <= target){
+            path.push_back(num);
+            backTrack({ num+1, countNum -1, target-num}, path, subset);
+            path.pop_back();
+        }
+    }
+    vector<vector<int>> combinationSum3(int k, int n) {
+        
+        vector<int> path;
+        set<vector<int>> subset;
+        backTrack({1,k,n}, path, subset);
+
+        vector<vector<int>> ans(subset.begin(), subset.end());
+
+        return ans;
+    }
+};
+
+
+### Time Complexity:
+
+Let's break down the code and analyze the time complexity.
+
+#### Key Aspects:
+1. **Recursive Backtracking (`backTrack` function)**:
+   - The function `backTrack` recursively explores all potential combinations that sum up to `n` using exactly `k` numbers.
+   - The parameters passed into `backTrack` are:
+     - `num`: The current number to consider (starting from 1).
+     - `countNum`: The number of elements that still need to be selected (starting from `k`).
+     - `target`: The remaining sum we need to reach (starting from `n`).
+
+2. **Recursive Calls**:
+   - Each time, the function either:
+     - **Excludes** the current number (`num+1` without modifying `target` or `countNum`).
+     - **Includes** the current number if it's less than or equal to the `target` (i.e., `num <= target`), reducing the `target` by `num` and decrementing `countNum` by 1.
+   - The recursion explores all valid combinations, where the sum is exactly `n` and there are exactly `k` numbers.
+
+3. **Backtracking**:
+   - The function explores combinations of numbers from 1 to 9 (since `num` reaches up to 9).
+   - The recursion goes through possible combinations of `k` numbers that sum up to `n`.
+
+4. **Stopping Conditions**:
+   - If `target == 0` and `countNum == 0`, the combination is valid, and we insert it into the `subset` set.
+   - If either `target == 0`, `countNum == 0`, or `num >= 10`, the recursion terminates early, avoiding unnecessary calls.
+
+#### Analysis of Combinations:
+- You are selecting **exactly `k` numbers** from the range `[1, 9]` to sum up to `n`.
+- The total number of combinations is bounded by the number of ways to select `k` elements from `9` numbers, which can be expressed as combinations \( C(9, k) \), where:
+  \[
+  C(9, k) = \frac{9!}{k!(9-k)!}
+  \]
+  This is a combinatorial problem, so the time complexity of generating combinations is roughly \( O(C(9, k)) \), which is a constant (since `k` is at most 9 and the maximum number of candidates is 9).
+
+#### Time Complexity of Backtracking:
+- **Recursion Depth**: In the worst case, the recursion goes to a depth of `k` (as we need exactly `k` numbers).
+- **Number of Combinations**: The number of valid combinations (with `k` elements that sum up to `n`) is bounded by the number of ways to select `k` numbers from the set `{1, 2, ..., 9}`. For `k = 9`, there is only one valid combination (`[1, 2, 3, 4, 5, 6, 7, 8, 9]`), and for `k = 1`, there are 9 valid combinations (just each number alone).
+  
+  The number of valid combinations grows combinatorially with respect to `k`.
+
+  Therefore, the time complexity of the backtracking process is **bounded by the number of valid combinations** that sum up to `n` using exactly `k` numbers, which is \( O(C(9, k)) \).
+
+- **Set Operations**: Since the set `subset` is used to store the combinations and we insert each valid combination, the insertion into the set takes \( O(k \log m) \), where `m` is the size of the set (the number of unique combinations so far). In the worst case, the set will store \( C(9, k) \) combinations, and each insertion takes \( O(k \log C(9, k)) \).
+
+Thus, the overall time complexity for backtracking and set operations can be estimated as:
+\[
+O(C(9, k) \cdot k \log C(9, k))
+\]
+Since \( C(9, k) \) is a constant for a fixed \( k \) (as \( k \leq 9 \)), this simplifies to a constant time complexity in practice. But theoretically, we can consider it as \( O(1) \), as the problem size (with \( k \leq 9 \)) is small and constant.
+
+#### Time Complexity Summary:
+- The overall time complexity is **O(C(9, k) \cdot k \log C(9, k))**.
+- In practice, this is a **constant time complexity**, as \( k \leq 9 \).
+
+### Space Complexity:
+
+1. **Recursive Call Stack**:
+   - The maximum depth of the recursion is `k` since we are selecting exactly `k` numbers.
+   - Thus, the space used by the recursion call stack is **O(k)**.
+
+2. **Storage for Results**:
+   - The `set<vector<int>> subset` stores all unique valid combinations. In the worst case, there are \( C(9, k) \) valid combinations.
+   - Each valid combination is a vector of size `k`. So the space used to store the result is \( O(C(9, k) \cdot k) \).
+
+3. **Additional Space**:
+   - The `path` vector holds the current combination, which can store up to `k` numbers. This contributes an additional \( O(k) \) space.
+   - However, this is already included in the recursive call stack and the `subset` set.
+
+#### Space Complexity Summary:
+- The total space complexity is **O(C(9, k) \cdot k)**.
+
+### Final Complexity:
+
+- **Time Complexity**: \( O(C(9, k) \cdot k \log C(9, k)) \), which is effectively **O(1)** for small values of \( k \) (since \( k \leq 9 \)).
+- **Space Complexity**: \( O(C(9, k) \cdot k) \), which is also **O(1)** for small \( k \).
+
+Thus, for practical purposes, the time and space complexities are constant.

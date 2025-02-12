@@ -1,0 +1,66 @@
+
+class Solution{
+public:
+    void InsertAtBottom(stack<int>& st, int topElement){
+        if(st.empty()){
+            st.push(topElement);
+            return ;
+        }
+        
+        int element = st.top();
+        st.pop();
+        
+        InsertAtBottom(st, topElement);
+        st.push(element);
+    }
+    void Reverse(stack<int> &st){
+        if(st.empty())
+            return ;
+        int topElement = st.top();
+        st.pop();
+        
+        Reverse(st);
+        
+        InsertAtBottom(st, topElement);
+    }
+};
+
+
+The given code implements a function `Reverse` which reverses a stack using recursion, and a helper function `InsertAtBottom` that inserts an element at the bottom of the stack.
+
+### Time Complexity:
+
+1. **`Reverse` function:**
+   - In the worst case, the recursion depth is equal to the size of the stack, as it pops all elements until the stack becomes empty.
+   - For each recursive call, it pops an element and then calls `InsertAtBottom`, which requires inserting the element at the bottom of the stack. The number of operations depends on how many elements are in the stack, and `InsertAtBottom` itself works in O(n) time for each element.
+
+2. **`InsertAtBottom` function:**
+   - Each call to `InsertAtBottom` removes the top element, makes a recursive call to insert the element at the bottom, and then pushes the element back to the stack.
+   - In the worst case, for a stack of size `n`, `InsertAtBottom` works in O(n) time (since it goes through all elements to find the bottom).
+
+Given that:
+- The `Reverse` function makes `n` recursive calls (one for each element).
+- For each recursive call of `Reverse`, the `InsertAtBottom` function is called, which works in O(n) time (since it needs to traverse the entire stack).
+
+Thus, the overall time complexity of the code is:
+\[
+O(n^2)
+\]
+where \( n \) is the number of elements in the stack.
+
+### Space Complexity:
+
+The space complexity is primarily determined by the recursion depth:
+- In the `Reverse` function, the recursion depth is proportional to the size of the stack, so the maximum recursion depth will be `n`.
+- In addition to the recursion stack, the function does not use any extra space beyond the stack itself.
+
+Thus, the space complexity of the code is:
+\[
+O(n)
+\]
+where \( n \) is the number of elements in the stack (due to the recursion stack).
+
+### Summary:
+
+- **Time complexity:** \( O(n^2) \)
+- **Space complexity:** \( O(n) \)

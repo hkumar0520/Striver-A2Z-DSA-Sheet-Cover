@@ -1,0 +1,235 @@
+#include <bits/stdc++.h> 
+
+int f(int m,int n, vector<vector<int>> &mat, vector<vector<int>> &dp)
+{
+    // for last row case handle
+    if(m == mat.size() && n==mat[0].size())
+    {
+        int row = m-1, col = n-1;
+        int maximum = INT_MIN;
+        for(int i=0;i<n;i++)
+        {
+            int value = mat[row][i];
+            int bottomm = f(row-1,i,mat,dp);
+            int bottommleft = f(row-1,i-1,mat,dp);
+            int bottommright = f(row-1,i+1,mat,dp);
+            int getval = max(bottomm,max(bottommleft,bottommright));
+            if(getval != INT_MIN)
+                value += getval;
+          
+            maximum = max(maximum,value);
+        }
+        return maximum;
+    }
+
+    // memoization case start from here
+    if(m<0 || n<0 || n>=mat[0].size())  return INT_MIN;
+
+    if(dp[m][n] != INT_MIN)  return dp[m][n];
+    int bottom = f(m-1,n,mat,dp);
+    int bottomleft = f(m-1,n-1,mat,dp);
+    int bottomright = f(m-1,n+1,mat,dp);
+    int gettval = max(bottom,max(bottomleft,bottomright));
+    dp[m][n] = mat[m][n];
+    if(gettval != INT_MIN)
+        dp[m][n] += gettval;
+
+    return dp[m][n];
+
+}
+int getMaxPathSum(vector<vector<int>> &matrix)
+{
+    //  Write your code here.
+    int m = matrix.size(),n = matrix[0].size();
+    vector<vector<int>> dp(m,vector<int>(n,INT_MIN));
+    return f(m,n,matrix,dp);
+}
+
+
+###############################################################################################
+
+#include <bits/stdc++.h> 
+
+int f(int m,int n, vector<vector<int>> &mat, vector<vector<int>> &dp)
+{
+    // memoization case start from here
+    if(m<0 || n<0 || n>=mat[0].size())  return INT_MIN;
+
+    if(dp[m][n] != INT_MIN)  return dp[m][n];
+    int bottom = f(m-1,n,mat,dp);
+    int bottomleft = f(m-1,n-1,mat,dp);
+    int bottomright = f(m-1,n+1,mat,dp);
+    int getval = max(bottom,max(bottomleft,bottomright));
+    dp[m][n] = mat[m][n];
+    if(getval != INT_MIN)
+        dp[m][n] += getval;
+
+    return dp[m][n];
+
+}
+int getMaxPathSum(vector<vector<int>> &matrix)
+{
+    //  Write your code here.
+    int m = matrix.size(),n = matrix[0].size();
+    vector<vector<int>> dp(m,vector<int>(n,INT_MIN));
+    
+        int maximum = INT_MIN;
+        for(int i=0;i<n;i++)
+        {
+            int value = matrix[m-1][i];
+            int bottomm = f(m-2,i,matrix,dp);
+            int bottommleft = f(m-2,i-1,matrix,dp);
+            int bottommright = f(m-2,i+1,matrix,dp);
+            int getval =  max(bottomm,max(bottommleft,bottommright));
+            if(getval != INT_MIN)
+                value += getval;
+          
+            maximum = max(maximum,value);
+        }
+
+    return maximum;
+}
+
+###################################################################################
+// tabular approach
+
+
+#include <bits/stdc++.h> 
+
+
+int f(int m,int n, vector<vector<int>> &mat, vector<vector<int>> &dp)
+{
+    int maximum = INT_MIN;
+    for(int i=0;i<m;i++)
+    {
+        for(int j=0;j<n;j++)
+        {
+            if(i==0)
+            {
+                dp[i][j] = mat[i][j];
+                
+                if(i==m-1)
+                    maximum  = max(maximum, dp[i][j]);
+                continue;
+            }
+            int up = dp[i-1][j];
+            int upleft = INT_MIN;
+            if(j>0)
+                upleft = dp[i-1][j-1];
+            int upright = INT_MIN;
+            if(j<n-1)
+                upright = dp[i-1][j+1];
+            dp[i][j] = mat[i][j] + max({up, upleft, upright});
+            
+            if(i==m-1)
+                maximum  = max(maximum, dp[i][j]);
+        }
+        cout<<endl;
+    }
+    return maximum;
+}
+int getMaxPathSum(vector<vector<int>> &matrix)
+{
+    //  Write your code here.
+    int m = matrix.size(),n = matrix[0].size();
+    vector<vector<int>> dp(m,vector<int>(n,0));
+
+    return f(m,n,matrix,dp);
+}
+
+
+#############################################################################
+
+optimized space
+
+#include <bits/stdc++.h> 
+
+int f(int m,int n, vector<vector<int>> &mat, vector<int> &dp)
+{
+    int maximum = INT_MIN;
+    for(int i=0;i<m;i++)
+    {
+        vector<int> temp = dp;
+        for(int j=0;j<n;j++)
+        {
+            if(i==0)
+            {
+                temp[j] = mat[i][j];
+                
+                if(i==m-1)
+                    maximum  = max(maximum, temp[j]);
+                continue;
+            }
+            int up = dp[j];
+            int upleft = INT_MIN;
+            if(j>0)
+                upleft = dp[j-1];
+            int upright = INT_MIN;
+            if(j<n-1)
+                upright = dp[j+1];
+            temp[j] = mat[i][j] + max(up, max(upleft, upright));
+            
+            if(i==m-1)
+                maximum  = max(maximum, temp[j]);
+        }
+        dp = temp;
+    }
+    return maximum;
+}
+int getMaxPathSum(vector<vector<int>> &matrix)
+{
+    //  Write your code here.
+    int m = matrix.size(),n = matrix[0].size();
+    vector<int> dp(n,0);
+
+    return f(m,n,matrix,dp);
+}
+
+
+#####################################################################################
+
+code  clean
+
+#include <bits/stdc++.h> 
+
+int f(int m,int n, vector<vector<int>> &mat, vector<int> &dp)
+{
+    int maximum = INT_MIN;
+    for(int i=0;i<m;i++)
+    {
+        vector<int> temp = dp;
+        for(int j=0;j<n;j++)
+        {
+            int up = dp[j];
+            int upleft = INT_MIN;
+            if(j>0)
+                upleft = dp[j-1];
+            int upright = INT_MIN;
+            if(j<n-1)
+                upright = dp[j+1];
+            temp[j] = mat[i][j] + max(up, max(upleft, upright));
+            
+            if(i==m-1)
+                maximum  = max(maximum, temp[j]);
+        }
+        dp = temp;
+    }
+    return maximum;
+}
+int getMaxPathSum(vector<vector<int>> &matrix)
+{
+    //  Write your code here.
+    int m = matrix.size(),n = matrix[0].size();
+    vector<int> dp(n,0);
+
+    return f(m,n,matrix,dp);
+}
+
+
+
+
+
+
+
+
+

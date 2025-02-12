@@ -1,0 +1,408 @@
+
+// 84ms
+
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        if(grid[0][0] == 1)     return -1;
+
+        // 0-step, 
+        queue<vector<int>> qtraverse;
+        qtraverse.push({1, 0, 0});
+
+        while(!qtraverse.empty())
+        {
+            vector<int> frontNode = qtraverse.front();
+            qtraverse.pop();
+            int step = frontNode[0], xCordinate = frontNode[1], yCordinate = frontNode[2];
+            if(xCordinate  == grid.size()-1 && yCordinate == grid[0].size()-1)
+                return step;
+            for(int i=-1;i<=1;i++)
+            {
+                for(int j=-1;j<=1;j++)
+                {
+                    int xnew = xCordinate + i;
+                    int ynew = yCordinate + j;
+                    if(xnew >=0 && ynew>=0 && xnew<grid.size() && ynew<grid[0].size() && grid[xnew][ynew] == 0)
+                    {
+                        grid[xnew][ynew] = 1;
+                        qtraverse.push({ step+1, xnew, ynew });
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+};
+
+
+To analyze the time and space complexity of the given code, let's break down the important components:
+
+### Time Complexity:
+
+1. **Breadth-First Search (BFS) Traversal:**
+   - The algorithm uses a queue to perform a BFS traversal on the grid. The queue stores nodes in the form of coordinates `(step, x, y)`, where `step` is the number of steps taken from the starting point `(0, 0)`.
+   - In the worst case, each cell in the grid is processed exactly once. This is because each cell is added to the queue when it is encountered for the first time, and no cell is revisited. 
+   - For each cell, the algorithm examines its 8 possible neighbors (since it allows movement in 8 directions: up, down, left, right, and the 4 diagonals). Therefore, the constant factor here is 8, but since the grid size is `m x n`, the number of total cells in the grid is `m * n`.
+
+   - **Time complexity:**
+     The BFS traversal processes each cell once, and for each cell, we check up to 8 neighbors. So, the overall time complexity is:
+     \[
+     O(m \times n)
+     \]
+     where `m` is the number of rows and `n` is the number of columns in the grid.
+
+### Space Complexity:
+
+1. **Queue for BFS:**
+   - The queue can store up to `m * n` nodes in the worst case. In the worst case, when all the cells in the grid are processed, the queue will hold all the nodes simultaneously.
+   - Each node contains a `step`, `x`, and `y` value. So, the space used by the queue itself is proportional to the number of cells, i.e., `O(m * n)`.
+
+2. **Grid Modifications:**
+   - The grid is modified in place (cells are marked as visited by setting them to `1`), so no extra space is used for the grid itself beyond its original allocation.
+   
+   Thus, the space complexity is dominated by the queue.
+
+   - **Space complexity:**
+     The space complexity is primarily driven by the queue, which can store up to `O(m * n)` nodes. So, the space complexity is:
+     \[
+     O(m \times n)
+     \]
+
+### Conclusion:
+- **Time Complexity:** \( O(m \times n) \)
+- **Space Complexity:** \( O(m \times n) \)
+
+Where `m` is the number of rows and `n` is the number of columns in the `grid`.
+
+
+#####################################################################################
+
+// 87ms
+
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        if(grid[0][0] == 1)     return -1;
+
+        // 0-step, 
+        queue<vector<int>> qtraverse;
+        qtraverse.push({1, 0, 0});
+        int rowSize = grid.size(), colSize = grid[0].size();
+        vector<vector<int>> dist(rowSize, vector<int>(colSize, INT_MAX));
+        dist[0][0] = 1;
+
+        while(!qtraverse.empty())
+        {
+            vector<int> frontNode = qtraverse.front();
+            qtraverse.pop();
+            int step = frontNode[0], xCordinate = frontNode[1], yCordinate = frontNode[2];
+            
+            for(int i=-1;i<=1;i++)
+            {
+                for(int j=-1;j<=1;j++)
+                {
+                    int xnew = xCordinate + i;
+                    int ynew = yCordinate + j;
+                    if(xnew >=0 && ynew>=0 && xnew<rowSize && ynew<colSize 
+                        && grid[xnew][ynew] == 0 && dist[xnew][ynew] > step + 1)
+                    {
+                        dist[xnew][ynew] = step+1;
+                        qtraverse.push({ step+1, xnew, ynew });
+                    }
+                }
+            }
+        }
+        return dist[rowSize-1][colSize-1] == INT_MAX? -1: dist[rowSize-1][colSize-1];
+    }
+};
+
+
+Let's break down the time and space complexity of the updated code, which incorporates a distance matrix (`dist`) to track the shortest path:
+
+### Time Complexity:
+
+1. **Breadth-First Search (BFS) Traversal:**
+   - The algorithm uses BFS to explore the grid, where each node in the queue represents a cell in the grid with a step count.
+   - Each cell is processed at most once. Specifically, the grid has `m` rows and `n` columns, so the total number of cells is `m * n`. In the worst case, each of these `m * n` cells is visited once during the BFS traversal.
+
+2. **Neighbor Checking:**
+   - For each cell, the algorithm examines its 8 possible neighbors (up, down, left, right, and the 4 diagonals).
+   - This results in a constant-time check for each neighboring cell, which does not change the overall complexity because it is bounded by the number of cells in the grid.
+
+3. **Distance Matrix Update:**
+   - For each valid neighbor that hasn't been visited yet (determined by the condition `dist[xnew][ynew] > step + 1`), the algorithm updates the `dist` matrix and adds the neighbor to the queue.
+   - This matrix update and queue insertion are O(1) operations for each valid neighbor.
+
+Thus, the BFS traversal processes each of the `m * n` cells, and for each cell, it checks up to 8 neighbors. Therefore, the total time complexity is:
+
+\[
+O(m \times n)
+\]
+
+### Space Complexity:
+
+1. **Queue for BFS:**
+   - The queue holds the cells to be processed. In the worst case, the queue may store up to `m * n` cells (one for each cell in the grid).
+   - Therefore, the space required for the queue is \(O(m \times n)\).
+
+2. **Distance Matrix:**
+   - The `dist` matrix is used to track the shortest path from the starting point to each cell. It has the same dimensions as the grid (`m * n`), and it occupies \(O(m \times n)\) space.
+
+3. **Grid:**
+   - The grid is given as input, so it does not contribute to additional space complexity beyond the `dist` matrix and queue.
+
+Thus, the total space complexity is dominated by the storage of the `dist` matrix and the queue, both of which are \(O(m \times n)\).
+
+\[
+\text{Space complexity: } O(m \times n)
+\]
+
+### Conclusion:
+- **Time Complexity:** \(O(m \times n)\)
+- **Space Complexity:** \(O(m \times n)\)
+
+Where `m` is the number of rows and `n` is the number of columns in the grid.
+
+
+############################################################################################
+
+// 112 ms
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        if(grid[0][0] == 1) 
+            return -1;
+        // sort on basis of vector[0] element 
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>> > pq;
+
+        int n = grid.size();
+        pq.push({ 1, 0, 0});
+
+        while(!pq.empty())
+        {
+            vector<int> latestNode = pq.top();
+            pq.pop();
+            int step = latestNode[0], x = latestNode[1], y = latestNode[2];
+            if(x == n-1 && y == n-1)
+                return step;
+            for(int i=-1;i<=1;i++)
+            {
+                for(int j=-1;j<=1;j++)
+                {
+                    int nx = x + i,
+                        ny = y + j;
+                    if(nx>=0 && ny>=0 && nx<n && ny<n && grid[nx][ny] == 0)
+                    {
+                        grid[nx][ny] = 1;
+                        pq.push({ step + 1, nx, ny});
+                    } 
+
+                }
+            }
+        }
+        return -1;
+    }
+};
+
+Let's analyze the time and space complexity of the provided code, which uses a **priority queue** (min-heap) to find the shortest path in a binary matrix.
+
+### Time Complexity:
+
+1. **Priority Queue Operations:**
+   - The algorithm uses a **priority queue (min-heap)** to store and process nodes. Each node in the priority queue is represented by a vector `{step, x, y}` where:
+     - `step` represents the current step count,
+     - `x` and `y` are the coordinates of the cell.
+   
+   - **Push operation**: Inserting an element into a priority queue takes \( O(\log k) \), where \( k \) is the number of elements in the queue.
+   - **Pop operation**: Similarly, removing the top element from the priority queue also takes \( O(\log k) \).
+
+2. **Number of Cells:**
+   - The priority queue will store nodes corresponding to each valid cell in the grid. Since there are \( n \times n \) cells in the grid (where `n` is the number of rows or columns), in the worst case, the priority queue could contain up to \( n^2 \) nodes.
+
+3. **Neighbor Exploration:**
+   - For each node, the algorithm examines up to 8 neighbors (since diagonal movement is allowed). This exploration of neighbors occurs in constant time, i.e., \( O(1) \) for each cell. However, the complexity is dominated by the priority queue operations rather than the neighbor checks.
+
+4. **Total Operations:**
+   - In the worst case, every node could be added to the priority queue once, and for each node, a **push** and **pop** operation are performed. Both of these operations take \( O(\log k) \), where \( k \) is the number of elements in the priority queue.
+   - Since the maximum number of nodes in the queue is \( n^2 \), the **push** and **pop** operations each take \( O(\log n^2) = O(2 \log n) = O(\log n) \).
+   
+   Hence, the total time complexity will be dominated by the priority queue operations, and the total time complexity is:
+
+   \[
+   O(n^2 \log n)
+   \]
+
+### Space Complexity:
+
+1. **Priority Queue Storage:**
+   - The priority queue stores up to \( n^2 \) nodes (one for each cell in the grid). Therefore, the space complexity due to the priority queue is \( O(n^2) \).
+
+2. **Grid Modifications:**
+   - The grid is modified in place to mark visited cells (setting `grid[nx][ny] = 1`). This does not require additional space beyond the original grid, so it does not contribute to extra space complexity.
+
+Thus, the space complexity is dominated by the priority queue.
+
+### Conclusion:
+- **Time Complexity:** \( O(n^2 \log n) \)
+- **Space Complexity:** \( O(n^2) \)
+
+Where `n` is the number of rows (or columns) in the grid.
+
+
+################################################################################################################################
+
+// 118ms , 123ms
+
+class Solution {
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        if(grid[0][0] == 1)     return -1;
+
+        // sort on basis of vector[0] element 
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>> > pq;
+
+
+        pq.push({1, 0, 0});
+        int rowSize = grid.size(), colSize = grid[0].size();
+        vector<vector<int>> dist(rowSize, vector<int>(colSize, INT_MAX));
+        dist[0][0] = 1;
+
+        while(!pq.empty())
+        {
+            vector<int> frontNode = pq.top();
+            pq.pop();
+            int step = frontNode[0], xCordinate = frontNode[1], yCordinate = frontNode[2];
+            
+            if(xCordinate == rowSize-1 && yCordinate == colSize-1)
+                return step;
+
+            for(int i=-1;i<=1;i++)
+            {
+                for(int j=-1;j<=1;j++)
+                {
+                    int xnew = xCordinate + i;
+                    int ynew = yCordinate + j;
+                    if(xnew >=0 && ynew>=0 && xnew<rowSize && ynew<colSize 
+                        && grid[xnew][ynew] == 0 && dist[xnew][ynew] > step + 1)
+                    {
+                        dist[xnew][ynew] = step+1;
+                        pq.push({ step+1, xnew, ynew });
+                    }
+                }
+            }
+        }
+        return dist[rowSize-1][colSize-1] == INT_MAX? -1: dist[rowSize-1][colSize-1];
+    }
+};
+
+
+Row and col size if different 
+
+Let's analyze the time and space complexity of the provided code, which is an implementation of a shortest path search using a **priority queue** (min-heap) on a binary matrix.
+
+### Time Complexity:
+
+1. **Priority Queue Operations:**
+   - The algorithm uses a **priority queue (min-heap)** to store the nodes being processed, each represented by a vector `{step, x, y}` where:
+     - `step` represents the current number of steps,
+     - `x` and `y` are the coordinates of the cell in the grid.
+   
+   - **Push operation**: Inserting a new element into the priority queue takes \( O(\log k) \), where \( k \) is the number of elements currently in the queue.
+   - **Pop operation**: Removing the top element from the priority queue also takes \( O(\log k) \).
+
+2. **Grid Size:**
+   - The grid has `rowSize` (denoted as `m`) rows and `colSize` (denoted as `n`) columns. Thus, the total number of cells is \( m \times n \).
+   - In the worst case, all the cells will eventually be added to the priority queue. Therefore, the total number of priority queue operations is bounded by \( m \times n \).
+
+3. **Neighbor Exploration:**
+   - For each node processed from the priority queue, the algorithm examines its 8 neighbors (since it allows movement in 8 directions: up, down, left, right, and the 4 diagonals).
+   - This exploration occurs in constant time, i.e., \( O(1) \), for each of the 8 neighboring cells.
+
+4. **Total Operations:**
+   - In the worst case, the priority queue will store all \( m \times n \) nodes (one for each cell in the grid).
+   - For each node, the algorithm performs both a **pop** and a **push** operation, each taking \( O(\log k) = O(\log (m \times n)) = O(\log m + \log n) \).
+   - Since there are \( m \times n \) nodes, the overall time complexity is:
+
+   \[
+   O((m \times n) \log (m \times n)) = O((m \times n) \log m + (m \times n) \log n)
+   \]
+
+   Therefore, the **time complexity** is:
+
+   \[
+   O(m \times n \log (m \times n))
+   \]
+
+### Space Complexity:
+
+1. **Priority Queue Storage:**
+   - The priority queue stores up to \( m \times n \) nodes (one for each cell in the grid), and each node contains a vector `{step, x, y}`.
+   - The space complexity for storing these nodes in the priority queue is \( O(m \times n) \).
+
+2. **Distance Matrix:**
+   - The `dist` matrix is used to track the minimum distance to each cell. It has the same dimensions as the grid, i.e., \( m \times n \).
+   - Therefore, the space complexity for the `dist` matrix is also \( O(m \times n) \).
+
+3. **Grid Modifications:**
+   - The grid is modified in place (to mark cells as visited by setting `grid[x][y] = 1`), so no additional space is needed for the grid itself beyond its original allocation.
+
+Thus, the **space complexity** is dominated by the storage of the priority queue and the distance matrix, both of which are \( O(m \times n) \).
+
+### Conclusion:
+- **Time Complexity:** \( O(m \times n \log (m \times n)) \)
+- **Space Complexity:** \( O(m \times n) \)
+
+Where:
+- `m` is the number of rows in the grid,
+- `n` is the number of columns in the grid.
+
+
+##############################################################################
+
+Row Size and colSize are Same 
+
+Ah, I see! If `rowSize` and `colSize` are the same, meaning the grid is a square matrix (`n x n`), we can simplify the time and space complexity analysis based on that.
+
+### Time Complexity:
+
+Given that `rowSize` and `colSize` are both equal to `n` (i.e., the grid is `n x n`), the number of cells in the grid is \( n^2 \).
+
+1. **Priority Queue Operations:**
+   - The priority queue stores nodes, each represented by a vector `{step, x, y}`.
+   - The number of nodes in the priority queue is at most \( n^2 \) (one for each cell in the grid).
+   - **Push and Pop operations:** Each push and pop operation on the priority queue takes \( O(\log k) \), where \( k \) is the number of elements in the priority queue.
+   - In the worst case, the priority queue can hold up to \( n^2 \) nodes. Therefore, the time complexity of each operation is \( O(\log n^2) = O(2 \log n) = O(\log n) \).
+
+2. **Neighbor Exploration:**
+   - For each node, the algorithm examines up to 8 neighbors (since it allows movement in 8 directions). Each neighbor check is a constant-time operation, i.e., \( O(1) \).
+
+3. **Total Operations:**
+   - The algorithm processes all \( n^2 \) cells in the grid, performing both push and pop operations on each node in the priority queue. Each of these operations takes \( O(\log n) \), so the total time complexity is:
+
+   \[
+   O(n^2 \log n)
+   \]
+
+### Space Complexity:
+
+1. **Priority Queue Storage:**
+   - The priority queue stores up to \( n^2 \) nodes, so the space complexity due to the priority queue is \( O(n^2) \).
+
+2. **Distance Matrix:**
+   - The `dist` matrix has the same dimensions as the grid, i.e., \( n \times n \). Thus, the space complexity for the distance matrix is \( O(n^2) \).
+
+3. **Grid Modifications:**
+   - The grid is modified in place, so no additional space is required for the grid.
+
+Thus, the total space complexity is dominated by the priority queue and the distance matrix, both of which take \( O(n^2) \) space.
+
+### Conclusion:
+
+- **Time Complexity:** \( O(n^2 \log n) \)
+- **Space Complexity:** \( O(n^2) \)
+
+Where `n` is the number of rows or columns in the grid (since it's a square matrix).
+
+
+

@@ -1,0 +1,40 @@
+
+// optimization
+
+int f(int m, string s, int n, string t, vector<int> &dp)
+{
+    for(int i=1;i<m+1;i++)
+    {
+		vector<int> temp = dp;
+        for(int j=1;j<n+1;j++)
+        {
+            if(s[i-1] == t[j-1])
+                temp[j] = dp[j-1]+1;
+            else
+                temp[j] = max(dp[j], temp[j-1]);
+        }
+		dp = temp;
+    }
+	return  dp[n];
+}
+int lcs(string s, string t)
+{
+	//Write your code here
+	int m = s.size();
+	int n = t.size();
+	vector<int> dp(n+1,0);
+
+	return f(m,s, n, t,dp);
+}
+
+int canYouMake(string &s1, string &s2){
+    // Write your code here.
+
+    int val = lcs(s1, s2);
+    int m = s1.size();
+    int n = s2.size();
+    int removee = m-val;
+    int addd = n-val;
+    return removee+addd;
+
+}

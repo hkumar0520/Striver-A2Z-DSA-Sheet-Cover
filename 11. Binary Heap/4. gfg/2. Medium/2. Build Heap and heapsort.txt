@@ -1,0 +1,112 @@
+https://www.geeksforgeeks.org/problems/heap-sort/1?page=1&category=Heap&difficulty=Medium&sortBy=submissions
+
+class Solution {
+  public:
+  
+    // log(N)
+    void pushDown(vector<int>& arr, int i, int arrSize){
+        int left = 2*i + 1;
+        int right = 2*i + 2;
+        int largest = i; 
+        
+        if(left < arrSize && arr[left] > arr[largest]){
+            largest = left;
+        }
+        
+        if(right < arrSize && arr[right] > arr[largest]){
+            largest = right;
+        }
+        
+        if(i != largest){
+            swap(arr[i], arr[largest]);
+            pushDown(arr, largest, arrSize);
+        }
+        
+    }
+    // Function to sort an array using Heap Sort.
+    void heapSort(vector<int>& arr) {
+        // code here
+        
+        int n = arr.size();
+        // buildheap O(N)
+        for(int i = (n/2)-1; i>=0 ; i--){
+            // O(logN)
+            pushDown(arr, i, n);
+        }
+        
+        // O(N)
+        for(int i = n-1; i>=0 ;i--){
+            
+            swap(arr[i], arr[0]);
+            
+            // O(logN)
+            pushDown(arr, 0, i);
+        }
+    }
+};
+
+Time Complexity : N + N*logN = O(N*logN)
+Space Complexity: O(N)'
+
+
+Let's analyze the **time complexity** and **space complexity** of the given **heap sort** algorithm.
+
+### Code Explanation:
+
+Heap sort is a comparison-based sorting algorithm that utilizes a binary heap (usually a max-heap in this case). The algorithm consists of two main phases:
+
+1. **Building the heap**:  
+   The array is first transformed into a heap (max-heap), where each parent node is greater than or equal to its children.
+
+2. **Sorting the heap**:  
+   The largest element (at the root) is swapped with the last element, reducing the size of the heap, and then the heap property is restored by calling the `pushDown` function.
+
+### Time Complexity:
+
+1. **Building the Heap:**
+
+   The function `pushDown` is called to restore the heap property for each node starting from the last internal node down to the root. The time complexity of `pushDown` is O(log N) in the worst case because it may need to traverse from the root to the leaf of the heap.
+
+   For the `heapSort` function:
+   - The loop iterates from `i = n/2 - 1` down to `i = 0`, which represents internal nodes of the binary heap.
+   - The number of levels in the heap is O(log N), and for each node, the `pushDown` function is called, which takes O(log N) time.
+   - The total time to build the heap can be calculated by summing the time for each level:
+     - The first level (nodes at depth 0) takes O(log N),
+     - The second level (nodes at depth 1) takes O(log N),
+     - And so on.
+     - However, the overall complexity of the heap construction phase is **O(N)** (not O(N log N)) because the time taken by each level is halved as the level number increases. Specifically, the time complexity of building the heap is derived from the sum of the work done at each level of the tree, which results in **O(N)** time.
+
+2. **Sorting the Heap:**
+
+   After the heap is built, the sorting phase starts:
+   - The loop runs `n-1` times (from `i = n-1` to `i = 1`).
+   - In each iteration, the root element (the largest element) is swapped with the last element, and the heap size is reduced by one.
+   - The `pushDown` function is then called to restore the heap property. Since the heap size is reduced in each iteration, the time complexity of the `pushDown` function for each call is O(log N).
+   - The overall time complexity for the sorting phase is **O(N log N)** because the `pushDown` function is called for each of the `n-1` iterations, and each call takes O(log N) time.
+
+### Total Time Complexity:
+
+- **Building the heap** takes **O(N)**.
+- **Sorting the heap** takes **O(N log N)**.
+
+Thus, the overall **time complexity** of the `heapSort` function is:
+\[
+O(N) + O(N \log N) = O(N \log N)
+\]
+
+### Space Complexity:
+
+The space complexity is determined by the auxiliary space used by the algorithm, including the space used by the input array and any extra space used by the algorithm.
+
+- **Input array**: The array `arr` is modified in place, so no extra space is used for the input itself.
+- **Auxiliary space**: The only additional space used is for the recursion stack in the `pushDown` function. Since the depth of recursion can go up to O(log N) (in the worst case), the recursive stack space is **O(log N)**.
+
+Thus, the overall **space complexity** is:
+\[
+O(\log N)
+\]
+
+### Final Complexity Summary:
+
+- **Time Complexity**: **O(N log N)**
+- **Space Complexity**: **O(log N)**
