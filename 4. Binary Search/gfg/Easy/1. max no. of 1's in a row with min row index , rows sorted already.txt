@@ -1,0 +1,96 @@
+
+TLE - 1003/1023 test cases passed
+
+/*
+    TC  =  O(log(factorial(N)))
+    SC = O(1)
+*/
+
+class Solution {
+public:
+    int findNoOfOnes(vector<vector<int>> mat, int row, int highIdx){
+        int low = 0, high = highIdx;
+        int ans = highIdx;
+        
+        while(low <= high){
+            int mid = (low + high)/2;
+            
+            if(mat[row][mid] == 1){
+                high = mid-1;
+                ans = mid;
+            }
+            else
+                low = mid+1;
+        }
+        return ( (mat[row][ans] == 1) ? ans : -1);
+    }
+    vector<int> findMaxRow(vector<vector<int>> mat, int N) {
+        //code here
+        int high = N-1, row = N-1, countOnes = N;
+        for(int i = 0; i<N; i++){
+            
+            int idx = findNoOfOnes(mat, i, high);
+            if(idx == -1)
+                continue;
+            
+            if(idx < countOnes){
+                countOnes = idx;
+                // search range
+                high = idx-1;
+                row = i;
+            }
+            if(countOnes == 0)
+                break;
+        }
+        
+        if( (N-countOnes) == 0 )
+            return {0, 0};
+        
+        return {row, N-countOnes};
+    }
+};
+
+
+TC: N*log(N)
+SC: O(1)
+
+
+##########################################################################
+
+
+
+class Solution {
+public:
+
+    int findOnesIndex(vector<int>& res){
+        int n = res.size();
+        int low = 0, high = res.size()-1;
+        while(low <= high){
+            
+            int  mid = (low + high)/2;
+            if(res[mid] == 1)
+                high = mid-1;
+            else
+                low = mid+1;
+        }
+        return (n-low);
+    }
+    
+    vector<int> findMaxRow(vector<vector<int>> arr, int N) {
+        //code here
+        int maxOnes = 0, index = -1, n = arr.size();
+        for(int i = 0; i<n; i++){
+            
+            int lenOfOnes = findOnesIndex(arr[i]);
+            if( lenOfOnes > maxOnes){
+                maxOnes = lenOfOnes;
+                index = i;
+            }
+        }
+        if( maxOnes == 0)
+            return {0, 0};
+            
+        return {index, maxOnes};
+    }
+};
+

@@ -39,3 +39,55 @@ int findPages(vector<int>& arr, int n, int m) {
     return lo;
 }
 
+
+
+##########################################################################
+
+
+
+
+int f(vector<int>& arr, int n, int m, int pages) 
+{
+    int sum = 0, cnt = 1;
+    for(int i=0;i<n;i++)
+    {
+        sum += arr[i];
+        if(sum > pages)
+        {
+            sum = arr[i];
+            cnt++;
+        }
+    }
+    if(cnt <= m)  return true;
+    
+    return false;
+}
+int findPages(vector<int>& arr, int n, int m) {
+    // Write your code here.
+    if(m>n) return -1;
+    int lo = 0, hi = 0;
+    for(auto u: arr)
+    {
+        lo = max(lo, u);
+        hi += u;
+    }
+    while(lo<=hi)
+    {
+        int mid = (lo + hi)/2;
+        bool possible = f(arr,n,m,mid);
+        if(possible)
+            hi = mid-1;
+        else
+            lo = mid+1;
+    }
+    return lo;
+}
+
+
+TC: O( log(sum-max+1) * n)
+SC: O(1)
+
+
+
+
+

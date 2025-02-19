@@ -19,3 +19,68 @@ int floorSqrt(int n)
   // return floor if sqrt not available
   return j;
 }
+
+
+
+#########################################################################
+
+class Solution {
+  public:
+    int floorSqrt(int n) {
+        // Your code goes here
+        
+        int i = 1, j = n;
+        while(i<=j){
+            int mid = (i+j)/2;
+            int midVal = mid * mid;
+            
+            if( midVal == n)
+                return mid;
+            else if( midVal > n)
+                j = mid-1;
+            else
+                i = mid+1;
+        }
+        return j;
+    }
+};
+
+Let's analyze the **time and space complexity** of the given code.
+
+---
+
+### **Time Complexity Analysis**
+The algorithm uses **binary search** to find the integer square root of a given number \( n \). Here's how it works:
+
+1. **Binary search approach**  
+   - The search space is initially from \( 1 \) to \( n \).
+   - Each iteration calculates `mid = (i + j) / 2` and checks if \( \text{mid}^2 \) is equal to, greater than, or less than \( n \).
+   - The search space is halved in each iteration.
+
+Since binary search runs in **O(log N)** time, the time complexity of this approach is:
+\[
+O(\log N)
+\]
+
+---
+
+### **Space Complexity Analysis**
+1. The algorithm only uses a few integer variables (`i`, `j`, `mid`, `midVal`).
+2. No extra data structures or recursion are used.
+
+Since the extra space usage is constant, the space complexity is:
+\[
+O(1)
+\]
+
+---
+
+### **Final Complexity**
+- **Time Complexity:** \( O(\log N) \)  
+- **Space Complexity:** \( O(1) \)
+
+This is an optimal approach compared to a brute-force method that would take **O(√N)** time.
+
+
+
+

@@ -40,3 +40,105 @@ int largestSubarraySumMinimized(vector<int> a, int k) {
     return lo;
 }
 
+
+
+############################################################################
+
+
+
+similar to allocate books max-min problem
+
+class Solution {
+public:
+int f(vector<int>& arr, int n, int m, int pages) 
+{
+    int sum = 0, cnt = 1;
+    for(int i=0;i<n;i++)
+    {
+        sum += arr[i];
+        if(sum > pages)
+        {
+            sum = arr[i];
+            cnt++;
+        }
+    }
+    if(cnt <= m)  return true;
+    
+    return false;
+}
+int findPages(vector<int>& arr, int n, int m) {
+    // Write your code here.
+    if(m>n) return -1;
+    int lo = 0, hi = 0;
+    for(auto u: arr)
+    {
+        lo = max(lo, u);
+        hi += u;
+    }
+    while(lo<=hi)
+    {
+        int mid = (lo + hi)/2;
+        bool possible = f(arr,n,m,mid);
+        if(possible)
+            hi = mid-1;
+        else
+            lo = mid+1;
+    }
+    return lo;
+}
+    int splitArray(vector<int>& nums, int k) {
+        return findPages(nums, nums.size(), k);
+    }
+};
+
+
+
+
+
+
+TC: O( log(sum-max+1) * n)
+SC: O(1)
+
+
+
+###########################################################################
+
+
+gfg sol
+
+class Solution {
+  public:
+    bool getSubarrayResult(int arr[], int N, int K, int limitSum){
+        int sum = 0, cntGroup=1;
+        for(int i = 0; i<N; i++){
+            
+            sum += arr[i];
+            if( sum > limitSum){
+                cntGroup++;
+                sum = arr[i];
+            }
+        }
+        
+        return cntGroup <= K;
+    }
+    int splitArray(int arr[] ,int N, int K) {
+        // code here
+        int sum  =0, maxElement = INT_MIN;
+        for(int i = 0; i<N; i++){
+            sum += arr[i];
+            maxElement = max(maxElement, arr[i]);
+        }
+        
+        int low = maxElement, high = sum;
+        while(low <= high){
+            int mid = ( low + high) /2;
+            bool isPossible = getSubarrayResult(arr, N, K, mid);
+            if( isPossible )
+                high = mid-1;
+            else
+                low = mid+1;
+        }
+        return low;
+    }
+};
+

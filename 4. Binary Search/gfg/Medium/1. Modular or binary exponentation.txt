@@ -1,0 +1,26 @@
+
+https://www.geeksforgeeks.org/problems/modular-exponentiation-for-large-numbers5537/1
+
+class Solution
+{
+	public:
+		long long int PowMod(long long int x,long long int n,long long int M)
+		{
+		    // Code here
+		    if( n == 0) return 1;
+		    
+		    long long half = PowMod(x, n/2, M);
+		    
+		    if( n%2 == 1)
+		        return (x * ((half*half)%M) ) % M;
+		        
+		    return (half*half) % M;
+		}
+};
+
+
+TC: O(log(N))
+SC: O(log(N))
+
+
+In iterative , refere recursion gfg { TC: logN, SC: O(1)}

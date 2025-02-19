@@ -1,0 +1,166 @@
+
+### **Comprehensive List of Binary Search Problems**  
+
+Binary Search is a powerful algorithm used to efficiently search in sorted data. Below is a categorized list of problems that cover all variations and applications of **Binary Search**.
+
+---
+
+## **🔹 1. Basic Binary Search Problems**
+1. **Standard Binary Search**  
+   - Find an element in a sorted array.
+2. **Lower Bound** (`first occurrence of target or first element ≥ target`)  
+   - Implement `lower_bound()` manually.
+3. **Upper Bound** (`first element > target`)  
+   - Implement `upper_bound()` manually.
+4. **Find First and Last Position of an Element in a Sorted Array**  
+   - Use binary search to find occurrences.
+5. **Find the Square Root of a Number**  
+   - Compute `√x` using binary search.
+
+📌 **Practice**: Implement these from scratch without using built-in functions.
+
+---
+
+## **🔹 2. Binary Search on Answer**
+Some problems require binary searching on a possible answer range instead of an array.
+
+6. **Kth Smallest Element in a Sorted Matrix**  
+   - Find the \( k \)th smallest element in an `n x n` sorted matrix.
+7. **Find the Smallest Divisor Given a Threshold**  
+   - Given an array and a threshold, find the smallest divisor such that the sum of the array after division is ≤ threshold.
+8. **Minimize Maximum Distance to Gas Stations**  
+   - Find where to place `k` additional gas stations to minimize the maximum distance.
+9. **Find the Maximum of a Mountain Array** (`Bitonic Array Peak`)  
+   - Find the peak index of a **bitonic** (increasing then decreasing) array.
+10. **Split Array Largest Sum**  
+   - Given an array, split it into `m` parts to minimize the largest subarray sum.
+11. **Capacity to Ship Packages in `D` Days**  
+   - Find the minimum weight capacity of a ship to deliver packages within `D` days.
+
+📌 **Tip**: Think of **binary searching over possible answers** (min-max problem).
+
+---
+
+## **🔹 3. Searching in a Rotated/Shifted Array**
+12. **Search in a Rotated Sorted Array**  
+   - Find a target in a sorted and rotated array.
+13. **Find Minimum in Rotated Sorted Array**  
+   - Find the minimum element in a rotated array.
+14. **Find Peak Element**  
+   - Find an index where the element is greater than both its neighbors.
+15. **Search in a Nearly Sorted Array**  
+   - Each element may be misplaced by at most 1 position.
+
+📌 **Practice**: Handle duplicate elements in rotated sorted arrays.
+
+---
+
+## **🔹 4. Advanced Variants**
+16. **Median of Two Sorted Arrays**  
+   - Find the median of two sorted arrays in \(O(\log n)\) time.
+17. **Painter’s Partition Problem**  
+   - Given `k` painters and `n` boards, minimize the maximum time taken.
+18. **Aggressive Cows** (Binary Search on Distance)  
+   - Place cows in stalls to maximize the minimum distance between them.
+19. **Book Allocation Problem**  
+   - Given `n` books and `m` students, allocate books to minimize the maximum pages assigned.
+20. **Minimize the Largest Sum of Split Array**  
+   - Split an array into `m` subarrays such that the largest sum is minimized.
+
+📌 **Tip**: Many **array partitioning** problems use binary search.
+
+---
+
+## **🔹 5. Binary Search on Floating Point Values**
+21. **Nth Root of a Number**  
+   - Find the `n`th root of `x` using binary search with precision.
+22. **Find Square Root with Precision**  
+   - Compute `√x` up to a certain decimal accuracy.
+23. **Find Logarithm of a Number**  
+   - Compute `log(x, base)` using binary search.
+
+📌 **Tip**: Use **double precision** and a defined tolerance (`1e-6`).
+
+---
+
+## **🔹 6. Binary Search on Graph/Tree Problems**
+24. **Binary Search on Trees** (Find **LCA** of two nodes using Binary Lifting).  
+25. **Kth Smallest Element in a BST**  
+   - Find the `k`th smallest element in a Binary Search Tree.
+26. **Find the Closest Value in a BST**  
+   - Given a BST and a target, find the closest value.
+27. **Trim a BST**  
+   - Remove nodes that don't fall within a given range.
+
+📌 **Practice**: **Inorder Traversal + Binary Search**.
+
+---
+
+## **🔹 7. Binary Search on Strings & Characters**
+28. **Find the Smallest Character Greater than Target**  
+   - Given a sorted list of characters, return the smallest letter greater than the given character.
+29. **Longest Prefix Matching** (Binary Search on Trie).  
+30. **Check If a Word Can Be Formed Using Dictionary Words** (Binary Search on Sorted Dictionary).  
+31. **Kth Smallest Lexicographical String**  
+   - Find the `k`th smallest string in dictionary order.
+
+📌 **Tip**: Some **string problems** can be solved using binary search on **index ranges**.
+
+---
+
+## **🔹 8. Binary Search in Dynamic Programming**
+32. **Longest Increasing Subsequence (LIS) using Binary Search**  
+   - Use a **sorted array + binary search** instead of \(O(n^2)\) DP.
+33. **Number of Longest Increasing Subsequences**  
+   - Find how many LIS exist in the array.
+34. **Russian Doll Envelopes**  
+   - Sort envelopes and use **LIS with Binary Search**.
+
+📌 **Tip**: Many **LIS variants** use **binary search with dynamic programming**.
+
+---
+
+## **🔹 9. Matrix & 2D Grid Problems**
+35. **Search in a Row-Wise and Column-Wise Sorted Matrix**  
+   - Find an element efficiently in a sorted matrix.
+36. **Kth Smallest Element in a Sorted Matrix**  
+   - Binary search on **value range** instead of index.
+37. **Count Negative Numbers in a Sorted Matrix**  
+   - Use **binary search on rows**.
+38. **Matrix Median**  
+   - Find the median of a row-wise sorted matrix using binary search.
+
+📌 **Tip**: When dealing with **matrices**, think of **binary searching over row/column indices**.
+
+---
+
+## **🔹 10. Searching in a List of Intervals**
+39. **Find Right Interval**  
+   - Given an array of intervals, find the next interval for each one.
+40. **Meeting Rooms II**  
+   - Find the minimum number of meeting rooms required.
+41. **Minimum Number of Arrows to Burst Balloons**  
+   - Use **binary search on intervals**.
+
+📌 **Tip**: Many **interval scheduling** problems involve binary search.
+
+---
+
+### **🚀 How to Master Binary Search?**
+1. **Understand different variations**:
+   - **Standard search** vs **Binary search on answer** vs **Rotated search**.
+2. **Use Binary Search for Optimization**:
+   - If a problem asks for a **minimum/maximum possible value**, try **binary searching on the answer**.
+3. **Handle edge cases**:
+   - Arrays with **duplicates**, **empty input**, or **negative numbers**.
+
+---
+
+### **🔗 Where to Practice?**
+✅ **Easy**: [LeetCode Easy Binary Search Problems](https://leetcode.com/problemset/all/?topicSlugs=binary-search&difficulty=easy)  
+✅ **Medium**: [LeetCode Medium Binary Search Problems](https://leetcode.com/problemset/all/?topicSlugs=binary-search&difficulty=medium)  
+✅ **Hard**: [LeetCode Hard Binary Search Problems](https://leetcode.com/problemset/all/?topicSlugs=binary-search&difficulty=hard)  
+
+---
+
+🎯 **Would you like a detailed explanation of any specific problem?** 🚀

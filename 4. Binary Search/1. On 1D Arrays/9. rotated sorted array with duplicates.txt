@@ -11,6 +11,7 @@ bool searchInARotatedSortedArrayII(vector<int>&arr, int key) {
         {
             i = i+1;
             j = j-1;
+            continue;
         }
 
         if(arr[mid] == key)   return true;

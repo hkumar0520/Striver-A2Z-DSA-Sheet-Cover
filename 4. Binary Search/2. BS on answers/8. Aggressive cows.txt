@@ -33,3 +33,56 @@ int aggressiveCows(vector<int> &stalls, int k)
     return j;
 }
 
+
+
+##########################################################################
+
+#include<bits/stdc++.h>
+
+int minDistance(vector<int> &stalls, int k, int mid)
+{
+    int lastPlace = stalls[0], n = stalls.size(), cnt = 1;
+    for(int i=1;i<n;i++)
+    {
+        if((stalls[i]-lastPlace) >= mid)
+        {
+            lastPlace = stalls[i];
+            cnt++;
+        }
+    }
+    if(cnt >= k)    return true;
+    return false;
+}
+int aggressiveCows(vector<int> &stalls, int k)
+{
+    //    Write your code here.
+    sort(stalls.begin(), stalls.end());
+    int lo = INT_MAX, n = stalls.size();
+    int hi = stalls[n-1] - stalls[0];
+    for(int i = 1; i<n; i++)
+        lo = min(stalls[i] - stalls[i-1], lo);
+
+
+    while(lo <= hi)
+    {
+        int mid = (lo + hi)/2;
+        bool possible = minDistance(stalls, k, mid);
+        if(possible)
+            lo = mid+1;
+        else    
+            hi = mid-1;
+    }
+    return hi;
+}
+
+
+TC: O( log(M) * n){
+    M = hi - lo + 1
+    hi = MaxElement - MinElement
+    low = min of two consecutivie number
+}
+SC: O(1)
+
+
+
+

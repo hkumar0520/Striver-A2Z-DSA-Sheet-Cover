@@ -27,3 +27,55 @@ int search(vector<int>& arr, int n, int k)
 }
 
 
+### **Time and Space Complexity Analysis**  
+
+The given function **searches for `k` in a sorted and rotated array** using **binary search**.
+
+---
+
+### **Time Complexity Analysis**  
+1. The function follows a **modified binary search** approach, where:
+   - It first checks if `arr[mid] == k`, returning `mid` if found.
+   - It then determines **which half of the array is sorted** (either `arr[i]` to `arr[mid]` or `arr[mid]` to `arr[j]`).
+   - Depending on the sorted half, it decides whether to search in the left or right half.
+   - This **halves the search space in each iteration**, similar to binary search.
+
+2. The number of iterations in the worst case is determined by how many times we can halve `n` until we reach **1**:
+
+   \[
+   n, \frac{n}{2}, \frac{n}{4}, \frac{n}{8}, \dots, 1
+   \]
+
+   Solving for \( k \) in \( \frac{n}{2^k} = 1 \):
+
+   \[
+   k = \log_2 n
+   \]
+
+3. Each iteration performs **constant work** \( O(1) \) (computing `mid`, checking conditions, and updating `i` or `j`).
+
+Thus, the **time complexity** is:
+\[
+O(\log n)
+\]
+
+---
+
+### **Space Complexity Analysis**  
+1. The function is **iterative**, meaning **no recursive call stack is used**.
+2. It only uses **a few integer variables** (`i`, `j`, `mid`, `pos`).
+3. The function **returns an integer**, which takes **\( O(1) \) space**.
+
+Thus, the **space complexity** is:
+\[
+O(1)
+\]
+
+---
+
+### **Final Complexity Summary**  
+- **Time Complexity**: \( O(\log n) \) (modified binary search halves the search space at each step)  
+- **Space Complexity**: \( O(1) \) (only a few integer variables are used)  
+
+This is an **optimal approach** for searching in a **sorted and rotated array**. 🚀
+

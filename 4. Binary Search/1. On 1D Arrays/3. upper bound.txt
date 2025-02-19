@@ -5,7 +5,7 @@ Where 'n' is the size of the array.
 
 // recursion
 
-void f(vector<int> arr, int x, int i, int j, int &ans)
+void f(vector<int>& arr, int x, int i, int j, int &ans)
 {
 	if(i>j)
 		return ;
@@ -32,6 +32,72 @@ int upperBound(vector<int> arr, int x, int n) {
 }
 
 
+This code implements **upper bound search** using **recursive binary search**. Let's analyze its **time complexity** and **space complexity**.
+
+---
+
+### **Understanding Upper Bound**
+The function finds the **first index where `arr[mid] > x`** (i.e., the smallest index such that `arr[mid]` is strictly greater than `x`).
+
+- If `x` is **greater than or equal** to the last element, it returns `n` (out-of-bounds index).
+- Otherwise, it performs **binary search** to find the smallest index where `arr[mid] > x`.
+
+---
+
+### **Time Complexity Analysis**
+1. The function `f(arr, x, i, j, ans)` follows **binary search**, where the search space is **halved** at each recursive call.
+2. The recurrence relation for this algorithm is:
+   \[
+   T(n) = T(n/2) + O(1)
+   \]
+   - Each recursive call does a constant amount of work \( O(1) \) (computing `mid`, updating `ans`, and making a recursive call).
+   - The problem size reduces by half in each step.
+3. The depth of recursion follows:
+
+   \[
+   n, \frac{n}{2}, \frac{n}{4}, \frac{n}{8}, \dots, 1
+   \]
+
+   Solving for \( k \) in \( \frac{n}{2^k} = 1 \):
+
+   \[
+   k = \log_2 n
+   \]
+
+Thus, the **time complexity** is:
+\[
+O(\log n)
+\]
+
+---
+
+### **Space Complexity Analysis**
+1. Since the function is **recursive**, each call adds a new frame to the **call stack**.
+2. The **maximum depth** of recursion is **\( O(\log n) \)** because the search space halves at each step.
+3. The array is passed **by reference (`vector<int>& arr`)**, so **no extra copies** of the array are created.
+4. The **only space used** is for the **recursive call stack**, which takes at most **\( O(\log n) \) space**.
+
+Thus, the **space complexity** is:
+\[
+O(\log n)
+\]
+
+---
+
+### **Final Complexity Summary**
+- **Time Complexity**: \( O(\log n) \) (binary search halves the search space at each step)
+- **Space Complexity**: \( O(\log n) \) (due to recursive call stack)
+
+**Optimization Tip**: Converting this function to an **iterative** approach would further reduce space complexity to **\( O(1) \)**. 🚀
+
+
+
+
+
+
+
+
+
 
 ################################################################################################
 
@@ -55,3 +121,59 @@ int upperBound(vector<int> &arr, int x, int n){
 	}
 	return ans;	
 }
+
+
+
+This code implements **upper bound search** using an **iterative binary search approach**. Let's analyze its **time complexity** and **space complexity**.
+
+---
+
+### **Understanding Upper Bound**
+The function finds the **first index where `arr[mid] > x`** (i.e., the smallest index such that `arr[mid]` is strictly greater than `x`).
+
+- If `x` is **greater than or equal** to the last element, it returns `n` (out-of-bounds index).
+- Otherwise, it performs **binary search** to find the smallest index where `arr[mid] > x`.
+
+---
+
+### **Time Complexity Analysis**
+1. The `while(i <= j)` loop follows the **binary search pattern**, where the search space is **halved** at each step.
+2. The number of iterations in the worst case is determined by how many times we can halve `n` until we reach **1**:
+
+   \[
+   n, \frac{n}{2}, \frac{n}{4}, \frac{n}{8}, \dots, 1
+   \]
+
+   Solving for \( k \) in \( \frac{n}{2^k} = 1 \):
+
+   \[
+   k = \log_2 n
+   \]
+
+3. Each iteration performs a **constant amount of work** \( O(1) \) (for computing `mid`, comparing values, and updating `i`, `j`, and `ans`).
+
+Thus, the **time complexity** is:
+\[
+O(\log n)
+\]
+
+---
+
+### **Space Complexity Analysis**
+1. The function is **iterative**, meaning **no recursive call stack is used**.
+2. The function only uses a **constant amount of extra space** (`i`, `j`, `mid`, and `ans`).
+
+Thus, the **space complexity** is:
+\[
+O(1)
+\]
+
+---
+
+### **Final Complexity Summary**
+- **Time Complexity**: \( O(\log n) \) (binary search halves the search space at each step)
+- **Space Complexity**: \( O(1) \) (only a few integer variables are used)
+
+This is an **optimal approach** for finding the **upper bound** in a **sorted array** because it achieves **logarithmic time and constant space complexity**. 🚀
+
+

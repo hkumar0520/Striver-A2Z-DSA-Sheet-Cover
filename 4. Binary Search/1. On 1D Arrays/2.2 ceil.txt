@@ -1,0 +1,79 @@
+
+
+Floor of x is the largest element which is smaller than or equal to x. Floor of x doesn’t exist if x is smaller than smallest element of arr[].
+Ceil of x is the smallest element which is greater than or equal to x. Ceil of x doesn’t exist if x is greater than greatest element of arr[].
+
+
+class Solution {
+  public:
+    vector<int> getFloorAndCeil(int x, vector<int> &arr) {
+        // code here
+        sort(arr.begin(), arr.end());
+        
+        int j = arr.size()-1, i=0, ceiill = -1, floorr = -1;
+        while(i<=j)
+        {
+            int mid = (i+j)/2;
+            if(arr[mid] == x){
+                floorr = ceiill = arr[mid];
+                break;
+            }
+            if(arr[mid]>x){
+                ceiill = arr[mid];
+                j = mid-1;  
+            }
+            else{
+                floorr = arr[mid];
+                i = mid+1;
+            }
+        }
+        return { floorr, ceiill };
+    }
+};
+
+
+
+
+### **Time and Space Complexity Analysis**  
+
+The given code **finds the floor and ceiling** of a number `x` in an **unsorted array** by:  
+1. **Sorting the array**  
+2. **Using binary search** to find the floor and ceiling  
+
+---
+
+### **Time Complexity Analysis**  
+The time complexity is composed of two parts:  
+1. **Sorting the array**:  
+   - `sort(arr.begin(), arr.end());` takes **\( O(n \log n) \)**.  
+2. **Binary search**:  
+   - The `while` loop performs **binary search**, which takes **\( O(\log n) \)**.  
+
+Since **\( O(n \log n) \)** dominates **\( O(\log n) \)**, the **overall time complexity** is:  
+\[
+O(n \log n)
+\]
+
+---
+
+### **Space Complexity Analysis**  
+1. **Sorting is done in-place**, so it **does not** require extra space.  
+2. **Binary search** uses only a few integer variables (`i`, `j`, `mid`, `floorr`, `ceiill`), which require **\( O(1) \) space**.  
+3. The function **returns a vector of size 2**, which takes **\( O(1) \) space**.  
+
+Thus, the **overall space complexity** is:  
+\[
+O(1)
+\]
+
+---
+
+### **Final Complexity Summary**  
+- **Time Complexity**: \( O(n \log n) \) (due to sorting)  
+- **Space Complexity**: \( O(1) \) (constant extra space)  
+
+**Optimization Tip**:  
+If the input array is **already sorted**, you can remove the `sort()` step, reducing the **time complexity to \( O(\log n) \)**. 🚀
+
+
+

@@ -1,0 +1,36 @@
+
+
+class Solution{
+  public:
+    /*You are required to complete below method */
+    int maxLevelSum(Node* root) {
+        // Your code here
+        
+        queue<Node*> qtraverse;
+        qtraverse.push(root);
+        int maxSum = INT_MIN;
+        while(!qtraverse.empty()){
+            int qSize = qtraverse.size();
+            int sum = 0;
+            
+            while( qSize-- ){
+                Node* current = qtraverse.front();
+                qtraverse.pop();
+                
+                sum += current->data;
+                if(current->left != NULL)
+                    qtraverse.push(current->left);
+                
+                if(current->right != NULL)
+                    qtraverse.push(current->right);
+            }
+            
+            maxSum = max( maxSum, sum);
+        }
+        return maxSum;
+    }
+};
+
+TC: O(N)
+SC: O(max width of tree)
+

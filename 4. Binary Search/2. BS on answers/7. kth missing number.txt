@@ -27,6 +27,7 @@ int missingK(vector < int > vec, int n, int k) {
         else
             j = mid-1;
     }
+    // return j+1+k;
     return i+k;
 }
 

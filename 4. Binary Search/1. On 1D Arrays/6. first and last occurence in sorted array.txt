@@ -1,4 +1,51 @@
 
+class Solution {
+  public:
+    vector<int> firstAndLast(int x, vector<int> &arr) {
+        // Code here
+        int n = arr.size();
+        int first = -1, lastt = -1, low = 0, high = n-1;
+        
+        while( low <= high){
+            int mid = (low + high)/2;
+            
+            if(arr[mid] == x){
+                first = mid;
+                high = mid-1;
+            }
+            else if(arr[mid] > x)
+                high = mid-1;
+            else
+                low = mid+1;
+        }
+        
+        if(first == -1)
+            return {-1};
+            
+        low = 0, high = n-1;
+        while(low <= high){
+            int mid = (low + high)/2;
+            
+            if(arr[mid] == x){
+                lastt = mid;
+                low = mid+1;
+            }
+            else if(arr[mid] > x)
+                high = mid-1;
+            else
+                low = mid+1;
+            
+        }
+        return {first, lastt};
+    }
+};
+
+TC: O(logN)
+SC: O(1)
+
+for duplicates this code work as well
+
+############################################################################
 
 pair<int, int> firstAndLastPosition(vector<int>& arr, int n, int k)
 {
@@ -31,3 +78,56 @@ pair<int, int> firstAndLastPosition(vector<int>& arr, int n, int k)
     }
     return pair<int,int>{firstt, lastt};
 }
+
+
+### **Time and Space Complexity Analysis**  
+
+The given function **finds the first and last position** of `k` in a **sorted array** using **binary search**.
+
+---
+
+### **Time Complexity Analysis**  
+1. **The function runs two separate binary searches**:
+   - The first `while` loop finds the **first occurrence** of `k`.
+   - The second `while` loop finds the **last occurrence** of `k`.
+   
+2. Each binary search follows the **binary search pattern**, where the search space is **halved** at each step.
+
+3. The number of iterations in each binary search is determined by how many times we can halve `n` until we reach **1**:
+
+   \[
+   n, \frac{n}{2}, \frac{n}{4}, \frac{n}{8}, \dots, 1
+   \]
+
+   Solving for \( k \) in \( \frac{n}{2^k} = 1 \):
+
+   \[
+   k = \log_2 n
+   \]
+
+4. Since there are **two binary searches**, the **total time complexity** is:
+
+   \[
+   O(\log n) + O(\log n) = O(2 \log n) = O(\log n)
+   \]
+
+---
+
+### **Space Complexity Analysis**  
+1. The function is **iterative**, meaning **no recursive call stack is used**.
+2. It only uses **a few integer variables** (`i`, `j`, `mid`, `firstt`, `lastt`).
+3. The function **returns a pair** of integers, which takes **\( O(1) \) space**.
+
+Thus, the **space complexity** is:
+\[
+O(1)
+\]
+
+---
+
+### **Final Complexity Summary**  
+- **Time Complexity**: \( O(\log n) \) (two binary searches, each taking \( O(\log n) \))  
+- **Space Complexity**: \( O(1) \) (only a few integer variables are used)  
+
+This is an **optimal approach** for finding the **first and last occurrence** of an element in a **sorted array**. 🚀
+

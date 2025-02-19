@@ -23,3 +23,109 @@ int singleNonDuplicate(vector<int>& arr)
 	}
 	return -1;
 }
+
+
+
+
+
+
+
+
+
+
+#######################################################################################
+
+
+
+
+
+
+
+
+
+
+
+class Solution {
+public:
+    int singleNonDuplicate(vector<int>& arr) {
+        
+        int n = arr.size();
+        int i = 0, j = n-1, ans = -1;
+
+if(n == 1) 	return arr[0];
+	if(arr[0] != arr[1])	return arr[0];
+	if(arr[n-1] != arr[n-2])	return arr[n-1];
+
+        while(i<=j){
+            int mid = (i+j)/2;
+            if( ( ((mid+1)<n) && (arr[mid] != arr[mid+1] ) ) &&
+                ( ((mid-1)>=0) && (arr[mid] != arr[mid-1] ) ) ){
+                ans = arr[mid];
+                break;
+            }
+
+            if(mid % 2 == 0){
+                if( ((mid+1)<n) && (arr[mid] != arr[mid+1] ) ){
+                    j = mid-1;
+                }
+                else{
+                    i = mid+1;
+                }
+            }
+            else{
+                if( ((mid-1)>=0) && (arr[mid] != arr[mid-1] ) ){
+                    j = mid-1;
+                }
+                else{
+                    i = mid+1;
+                }
+
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+Let's analyze the **time and space complexity** of the given code.
+
+## **Time Complexity Analysis**
+The algorithm follows a **binary search** approach to find the single non-duplicate element in the sorted array. Here's the breakdown:
+
+1. **Initial checks:**  
+   - The code checks the first and last elements in constant time **O(1)**.
+   
+2. **Binary search loop:**  
+   - The search space is reduced by half in each iteration, which leads to a logarithmic time complexity.  
+   - In each iteration, the middle element is checked, and based on the conditions, either the left or right half is discarded.  
+   - The number of iterations is **O(log N)**, where \(N\) is the size of the array.
+
+### **Overall Time Complexity:**
+\[
+O(\log N)
+\]
+because the algorithm performs a binary search.
+
+---
+
+## **Space Complexity Analysis**
+1. The algorithm uses only a few integer variables (`i`, `j`, `mid`, `ans`).
+2. No extra data structures are used; the modifications and checks are done in place.
+
+### **Overall Space Complexity:**
+\[
+O(1)
+\]
+since the algorithm only uses a constant amount of extra space.
+
+---
+
+## **Final Complexity:**
+- **Time Complexity:** \(O(\log N)\)
+- **Space Complexity:** \(O(1)\)
+
+This makes the solution efficient, leveraging binary search instead of a linear scan, which would have taken \(O(N)\) time.
+
+
+

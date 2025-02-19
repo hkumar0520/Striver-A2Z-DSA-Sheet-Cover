@@ -20,6 +20,71 @@ int search(vector<int> &nums, int target) {
     return f(nums,target, 0, nums.size()-1);
 }
 
+The given code is an implementation of **binary search** using recursion. Let's analyze its **time complexity** and **space complexity**.
+
+---
+
+### **Time Complexity Analysis**
+Binary search works by dividing the search space in half at each step.
+
+1. The function `f(nums, target, i, j)` repeatedly calls itself with a smaller range:
+   - If the target is found, it returns the index.
+   - Otherwise, it halves the search space and calls itself recursively.
+
+2. The recurrence relation for this algorithm is:
+   \[
+   T(n) = T(n/2) + O(1)
+   \]
+   - Each recursive call takes constant time \(O(1)\) (for computing `mid` and the comparison).
+   - The problem size reduces by half in each step.
+
+3. Solving this recurrence using the **recursion tree method** or **Master Theorem** (\( T(n) = T(n/b) + O(f(n)) \), where \( b = 2 \), \( f(n) = O(1) \)):
+   \[
+   T(n) = O(\log n)
+   \]
+
+Thus, the **time complexity** is:
+\[
+O(\log n)
+\]
+
+---
+
+### **Space Complexity Analysis**
+1. The function uses **recursive calls**, which consume stack space.
+2. The maximum depth of recursion occurs when the search space is reduced to **one element**.
+3. Since the search space halves at each step, the **depth of the recursion tree** is:
+   \[
+   O(\log n)
+   \]
+4. Each recursive call adds a function call to the call stack, leading to an **auxiliary space complexity** of \( O(\log n) \).
+
+Thus, the **space complexity** is:
+\[
+O(\log n)
+\]
+
+However, if the function were implemented iteratively, the space complexity would be reduced to \( O(1) \).
+
+---
+
+### **Final Complexity Summary**
+- **Time Complexity**: \( O(\log n) \)
+- **Space Complexity**: \( O(\log n) \) (due to recursive call stack)
+
+Would you like me to rewrite this as an iterative version to achieve \( O(1) \) space? 🚀
+
+
+
+
+
+
+
+
+
+
+
+
 ################################################################################################
 
 // iteration
@@ -39,3 +104,47 @@ int search(vector<int> &nums, int target) {
     }
     return -1;
 }
+
+This code implements **binary search** iteratively. Let's analyze its **time complexity** and **space complexity**.
+
+---
+
+### **Time Complexity Analysis**
+1. The algorithm starts with a search space of size **n**.
+2. In each iteration of the `while` loop, the search space is **halved**.
+3. The condition `i <= j` ensures the loop runs until the search space is exhausted.
+4. The number of iterations in the worst case is determined by how many times we can halve `n` until we reach 1:
+
+   \[
+   n, \frac{n}{2}, \frac{n}{4}, \frac{n}{8}, \dots, 1
+   \]
+
+   Solving for \( k \) in \( \frac{n}{2^k} = 1 \):
+
+   \[
+   k = \log_2 n
+   \]
+
+Thus, the **time complexity** is:
+\[
+O(\log n)
+\]
+
+---
+
+### **Space Complexity Analysis**
+1. The iterative approach **does not** use recursion, so there is **no recursive call stack**.
+2. Only a **constant amount of extra space** is used (for variables `i`, `j`, `mid`).
+
+Thus, the **space complexity** is:
+\[
+O(1)
+\]
+
+---
+
+### **Final Complexity Summary**
+- **Time Complexity**: \( O(\log n) \) (binary search halves the search space at each step)
+- **Space Complexity**: \( O(1) \) (only a few integer variables are used)
+
+This is an optimal implementation of binary search since it achieves **both logarithmic time and constant space complexity**. 🚀

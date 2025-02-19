@@ -17,3 +17,75 @@ int NthRoot(int n, int m) {
   }
   return -1;
 }
+
+
+####################################################################
+
+
+class Solution {
+  public:
+    int nthRoot(int n, int m) {
+        // Code here.
+        int i = 1, j = m;
+        while(i<=j){
+            int mid = (i+j)/2;
+            int midVal = pow(mid, n);
+            if( midVal == m)
+                return mid;
+            else if( midVal > m )
+                j = mid-1;
+            else
+                i = mid+1;
+        }
+        return -1;
+    }
+};
+
+
+Let's analyze the **time and space complexity** of the given code.
+
+---
+
+## **Time Complexity Analysis**
+The algorithm uses **binary search** to find the integer **n-th root** of \( m \). Here's a breakdown:
+
+### **1. Binary Search on Possible Values**
+- The search space is from **1 to \( m \)**.
+- In each iteration, the algorithm calculates `mid = (i + j) / 2` and checks whether `mid^n` is equal to, greater than, or less than \( m \).
+- The search space is reduced by half in each iteration.
+- Since binary search runs in **O(log M)** time, the number of iterations is at most **O(log M)**.
+
+### **2. Power Calculation (`pow(mid, n)`)**
+- The function `pow(mid, n)` computes **mid^n**, which takes **O(n)** time in the worst case.
+
+### **Total Time Complexity**
+Since **O(n)** work is done in each of the **O(log M)** binary search iterations, the total time complexity is:
+
+\[
+O(n \log M)
+\]
+
+---
+
+## **Space Complexity Analysis**
+1. The algorithm uses only a few integer variables (`i`, `j`, `mid`, `midVal`).
+2. No extra data structures are used.
+3. The `pow(mid, n)` function does not use extra space.
+
+Thus, the space complexity is:
+
+\[
+O(1)
+\]
+
+---
+
+## **Final Complexity**
+- **Time Complexity:** \( O(n \log M) \), where \( n \) is the root degree and \( M \) is the number for which we are finding the n-th root.
+- **Space Complexity:** \( O(1) \).  
+
+This is an efficient approach using **binary search on the answer** instead of brute-force checking all possible values. 🚀
+
+
+
+

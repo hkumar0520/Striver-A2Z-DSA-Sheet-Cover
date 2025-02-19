@@ -40,3 +40,92 @@ int leastWeightCapacity(vector<int> &weights, int d)
     return lo;
 }
 
+
+
+#######################################################################
+
+
+class Solution {
+public:
+    bool findDays(vector<int>& weights, int weightLimit, int days){
+        int countDays = 1, countWeight = 0;
+        for(int wt: weights){
+            if(wt > weightLimit)    return false;
+
+            countWeight += wt;
+            if(countWeight > weightLimit){
+                countWeight = wt;
+                countDays++;
+            }
+        }
+        return ( countDays <= days );
+    }
+    int shipWithinDays(vector<int>& weights, int days) {
+        int sum = 0;
+        for(int wt: weights)
+            sum += wt;
+
+        int i = 1, j = sum;
+        while( i<= j){
+            int mid = (i+j)/2;
+
+            bool isPossible = findDays(weights, mid, days);
+            if( isPossible )
+                j = mid-1;
+            else
+                i = mid+1;
+        }
+        return i;
+    }
+};
+
+
+Let's analyze the **time and space complexity** of the given code.
+
+---
+
+## **Time Complexity Analysis**
+The code is solving the **"Capacity To Ship Packages Within D Days"** problem using **binary search on the answer**. Here's a breakdown:
+
+### **1. Finding the Sum of Weights**
+- The loop iterates over `weights` once to calculate the total sum (`sum`), which is the upper bound for binary search.
+- This takes **O(N)** time.
+
+### **2. Binary Search on the Ship Capacity (`weightLimit`)**
+- The search space is from **1 to `sum`**, meaning the worst-case range is **O(S)** (where \( S \) is the sum of all elements in `weights`).
+- Binary search runs in **O(log S)** time.
+
+### **3. Checking Feasibility (`findDays` function)**
+- For each `mid` value, the function **determines** whether it's possible to ship the packages within `days`.
+- This requires iterating over `weights`, taking **O(N)** time.
+- Since this function is called in every iteration of the binary search, the worst-case number of calls is **O(log S)**.
+
+### **Total Time Complexity**
+Since we perform **O(N)** work in each of the **O(log S)** binary search iterations, the total time complexity is:
+
+\[
+O(N + N \log S) = O(N \log S)
+\]
+
+---
+
+## **Space Complexity Analysis**
+1. The algorithm only uses a few integer variables (`i`, `j`, `mid`, `sum`).
+2. No extra data structures are used.
+3. The `findDays` function also operates in **O(1)** extra space.
+
+Thus, the space complexity is:
+
+\[
+O(1)
+\]
+
+---
+
+## **Final Complexity**
+- **Time Complexity:** \( O(N \log S) \), where \( N \) is the number of packages and \( S \) is the sum of their weights.  
+- **Space Complexity:** \( O(1) \).  
+
+This is an efficient approach leveraging **binary search on the answer** instead of brute force. 🚀
+
+
