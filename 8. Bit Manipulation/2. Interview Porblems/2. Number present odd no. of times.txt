@@ -1,0 +1,82 @@
+
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        
+        int maxNumber = INT_MIN;
+        unordered_map<int,int> hash;
+        for(int num: nums)
+            hash[num]++;
+
+        for(int num: nums){
+            if(hash[num] == 1)
+                return num;
+        }
+
+        return -1;
+    }
+};
+
+TC: O(n*logm) + m
+SC: O(m){
+    m = n/2   + 1;
+}
+
+
+####################################################################
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+         int result= 0;
+        for(int i=0;i<nums.size();i++)
+            result=result^nums[i];
+        return result;
+    }
+};
+
+
+Let's analyze the **time complexity** and **space complexity** of the given code.
+
+### Code Explanation:
+
+The function `singleNumber` is designed to find the element that appears **only once** in an array where all other elements appear exactly twice. The approach uses the **XOR operation** to identify the unique element.
+
+Here’s how it works:
+
+1. **Initialization**:
+   - The variable `result` is initialized to `0`. This variable will be used to accumulate the XOR result.
+
+2. **Loop over the array**:
+   - The function loops over each element of the array `nums`.
+   - For each element `nums[i]`, it performs a **XOR** operation with `result`: `result = result ^ nums[i]`.
+     - XOR has a special property: if you XOR a number with itself, the result is `0` (i.e., `a ^ a = 0`), and if you XOR a number with `0`, the result is the number itself (i.e., `a ^ 0 = a`).
+     - Therefore, when you XOR all elements in the array, the elements that appear twice will cancel each other out (because `x ^ x = 0`), and the element that appears only once will remain in `result`.
+
+3. **Return the result**:
+   - After completing the loop, `result` holds the element that appears only once in the array, and this value is returned.
+
+### Time Complexity:
+
+- The algorithm processes each element of the array exactly once in the `for` loop. The number of operations is proportional to the size of the array `nums`.
+- If `n` is the number of elements in the array `nums`, the loop runs `n` times, and each XOR operation takes constant time \(O(1)\).
+
+Therefore, the **time complexity** is:
+- **O(n)**, where `n` is the number of elements in the array.
+
+### Space Complexity:
+
+- The function uses a constant amount of extra space:
+  - The variable `result` is a single integer, and the loop iterates over the input array, but no additional data structures are used.
+  - The input array `nums` is passed by reference, and its space is not counted towards the additional space complexity.
+
+Thus, the **space complexity** is:
+- **O(1)** (constant space).
+
+### Final Complexity Analysis:
+
+- **Time Complexity**: O(n), where `n` is the number of elements in the array.
+- **Space Complexity**: O(1), constant space.
+
+

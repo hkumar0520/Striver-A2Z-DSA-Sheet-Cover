@@ -1,0 +1,34 @@
+
+
+// refer other approaches from question 10.
+
+#############################################################
+
+// bucket concept
+
+class Solution {
+public:
+    vector<int> singleNumber(vector<int>& nums) {
+        long xorr = 0;
+        for(int num: nums)
+            xorr = xorr ^ num;
+
+        long number = (xorr & (xorr-1))^xorr;
+        int numberIncluded = 0, numberNotIncluded = 0;
+        for(int num: nums){
+            if( num & number)
+                numberIncluded = numberIncluded^num;
+            else
+                numberNotIncluded = numberNotIncluded ^ num;
+        }
+        return { numberIncluded, numberNotIncluded};
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+
+
+
+

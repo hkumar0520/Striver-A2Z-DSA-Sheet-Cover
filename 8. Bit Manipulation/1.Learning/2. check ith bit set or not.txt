@@ -1,0 +1,49 @@
+
+
+class Solution {
+  public:
+    // Function to check if Kth bit is set or not.
+    bool checkKthBit(int n, int k) {
+        // Your code here
+        
+        
+        // n>>k & 1 ? 1: 0;
+        
+        return  n & 1<<k ? 1: 0;
+    }
+};
+
+
+
+Let's analyze the time and space complexity of the given code:
+
+### Code Overview:
+The function `checkKthBit` checks whether the `k`-th bit of the integer `n` is set (i.e., 1) or not. Here's how it works:
+
+1. **Bitwise Shift and Check**:
+   - The expression `1 << k` shifts the number `1` left by `k` positions, effectively creating a mask where only the `k`-th bit is set to 1.
+   - The bitwise AND operation `n & (1 << k)` checks if the `k`-th bit of `n` is set to 1.
+   - If the result is non-zero, it means the `k`-th bit is set (1), so the function returns `1`. Otherwise, it returns `0`.
+
+### Time Complexity:
+1. **Left Shift Operation** (`1 << k`):
+   - The left shift operation `1 << k` takes constant time **O(1)** because shifting an integer by a fixed number of bits is a constant-time operation.
+
+2. **Bitwise AND Operation** (`n & (1 << k)`):
+   - The bitwise AND operation `&` takes constant time **O(1)** since it's a bitwise operation on two integers.
+
+3. **Comparison and Return** (`n & (1 << k) ? 1 : 0`):
+   - The comparison and the ternary operator `? 1 : 0` also take constant time **O(1)**.
+
+Since all operations inside the function are constant-time operations, the total time complexity is:
+- **Time Complexity**: **O(1)** (constant time).
+
+### Space Complexity:
+1. The function uses a fixed number of variables (`n`, `k`, and the result of the bitwise operation). These variables do not depend on the size of the input, so they consume constant space.
+
+Since there is no dynamic memory allocation or growth in space usage as the input grows, the space complexity is:
+- **Space Complexity**: **O(1)** (constant space).
+
+### Conclusion:
+- **Time Complexity**: **O(1)** (constant time)
+- **Space Complexity**: **O(1)** (constant space)

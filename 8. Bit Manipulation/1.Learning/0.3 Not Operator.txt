@@ -1,0 +1,109 @@
+
+
+The **NOT operator** (also known as the **bitwise NOT**) inverts all the bits of a binary number, changing all `0`s to `1`s and all `1`s to `0`s. This operation is typically used in computer systems for various tasks, such as flipping the bits or for logical manipulations.
+
+### Effect of the NOT Operator on Positive Numbers:
+For **positive numbers**, applying the **bitwise NOT** operation essentially inverts the bits of the number, and you will get the **two's complement** of the negative value of the number.
+
+### Example: Applying the NOT Operator on a Positive Number
+
+#### Let's take the 8-bit binary representation of +5:
+
+1. **Binary Representation of +5**:
+   ```
+   +5 in decimal = 00000101 in 8-bit binary
+   ```
+
+2. **Apply the NOT Operator** (invert all bits):
+   ```
+   00000101 → 11111010
+   ```
+
+So, the result of applying the **NOT** operator to +5 is `11111010`.
+
+#### Interpreting the Result:
+
+- The result `11111010` is a **two's complement** representation, and if we want to convert it to a decimal number, we need to interpret it as a negative number.
+
+- To convert `11111010` back to its decimal form:
+  1. Invert the bits: `00000101`
+  2. Add 1: `00000101 + 1 = 00000110`
+  3. Convert `00000110` to decimal: `6`
+  4. The result is `-6` (because it's a negative number).
+
+So, applying the **NOT** operator to +5 results in **-6**.
+
+### General Rule:
+When you apply the **NOT** operator to a positive number in **two's complement**, the result is equivalent to the **negative number minus one**.
+
+For example:
+- `NOT(5)` results in `-6` (since `5 - 1 = 4`, and flipping the bits of +5 gives -6).
+- `NOT(7)` results in `-8`.
+
+This is because of how the NOT operator works on binary representations in two's complement arithmetic, flipping all the bits, and making it equivalent to the negative of the number minus one.
+
+### Summary:
+- **The NOT operator on a positive number** inverts the bits, resulting in a negative number.
+- The result of the NOT operation on a positive integer `N` is the negative integer `-(N+1)`.
+
+
+
+##################################################################################################################
+
+
+
+When the **NOT operator** is applied to a **negative number** in a **two's complement** representation, the result can be understood by following similar steps as we did for positive numbers. However, it will yield a different result since negative numbers have their own binary representation.
+
+### Steps to Apply the NOT Operator on a Negative Number:
+
+1. **Represent the number in two's complement**.
+2. **Apply the NOT operator**, which flips all bits (changing `1`s to `0`s and `0`s to `1`s).
+3. **Interpret the result**: The result will be a positive number or a more negative number, depending on the original value.
+
+### Example 1: Applying the NOT Operator on -5 (8-bit representation)
+
+#### 1. **Two's complement representation of -5**:
+   - First, find the binary representation of +5 in 8 bits:  
+     `00000101` (binary for 5).
+   - To get the two's complement of -5, invert the bits and add 1:  
+     Inverting `00000101` → `11111010`,  
+     Add 1 → `11111010 + 1 = 11111011`.  
+     So, `-5` in two's complement (8-bit) is represented as `11111011`.
+
+#### 2. **Apply the NOT operator** on `11111011`:
+   Invert all bits:  
+   `11111011` → `00000100`.
+
+#### 3. **Interpret the result**:
+   The result `00000100` in binary is `4` in decimal, which is positive.
+
+So, applying the NOT operator to `-5` results in `4`.
+
+### Example 2: Applying the NOT Operator on -1 (8-bit representation)
+
+#### 1. **Two's complement representation of -1**:
+   - The two's complement representation of `-1` in an 8-bit system is `11111111`, since the two's complement of `1` (which is `00000001`) is `11111111`.
+
+#### 2. **Apply the NOT operator** on `11111111`:
+   Invert all bits:  
+   `11111111` → `00000000`.
+
+#### 3. **Interpret the result**:
+   The result `00000000` represents `0` in decimal.
+
+So, applying the NOT operator to `-1` results in `0`.
+
+### Summary of the Effect of the NOT Operator on Negative Numbers:
+
+- When the NOT operator is applied to a **negative number** in two's complement:
+  - It **flips the bits**, resulting in a **positive number** or a **less negative number**.
+  - The result can be interpreted as the **positive magnitude of the negative number minus one**.
+
+In general, applying the **NOT operator** on a number `X` will result in `-(X+1)` if `X` is negative. So, you can think of it as converting the negative number to a different negative or positive value depending on its binary representation.
+
+### Conclusion:
+- The NOT operator on a negative number in two's complement **inverts the bits**, converting a negative number to its **positive counterpart minus one** or to zero if the number is -1.
+
+
+
+

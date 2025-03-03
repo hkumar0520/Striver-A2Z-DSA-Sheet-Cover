@@ -1,0 +1,161 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+string convertToBinary(int n){
+    string res = "";
+    while(n > 0){
+        if( n%2 == 1) res+= '1';
+        else        res+= '0';
+        n = n/2;
+    }
+    reverse(res.begin(), res.end());
+    return res;
+}
+// TC: log(n)
+// SC: log(n)
+
+
+int convertToDecimal(string  str){
+    int len = str.size(), p2 = 1, num = 0;
+    
+    for(int i = len-1; i>=0; i--){
+        if(str[i] == '1')
+            num = num + p2;
+            
+        p2 = p2*2;
+    }
+    return num;
+}
+// TC: len(str)
+// SC: O(1)
+
+
+1's complement - replace 0 with 1 and 1 with 0 
+2's complement - add 1 in 1's complement
+
+AND 
+    all true - true 
+    any false - false
+
+OR 
+    any true - true 
+    all false - false 
+
+XOR 
+    No. of 1s odd - 1 
+    No. of 1s even - 0 
+
+SHIFT
+    1. Right shift -> right shift x to k times
+        x >> k = ( x / pow(2,k))
+        
+    2. Left shift -> left shift x to k times 
+        x << k = ( x * pow(2,k))
+        
+INT - 32 bit number ( 4 bytes )
+    0-30 bits value assigned, 
+    31 bit sign assigned, 0 for +ve, 1 for -ve
+    INT_MAX - pow(2,31) - 1 
+    INT_MIN - pow(2,-31)
+    +ve no. stored as it is
+    -ve no. stored in 2's compliment form 
+
+NOT OPERATOR
+    1. flip
+    2. check -ve -> yes 2's compliment and store
+
+At last negation operation part  34:30 onwards
+So, i think bhaiya got a little confused by that, lemme break it down correctly. so on using the negation operation "~" this simply flips all bits and store the result. nothing much.. just simple flip all bits.
+Let's work out with case of positive number
+consider 
+n = 5  = 00000000000000000000000000000101
+   now,
+     ~n = 11111111111111111111111111111010  
+this is what is stored inside computer, now upon reading this number when we require it somewhere to be printed or anything. the computer looks at the 31st bit and sees it is set, thus the number is negative, thus a negative sign will be put and now to fetch its value, computer perform 2's complement. So,
+              00000000000000000000000000000101   <--- 1's compliment
+              00000000000000000000000000000110   <--- 2's compliment
+we can see 2's compliment provided the value 6. so the value fetched when printing ~n will be -6 
+
+Let's work out with case of negative number
+consider n = -5
+                5 = 00000000000000000000000000000101
+               -5 = 11111111111111111111111111111011   (stored in computer in 2's compliment)
+   now,
+~n = ~(-5) = 00000000000000000000000000000100    (just flipped all bits)
+this is what is stored inside computer, now upon reading this number when we require it somewhere to be printed or anything. the computer looks at the 31st bit and sees it is not set, thus the number is positive, thus no sign will be put and its value can be fetched directly
+~n = ~(-5) = 00000000000000000000000000000100  = 4
+so the fetched value is 4 and the number is positive so the value fetched while printing ~n will be +4 or simply 4          
+
+ Happy Coding
+
+
+
+int main() {
+    
+	cout<<"Convert 8 to Binary : "<<convertToBinary(8)<<endl;
+	cout<<"Convert 10000 to Decimal : "<<convertToDecimal("10000")<<endl;
+	
+	
+	return 0;
+}
+
+
+#######################################################################################################################################
+
+swap two numbers
+
+a = a xor b ( a^b )
+b = a xor b ( a^b ^ b : a)  
+a = a xor b ( a^b ^ a : b)
+
+
+CHECK if the ith bit is set or not 
+    using left shift ->  ((N & ( 1 << i)) != 0)
+    using right shift -> (((N >> i ) & 1) != 0)
+    
+SET ith bit 
+    using left shift ->  ( N | ( 1 << i ))
+
+CLEAR ith bit 
+    using left shift ->  ( N & ~( 1 << i ))
+    
+TOGGLE ith bit 
+    using left shift -> ( N ^ ( 1 << i))
+    
+REMOVE the last set bit 
+    N = N & (N-1)
+    
+CHECK if the number is a power of 2 
+    (N & (N-1) == 0) -> yes
+
+COUNT the number of set bits
+    // 1st method 
+    int countSetBits(int n){
+        int cnt = 0;
+        while( n > 0){
+            cnt += n&1;
+            n = n>>1;
+        }
+        return cnt;
+    }
+    __builtin_popcount 
+    TC: log(n)
+
+    //2nd method
+    cnt = 0;
+    while( n != 0){
+        n = n & (n-1);
+        cnt++;
+    }
+    return cnt;
+    TC: O(no. of set bits)
+
+
+
+
+
+
+
+
+
