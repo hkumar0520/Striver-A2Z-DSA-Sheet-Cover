@@ -1,0 +1,83 @@
+
+
+
+class Solution {
+  public:
+    int minValue(string s, int k) {
+        // code here
+        vector<int> map(256, 0);
+        for(int i = 0; i<s.size(); i++){
+            map[s[i]]++;
+        }
+        priority_queue<int> pq;
+        for(int  i =0; i<256; i++){
+            if(map[i] != 0)
+                pq.push(map[i]);
+        }
+        
+        while(!pq.empty() && (k--) ){
+            int currTop = pq.top();
+            pq.pop();
+            
+            currTop--;
+            if(currTop != 0)
+                pq.push(currTop);
+        }
+        
+        int val = 0;
+        while(!pq.empty()){
+            int num = pq.top();
+            pq.pop();
+            val += num*num; 
+        }
+        return val;
+    }
+};
+
+Let's analyze the time and space complexity of the provided code step by step.
+
+### Code Breakdown:
+
+1. **Frequency Count of Characters:**
+   - You iterate through the string `s` of size `n` to calculate the frequency of each character.
+   - This takes **O(n)** time since you're just going through the string once.
+   - The space complexity for the `map` array is **O(256)** because it's a fixed size array storing counts for each ASCII character.
+
+2. **Push Frequencies into Priority Queue:**
+   - You iterate over the `map` array, which has a fixed size of 256. For each non-zero count, you push it into the priority queue (`pq`).
+   - The size of the priority queue will be at most 256 (since there are at most 256 distinct characters).
+   - Inserting an element into the priority queue takes **O(log m)** time, where `m` is the size of the priority queue. Here, `m` can be at most 256.
+   - This part takes **O(256 * log 256)** which simplifies to **O(1)** because it's constant.
+
+3. **Decrementing the Most Frequent Element:**
+   - The `while` loop runs while there are still elements in the priority queue and `k` is greater than 0.
+   - In the worst case, the loop could run **k** times, but the number of iterations of this loop will also depend on the number of elements in the priority queue (which could be at most 256).
+   - Each pop and push operation for the priority queue takes **O(log m)** time, where `m` is the size of the queue (which can be at most 256).
+   - Thus, this part takes **O(k log m)**. Since `m` is constant (256), this simplifies to **O(k)**.
+
+4. **Calculating the Final Value:**
+   - Finally, you go through the priority queue, pop elements, and add their squares to `val`. 
+   - This again involves a loop through the priority queue, and at most there can be 256 elements.
+   - Each pop operation takes **O(log m)** time, and there are at most 256 elements, so this takes **O(256 log 256)**, which simplifies to **O(1)**.
+
+### Overall Time Complexity:
+
+- **O(n)** for iterating over the string and counting frequencies.
+- **O(1)** for pushing frequencies into the priority queue.
+- **O(k)** for the loop that decrements the most frequent element.
+- **O(1)** for calculating the final value.
+
+Thus, the **total time complexity** is **O(n + k)**.
+
+### Space Complexity:
+
+- **O(256)** for the `map` array storing the frequency of characters (this is constant).
+- **O(256)** for the priority queue (in the worst case, it holds at most 256 elements).
+
+Thus, the **total space complexity** is **O(256)**, which simplifies to **O(1)** since it's a constant.
+
+### Final Answer:
+
+- **Time Complexity**: **O(n + k)**
+- **Space Complexity**: **O(1)**
+

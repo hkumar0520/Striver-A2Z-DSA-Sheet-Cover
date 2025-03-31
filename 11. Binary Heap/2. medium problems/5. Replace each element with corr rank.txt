@@ -1,4 +1,18 @@
 
+#First Approach
+Binary Search + upper bound
+1. Maky copy of array.,
+2. sort the copy of the array.
+3. find the upperBound(index) for every elemtn in original array using copied array
+and pushed it into ans array.
+
+For Duplicate aboce solution not work
+
+#Second Approach 
+
+
+########################################################################################
+
 
 class Solution{
 public:

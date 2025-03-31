@@ -1,0 +1,49 @@
+
+
+TLE 
+leetcode IPO
+
+class Solution {
+public:
+
+
+    int findMaxProfit(int k, int w, vector<bool>& vis, vector<int>& profits,
+        vector<int>&  capital){
+        if(k == 0)
+            return 0;
+
+        int len = profits.size(), maxProfit = 0;
+        for(int i = 0; i<len; i++){
+
+            if(capital[i] <= w && !vis[i]){
+                vis[i] = true;
+                w += profits[i];
+
+                maxProfit = max(maxProfit, profits[i] + findMaxProfit(k-1, w, vis, profits, capital));
+
+                w -= profits[i];
+                vis[i] = false;
+            }
+        }
+
+        return maxProfit;
+
+    }
+    int findMaximizedCapital(int k, int w, vector<int>& profits, vector<int>& capital) {
+        int len = profits.size();
+
+        vector<bool> vis(len, false);
+
+        return w+findMaxProfit(k, w, vis, profits, capital);
+    }
+};
+
+
+TC: O(pow(n, k))
+SC: O(K) {
+	stack space : O(K)
+}
+
+
+
+

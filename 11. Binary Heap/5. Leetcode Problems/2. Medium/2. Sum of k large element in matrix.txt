@@ -1,0 +1,52 @@
+
+
+https://leetcode.com/contest/weekly-contest-438/problems/maximum-sum-with-at-most-k-elements/
+
+
+
+class Solution {
+public:
+    struct Element{
+        int val, row, col, noOfElements;
+        
+        Element(int value, int i, int j, int idx) : val(value), row(i), col(j), noOfElements(idx) {} 
+    };
+    
+    struct CustomOperator{
+        bool operator()(Element a, Element b){
+            return a.val < b.val;
+        }
+    };
+    
+    long long maxSum(vector<vector<int>>& grid, vector<int>& limits, int k) {
+        
+        vector<vector<int>> matrix = grid;
+        int n = matrix.size(), m = matrix[0].size();
+        for(int i = 0; i<n; i++)
+            sort(matrix[i].begin(), matrix[i].end());
+        
+        priority_queue< Element, vector<Element>, CustomOperator> pq;
+        
+        for(int i = 0; i<n; i++){
+            if(limits[i] >= 1)
+                pq.push(Element( matrix[i][m-1], i, m-1, 1));
+        }
+        
+        long long sum = 0, cnt = 0;
+        while(!pq.empty() && (cnt < k) ){
+            Element currTop = pq.top();
+            pq.pop();
+            
+            int val = currTop.val, row = currTop.row, col = currTop.col, noOfElements = currTop.noOfElements;
+            
+            sum += val;
+            cnt++;
+            
+            if( (noOfElements + 1) <= limits[row] && (col-1)>=0)
+                pq.push(Element( matrix[row][col-1], row, col-1, noOfElements + 1));
+        }
+        return sum;
+        
+    }
+};
+
