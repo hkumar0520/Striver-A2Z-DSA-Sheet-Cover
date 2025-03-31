@@ -1,4 +1,6 @@
 
+1. using set
+2. using bits
 
 class Solution {
 public:

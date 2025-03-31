@@ -1,0 +1,68 @@
+
+// using recursion
+
+class Solution {
+public:
+    double myPower(double x,int n)
+    {
+        if( n == 0)
+            return 1;
+        
+        double halfVal = myPower(x, n/2);
+        if( n%2)
+            return x * halfVal * halfVal;
+
+        return halfVal * halfVal;
+    }
+    double myPow(double x, int n) {
+        if(x == 0)  return 0;
+        if(n < 0)
+            return 1.0/myPower(x, n);
+
+        return myPower(x,n);
+    }
+};
+
+#############################################################################
+
+// using iteration
+
+class Solution {
+public:
+    double myPow(double x, int n) {
+        double  ans = 1, initialN = n;
+        while(n != 0){
+            if( n % 2){
+                ans *= x;
+            }
+            x = x*x;
+            n = n/2;
+        }
+        if(initialN < 0)    return 1.0/ans;
+        return ans;
+    }
+};
+
+
+
+
+//############################################################################
+
+prerequisites
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	cout<< (-3 % 2)<<" "<<(-2 % 2)<<endl;
+	return 0;
+
+}
+
+// output
+// -1 0
+
+
+
+

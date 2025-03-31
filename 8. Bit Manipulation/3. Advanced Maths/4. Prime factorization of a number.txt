@@ -1,0 +1,37 @@
+
+
+class Solution {
+  public:
+    void sieve() {}
+
+    vector<int> findPrimeFactors(int N) {
+
+        // Write your code here
+        vector<int> primes(N+1, 1);
+        for(int i = 2; i*i <= N; i++){
+            
+            if(primes[i] == 1){
+                
+                for(int j = i*i; j<= N; j+= i){
+                    primes[j] = 0;
+                }
+            }
+        }
+        vector<int> ans;
+        for(int i = 2; i <= N; i++){
+            if(primes[i] == 1 && N%i == 0){
+                while(N%i == 0){
+                    ans.push_back(i);
+                    N = N/i;
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+TC: Nlog(logN)
+SC: O(N)
+
+
+

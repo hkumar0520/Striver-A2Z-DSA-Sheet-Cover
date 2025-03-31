@@ -1,4 +1,11 @@
 
+1. using map (n, n)
+2. using bits (32*n, 1)
+3. using sorting (nlogn, 1)
+4. 
+
+
+
 class Solution {
 public:
     int singleNumber(vector<int>& nums) {
