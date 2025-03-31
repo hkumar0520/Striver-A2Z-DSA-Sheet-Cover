@@ -1,0 +1,108 @@
+
+
+1. naive approach
+2. brute force
+3. optimal (hashing)
+
+
+int subarraysWithSumK(vector < int > arr, int b) {
+    // Write your code here
+    int n = arr.size(), cnt = 0;
+    for(int i =0; i<n; i++){
+        for(int j=i; j<n; j++){
+            int tmpXorr = 0;
+            for(int k = i; k<=j; k++)
+                tmpXorr ^= arr[k];
+
+            if(tmpXorr == b)
+                cnt++;
+        }
+    }
+    return cnt;
+}
+
+TC: O(n*n*n)
+SC: O(1)
+
+
+############################################################################
+
+
+
+int subarraysWithSumK(vector < int > arr, int b) {
+    // Write your code here
+    int n = arr.size(), cnt = 0;
+    for(int i =0; i<n; i++){
+        int tmpXorr = 0;
+        for(int j=i; j<n; j++){
+            tmpXorr ^= arr[j];
+
+            if(tmpXorr == b)
+                cnt++;
+        }
+    }
+    return cnt;
+}
+
+TC: O(n*n)
+SC: O(1)
+
+
+
+########################################################################
+
+
+
+#include <bits/stdc++.h>
+int subarraysWithSumK(vector < int > arr, int b) {
+    // Write your code here
+
+    int n = arr.size(), cnt = 0, xorr = 0;
+    map<int,int> map;
+    map[0] = 1;
+    for(int i = 0; i<n; i++){
+        xorr ^= arr[i];
+
+        if(map.find(xorr^b) != map.end())
+            cnt += map[xorr^b];
+
+        map[xorr]++;
+    }
+    return cnt;
+}
+
+
+TC: O(n)
+SC: O(n)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

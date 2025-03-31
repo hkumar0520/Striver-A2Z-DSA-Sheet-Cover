@@ -1,0 +1,83 @@
+
+
+
+1. sorting
+2. two pass
+3. single pass (duch bucket algo)
+
+
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+    }
+};
+
+TC: O(nlog n)
+SC: O(1)
+
+
+
+############################################################################################
+
+
+
+
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int countZeroes = 0, countOnes = 0, countTwos = 0;
+        for(int num: nums){
+            if(num == 0)    countZeroes++;
+            else if(num == 1) countOnes++;
+            else if(num == 2) countTwos++;
+        }
+        for(int i = 0; i<countZeroes; i++)
+            nums[i] = 0;
+        
+        for(int i = countZeroes; i < countZeroes + countOnes; i++)
+            nums[i] = 1;
+
+        for(int i = countZeroes + countOnes; i< nums.size(); i++)
+            nums[i] = 2;
+    }
+};
+
+TC: O(2n)
+SC: O(1)
+
+
+##########################################################################################
+
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int low = 0, mid = 0, len = nums.size();
+        int high = len-1;
+        while( mid <= high){
+            if(nums[mid] == 0){
+                swap(nums[mid], nums[low]);
+                mid++;
+                low++;
+            }
+            else if(nums[mid] == 1){
+                mid++;
+            }
+            else if(nums[mid] == 2){
+                swap(nums[mid], nums[high]);
+                high--;
+            }
+        }
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+
+
+0 - (low-1) = 0
+low - (mid-1) = 1
+mid - (high-1) = unsorted
+high - len = 2
+

@@ -1,0 +1,35 @@
+
+1. Brute force
+2. hashing
+
+
+class Solution {
+  public:
+    int longestSubarray(vector<int>& arr, int k) {
+        // code here
+        
+        map<long long,int> prefixSum;
+        long long sum = 0;
+        int  maxLen = 0;
+        
+        // if subarray starts from starting
+        prefixSum[0] = -1;
+        
+        
+        for(int i = 0; i<arr.size(); i++){
+            sum += arr[i];
+            
+            if( prefixSum.find(sum-k) != prefixSum.end()){
+                maxLen = max(maxLen, i - prefixSum[sum-k]);
+            }
+            
+            if(prefixSum.find(sum) == prefixSum.end())
+                prefixSum[sum] = i;
+        }
+        return maxLen;
+    }
+};
+
+TC: O(nlogn)
+SC: O(n)
+

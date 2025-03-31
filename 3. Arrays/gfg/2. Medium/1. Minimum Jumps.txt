@@ -1,0 +1,247 @@
+
+1. recursion ( time limit)
+2. memoization dp( correct)
+3. using graph( like snake and ladders)
+
+
+// time limit , recursion
+
+class Solution {
+  public:
+    int minSteps(int idx, vector<int>& arr){
+        if(idx >= (arr.size() -1) )
+            return 0;
+        
+        if(arr[idx] == 0)   return -1;
+        
+        int steps = INT_MAX;
+        for(int i = 1; i <= arr[idx]; i++){
+            int val = minSteps(idx + i, arr);
+            if( val != -1){
+                steps = min(steps, 1 + val);
+            }
+        }
+        return steps == INT_MAX? -1: steps;
+    }
+    int minJumps(vector<int>& arr) {
+        // code here
+        
+        return minSteps(0,  arr);
+    }
+};
+
+#######################################################################
+
+
+using memoization 
+
+class Solution {
+  public:
+    int minSteps(int idx, vector<int>& arr, vector<int>& dp){
+        if(idx >= (arr.size() -1) )
+            return 0;
+        
+        if(arr[idx] == 0)   return dp[idx] = -1;
+        
+        if(dp[idx] != -1)   return dp[idx];
+        
+        int steps = INT_MAX;
+        for(int i = 1; i <= arr[idx]; i++){
+            int val = minSteps(idx + i, arr, dp);
+            if( val != -1){
+                steps = min(steps, 1 + val);
+            }
+        }
+        return dp[idx] = ( (steps == INT_MAX) ? -1: steps);
+    }
+    int minJumps(vector<int>& arr) {
+        // code here
+        vector<int> dp(arr.size(), -1);
+        return minSteps(0,  arr, dp);
+    }
+};
+
+TC: O(n*n)
+SC: O(n)
+
+Let's analyze the time and space complexity of the given code.
+
+### Code Explanation:
+
+The code is solving the problem of finding the minimum number of jumps to reach the end of the array. The `minSteps` function is a recursive function that calculates the minimum number of steps needed to reach the end starting from index `idx`. 
+
+The main recursion works as follows:
+- If the index `idx` is at or beyond the last index (`arr.size() - 1`), return `0` (i.e., no more jumps needed).
+- If `arr[idx] == 0`, return `-1` because no further steps can be taken from this index.
+- If the result for the current index (`dp[idx]`) is already computed (not -1), return the cached result.
+- Otherwise, try every possible jump from `idx` (from 1 to `arr[idx]`), and recursively calculate the minimum number of steps needed from the new index.
+
+The function `minJumps` initializes the `dp` array, which is used to store the results of subproblems and is passed to the `minSteps` function.
+
+---
+
+### **Time Complexity:**
+
+The time complexity is determined by the number of recursive calls and how many times each state is recomputed.
+
+- **Without Memoization:**  
+  Without `dp` (dynamic programming), the function would have to recompute the minimum steps for the same index multiple times, leading to a high number of recursive calls. The recursive tree would have a branching factor of up to `arr[idx]`, and the depth of the recursion could be up to `arr.size()`. This could lead to an exponential time complexity.
+
+- **With Memoization:**  
+  The `dp` array ensures that each index is processed only once. After that, the result for that index is stored and reused. The recursion only makes a call once for each index, and for each index, it explores a number of possible jumps up to `arr[idx]`. 
+
+  Thus, the number of recursive calls is bounded by the size of the array, and for each call, the loop runs at most `arr[idx]` times. However, since the array is being processed only once (thanks to memoization), the time complexity is determined by the number of indices and the maximum number of iterations in the loop.
+
+  **Time Complexity:**
+  - The loop runs at most `arr[idx]` times for each index `idx`.
+  - Each index is visited at most once due to memoization.
+  
+  In the worst case, the time complexity is **O(n * m)**, where:
+  - `n` is the size of the array (`arr.size()`).
+  - `m` is the maximum value in the array (`max(arr[idx])`).
+
+  In the worst case, if the array contains large values (say, the maximum jump is `n-1`), the time complexity can approach **O(n^2)**.
+
+---
+
+### **Space Complexity:**
+
+The space complexity comes from:
+1. The `dp` array, which stores the results of subproblems for each index. This has a size of `n`, where `n` is the size of the array.
+2. The recursion stack used in the `minSteps` function. In the worst case, the depth of the recursion could be up to `n` (if no index is reached early). Thus, the recursion stack space is **O(n)**.
+
+Thus, the overall space complexity is **O(n)** for the `dp` array and the recursion stack.
+
+---
+
+### **Summary:**
+- **Time Complexity:** O(n * m), where `n` is the size of the array and `m` is the maximum value in the array (the maximum number of steps that can be jumped from any index).
+- **Space Complexity:** O(n), due to the `dp` array and the recursion stack.
+
+
+
+
+###############################################################################################
+
+using graph, like snake and ladders 
+
+TLE 1110/1111 cases passed 
+
+
+class Solution {
+  public:
+    int minJumps(vector<int>& arr) {
+        // code here
+        priority_queue< vector<int> , vector<vector<int>> , greater<vector<int>> >pq;
+        int arrSize = arr.size();
+        
+        // 0th step, 0th pos
+        pq.push({ 0, 0});
+        vector<int> vis(arrSize, 0);
+        
+        while(!pq.empty()){
+            vector<int> curr = pq.top();
+            pq.pop();
+            int steps = curr[0], idx = curr[1];
+            
+            if(idx >= (arrSize-1))
+                return steps;
+                
+            if(vis[idx] == 1)   continue;
+                
+            vis[idx] = 1;
+            
+            for(int i = 1; i<= arr[idx]; i++){
+                pq.push({ steps+1, idx + i});
+            }
+        }
+        return -1;
+    }
+};
+
+
+below work 
+
+
+class Solution {
+  public:
+    int minJumps(vector<int>& arr) {
+        // code here
+        priority_queue< vector<int> , vector<vector<int>> , greater<vector<int>> >pq;
+        int arrSize = arr.size();
+        
+        // 0th step, 0th pos
+        pq.push({ 0, 0});
+        vector<int> vis(arrSize, 0);
+        vis[0] = 1;
+        
+        while(!pq.empty()){
+            vector<int> curr = pq.top();
+            pq.pop();
+            int steps = curr[0], idx = curr[1];
+            
+            if(idx >= (arrSize-1))
+                return steps;
+            
+            for(int i = 1; i<= arr[idx]  && (i + idx) < arrSize; i++){
+                if(vis[idx+i] == 0){
+                    vis[idx+i] = 1;
+                    pq.push({ steps+1, idx + i});
+                 }
+            }
+        }
+        return -1;
+    }
+};
+
+Let's break down the time and space complexity of the given code.
+
+### Code Explanation:
+The problem the code solves is finding the minimum number of jumps required to reach the last element of an array. It uses a **priority queue** (min-heap) to explore the elements with the minimum steps first. The `vis` array ensures each index is visited only once. The loop explores all possible jumps from the current index (`i = 1` to `arr[idx]`).
+
+### Time Complexity:
+
+1. **Priority Queue Operations**:
+   - Each time we push a pair (steps, index) to the priority queue, the complexity of the push operation is **O(log n)** due to the heap property.
+   - Each index can be pushed into the priority queue at most once. So, in total, we may push up to `n` elements (where `n` is the size of the array).
+   - Each time we pop an element from the priority queue, it takes **O(log n)** time.
+
+2. **Inner Loop**:
+   - For each index `idx`, the inner loop explores all possible positions reachable from `idx` (i.e., from `idx + 1` to `idx + arr[idx]`). The number of iterations depends on `arr[idx]`, but it is bounded by `n` in the worst case (i.e., if `arr[idx]` is large enough).
+   - The inner loop's overall complexity depends on the sum of all the reachable positions from each index, which is proportional to `O(n)`.
+
+3. **Worst-case Analysis**:
+   - We push each index at most once into the priority queue, so there are at most `n` operations.
+   - The maximum number of comparisons in the priority queue during the `push` and `pop` operations is **O(log n)**.
+   - For each index, the inner loop runs at most `arr[idx]` times, but it is bounded by `n` in total (i.e., the total number of iterations is at most `n`).
+
+Thus, the overall **time complexity** is dominated by the priority queue operations and the inner loop, so the overall time complexity is:
+
+\[
+O(n \log n)
+\]
+
+Where:
+- `n` is the size of the array (`arr.size()`).
+
+### Space Complexity:
+
+1. **Priority Queue**: The priority queue can hold up to `n` elements (one for each index), so the space complexity of the priority queue is **O(n)**.
+
+2. **Visited Array**: The `vis` array has a size of `n`, which contributes **O(n)** space.
+
+Thus, the overall **space complexity** is:
+
+\[
+O(n)
+\]
+
+Where:
+- `n` is the size of the array.
+
+### Summary:
+- **Time Complexity**: **O(n \log n)**, where `n` is the size of the array.
+- **Space Complexity**: **O(n)**, due to the priority queue and the visited array.
+
+This solution efficiently solves the problem with the mentioned time and space complexities.
+

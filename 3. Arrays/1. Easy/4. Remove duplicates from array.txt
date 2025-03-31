@@ -1,13 +1,47 @@
 
 
-int removeDuplicates(vector<int> &arr, int n) {
-	// Write your code here.
-	int countt =0;
-	for(int i=1;i<n;i++)
-	{
-		if(arr[i] == arr[i-1])
-			countt++;
-	}
-	return n-countt;
-}
+1. Brute force(set)
+2. single pass 
+
+
+
+
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        set<int> st;
+        for(int element: nums)
+            st.insert(element);
+
+        int index = 0;
+        for(auto node: st)
+            nums[index++] = node;
+
+        return index;
+    }
+};
+
+TC: O(nlogn) + O(n)
+SC: O(n)
+
+############################################################################################
+
+
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int i = 0;
+        for(int j = 1; j<nums.size(); j++){
+            if(nums[j] != nums[i]){
+                i++;
+                nums[i] = nums[j];
+            }
+        }
+        return i+1;
+    }
+};
+
+TC: O(n)
+SC: o(1)
+
 

@@ -1,0 +1,40 @@
+
+1. Brute force( n*n, 1)
+2. using hashing (n, n)
+3. optimal using bits( n, 1)
+
+class Solution {
+  public:
+    vector<int> findTwoElement(vector<int>& arr) {
+        // code here
+        int xorr = 0, n = arr.size();
+        for(int i = 0; i<n; i++){
+            xorr ^= (i+1);
+            xorr ^= arr[i];
+        }
+        
+        int rightBit = (xorr & (xorr-1))^xorr;
+        int included = 0, notIncluded = 0;
+        for(int i = 0; i<n; i++){
+            if( arr[i] & rightBit)
+                included ^= arr[i];
+            else
+                notIncluded ^= arr[i];
+                
+            if( (i+1) & rightBit)
+                included ^= (i+1);
+            else
+                notIncluded ^= (i+1);
+        }
+        
+        for(int num : arr){
+            if( num == included)
+                return { included, notIncluded};
+        }
+        return {notIncluded, included};
+    }
+};
+
+TC: O(n)
+SC: O(1)
+

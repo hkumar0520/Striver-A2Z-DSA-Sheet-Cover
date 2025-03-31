@@ -1,0 +1,98 @@
+
+1. Brute force 
+2. hashing 
+3. bits maniupaltion
+4. maths
+
+
+// using brute force
+
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int len = nums.size();
+        for(int target =0 ; target<=len; target++){
+            int flag = 0;
+            for(int num: nums){
+                if( num == target){
+                    flag = 1;
+                    break;
+                }
+            }
+            if(flag == 0)
+                return target;
+        }
+        return -1;
+    }
+};
+
+TC: O(n*n)
+SC: O(1)
+
+
+###########################################################################################
+
+// using map , better approach
+
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int len = nums.size();
+        vector<int> map(len+1, 0);
+        for(int num: nums)
+            map[num] = 1;
+        
+        int ans = -1;
+        for(int i = 0; i< (len+1); i++){
+            if(map[i] == 0){
+                ans = i;
+                break;
+            }
+        }
+        return ans;
+    }
+};
+
+TC: n + n : O(n)
+SC: O(n)
+
+############################################################################################
+
+// using bits manipulation, optimal approach
+
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int res=nums.size(),n=nums.size();
+        for(int i=0;i<n;i++)
+        {
+            res=res^i;
+            res=res^nums[i];
+        }
+        return res;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+
+#################################################################################
+
+// using maths, optimal approach 
+
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int len=nums.size();
+        int sum=len*(len+1)/2;
+        for(int i=0;i<len;i++)
+            sum-=nums[i];
+        return sum;
+    }
+};
+
+
+TC: O(n)
+SC: O(1)
+

@@ -1,4 +1,66 @@
 
+1. Brute force(nlogn, 1)
+2. Two pass algo (n, 1)
+3. optimal ( n, 1)
+4.
+
+
+
+//Brute
+
+class Solution {
+  public:
+    // Function returns the second
+    // largest elements
+    int getSecondLargest(vector<int> &arr) {
+        // Code Here
+        sort(arr.begin(), arr.end());
+        int largest = arr[arr.size()-1];
+        
+        int secondLargest = -1;
+        for(int  i = arr.size()-2; i>=0; i--){
+            if(arr[i] != largest){
+                secondLargest = arr[i];
+                break;
+            }
+        }
+        return secondLargest;
+    }
+};
+
+TC: O(nlogn) + O(n)
+SC: O(1)
+
+########################################################################################
+
+// Better
+
+class Solution {
+  public:
+    // Function returns the second
+    // largest elements
+    int getSecondLargest(vector<int> &arr) {
+        // Code Here
+        int largest = arr[0];
+        for(int num: arr)
+            largest = max(largest, num);
+        
+        int secondLargest = -1;
+        for(int num: arr){
+            if(num != largest)
+                secondLargest = max(num, secondLargest);
+        }
+        return secondLargest;
+    }
+};
+
+TC: O(n+n)
+SC: O(1)
+
+
+#########################################################################################
+
+// optimal
 
 vector<int> getSecondOrderElements(int n, vector<int> a) {
     // Write your code here.
@@ -24,4 +86,35 @@ vector<int> getSecondOrderElements(int n, vector<int> a) {
     return {secondLargest, secondSmallest};
 }
 
+TC: O(n)
+SC: O(1)
 
+##########################################################################
+
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+
+using namespace std;
+
+    // Function returns the second
+    // largest elements
+    int getSecondLargest(vector<int> &arr) {
+        // Code Here
+        if(arr.size() == 1)
+            return -1;
+        int  largest = -1, secondLargest = -1;
+        for(int i=0;i<arr.size();i++)
+        {
+            if(arr[i]>largest)
+            {
+                secondLargest = largest;
+                largest = arr[i];
+            }
+            else if(arr[i]>secondLargest && arr[i]<largest)
+                secondLargest = arr[i];
+        }
+        return secondLargest;
+    }
+
+
+#############################################################################

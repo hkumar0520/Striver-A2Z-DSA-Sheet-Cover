@@ -1,0 +1,37 @@
+
+
+
+https://www.geeksforgeeks.org/problems/swapping-pairs-make-sum-equal4142/1?page=1&category=Arrays
+
+
+class Solution {
+
+  public:
+    bool findValuesPossible( vector<int>& a, vector<int>& b, int aSum, int bSum) {
+        int i = 0, aSize = a.size(), bSize = b.size();
+        int j = 0;
+        while(i<aSize && j<bSize){
+            int tmpa = aSum + b[j] - a[i];
+            int tmpb = bSum + a[i] - b[j];
+            if( tmpa == tmpb)   return true;
+            else if(tmpb > tmpa)  j++;
+            else i++;
+        }
+        return false;
+    }
+    bool findSwapValues(vector<int>& a, vector<int>& b) {
+        // Your code goes here
+        sort(a.begin(), a.end());
+        sort(b.begin(), b.end());
+        int aSum = 0, bSum = 0;
+        for(int num: a)     aSum += num;
+        for(int num: b)     bSum += num;
+        if(aSum > bSum)
+            return findValuesPossible(b, a, bSum, aSum);
+        
+        return findValuesPossible(a, b, aSum, bSum);
+    }
+};
+
+TC: nlogn 
+SC: 1 

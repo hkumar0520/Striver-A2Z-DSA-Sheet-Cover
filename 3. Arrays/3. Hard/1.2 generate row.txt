@@ -1,0 +1,50 @@
+
+
+class Solution {
+    public List<Integer> getRow(int rowIndex) {
+    rowIndex++;
+      List<Integer> curr= new ArrayList<Integer>(),prev = null;
+      for(int i=1;i<= rowIndex;i++)
+      {
+        curr = new ArrayList<Integer>();
+        for(int j=0;j<i;j++)
+        {
+          if(j==0 || j==(i-1))
+            curr.add(1);
+          else
+            curr.add(prev.get(j-1) + prev.get(j));
+        }
+        prev = curr;
+      }
+      return curr;
+        
+    }
+}
+
+TC: O(n*n)
+SC: O(n)
+
+#####################################################################################
+
+class Solution {
+public:
+    vector<int> getRow(int rowIndex) {
+        rowIndex++;
+        long long currElement = 1;
+        vector<int> ans;
+        ans.push_back(1);
+
+        for(int col = 1; col < rowIndex; col++){
+            currElement = currElement*(rowIndex - col);
+            currElement /= col;
+            ans.push_back((int)currElement);
+        }
+        return ans;
+    }
+};
+
+TC: O(N)
+SC: O(1)
+
+
+#################################################################

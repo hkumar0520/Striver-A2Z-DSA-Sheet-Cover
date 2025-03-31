@@ -1,0 +1,140 @@
+
+1. using set
+2. two pointers
+
+
+class Solution {
+  public:
+    // a,b : the arrays
+    // Function to return a list containing the union of the two arrays.
+    vector<int> findUnion(vector<int> &a, vector<int> &b) {
+        // Your code here
+        // return vector with correct order of 
+        set<int> st;
+        for(int num: a)
+            st.insert(num);
+            
+        for(int num: b)
+            st.insert(num);
+            
+        vector<int> ans;
+        for(auto node: st)
+            ans.push_back(node);
+            
+        return ans;
+    }
+};
+
+TC: (m+n)*log(m+n) + m+n {
+    in worst case if arrays have different elements
+}
+
+SC: O(n+m)
+
+##################################################################################
+
+// striver optimal
+
+class Solution {
+  public:
+    // a,b : the arrays
+    // Function to return a list containing the union of the two arrays.
+    vector<int> findUnion(vector<int> &a, vector<int> &b) {
+        // Your code here
+        // return vector with correct order of elements
+        int i = 0, j = 0, a_Size = a.size(), b_Size = b.size();
+        vector<int> ans;
+        while( i<a_Size && j<b_Size){
+            if(a[i] <= b[j]){
+                if(ans.empty() || ( ans.back() != a[i]))
+                    ans.push_back(a[i]);
+                    
+                i++;
+            }
+            else{
+                if(ans.empty() || ( ans.back() != b[j]))
+                    ans.push_back(b[j]);
+                    
+                j++;
+            }
+        }
+        while( i<a_Size ){
+            if(ans.empty() || ( ans.back() != a[i]))
+                ans.push_back(a[i]);
+                
+            i++;
+        }
+        while( j<b_Size){
+            if(ans.empty() || ( ans.back() != b[j]))
+                ans.push_back(b[j]);
+                
+            j++;
+        }
+        return ans;
+    }
+};
+
+TC: O(n+m)
+SC: O(1)
+
+
+##########################################################################################
+
+
+class Solution {
+  public:
+    // a,b : the arrays
+    // Function to return a list containing the union of the two arrays.
+    vector<int> findUnion(vector<int> &a, vector<int> &b) {
+        
+        // return vector with correct order of elements
+        vector<int> ans;
+        int size_a = a.size(), size_b = b.size();
+        int i = 0, j = 0;
+        
+        while( i<size_a && j<size_b){
+            // for handling  duplicate case
+            while((i+1)<size_a && a[i] == a[i+1])
+                i++;
+            
+            // for handling  duplicate case
+            while((j+1)<size_b && b[j] == b[j+1])
+                j++;
+                
+            if(a[i] == b[j]){
+                ans.push_back(a[i]);
+                i++;
+                j++;
+            }
+            else if(a[i]<b[j]){
+                ans.push_back(a[i]);
+                i++;
+            }
+            else{
+                ans.push_back(b[j]);
+                j++;
+            }
+        }
+        while(i<size_a){
+            // for handling  duplicate case
+            while((i+1)<size_a && a[i] == a[i+1])
+                i++;
+            ans.push_back(a[i]);
+            i++;
+        }
+        while(j<size_b){
+            // for handling  duplicate case
+            while((j+1)<size_b && b[j] == b[j+1])
+                j++;
+            ans.push_back(b[j]);
+            j++;
+        }
+        return ans;
+    }
+};
+
+TC: O(n+m)
+SC: O(1)
+
+
+

@@ -1,0 +1,43 @@
+
+
+https://www.geeksforgeeks.org/problems/minimum-sum4058/1?page=1&category=Arrays
+
+
+
+
+class Solution {
+  public:
+    string minSum(vector<int> &arr) {
+        // code here
+        sort(arr.begin(), arr.end());
+        string first= "", second = "";
+        for(int i = 0; i<arr.size(); i++){
+            if(first.size() == second.size())
+                first += (char)(arr[i] + '0');
+            else
+                second += (char)(arr[i] + '0');
+        }
+        
+        int i = first.size()-1, j = second.size()-1, carry = 0;
+        string ans = "";
+        
+        while( i>=0 || j>=0){
+            int sum = ((i >= 0) ? first[i] - '0' : 0) + ((j >= 0) ? second[j] - '0': 0) + carry;
+            ans += (char)(( sum % 10 ) + '0');
+            carry = sum / 10;
+            i--;
+            j--;
+        }
+        if(carry > 0)
+            ans += (char)(carry + '0');
+            
+        reverse(ans.begin(), ans.end());
+        int k = 0;
+        
+        while(k<ans.size() && ans[k] == '0')
+            k++;
+            
+        return ans.substr(k);
+    }
+};
+
