@@ -1,4 +1,7 @@
 
+1. sqroot( nth root m, 1)
+2. optimal ( log ,1)
+
 
 int NthRoot(int n, int m) {
     // Write your code here.
@@ -17,6 +20,28 @@ int NthRoot(int n, int m) {
   }
   return -1;
 }
+
+
+####################################################################
+
+
+class Solution {
+  public:
+    int nthRoot(int n, int m) {
+        // Code here.
+        int i = 1;
+        for(; pow(i,n) <= m; i++){
+            int val = pow(i,n);
+            if(val == m)
+                return i;
+        }
+        return -1;
+
+    }
+};
+
+TC: sqroot( nth root m, 1)
+SC: O(1)
 
 
 ####################################################################

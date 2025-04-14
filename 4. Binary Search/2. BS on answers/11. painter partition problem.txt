@@ -1,5 +1,12 @@
 
 
+max - min 
+
+1. brute force ( n*(sum-maxElement), 1)
+2. optimal (n*log(sum-maxElement), 1)
+
+
+
 int f(vector<int> &boards, int k, int mid)
 {
     int sum = 0, n = boards.size();

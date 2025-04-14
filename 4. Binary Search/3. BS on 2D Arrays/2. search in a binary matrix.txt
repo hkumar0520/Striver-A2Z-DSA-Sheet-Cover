@@ -46,7 +46,7 @@ public:
 };
 
 
-TC: n*logN
+TC: n + logm
 SC: O(1)
 
 

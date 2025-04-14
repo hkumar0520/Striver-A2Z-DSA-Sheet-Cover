@@ -1,5 +1,8 @@
 
 
+1. brute force (n*(maxElement - minElement), 1)
+2. optimal (n*log(maxElement - minElement),  1)
+
 
 int makebanquets(vector<int> arr, int k, int m, int mid)
 {
@@ -50,8 +53,54 @@ int roseGarden(vector<int> arr, int k, int m)
 
 
 
-################################################################################
+##############################################################################################
 
+
+class Solution {
+public:
+    bool canBloom(vector<int>& bloomDay, int dayLimit, int m, int k){
+        int countFlower = 0, countBouquet = 0;
+        for(int day: bloomDay){
+            if(day <= dayLimit){
+                countFlower++;
+                if(countFlower == k){
+                    countFlower = 0;
+                    countBouquet++;
+                }
+            }
+            else
+                countFlower = 0;
+        }
+
+        return ( countBouquet >= m );
+    }
+    int minDays(vector<int>& bloomDay, int m, int k) {
+        if( (long)m*k > bloomDay.size())  return -1;
+
+        int minElement = INT_MAX, maxElement = INT_MIN;
+        for(int day: bloomDay){
+            minElement = min( minElement, day);
+            maxElement = max( maxElement, day);
+        }
+        // initially i( only min flower blooms), j( every flower blooms)
+        // after bs, on i(shift right) flower blooms with given condition
+        int i = minElement;
+
+        for(; i<=maxElement; i++){
+            if(canBloom(bloomDay, i, m, k))
+                return i;
+        }
+
+        return -1;
+    }
+};
+
+TC: n*(maxElement - minElement)
+SC: O(1)
+
+
+
+##############################################################################################
 
 class Solution {
 public:

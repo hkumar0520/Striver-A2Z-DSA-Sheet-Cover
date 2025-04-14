@@ -113,7 +113,7 @@ int lowerBound(vector<int> arr, int n, int x) {
 		else
 			i = mid+1;
 	}
-	return ans;
+	return ans;		// return i
 }
 
 

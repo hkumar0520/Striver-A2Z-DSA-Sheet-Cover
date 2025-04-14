@@ -1,4 +1,7 @@
 
+1. brute foce (n*maxNum, 1)
+2. optimal (n*log(maxNum), 1)
+
 
 
 int findsum(vector<int>& arr, int limit, int mid)
@@ -31,8 +34,38 @@ int smallestDivisor(vector<int>& arr, int limit)
 }
 
 
+##############################################################################################
 
-#######################################################################
+class Solution {
+public:
+    
+    int calculateDivisor(vector<int>& nums, int divisor, int threshold) {
+        int ans = 0;
+        for(int num: nums)
+            ans += ceil((double)num/(double)divisor);
+
+        return ( ans <= threshold );
+    }
+    int smallestDivisor(vector<int>& nums, int threshold) {
+        
+        int maxNum = INT_MIN;
+        for(int num: nums)
+            maxNum = max(maxNum, num);
+
+        int i = 1;
+        for(; i<= maxNum; i++){
+            if(calculateDivisor(nums, i, threshold))
+                return i;
+        }
+        return -1;
+    }
+};
+
+TC: O(n*maxNum)
+SC: 1
+
+
+#######################################################################################
 
 
 

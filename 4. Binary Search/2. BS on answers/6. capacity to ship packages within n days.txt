@@ -1,4 +1,7 @@
 
+1. Brute foce( n*(sum-maxElement), 1)
+2. optimal ( n*log(sum - maxElement), 1)
+
 
 int f(vector<int> &weights, int d, int mid)
 {
@@ -42,8 +45,45 @@ int leastWeightCapacity(vector<int> &weights, int d)
 
 
 
-#######################################################################
+#########################################################################################
 
+
+
+class Solution {
+public:
+    bool findDays(vector<int>& weights, int weightLimit, int days){
+        int countDays = 1, countWeight = 0;
+        for(int wt: weights){
+            countWeight += wt;
+            if(countWeight > weightLimit){
+                countWeight = wt;
+                countDays++;
+            }
+        }
+        return ( countDays <= days );
+    }
+    int shipWithinDays(vector<int>& weights, int days) {
+        int sum = 0, maxWt = INT_MIN;
+        for(int wt: weights){
+            maxWt = max(maxWt, wt);
+            sum += wt;
+        }
+
+        int i = maxWt;
+        for(; i<= sum; i++){
+            if(findDays(weights, i, days))
+                return i;
+        }
+        return -1;
+    }
+};
+
+
+TC : O( n*(sum-maxElement))
+SC : O(1)
+
+
+##############################################################################################
 
 class Solution {
 public:

@@ -1,4 +1,9 @@
 
+min - max 
+
+1. brute force (n*(maxDiff-minDiff), 1)
+2. optimal (n*log(maxDiff - minDiff)  , 1)
+
 
 
 int minDistance(vector<int> &stalls, int k, int mid)
@@ -35,7 +40,47 @@ int aggressiveCows(vector<int> &stalls, int k)
 
 
 
-##########################################################################
+###############################################################################################
+
+
+#include<bits/stdc++.h>
+
+int minDistance(vector<int> &stalls, int k, int mid)
+{
+    int lastPlace = stalls[0], n = stalls.size(), cnt = 1;
+    for(int i=1;i<n;i++)
+    {
+        if((stalls[i]-lastPlace) >= mid)
+        {
+            lastPlace = stalls[i];
+            cnt++;
+        }
+    }
+    if(cnt >= k)    return true;
+    return false;
+}
+int aggressiveCows(vector<int> &stalls, int k)
+{
+    //    Write your code here.
+    sort(stalls.begin(), stalls.end());
+    int lo = INT_MAX, n = stalls.size();
+    int hi = stalls[n-1] - stalls[0];
+    for(int i = 1; i<n; i++)
+        lo = min(stalls[i] - stalls[i-1], lo);
+
+    int i = lo;
+    for(; i<= hi; i++){
+        if(!minDistance(stalls, k, i))
+            break;
+    }
+    return i-1;
+}
+
+TC: O(max-min)*n
+SC: O(1)
+
+
+################################################################################################
 
 #include<bits/stdc++.h>
 

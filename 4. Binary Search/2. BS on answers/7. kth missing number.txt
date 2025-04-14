@@ -1,4 +1,7 @@
 
+1. brute force (n, 1)
+2. optimal (logn, 1)
+
 
 int missingK(vector < int > vec, int n, int k) {
     // Write your code here.
@@ -11,6 +14,9 @@ int missingK(vector < int > vec, int n, int k) {
     }
     return k;
 }
+
+TC: O(n)
+SC: O(1)
 
 ################################################################################################
 
@@ -30,5 +36,17 @@ int missingK(vector < int > vec, int n, int k) {
     // return j+1+k;
     return i+k;
 }
+
+
+TC: O(logn, 1)
+SC: O(1)
+
+
+
+mssing at last is J <= i;
+
+missing no = arr[j] + (k - (arr[j] - (j+1) ) )
+           = k+j+1;
+           or (k+i)
 
 

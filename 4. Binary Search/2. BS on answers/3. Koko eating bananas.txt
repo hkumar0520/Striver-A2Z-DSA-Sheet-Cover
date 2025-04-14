@@ -1,5 +1,8 @@
 
 
+1. brute force (n*m, 1)
+2. optimal (nlogm, 1)
+
 
 int findhours(vector<int> v, int mid)
 {
@@ -32,9 +35,41 @@ int minimumRateToEatBananas(vector<int> v, int h) {
 }
 
 
-#####################################################################################
+##########################################################################################
 
 
+class Solution {
+public:
+    bool calPossibleWithMid(vector<int>& piles, int k, int h){
+
+        long ans = 0;
+        for(int num: piles){
+            ans += ceil((double)num/(double) k);
+        }
+
+        return (ans <= h);
+    }
+    int minEatingSpeed(vector<int>& piles, int h) {
+        
+        int maxElement = INT_MIN;
+        for(int num: piles)
+            maxElement = max(maxElement, num);
+
+        int i = 1, j = maxElement;
+        for(; i<= maxElement; i++){
+            if(calPossibleWithMid(piles, i, h))
+                return i;
+        }
+
+        return -1;
+    }
+};
+
+TC: n*m
+SC: 1
+
+
+###########################################################################################
 
 class Solution {
 public:

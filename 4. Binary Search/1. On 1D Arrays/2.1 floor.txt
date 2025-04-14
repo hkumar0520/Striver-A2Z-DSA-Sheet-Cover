@@ -17,7 +17,7 @@ class Solution {
             i = mid+1;
         }
     }
-    return floorr;
+    return floorr;  // return j
     }
 };
 

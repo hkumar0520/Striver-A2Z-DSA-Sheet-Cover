@@ -32,6 +32,7 @@ SC: O(1)
 class Solution {
   public:
   
+    // lowerbound of one 
     int findOnesIndex(vector<int>& res){
         int n = res.size();
         int low = 0, high = res.size()-1;
