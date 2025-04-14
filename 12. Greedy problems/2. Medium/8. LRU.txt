@@ -1,0 +1,72 @@
+
+
+
+// User function Template for C++
+struct Pages{
+    int timeUsed;
+    int index;
+    
+    Pages(int t, int idx) : timeUsed(t) , index(idx) {}
+};
+
+
+class Solution{
+public:
+    class CustomComparator{
+        public:
+        bool operator()(Pages a, Pages b){
+            return a.timeUsed > b.timeUsed;
+        }
+    };
+    int pageFaults(int N, int C, int pages[]){
+        // code here
+
+        map<int,int> mp;
+        priority_queue<Pages, vector<Pages>, CustomComparator> pq;
+        int timeCnt = 1, pageFault = 0;
+        
+        for(int i = 0; i<N; i++){
+            
+            // cout<<i<<" "<<pages[i]<<" $ ";
+                
+            // present
+            if(mp.find(pages[i]) == mp.end()){
+                
+                // notpresent
+                pageFault++;
+                if(mp.size() == C){
+                    mp.erase(pq.top().index);
+                    pq.pop();
+                }
+        
+                mp[pages[i]] = timeCnt;
+                pq.push(Pages(timeCnt, pages[i]));
+                
+            }
+            else{
+        
+                // cout<<" hi "<<endl;
+                mp[pages[i]] = timeCnt;
+                
+                vector<Pages> tmp;
+                // cout<<i<<pages[i];
+                while(!pq.empty() && (pq.top().index != pages[i])){
+                    tmp.push_back(pq.top());
+                    pq.pop();
+                }
+                // pq.top().timeUsed = timeCnt;
+                Pages pg = pq.top();
+                pq.pop();
+                pg.timeUsed = timeCnt;
+                pq.push(pg);
+                for(int j = 0; j<tmp.size(); j++)
+                    pq.push(tmp[j]);
+            }
+            timeCnt++;
+        }
+        return pageFault;
+    }
+};
+
+TC: n*c*logC
+SC: C

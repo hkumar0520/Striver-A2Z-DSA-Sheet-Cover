@@ -1,0 +1,216 @@
+
+
+using hash + doubly linked list
+intuition
+Add the new data on the end of linked list,
+Least recently used is in the front of linked list 
+
+
+struct Data{
+    int key;
+    int val;
+    Data *next, *prev;
+
+    Data(int k, int v){
+        key = k;
+        val = v;
+        next = NULL;
+        prev = NULL;
+    }
+};
+
+class LRUCache {
+    map<int, Data*> mp;
+    Data *head, *curr;
+    int capLimit;
+public:
+    LRUCache(int capacity) {
+        capLimit = capacity;
+        head = new Data(-1, -1);
+        curr =  head;
+    }
+    
+    int get(int key) {
+        if(mp.find(key) == mp.end())
+            return -1;
+
+        removeDataFromCurrPosition(key);
+        addInLastPos(mp[key]);
+        return  mp[key] -> val;
+    }
+
+    void removeDataFromCurrPosition(int key){
+        Data *data = mp[key];
+
+        // remove data with key from earlier position
+        data->prev->next = data->next;
+        if(data->next != NULL)
+            data->next->prev = data->prev;
+        else    
+            curr = data->prev;  // if data is last element
+
+        // detached from there
+        data->next = data->prev = NULL;
+    }
+
+    void addInLastPos(Data* data){
+        // add in last position
+        curr->next = data;
+        data->prev = curr;
+
+        curr = curr->next;
+
+        // curr always last
+        curr->next = NULL;
+    }
+    
+    void put(int key, int value) {
+        Data* data;
+
+        // not present
+        if(mp.find(key) == mp.end()){
+            data = new Data(key, value);
+            mp[data->key] = data;
+            
+        }
+        else{   // present;
+            data = mp[key];
+            data->val = value;
+            removeDataFromCurrPosition(key);
+        }
+
+        addInLastPos(data);
+
+        if(mp.size() > capLimit){
+            Data* removeData = head->next;
+
+            head->next = removeData->next;
+            if(removeData->next != NULL)
+            removeData->next->prev = head;
+
+            mp.erase(removeData->key);
+            delete removeData;
+        }
+    }
+};
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
+
+
+
+ TC: log(n)  (for map)
+ SC: O(C)
+
+
+
+ #########################################################################
+
+
+
+ // using unordered_map
+
+ 
+struct Data{
+    int key;
+    int val;
+    Data *next, *prev;
+
+    Data(int k, int v){
+        key = k;
+        val = v;
+        next = NULL;
+        prev = NULL;
+    }
+};
+
+class LRUCache {
+    unordered_map<int, Data*> mp;
+    Data *head, *curr;
+    int capLimit;
+public:
+    LRUCache(int capacity) {
+        capLimit = capacity;
+        head = new Data(-1, -1);
+        curr =  head;
+    }
+    
+    int get(int key) {
+        if(mp.find(key) == mp.end())
+            return -1;
+
+        removeDataFromCurrPosition(key);
+        addInLastPos(mp[key]);
+        return  mp[key] -> val;
+    }
+
+    void removeDataFromCurrPosition(int key){
+        Data *data = mp[key];
+
+        // remove data with key from earlier position
+        data->prev->next = data->next;
+        if(data->next != NULL)
+            data->next->prev = data->prev;
+        else    
+            curr = data->prev;  // if data is last element
+
+        // detached from there
+        data->next = data->prev = NULL;
+    }
+
+    void addInLastPos(Data* data){
+        // add in last position
+        curr->next = data;
+        data->prev = curr;
+
+        curr = curr->next;
+
+        // curr always last
+        curr->next = NULL;
+    }
+    
+    void put(int key, int value) {
+        Data* data;
+
+        // not present
+        if(mp.find(key) == mp.end()){
+            data = new Data(key, value);
+            mp[data->key] = data;
+            
+        }
+        else{   // present;
+            data = mp[key];
+            data->val = value;
+            removeDataFromCurrPosition(key);
+        }
+
+        addInLastPos(data);
+
+        if(mp.size() > capLimit){
+            Data* removeData = head->next;
+
+            head->next = removeData->next;
+            if(removeData->next != NULL)
+            removeData->next->prev = head;
+
+            mp.erase(removeData->key);
+            delete removeData;
+        }
+    }
+};
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
+
+ TC: O(1)
+ SC: O(C)
+
+

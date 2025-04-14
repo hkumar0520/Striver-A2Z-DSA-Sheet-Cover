@@ -1,0 +1,49 @@
+
+
+
+struct Meeting{
+    int startTime;
+    int endTime;
+    
+    Meeting(int st, int et){
+        startTime = st;
+        endTime = et;
+    }
+};
+
+class Solution {
+  public:
+    // Function to find the maximum number of meetings that can
+    // be performed in a meeting room.
+    int maxMeetings(vector<int>& start, vector<int>& end) {
+        // Your code here
+        
+        vector<Meeting> arr;
+        int n = start.size();
+        
+        for(int i = 0; i<n; i++){
+            arr.push_back(Meeting(start[i], end[i]));
+        }
+        
+        sort(arr.begin(), arr.end(),[](Meeting a, Meeting b){
+           if(a.endTime == b.endTime){
+               return abs(a.startTime - a.endTime) < abs(b.startTime -  b.endTime);
+           }
+           
+           return a.endTime < b.endTime; 
+        });
+        
+        int countMeetings = 0, lastMeeting = -1;
+        for(int i =0; i<n; i++){
+            if(arr[i].startTime > lastMeeting){
+                countMeetings++;
+                lastMeeting = arr[i].endTime;
+            }
+        }
+        return countMeetings;
+    }
+};
+
+TC: nlogn
+SC: O(2n)
+

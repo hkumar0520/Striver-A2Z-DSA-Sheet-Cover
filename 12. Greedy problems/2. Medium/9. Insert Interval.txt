@@ -1,0 +1,63 @@
+
+
+1. Brute force(nlogn, 1)
+2. optimal (n, 1)
+
+
+for brute force 
+
+insert into intervals, then  apply merge intervals concept 
+
+##################################################################################
+
+class Solution {
+public:
+    vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
+        if(intervals.size() == 0)   return {newInterval};
+
+        vector<vector<int>> ans;
+        int i = 0, len = intervals.size();
+
+        // if newInterval lies before start
+        if(intervals[i][0] > newInterval[1]){
+            ans = intervals;
+            ans.insert(ans.begin(), newInterval);
+            return ans;
+        }
+
+        while(i<len && (intervals[i][1] < newInterval[0])){
+            ans.push_back(intervals[i]);
+            i++;
+        }
+
+        // if newinterval lies end
+        if(i == len){
+            ans.push_back(newInterval);
+            return ans;
+        }
+
+        // if no merging requires
+        if(intervals[i][0] > newInterval[1])
+            ans.push_back(newInterval);
+        else{   // if merging requires with newInterval
+            int start = min(intervals[i][0], newInterval[0]), endd = max(intervals[i][1], newInterval[1]);
+            ans.push_back({start, endd});
+            i++;
+            
+            while(i<len && (intervals[i][0] <= ans.back()[1])){
+                ans.back()[1] = max(ans.back()[1], intervals[i][1]);
+                i++;
+            }
+        }
+
+        while(i<len){
+            ans.push_back(intervals[i]);
+            i++;
+        }
+
+        return ans;
+    }
+};
+
+TC: O(n)
+SC: O(1)

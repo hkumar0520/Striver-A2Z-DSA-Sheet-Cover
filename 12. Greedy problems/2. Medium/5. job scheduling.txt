@@ -1,0 +1,124 @@
+
+
+1. Brute force (n*n, n)
+2. using DSU( disjoint set union)
+
+
+
+struct Job{
+    int deadline;
+    int profit;
+    
+    Job(int dl, int pf){
+        deadline = dl;
+        profit = pf;
+    }
+};
+
+class Solution {
+  public:
+    vector<int> jobSequencing(vector<int> &deadline, vector<int> &profit) {
+        // code here
+        vector<Job> arr;
+        int  len = deadline.size();
+        int  maxDeadLine = INT_MIN;
+        for(int i= 0; i<len; i++){
+            maxDeadLine = max( maxDeadLine, deadline[i]);
+            arr.push_back(Job(deadline[i], profit[i]));
+        }
+            
+        sort(arr.begin(), arr.end(), []( Job a, Job b){
+           // sort any way in case of decreasing deadline
+           if(a.profit == b.profit)
+                return a.deadline < b.deadline;
+                
+            return a.profit > b.profit;
+        });
+        
+        vector<int> scheduler( maxDeadLine+1, 0);
+        int maxProfit = 0, countJob = 0;
+        for(int i = 0; i<len; i++){
+            int currDeadLine = arr[i].deadline, currProfit = arr[i].profit;
+            
+            int j = currDeadLine;
+            for(; j>=1; j--){
+                if( scheduler[j] == 0)
+                    break;
+            }
+            if(j>=1 && scheduler[j] == 0){
+                scheduler[j] = 1;
+                maxProfit += currProfit;
+                countJob++;
+                
+            }
+            // cout<<j<<" ";
+            // cout<<maxProfit<<endl;
+        }
+        return {countJob, maxProfit};
+    }
+};
+
+TC: nlogn + n*n
+SC: O(n)
+
+
+################################################################################################
+
+
+
+
+struct Job{
+    int deadline;
+    int profit;
+    
+    Job(int dl, int pf){
+        deadline = dl;
+        profit = pf;
+    }
+};
+
+class Solution {
+  public:
+    vector<int> jobSequencing(vector<int> &deadline, vector<int> &profit) {
+        // code here
+        vector<Job> arr;
+        int  len = deadline.size();
+        int  maxDeadLine = INT_MIN;
+        for(int i= 0; i<len; i++){
+            maxDeadLine = max( maxDeadLine, deadline[i]);
+            arr.push_back(Job(deadline[i], profit[i]));
+        }
+            
+        sort(arr.begin(), arr.end(), []( Job a, Job b){
+           // sort any way in case of decreasing deadline
+           if(a.profit == b.profit)
+                return a.deadline < b.deadline;
+                
+            return a.profit > b.profit;
+        });
+        
+        unordered_set<int> scheduler;
+        int maxProfit = 0, countJob = 0;
+        for(int i = 0; i<len; i++){
+            int currDeadLine = arr[i].deadline, currProfit = arr[i].profit;
+            
+            int j = currDeadLine;
+            for(; j>=1; j--){
+                if( scheduler.count(j) == 0)
+                    break;
+            }
+            if(j>=1 && scheduler.count(j) == 0){
+                scheduler.insert(j);
+                maxProfit += currProfit;
+                countJob++;
+                
+            }
+            // cout<<j<<" ";
+            // cout<<maxProfit<<endl;
+        }
+        return {countJob, maxProfit};
+    }
+};
+
+TC: nlogn + n 
+SC: O(n)

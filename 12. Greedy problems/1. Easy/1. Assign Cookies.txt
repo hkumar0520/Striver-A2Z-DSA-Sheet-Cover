@@ -1,0 +1,22 @@
+
+
+class Solution {
+    public int findContentChildren(int[] g, int[] s) {
+        Arrays.sort(g);
+        Arrays.sort(s);
+        int ans = 0, contenChilren = 0, contenCookie = 0, gLen = g.length, sLen = s.length;
+
+        while( contenChilren < gLen && contenCookie < sLen){
+            if( g[contenChilren] <= s[contenCookie]){
+                contenChilren++;
+            }
+            contenCookie++;
+        }
+        return contenChilren;
+    }
+}
+
+TC: mlogm + nlogn + O(max(m,n))
+SC: O(1)
+
+
