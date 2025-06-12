@@ -1,0 +1,45 @@
+
+https://leetcode.com/contest/biweekly-contest-157/
+
+class Solution {
+public:
+    bool isPrime(long long& num){
+        if(num == 1)    return false;
+        for(long long i = 2; i*i<=num; i++){
+            if(num % i == 0)    return false;
+        }
+        return true;
+    }
+    long long convertToNum(string& s, int left, int right){
+        
+        long long num = 0;
+        for(int i =left; i<=right; i++)
+            num = num*10 + (s[i] - '0');
+
+        return num;
+    }
+    long long sumOfLargestPrimes(string s) {
+        
+        int len = s.size();
+        set<long long> primeNumber;
+        for(int i = 0 ; i<len ; i++){
+            for(int j = i; j<len; j++){
+                long long num = convertToNum(s, i, j);
+                if(isPrime(num)){
+                    primeNumber.insert(num);
+                    cout<<num<<" ";                    
+                }
+            }
+        }
+        vector<long long> primeNumbers(primeNumber.begin(), primeNumber.end());
+        int lenprimeNumbers = primeNumbers.size() - 1;
+        long long sum = 0;
+        for(int i = lenprimeNumbers; i>=0 && (lenprimeNumbers - i) < 3; i--)
+            sum += primeNumbers[i];
+
+        return sum;
+
+    }
+};
+
+TC : O(n*n) 

@@ -1,0 +1,51 @@
+
+
+// Lecture 1
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// stack overflow, segmentation fault 
+void print(){
+    cout<<1<<endl;
+    print();
+}
+
+int cnt = 0;
+void printTwo(){
+    if(cnt == 3)    return ;
+    
+    cout<< cnt<< endl;
+    cnt++;
+    printTwo();
+}
+
+int main() {
+	
+    // for memory overhead, stack overflow
+    //print();
+    
+    // with base condition,
+    printTwo();
+    
+    
+    return 0;
+}
+
+
+/*
+
+1. Recursion
+2. Base case
+3. Stack Overflow/ stack space
+4. Recursion Tree
+
+*/
+
+
+Output
+
+0
+1
+2

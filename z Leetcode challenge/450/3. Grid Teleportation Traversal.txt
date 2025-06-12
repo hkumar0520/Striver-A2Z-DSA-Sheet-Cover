@@ -1,0 +1,76 @@
+
+
+
+class Solution {
+public:
+    int rowMoves[4] = {-1, 0, 1, 0};
+    int colMoves[4] = {0, 1, 0, -1};
+
+    int minMoves(vector<string>& matrix) {
+        int rowLen = matrix.size(), colLen = matrix[0].size();
+
+        // if(matrix[rowLen-1][colLen-1] == '#')   return -1;
+        
+        vector<vector<pair<int,int>>> charMatrix(26);
+        for(int i = 0 ;i<rowLen; i++){
+            for(int j = 0 ; j<colLen; j++){
+                char ch = matrix[i][j];
+                if(ch == '.' || ch == '#')
+                    continue;
+                
+                charMatrix[ch-'A'].push_back({ i, j });
+            }
+        }
+
+        queue<vector<int>> pq;
+        // steps, x, y
+        if(matrix[0][0] != '#'){
+            char ch = matrix[0][0];
+            if( ch == '.'){
+                pq.push({ 0, 0, 0});
+            }
+            else{
+                int rowIndex = ch-'A';
+                for(int j = 0; j<charMatrix[rowIndex].size(); j++){
+                    int newTeleportX = charMatrix[rowIndex][j].first;
+                    int newTeleportY = charMatrix[rowIndex][j].second;
+                    pq.push({ 0, newTeleportX, newTeleportY});
+                    matrix[newTeleportX][newTeleportY] = '#';
+                }
+            }
+            matrix[0][0] = '#';
+        }
+
+        while(!pq.empty()){
+            vector<int> current = pq.front();
+            pq.pop();
+
+            int steps = current[0], xCord = current[1], yCord = current[2];
+            if(xCord == (rowLen-1) && yCord == (colLen-1))  return steps;
+
+            for(int i = 0; i<4; i++){
+                int xNew = xCord + rowMoves[i];
+                int yNew = yCord + colMoves[i];
+
+                if(xNew >=0 && xNew < rowLen && yNew >= 0 && yNew < colLen && matrix[xNew][yNew] != '#'){
+                    char ch = matrix[xNew][yNew];
+                    if( ch == '.'){
+                        pq.push({ steps + 1, xNew, yNew});
+                    }
+                    else{
+                        int rowIndex = ch-'A';
+                        for(int j = 0; j<charMatrix[rowIndex].size(); j++){
+                            int newTeleportX = charMatrix[rowIndex][j].first;
+                            int newTeleportY = charMatrix[rowIndex][j].second;
+                            pq.push({ steps + 1, newTeleportX, newTeleportY});
+                            matrix[newTeleportX][newTeleportY] = '#';
+                        }
+                    }
+                    matrix[xNew][yNew] = '#';
+                }
+            }
+        }
+        return -1;
+    }
+};
+

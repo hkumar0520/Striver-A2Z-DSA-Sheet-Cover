@@ -1,0 +1,39 @@
+
+
+class Solution {
+public:
+    vector<vector<int>> minAbsDiff(vector<vector<int>>& grid, int k) {
+        if(k == 1){
+            int rowSize = grid.size(), colSize = grid[0].size();
+            vector<vector<int>> ans(rowSize, vector<int>(colSize, 0));
+
+            return ans;
+        }
+        
+        int rowSize = grid.size(), colSize = grid[0].size();
+        vector<vector<int>> ans(rowSize - k + 1, vector<int>(colSize - k + 1, 0));
+
+        for(int i = 0; i< (rowSize - k + 1); i++){
+            for(int j = 0; j< (colSize - k + 1); j++){
+
+                vector<int> res;
+                for(int l = i; l< (i+k) && l<rowSize; l++){
+                    for(int m = j; m < (j+k) && m<colSize; m++){
+                        res.push_back(grid[l][m]);
+                    }
+                }
+                sort(res.begin(), res.end());
+                int minDiff = INT_MAX;
+                for(int l = 1; l < k*k; l++){
+                    if(res[l] != res[l-1])
+                        minDiff = min(minDiff, res[l] - res[l-1]);
+                }
+                if(minDiff == INT_MAX)
+                    minDiff = 0;
+                ans[i][j] = minDiff;
+            }
+        }
+
+        return ans;        
+    }
+};

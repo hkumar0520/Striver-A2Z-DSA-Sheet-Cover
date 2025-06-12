@@ -1,0 +1,21 @@
+
+
+https://leetcode.com/contest/weekly-contest-451/
+
+
+
+class Solution {
+public:
+    long long minCuttingCost(int n, int m, int k) {
+        if(k >= n && k>= m) return 0;
+
+        int greaterLog = max(n, m);
+        long minSum = LONG_MAX;
+        for(int i = 1; i<=k; i++){
+            if( (greaterLog - i) <= k)
+                minSum = min(minSum, 1L*i*(greaterLog - i));
+        }
+        return minSum;
+    }
+};
+

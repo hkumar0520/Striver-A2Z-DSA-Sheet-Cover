@@ -3,8 +3,9 @@ Video 4
 
 
 1. Brute force (n*sqrt(n), k)
-2. better 
-3. Optimal 
+2. better (n, k)
+3. Optimal(euclid) (n) 
+4. euclid ( sqrt(n)*log(n))
 
 
 class Solution{
