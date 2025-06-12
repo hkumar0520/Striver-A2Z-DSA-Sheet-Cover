@@ -1,0 +1,35 @@
+
+
+
+#include <bits/stdc++.h> 
+
+int findPartition(vector<int>& arr, int low, int high){
+    int pivot = arr[high];
+    int i = low;
+    for(int j = low ; j<high; j++){
+        if(arr[j] <= pivot){
+            swap(arr[i], arr[j]);
+            i++;
+        }
+    }
+    swap(arr[i], arr[high]);
+    return i;
+}
+void quickSortt(vector<int>&arr, int low, int high){
+    if(low >= high)  return;
+
+    int pos = findPartition(arr, low, high);
+    quickSortt(arr, low, pos-1);
+    quickSortt(arr, pos, high);
+}
+vector<int> quickSort(vector<int> arr)
+{
+    // Write your code here.
+    quickSortt(arr, 0, arr.size()-1);
+    return arr;
+}
+
+
+TC: nlogn
+SC: O(1)
+

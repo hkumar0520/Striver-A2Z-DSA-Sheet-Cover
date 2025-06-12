@@ -1,0 +1,31 @@
+
+
+https://www.geeksforgeeks.org/problems/smallest-positive-missing-number-1587115621/1?page=1&category=Arrays
+
+cyclic sort, index mapping
+
+class Solution {
+  public:
+    // Function to find the smallest positive number missing from the array.
+    int missingNumber(vector<int> &arr) {
+        // Your code here
+        int  n = arr.size();
+        for(int i = 0; i<n; i++){
+            while( (1<= arr[i] && arr[i]<=n) && (arr[i] != arr[arr[i] - 1]) )
+                swap(arr[i], arr[arr[i]-1]);
+        }
+
+        int cnt = 1;
+        for(int i= 0; i<n; i++){
+            if(arr[i] == (i+1))
+                cnt++;
+            else
+                break;
+        }
+        return cnt;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+

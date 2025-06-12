@@ -1,0 +1,25 @@
+
+
+class Solution{
+    public:
+    //Function to arrange all letters of a string in lexicographical 
+    //order using Counting Sort.
+    string countSort(string arr){
+        // code here
+        vector<int> countArr(26, 0);
+        for(char ch: arr)
+            countArr[ch-'a']++;
+        
+        string  ans = "";
+        for(int i = 0; i<26; i++){
+            while(countArr[i] > 0){
+                ans += (char)(i + 'a');
+                countArr[i]--;
+            }
+        }
+        return ans;
+    }
+};
+
+TC: O(n)
+SC: O(1) or { in most cases O(n)}
