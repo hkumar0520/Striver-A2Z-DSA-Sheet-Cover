@@ -1,0 +1,82 @@
+
+
+
+https://www.geeksforgeeks.org/problems/nearest-smaller-tower--170647/1?page=1&category=Stack,Queue
+
+
+
+similar to largest rectangle in a histogram
+
+class Solution {
+  public:
+      // index earlier than prev smaller
+    // increasing stack 
+    vector<int> findPrevSmaller(vector<int>& heights){
+        int len = heights.size();
+        stack<int> st;
+        vector<int> ans(len, INT_MAX);
+        for(int i = 0; i<len; i++){
+            while(!st.empty() && heights[st.top()] >= heights[i])
+                st.pop();
+            if(!st.empty())
+                ans[i] = st.top();
+            
+            st.push(i);
+        }
+
+        return ans;
+    }
+    
+    // index of element before next smaller element
+    // increasing stack 
+    vector<int> findNextSmaller(vector<int>& heights){
+        int len = heights.size();
+        vector<int> ans(len, INT_MAX);
+        stack<int> st;
+        for(int i = 0; i<len; i++){
+            while(!st.empty() && heights[st.top()] > heights[i]){
+                ans[st.top()] = i;
+                st.pop();
+            }
+            st.push(i);
+        }
+
+        return ans;
+    }
+    vector<int> getSmaller(vector<int> arr) {
+        // code here
+        
+        int len = arr.size();
+
+        vector<int> prevSmaller = findPrevSmaller(arr);
+        vector<int> nextSmaller = findNextSmaller(arr);
+        vector<int> ans(len, -1);
+
+        // for every block check prev smaller, then get area
+        for(int i = 0 ; i<len; i++){
+            int prevElement = prevSmaller[i] != INT_MAX ? arr[prevSmaller[i]] : -1;
+            int nextElement = nextSmaller[i] != INT_MAX ? arr[nextSmaller[i]] : -1;
+            if( abs(i - prevSmaller[i]) < abs(i - nextSmaller[i]))
+                ans[i] = prevSmaller[i];
+            else if( abs(i - prevSmaller[i]) > abs(i - nextSmaller[i]))
+                ans[i] = nextSmaller[i];
+            else{
+                if(prevElement < nextElement)
+                    ans[i] = prevSmaller[i];
+                else if(nextElement < prevElement)
+                    ans[i] = nextSmaller[i];
+                else
+                    ans[i] = prevSmaller[i];
+            }
+            
+            if(ans[i] == INT_MAX)   ans[i] = -1;
+        }
+        return ans;
+        
+    }
+};
+
+
+TC: O(2n) + O(2n) + O(n)
+SC: O(2n) + O(2n) + O(n)
+

@@ -1,0 +1,42 @@
+
+
+https://www.geeksforgeeks.org/problems/reverse-first-k-elements-of-queue--123903/1?page=1&category=Stack,Queu
+
+
+
+class Solution {
+  public:
+    queue<int> modifyQueue(queue<int> &q, int k) {
+        // code here
+        stack<int> st;
+        int len = q.size(), i = 0;
+        // k
+        while(i < k){
+            st.push(q.front());
+            q.pop();
+            
+            i++;
+        }
+        
+        //  k
+        while(!st.empty()){
+            q.push(st.top());
+            st.pop();
+        }
+        
+        // n-k
+        while(i < len){
+            q.push(q.front());
+            q.pop();
+            i++;
+        }
+        
+        return q;
+    }
+};
+
+
+TC: O(n + k)
+SC: O(k)
+
+

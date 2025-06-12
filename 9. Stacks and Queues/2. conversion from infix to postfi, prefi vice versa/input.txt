@@ -1,0 +1,6 @@
+a+b*(c^d-e)
+(A+B)*C-D+F
+AB-DE+F*/
+*+PQ-MN
+AB-DE+F*/
+/-AB*+DEF

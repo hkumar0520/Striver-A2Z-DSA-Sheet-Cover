@@ -1,0 +1,36 @@
+
+
+https://www.geeksforgeeks.org/problems/delete-middle-element-of-a-stack--111318/1?page=1&category=Stack,Queue
+
+
+// User function template for C++
+
+class Solution {
+    int sizeOfStack;
+  public:
+    // Function to delete middle element of a stack.
+    void deleteMidElement(stack<int>& st, int countt){
+        if(st.empty())  return;
+        
+        if( (sizeOfStack + 1)/2  == (sizeOfStack - countt) ){
+            st.pop();
+            return;
+        }
+        
+        int topElement = st.top();
+        st.pop();
+        deleteMidElement(st, countt + 1);
+        
+        st.push(topElement);
+    }
+    void deleteMid(stack<int>& s) {
+        // code here..
+        sizeOfStack = s.size();
+        deleteMidElement(s, 0);
+    }
+};
+
+
+TC: O(n)
+SC: O(n)
+

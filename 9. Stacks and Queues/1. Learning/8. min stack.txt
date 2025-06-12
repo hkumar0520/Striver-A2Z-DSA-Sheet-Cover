@@ -1,0 +1,194 @@
+
+
+
+class MinStack {
+    // element, minimum
+    stack<pair<int,int>> st;
+public:
+    MinStack() {
+        
+    }
+    
+    void push(int val) {
+        if(st.empty())
+            st.push({ val, val });
+        else{
+            int tmp = st.top().second;
+            st.push({ val, min(val, tmp) });
+        }
+    }
+    
+    void pop() {
+        st.pop();
+    }
+    
+    int top() {
+        if(st.empty())
+            return -1;
+        int topp = st.top().first;
+        return topp;
+    }
+    
+    int getMin() {
+        if(st.empty())
+            return -1;
+        int minElement = st.top().second;
+        return minElement;
+    }
+};
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack* obj = new MinStack();
+ * obj->push(val);
+ * obj->pop();
+ * int param_3 = obj->top();
+ * int param_4 = obj->getMin();
+ */
+
+ TC: O(1)
+ SC: O(2n)
+
+
+
+ ###############################################################################################
+
+
+
+class MinStack {
+    stack<long> st;
+    long minElement = -1;
+public:
+    MinStack() {
+        
+    }
+    
+    void push(long val) {
+        if(st.empty()){
+            st.push(val);
+            minElement = val;
+        }
+        else{
+            if(val < minElement){
+                st.push(2*val - minElement);
+                minElement = val;
+            }
+            else
+                st.push(val);
+        }
+    }
+    
+    void pop() {
+        if(minElement > st.top()){
+            long k = st.top();
+            minElement = 2*minElement - k;
+        }
+        st.pop();
+    }
+    
+    int top() {
+        if(minElement > st.top()){
+            return minElement;
+        }
+        
+        return st.top();
+    }
+    
+    int getMin() {
+        return minElement;
+    }
+};
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack* obj = new MinStack();
+ * obj->push(val);
+ * obj->pop();
+ * int param_3 = obj->top();
+ * int param_4 = obj->getMin();
+ */
+
+
+ TC: O(1)
+ SC: O(2n)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################################################
+
+
+handling of empty stack cases
+
+
+class Solution {
+  public:
+    stack<long>  st;
+    long  minElement = -1;
+    Solution() {
+        // code here
+        
+    }
+
+    // Add an element to the top of Stack
+    void push(int x) {
+        if(st.empty()){
+            st.push(x);
+            minElement = x;
+        }
+        else{
+            if(x < minElement){
+                st.push(2*x - minElement);
+                minElement = x;
+            }
+            else
+                st.push(x);
+        }
+        // code here
+    }
+
+    // Remove the top element from the Stack
+        
+    void pop() {
+        if(st.empty())  return ;
+        // code here
+        if(st.top() < minElement){
+            int k = st.top();
+            minElement = 2*minElement - k;
+        }
+        
+            st.pop();
+    }
+
+        
+    // Returns top element of the Stack
+    int peek() {
+        if(st.empty())  return -1;
+        // code here
+        if(st.top() < minElement)
+            return minElement;
+        
+        return st.top();
+    }
+        
+
+    // Finds minimum element of Stack
+    int getMin() {
+        if(st.empty())  return -1;
+        // code here
+        return minElement;
+    }
+};
+
