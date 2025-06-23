@@ -1,0 +1,76 @@
+
+
+
+
+#include <bits/stdc++.h>
+
+
+vector<pair<int, int>> findPairs(Node* head, int k)
+{
+    // Write your code here.
+    map<int,Node*> mp;
+    Node* current = head;
+    vector<pair<int,int>> ans;
+
+    while(current != nullptr){
+        if(mp.find(k - current->data) != mp.end()){
+            ans.push_back({ k - current->data, current->data});
+        }
+
+        mp[current->data] = current;
+        current = current->next;
+    }
+    return ans;
+}
+
+Let's analyze the **time and space complexity** of the given C++ function `findPairs`.
+
+### 📌 Code Overview
+
+This function finds **pairs of nodes in a singly linked list** whose values sum to a target `k`. Here's how it works:
+
+* It traverses the list once.
+* For each node, it checks if `(k - current->data)` is already in a map.
+* If found, it forms a pair and adds it to the result vector.
+* It then stores the current node's data in the map for future lookups.
+
+---
+
+### ⏱️ **Time Complexity**
+
+Let **n** be the number of nodes in the linked list.
+
+* The `while` loop runs **once per node**: **O(n)**.
+* Each operation inside the loop:
+
+  * `mp.find(...)` — O(log n) for `std::map` (red-black tree).
+  * `mp[...] = ...` — O(log n).
+  * `ans.push_back(...)` — Amortized O(1).
+
+So overall:
+
+* Total cost per iteration: O(log n).
+* For n nodes: **O(n log n)**.
+
+✅ If the map were changed to `unordered_map`, the time complexity would improve to **O(n)** on average (assuming good hash behavior).
+
+---
+
+### 🧠 **Space Complexity**
+
+* The map stores up to **n** elements (one per node): O(n).
+* The `ans` vector stores up to **n/2** pairs in the worst case (if every pair is unique): O(n).
+
+So, overall **space complexity**: **O(n)**.
+
+---
+
+### ✅ Final Answer:
+
+* **Time Complexity**: **O(n log n)** (due to `std::map`)
+  → Can be **O(n)** if replaced with `unordered_map`.
+* **Space Complexity**: **O(n)**
+
+Let me know if you want this version rewritten using `unordered_map` for efficiency.
+
+

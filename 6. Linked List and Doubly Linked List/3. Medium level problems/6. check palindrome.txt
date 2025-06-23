@@ -1,0 +1,157 @@
+
+
+
+1. Brute force (2n, n)
+2. optimal 
+
+
+
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        stack<int> st;
+        ListNode* current = head;
+        while( current != nullptr){
+            st.push(current->val);
+            current = current->next;
+        }
+
+        current = head;
+        while( current != nullptr){
+            if(st.top() != current->val)    return false;
+            st.pop();
+            current = current->next;
+        }
+        return true;
+    }
+};
+
+TC: O(2n)
+SC: O(n)
+
+
+
+
+
+
+
+###############################################################################################################
+
+
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        ListNode* slow = head, *fast = head;
+        while( fast != nullptr && fast->next != nullptr){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        // fast == nulptr even
+        // fast->next == nullptr odd
+        if(fast == nullptr){
+
+        }
+        else
+            slow = slow->next;
+
+        // reverse from slow( second half reverse)
+        ListNode *prev = nullptr, *current = slow;
+        while(current != nullptr){
+            ListNode* newFront = current->next;
+
+            current->next = prev;
+            prev = current;
+            current = newFront;
+        }
+
+        //check palindrome
+        current = head;
+        ListNode* currentTwo = prev;
+        while(currentTwo != nullptr && current != nullptr){
+            if(current->val != currentTwo->val)
+                return false;
+            current = current->next;
+            currentTwo = currentTwo->next;
+        }
+        return true;
+    }
+};
+
+
+TC: n/2  + n/2 + n/2 : 3n/2 : O(3n/2) : O(n)
+SC: O(1)
+
+
+
+
+##########################################################################################################
+
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+
+    ListNode* reverseLinkedList(ListNode* head){
+        ListNode *prev = nullptr, *current = head;
+        while(current != nullptr){
+            ListNode* newFront = current->next;
+
+            current->next = prev;
+            prev = current;
+            current = newFront;
+        }
+        return prev;
+    }
+    bool isPalindrome(ListNode* head) {
+        ListNode* slow = head, *fast = head;
+        while( fast != nullptr && fast->next != nullptr){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        // fast == nulptr even
+        // fast->next == nullptr odd
+        if(fast == nullptr){
+
+        }
+        else
+            slow = slow->next;
+
+        // reverse from slow( second half reverse)
+        ListNode* reverseHead = reverseLinkedList(slow);
+        
+
+        //check palindrome
+        ListNode* currentTwo = reverseHead, *current = head;
+        bool isPalindrome = true;
+        while(currentTwo != nullptr && current != nullptr){
+            if(current->val != currentTwo->val){
+                isPalindrome = false;
+                break;
+            }
+            current = current->next;
+            currentTwo = currentTwo->next;
+        }
+        // back to original state 
+        reverseLinkedList(reverseHead);
+
+        return isPalindrome;
+    }
+};
+
+
+
+TC: O(2n)
+SC: O(1)
+

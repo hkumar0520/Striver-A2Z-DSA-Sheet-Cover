@@ -1,0 +1,118 @@
+
+
+
+1.
+2. Opitmal(n, 1)
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    int findLength(ListNode* head){
+        int cnt = 0;
+        while(head != nullptr){
+            cnt++;
+            head = head->next;
+        }
+        return cnt;
+    }
+    ListNode* reverseLinkedList(ListNode* head, int k){
+        int cnt = 0;
+        ListNode* current = head, *prev = nullptr;
+        while(cnt < k && current != nullptr){
+            ListNode* frontNode = current->next;
+
+            current->next = prev;
+            prev = current;
+            current = frontNode;
+            cnt++;
+        }
+        return prev;
+    }
+    ListNode* rotateRight(ListNode* head, int k) {
+        if(k == 0 || ( head == nullptr || head->next == nullptr))  return head;
+        int len = findLength(head);
+        k = k % len;
+
+        ListNode* secondHalf = head;
+        int cnt = 0;
+        while(cnt < (len - k) && secondHalf != nullptr){
+            secondHalf = secondHalf->next;
+            cnt++;
+        }
+
+        ListNode* newHeadFirst = reverseLinkedList(head, len - k);
+        ListNode* newHeadSecond = reverseLinkedList(secondHalf, k);
+        head->next = newHeadSecond;
+
+        ListNode* finalHead = reverseLinkedList(newHeadFirst, len);
+        return finalHead;
+    }
+};
+
+
+TC: (len - k) + (len - k) + k + len : O(3*len - k)
+SC: O(1)
+
+
+
+
+########################################################################################
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    int findLength(ListNode* head){
+        int cnt = 1;
+        ListNode* current = head;
+        while(current->next != nullptr){
+            cnt++;
+            current = current->next;
+        }
+        current->next = head;
+        return cnt;
+    }
+
+    ListNode* rotateRight(ListNode* head, int k) {
+        if(k == 0 || ( head == nullptr || head->next == nullptr))  return head;
+        int len = findLength(head);
+        k = k % len;
+
+        ListNode* secondHalf = head, *secondHalfPrev = nullptr;
+        int cnt = 0;
+        while(cnt < (len - k) && secondHalf != nullptr){
+            secondHalfPrev = secondHalf;
+            secondHalf = secondHalf->next;
+            cnt++;
+        }
+        if(secondHalfPrev != nullptr)
+            secondHalfPrev->next = nullptr;
+
+        return secondHalf;
+    }
+};
+
+
+
+TC: O(len) + O(len-k) : O(2*len - k)
+SC: O(1)
+

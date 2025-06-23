@@ -1,0 +1,41 @@
+
+
+1. Brute force(2n, n)
+2. optimal (n, 1)
+
+
+
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+        if(head == nullptr ||  head->next == nullptr)   return head;
+        ListNode* odd = new ListNode(-1);
+        ListNode* even = new ListNode(-1);
+
+        ListNode* oddTraverse = odd, *evenTraverse = even;
+
+        ListNode* current = head;
+        int cnt = 1;
+        while(current != nullptr){
+            if(cnt% 2 == 0){
+                evenTraverse->next = current;
+                evenTraverse = evenTraverse->next;
+            }
+            else if(cnt % 2 == 1){
+                oddTraverse->next = current;
+                oddTraverse = oddTraverse->next;
+            }
+            cnt++;
+            current = current->next;
+        }
+        oddTraverse->next = even->next;
+        // ending even list with nullptr
+        evenTraverse->next = nullptr;
+        return odd->next;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+

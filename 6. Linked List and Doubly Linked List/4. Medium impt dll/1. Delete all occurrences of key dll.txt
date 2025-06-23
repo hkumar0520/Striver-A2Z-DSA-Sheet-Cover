@@ -1,0 +1,124 @@
+
+
+
+
+Node * deleteAllOccurrences(Node* head, int k) {
+    // Write your code here
+    Node* newHead = new Node(-1, head, nullptr);
+    // add if(head != nullptr)
+    head->prev = newHead;
+    Node* current = head;
+    while(current != nullptr){
+        if(current->data == k){
+            if(current->prev != nullptr)
+                current->prev->next = current->next;
+            if(current->next != nullptr)
+                current->next->prev = current->prev;
+
+            Node* tmp = current;
+            current = current->next;
+            delete tmp;
+            continue; 
+        }
+        current = current->next;
+    }
+    return newHead->next;
+}
+
+TC: O(n)
+SC: O(1)
+
+
+
+
+
+Let's go over your code for the function `deleteAllOccurrences` and analyze its **correctness**, and then break down the **time and space complexity**.
+
+---
+
+### ✅ **Function Purpose**
+
+This function removes **all occurrences of a given value `k`** from a **doubly linked list**.
+
+---
+
+### 📌 **Code Walkthrough**
+
+```cpp
+Node* newHead = new Node(-1, head, nullptr);
+head->prev = newHead;
+```
+
+* Creates a **dummy node** `newHead` pointing to the original head.
+* Helps in handling deletion of the head node cleanly.
+
+```cpp
+Node* current = head;
+while(current != nullptr){
+    if(current->data == k){
+        // Relink previous and next nodes
+        ...
+        delete current;
+        current = current->next;
+        continue;
+    }
+    current = current->next;
+}
+```
+
+* Iterates through the list.
+* If `current->data == k`, deletes the node and adjusts pointers.
+* Skips to next node using `current = current->next`.
+
+```cpp
+return newHead->next;
+```
+
+* Returns the new head of the list (after dummy).
+
+---
+
+### ⚠️ **Minor Bug Check**
+
+This line assumes `head` is non-null:
+
+```cpp
+head->prev = newHead;
+```
+
+If `head == nullptr`, this will cause a **segmentation fault**. A safe version would be:
+
+```cpp
+if (head != nullptr)
+    head->prev = newHead;
+```
+
+---
+
+### ⏱️ **Time Complexity**
+
+Let **n** be the number of nodes in the linked list.
+
+* The loop traverses each node once: **O(n)**
+* Each deletion and pointer update is **O(1)**.
+
+✅ **Time Complexity: O(n)**
+
+---
+
+### 🧠 **Space Complexity**
+
+* No extra memory used apart from the dummy node: **O(1)**.
+
+✅ **Space Complexity: O(1)**
+
+---
+
+### ✅ Final Answer:
+
+* **Time Complexity:** `O(n)`
+* **Space Complexity:** `O(1)`
+
+---
+
+Let me know if you'd like a version of this for a **singly linked list** or for **unsorted data**.

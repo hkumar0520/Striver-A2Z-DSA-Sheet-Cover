@@ -1,0 +1,170 @@
+
+
+1. Brute force 
+2. better ( n* (n*m), 1) - using loops only
+3. Optimal ( n*m*logn, n) - using binary heap ( refer binary heap topic)
+
+
+
+
+Better solution 
+
+/* Node structure  used in the program
+
+struct Node{
+    int data;
+    struct Node * next;
+    struct Node * bottom;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+        bottom = NULL;
+    }
+
+};
+*/
+
+class Solution {
+  public:
+    // Function which returns the  root of the flattened linked list.
+    Node *flatten(Node *root) {
+        // Your code here
+        
+        Node* newHead = new Node(-1);
+        Node* currNewNode = newHead, *currNode = root, *currRoot = root;;
+        while(currRoot != nullptr){
+            currNode = currRoot;
+            
+            Node* prevNode = nullptr;
+            Node* prevMinValueNode = nullptr, *minValueNode = currNode;
+            // O(n)
+            while(currNode != nullptr){
+                if(currNode->data < minValueNode->data){
+                    prevMinValueNode = prevNode;
+                    minValueNode = currNode;
+                }
+                prevNode = currNode;
+                currNode = currNode->next;
+            }
+            
+            
+            if(prevMinValueNode != nullptr){
+                if(minValueNode->bottom != nullptr){
+                    prevMinValueNode->next = minValueNode->bottom;
+                    minValueNode->bottom->next = minValueNode->next;
+                }
+                else
+                    prevMinValueNode->next = minValueNode->next;
+            }
+            else if(minValueNode->bottom != nullptr){
+                minValueNode->bottom->next = minValueNode->next;
+                currRoot = minValueNode->bottom;
+            }
+            else if(minValueNode->next != nullptr){
+                currRoot = minValueNode->next;
+            }
+            else
+                currRoot = nullptr;
+            
+            minValueNode->next = nullptr;
+            minValueNode->bottom = nullptr;
+            
+            currNewNode->bottom = minValueNode;
+            currNewNode = currNewNode->bottom;
+        }
+        return newHead->bottom;
+    }
+};
+
+
+TC: O(n*n*m){
+    n = no. of row
+    m = depth of each row 
+}
+SC: O(1)
+
+
+
+
+Let's break down the **time and space complexity** of the `flatten` function you provided, which is designed to flatten a 2D linked list where:
+
+* Each node has two pointers:
+
+  * `next`: points to the next node in the horizontal list.
+  * `bottom`: points to the head of a vertically linked list.
+
+---
+
+### ✅ **High-Level Logic**
+
+The algorithm:
+
+1. Builds a new list (`newHead`) by extracting the **minimum node** from the current 2D structure repeatedly.
+2. In each iteration, it **finds the minimum `data` node** among the nodes in the horizontal list (`next`-linked nodes).
+3. Once the min node is found, it is:
+
+   * Removed from its current place (with pointer updates),
+   * Appended to the flattened result (`bottom` chain),
+   * Its `bottom` node is inserted into the `next` list (if it exists).
+
+---
+
+### 🧠 **Key Observations**
+
+Let:
+
+* **n** = total number of nodes across all rows (i.e., total nodes in the entire 2D linked structure).
+* **m** = number of horizontal lists (i.e., number of nodes accessible via `next` from root).
+
+---
+
+### ⏱️ **Time Complexity**
+
+Each iteration of the outer `while` loop does:
+
+* A full **scan through all nodes** in the `next` chain to find the minimum node — O(m)
+* Then performs **pointer manipulations** — O(1)
+
+In the worst case, we perform this for **every node (n)**.
+
+The total time complexity is:
+
+* O(m + (m-1) + (m-2) + ... + 1) = O(m²) *if* m remains close to n.
+* But if m reduces as we consume nodes, and each node is processed once → total complexity becomes **O(n·m)** in the worst case.
+
+So we can estimate:
+
+✅ **Time Complexity: O(n × m)** in the **worst case**,
+👉 or **O(n log m)** if a **min-heap** were used instead to extract the minimum efficiently.
+
+---
+
+### 🧠 **Space Complexity**
+
+* No auxiliary data structures (except a few pointers and one dummy node).
+* The new list is built **in-place**, using existing nodes.
+* Hence, only **O(1)** auxiliary space.
+
+✅ **Space Complexity: O(1)** (ignoring output list, which reuses nodes)
+
+---
+
+### ✅ Final Answer:
+
+* **Time Complexity:** `O(n × m)`
+  (where `n` is total nodes, and `m` is the number of horizontal lists)
+* **Space Complexity:** `O(1)` (excluding output)
+
+---
+
+### 🔄 Optimization Suggestion
+
+To improve time complexity to **O(n log m)**, you could:
+
+* Use a **min-heap (priority queue)** of size m to always pick the minimum node efficiently.
+  Let me know if you'd like a heap-optimized version of this code.
+
+
+
+

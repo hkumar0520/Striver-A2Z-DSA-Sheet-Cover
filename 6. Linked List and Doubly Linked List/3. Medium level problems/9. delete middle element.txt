@@ -1,0 +1,81 @@
+
+
+
+1. Brute force (2n, 1)
+2. optimal (n, 1)
+
+
+
+class Solution {
+public:
+    int findLength(ListNode* head){
+        ListNode* current = head;
+        int cnt = 0;
+        while(current != nullptr){
+            current = current->next;
+            cnt++;
+        }
+        return cnt;
+    }
+    ListNode* deleteMiddle(ListNode* head) {
+        int len = findLength(head);
+        // delete head
+        if(len == 1){
+            return head->next;
+        }
+
+        ListNode* current = head,*prev = nullptr;
+        for(int  i = 0; i<(len/2); i++){
+            prev = current;
+            current = current->next;
+        }
+
+        ListNode* tmp = prev->next;
+        prev->next = prev->next->next;
+        delete tmp;
+
+        return head;
+    }
+
+};
+
+TC: O(n + n/2)
+SC: O(1)
+
+
+
+##############################################################################################################
+
+
+class Solution {
+public:
+    ListNode* deleteMiddle(ListNode* head) {
+        // head delete
+        if(head->next == nullptr){
+            return nullptr;
+        }
+
+        ListNode* slow = head, *fast = head, *prev = nullptr;
+        while(fast != nullptr && fast->next != nullptr){
+            fast = fast->next->next;
+            prev = slow;
+            slow = slow->next;
+        }
+        prev->next = prev->next->next;
+        delete slow;
+
+        return head;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+
+
+###############################################################################################################
+
+
+
+
+

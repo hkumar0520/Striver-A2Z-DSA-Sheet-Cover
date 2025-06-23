@@ -1,0 +1,143 @@
+
+
+1. burte force( nlogn, n)
+2. Optimal (nlogn , 1)
+
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        vector<ListNode*> arr;
+        ListNode* current = head;
+        while(current != nullptr){
+            arr.push_back(current);
+            current = current->next;
+        }
+
+        sort(arr.begin(), arr.end(), [&](ListNode* a, ListNode* b){
+            return a->val < b->val;
+        });
+
+        ListNode* newHead = new ListNode(-1);
+        current = newHead;
+        int len = arr.size();
+        for(int i = 0; i<len; i++){
+            arr[i]->next = nullptr;
+
+            current->next = arr[i];
+            current = current->next;
+        }
+        return newHead->next;
+    }
+};
+
+
+TC: O(nlogn)
+SC: O(n)
+
+
+
+
+
+########################################################################################################################################
+
+
+
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* findMidElement(ListNode* head){
+        ListNode* slow = head, *fast = head, *prevSlow = nullptr;
+        while(fast != nullptr && fast->next != nullptr){
+            prevSlow = slow;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        return prevSlow;
+    }
+    ListNode* mergeList(ListNode* left, ListNode* right){
+        ListNode* newHead = new ListNode(-1);
+        ListNode* current = newHead;
+        while(left && right){
+            if(left->val < right->val){
+                current->next = left;
+                left = left->next;
+            }
+            else{
+                current->next = right;
+                right = right->next;
+            }
+            current = current->next;
+        }
+        if(left)
+            current->next = left;
+        else if(right)
+            current->next = right;
+
+        return newHead->next;
+    }
+    ListNode* sortList(ListNode* head) {
+        if(head == nullptr || head->next == nullptr)
+            return head;
+
+        ListNode* mid = findMidElement(head);
+        ListNode* right = mid->next;
+        ListNode* left = head;
+        mid->next = nullptr;
+
+        left = sortList(left);
+        right = sortList(right);
+
+        return mergeList(left, right);
+    }
+};
+
+
+
+TC: O(nlogn)
+SC: O(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
