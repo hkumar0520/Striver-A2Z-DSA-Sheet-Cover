@@ -1,4 +1,8 @@
 
+1. recursion 
+2. memoization
+3. tabulation
+4. optimization
 // recursion
 
 int f(int ind, int target, vector<int> &arr)
@@ -24,6 +28,8 @@ int findWays(vector<int>& arr, int k)
 	return f(n-1, k, arr);
 }
 
+TC: O(2^n)
+SC: O(n)
 
 ###############################################################################################
 
@@ -55,6 +61,13 @@ int findWays(vector<int>& arr, int k)
 	vector<vector<int>> dp(n,vector<int>(k+1,-1));
 	return f(n-1, k, arr, dp);
 }
+
+TC: O(n*k)
+SC: O(n*k) + n{
+    n = stack space 
+    n*k = dp space 
+}
+
 
 ###############################################################################################
 
@@ -91,6 +104,12 @@ int findWays(vector<int>& arr, int k)
 	int  n = arr.size();
 	vector<vector<int>> dp(n,vector<int>(k+1,0));
 	return f(n, k, arr, dp);
+}
+
+
+TC: O(n*k)
+SC: O(n*k){
+    n*k = dp space 
 }
 
 
@@ -132,3 +151,11 @@ int findWays(vector<int>& arr, int k)
 	vector<int> dp(k+1,0);
 	return f(n, k, arr, dp);
 }
+
+
+
+TC: O(n*k)
+SC: O(k){
+    k = dp space 
+}
+

@@ -1,0 +1,76 @@
+
+
+// recursion 
+
+class Solution {
+public:
+    int f(int num, vector<int>& perFectSquare){
+        if(num == 0)    return 0;
+        
+        int minimum = INT_MAX;
+        for(int i = 0; i<perFectSquare.size(); i++){
+            if( (num - perFectSquare[i]) >= 0)
+                minimum = min(minimum, 1 + f(num - perFectSquare[i], perFectSquare));
+        }
+
+        return minimum;
+    }
+    int numSquares(int n) {
+        vector<int> perFectSquare;
+        for(int i =1; i*i <= n; i++)
+            perFectSquare.push_back(i*i);
+        
+        return f(n, perFectSquare);
+    }
+};
+
+
+TC: O(k^n){
+    k = size of perfect square
+    n = num
+}
+SC: O(n) + O(k){
+    n = stack space 
+    k = size of perfect square 
+}
+
+
+#####################################################################################################
+
+
+class Solution {
+public:
+    int f(int num, vector<int>& perFectSquare, vector<int>& dp){
+        if(num == 0)    return dp[num] = 0;
+        
+        if(dp[num] != -1)   return dp[num];
+
+        int minimum = INT_MAX;
+        for(int i = 0; i<perFectSquare.size(); i++){
+            if( (num - perFectSquare[i]) >= 0)
+                minimum = min(minimum, 1 + f(num - perFectSquare[i], perFectSquare, dp));
+        }
+
+        return dp[num] = minimum;
+    }
+    int numSquares(int n) {
+        vector<int> perFectSquare;
+        vector<int> dp(n+1, -1);
+        for(int i =1; i*i <= n; i++)
+            perFectSquare.push_back(i*i);
+        
+        return f(n, perFectSquare, dp);
+    }
+};
+
+
+TC: O(k*n){
+    k = size of perfect square
+    n = num
+}
+SC: O(n) + O(k) + O(n){
+    n = stack space 
+    k = size of perfect square 
+    n = dp space 
+}
+

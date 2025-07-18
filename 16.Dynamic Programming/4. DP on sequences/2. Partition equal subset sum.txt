@@ -1,3 +1,11 @@
+
+
+1. recursion 
+2. memoization
+3. tabulation
+4. optimization
+
+
 // same as 1st question, so same 'f' function used, optimized space
 
 bool f(int n, int k, vector<int> &arr, vector<bool> &dp)
@@ -39,3 +47,10 @@ bool canPartition(vector<int> &arr, int n)
 	vector<bool> dp(k+1, false);
 	return f(n, k, arr, dp);
 }
+
+
+TC: O(n*k)
+SC: O(k){
+    k = dp space 
+}
+

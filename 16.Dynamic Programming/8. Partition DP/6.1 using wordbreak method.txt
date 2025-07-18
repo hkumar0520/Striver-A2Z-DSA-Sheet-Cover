@@ -1,0 +1,276 @@
+
+
+1. recrusion 
+2. memoization 
+3. tabular 
+
+
+
+class Solution {
+public:
+    bool isPalindrome(int start, int endd, string& s){
+        while(start < endd){
+            if(s[start] != s[endd])
+                return false;
+            start++;
+            endd--;
+        }
+        return true;
+    }
+    int f(int ind, string& s){
+        if(ind  == s.size() || isPalindrome(ind, s.size()-1, s))    return 0;
+
+        int sSize = s.size(), minAns = 1e9;
+        for(int j = ind; j<sSize;  j++){
+
+            if(isPalindrome(ind, j, s)){
+                int ans = 1 + f(j+1, s);
+                minAns = min(minAns, ans);
+            }
+        }
+        return minAns;
+    }
+    int minCut(string s) {
+        
+        return f(0, s);
+    }
+};
+
+TC: exponential
+SC: O(n)
+
+
+##############################################################################################################################
+
+
+// memoization 
+
+
+class Solution {
+public:
+    bool isPalindrome(int start, int endd, string& s){
+        while(start < endd){
+            if(s[start] != s[endd])
+                return false;
+            start++;
+            endd--;
+        }
+        return true;
+    }
+    int f(int ind, string& s, vector<int>& dp){
+        if(ind  == s.size())    return 0;
+        if( isPalindrome(ind, s.size()-1, s))
+            return dp[ind] = 0;
+
+        if(dp[ind] != -1)   return dp[ind];
+
+        int sSize = s.size(), minAns = 1e9;
+        for(int j = ind; j<sSize;  j++){
+
+            if(isPalindrome(ind, j, s)){
+                int ans = 1 + f(j+1, s, dp);
+                minAns = min(minAns, ans);
+            }
+        }
+        return dp[ind] = minAns;
+    }
+    int minCut(string s) {
+        int n = s.size();
+        vector<int> dp(n, -1);
+        return f(0, s, dp);
+    }
+};
+
+
+TC: O(n*n*n)
+SC: O(n) + O(n){
+    dp = n 
+    stack space = n 
+}
+
+
+#########################################################################################################################################################
+
+
+
+// memoization + Optimization
+
+
+class Solution {
+public:
+
+    int f(int ind, string& s, vector<int>& dp, vector<vector<bool>>& isPal){
+        if(ind  == s.size())    return 0;
+        if( isPal[ind][s.size()-1])
+            return dp[ind] = 0;
+
+        if(dp[ind] != -1)   return dp[ind];
+
+        int sSize = s.size(), minAns = 1e9;
+        for(int j = ind; j<sSize;  j++){
+
+            if(isPal[ind][j]){
+                int ans = 1 + f(j+1, s, dp, isPal);
+                minAns = min(minAns, ans);
+            }
+        }
+        return dp[ind] = minAns;
+    }
+    int minCut(string s) {
+        int n = s.size();
+
+        // precompute palindromic substrings
+        vector<vector<bool>> isPal(n, vector<bool>(n, false));
+        
+        // Precompute palindrome substrings
+        for (int len = 1; len <= n; ++len) {
+            for (int i = 0; i <= n - len; ++i) {
+                int j = i + len - 1;
+                if (s[i] == s[j]) {
+                    if (len <= 2)
+                        isPal[i][j] = true;
+                    else
+                        isPal[i][j] = isPal[i + 1][j - 1];
+                }
+            }
+        }
+
+
+        vector<int> dp(n, -1);
+        return f(0, s, dp, isPal);
+    }
+};
+
+TC: O(n*n)
+SC: O(n) + O(n){
+    n = dp 
+    n = stack space 
+}
+
+
+
+#######################################################################################################################
+
+// tabulation 
+
+class Solution {
+public:
+    int minCut(string s) {
+        int n = s.size();
+
+        // precompute palindromic substrings
+        vector<vector<bool>> isPal(n, vector<bool>(n, false));
+        
+        // Precompute palindrome substrings
+        for (int len = 1; len <= n; ++len) {
+            for (int i = 0; i <= n - len; ++i) {
+                int j = i + len - 1;
+                if (s[i] == s[j]) {
+                    if (len <= 2)
+                        isPal[i][j] = true;
+                    else
+                        isPal[i][j] = isPal[i + 1][j - 1];
+                }
+            }
+        }
+
+        vector<int> dp(n+1, 1e9);
+        dp[n] = 0;
+        for(int i = 0; i<n; i++){
+            if(isPal[i][n-1])
+                dp[i] = 0;
+        }
+
+        for(int i = n-1; i>=0; i--){
+            int minAns = 1e9;
+            for(int j = i; j<n; j++){
+                if(isPal[i][j]){
+                    int ans = 1 + dp[j+1];
+                    minAns = min(minAns, ans);
+                }
+            }
+            // in case i..n-1 is palindrome
+            dp[i] = min(dp[i], minAns);
+        }
+        return dp[0];
+    }
+};
+
+
+TC: O(n*n)
+SC: O(n){
+    n = dp 
+}
+
+
+$############################################################################################################################################################################
+
+
+
+
+You're currently solving the **Palindrome Partitioning II** problem using a **top-down DP with memoization**, where each recursive call checks all substrings starting from the current index to see if they are palindromes.
+
+The **time complexity** of your solution is approximately **O(n³)**:
+
+* There are **O(n)** recursive states (`ind` from 0 to n-1),
+* Each state can try **O(n)** cuts,
+* Each `isPalindrome` check is **O(n)**.
+
+---
+
+## ✅ Optimization Strategy
+
+We can **precompute all palindrome substrings** in **O(n²)** time using dynamic programming. Then use this table in the main recursion or tabulation to avoid redundant palindrome checks.
+
+---
+
+### ✅ Optimized Code (Time: **O(n²)**, Space: **O(n²)**)
+
+```cpp
+class Solution {
+public:
+    int minCut(string s) {
+        int n = s.size();
+        // Step 1: Precompute palindrome substrings
+        vector<vector<bool>> isPal(n, vector<bool>(n, false));
+        
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = i; j < n; ++j) {
+                if (s[i] == s[j] && (j - i <= 2 || isPal[i + 1][j - 1])) {
+                    isPal[i][j] = true;
+                }
+            }
+        }
+
+        // Step 2: DP to compute minimum cuts
+        vector<int> dp(n + 1, 0); // dp[i] = min cuts needed for s[i...n-1]
+        for (int i = n - 1; i >= 0; --i) {
+            int minCuts = INT_MAX;
+            for (int j = i; j < n; ++j) {
+                if (isPal[i][j]) {
+                    minCuts = min(minCuts, 1 + dp[j + 1]);
+                }
+            }
+            dp[i] = minCuts;
+        }
+
+        return dp[0] - 1; // subtract 1 because no cut is needed if the whole string is a palindrome
+    }
+};
+```
+
+---
+
+## 🚀 Key Improvements
+
+* **Avoid redundant palindrome checks**: Instead of recomputing palindrome checks in each recursive call, precompute them.
+* **Bottom-up DP** avoids recursion stack overhead.
+* Reduced overall complexity from **O(n³)** to **O(n²)**.
+
+Let me know if you prefer keeping the **top-down recursive style** while still applying these optimizations—it's also doable!
+
+
+
+
+
+

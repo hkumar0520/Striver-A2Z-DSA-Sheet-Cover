@@ -1,0 +1,209 @@
+
+similar to 7, minimum coins to target infinite supply
+here max profit from given target where supply infinite 
+
+
+1. recursion
+2. memoization
+3. tabulation
+4. two rows
+5. one row 
+
+
+
+int f(int ind, int target, vector<int> &profit, vector<int> &weight){
+
+    if(ind == 0){
+        int quantity = target / weight[ind];
+
+        return quantity * profit[ind];
+    }
+
+    long notPick = f(ind-1, target, profit, weight);
+    long pick = 0;
+    if(weight[ind] <= target)
+        pick = profit[ind] + f(ind, target - weight[ind], profit, weight);
+
+    
+    return max(pick, notPick);
+}
+
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
+    // Write Your Code Here.
+
+    return f(n-1, w, profit, weight);
+}
+
+
+TC: exponential >> 2^n 
+SC: O(W)
+
+
+############################################################################################
+
+
+long f(int ind, int target, vector<int> &profit, vector<int> &weight, vector<vector<long>>& dp){
+
+    if(ind == 0){
+        int quantity = target / weight[ind];
+
+        return quantity * profit[ind];
+    }
+
+    if(dp[ind][target] != -1)   return dp[ind][target];
+
+    long notPick = f(ind-1, target, profit, weight, dp);
+    long pick = 0;
+    if(weight[ind] <= target)
+        pick = profit[ind] + f(ind, target - weight[ind], profit, weight, dp);
+
+    
+    return dp[ind][target] = max(pick, notPick);
+}
+
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
+    // Write Your Code Here.
+
+    vector<vector<long>> dp(n, vector<long>(w+1, -1));
+
+    return f(n-1, w, profit, weight, dp);
+}
+
+TC: O(n*w)
+SC: O(n*w) + O(w){
+    dp = n*w 
+    stack space = w 
+}
+
+
+
+
+###############################################################################################
+
+
+
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
+    // Write Your Code Here.
+
+    vector<vector<long>> dp(n, vector<long>(w+1, -1));
+    for(int target = 0; target<=w; target++){
+        int quantity = target / weight[0];
+        dp[0][target] = quantity * profit[0];
+    }
+
+    for(int ind = 1; ind<n; ind++){
+        for(int target = 0; target <= w; target++){
+            
+
+            long notPick = dp[ind-1][target];
+            long pick = 0;
+            if(weight[ind] <= target)
+                pick = profit[ind] + dp[ind][target - weight[ind]];
+            
+             dp[ind][target] = max(pick, notPick);
+        }
+    }
+
+    return dp[n-1][w];
+}
+
+
+TC: O(n*w)
+SC: O(n*w) {
+    dp = n*w 
+}
+
+##############################################################################################
+
+
+
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
+    // Write Your Code Here.
+
+    vector<long> prev(w+1, 0), curr(w+1, 0);
+
+    for(int target = 0; target<=w; target++){
+        int quantity = target / weight[0];
+        prev[target] = quantity * profit[0];
+    }
+
+    for(int ind = 1; ind<n; ind++){
+        for(int target = 0; target <= w; target++){
+            
+
+            long notPick = prev[target];
+            long pick = 0;
+            if(weight[ind] <= target)
+                pick = profit[ind] + curr[target - weight[ind]];
+            
+             curr[target] = max(pick, notPick);
+        }
+        prev = curr;
+    }
+
+    return prev[w];
+}
+
+TC: O(n*w)
+SC: O(w) {
+    (curr, prev) = w 
+}
+
+
+
+##############################################################################################
+
+
+
+
+
+
+
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight){
+    // Write Your Code Here.
+
+    vector<long> prev(w+1, 0);
+
+    for(int target = 0; target<=w; target++){
+        int quantity = target / weight[0];
+        prev[target] = quantity * profit[0];
+    }
+
+    for(int ind = 1; ind<n; ind++){
+        for(int target = 0; target <= w; target++){
+            
+
+            long notPick = prev[target];
+            long pick = 0;
+            if(weight[ind] <= target)
+                pick = profit[ind] + prev[target - weight[ind]];
+            
+             prev[target] = max(pick, notPick);
+        }
+    }
+
+    return prev[w];
+}
+
+
+TC: O(n*w)
+SC: O(w) {
+    ( prev) = w 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

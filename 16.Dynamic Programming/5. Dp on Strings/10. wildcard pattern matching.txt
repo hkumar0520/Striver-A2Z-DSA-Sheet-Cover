@@ -79,6 +79,13 @@ bool wildcardMatching(string pattern, string text)
 ###############################################################################################
 // memoization
 
+Call f(i-1,j). i.e replace ‘*’ with nothing and act as if it was not present.
+Call f(i,j-1). i.e replace ‘*’ with a single character at index j and make 
+the i pointer to still point at index i. In this, we matched it with a
+ single character (one of the many options that need to be tried) and
+  in the next recursive call, as i still point to ‘*’, we get the exact 
+  two recursive calls again.
+
 
 #include <bits/stdc++.h>
 
@@ -124,5 +131,105 @@ bool wildcardMatching(string pattern, string text)
 
 // tabular
 
+
+
+#include <bits/stdc++.h>
+
+using  namespace std;
+
+bool f(string pattern, string text)
+{
+   int m = pattern.size();
+   int n = text.size();
+   vector<vector<int>> dp(m+1, vector<int>(n+1,0));
+   dp[0][0] = 1;
+   for(int i=1;i<=m;i++)
+   {
+      if(pattern[i-1] == '*')
+         dp[i][0] = dp[i-1][0];
+      // case of "********" is "TTTTTTTT" and "*asdfa***asdf" is "TFFFFF,FFF,FFFF"
+   }
+
+   for(int i=1;i<=m;i++)
+   {
+      for(int j=1;j<=n;j++)
+      {
+         if(pattern[i-1] != '*')
+            dp[i][j] = dp[i-1][j-1] && ((pattern[i-1] == text[j-1]) || pattern[i-1] == '?');
+         else
+         {
+            dp[i][j] = dp[i-1][j] || dp[i][j-1];
+               /*
+       dp[i-1][j]    means not considering the p[i-1] character because
+                    p[i-1] equals to * and thus empty sequence if 
+                    dp[i-1][j] equals to true, then dp[i][j] also true
+                    
+       dp[i][j-1]   means considering the s[j-1] character because
+                    p[i-1] equals to * and thus * matches any sequnce of 
+                    character(including s[j-1]) if dp[i-1][j] true, 
+                    then dp[i][j] is true
+   */
+         }
+      }
+   }
+   return dp[m][n];
+}
+bool wildcardMatching(string pattern, string text)
+{
+   // Write your code here.
+   return f(pattern,text );
+}
+
+
+
+###############################################################################################
+// optimization
+
+
+
+#include <bits/stdc++.h>
+
+using  namespace std;
+
+bool f(string pattern, string text)
+{
+   int m = pattern.size();
+   int n = text.size();
+   vector<int> curr(n+1,0);
+   vector<int> prev(n+1,0);
+   prev[0] = 1;
+   for(int i=1;i<=m;i++)
+   {
+      if(pattern[i-1] == '*')
+         curr[0] = prev[0];
+
+      for(int j=1;j<=n;j++)
+      {
+         if(pattern[i-1] != '*')
+            curr[j] = prev[j-1] && ((pattern[i-1] == text[j-1]) || pattern[i-1] == '?');
+         else
+         {
+            curr[j] = prev[j] || curr[j-1];
+               /*
+       dp[i-1][j]/prev[j]    means not considering the p[i-1] character because
+                    p[i-1] equals to * and thus empty sequence if 
+                    dp[i-1][j] equals to true, then dp[i][j] also true
+                    
+       dp[i][j-1]/curr[j-1]   means considering the s[j-1] character because
+                    p[i-1] equals to * and thus * matches any sequnce of 
+                    character(including s[j-1]) if dp[i-1][j] true, 
+                    then dp[i][j] is true
+   */
+         }
+      }
+      prev = curr;
+   }
+   return curr[n];
+}
+bool wildcardMatching(string pattern, string text)
+{
+   // Write your code here.
+   return f(pattern,text );
+}
 
 

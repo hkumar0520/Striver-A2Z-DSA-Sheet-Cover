@@ -1,0 +1,146 @@
+
+1. Recursion
+2. memoization 
+3. tabulation
+4. optimization
+
+
+class Solution {
+public:
+    int f(int ind,  int lastindex, vector<int>& arr)
+    {
+        if(ind == arr.size())   return 0;
+
+        int notpick = f(ind+1,lastindex,arr);
+        int pick = 0;
+        if(lastindex == -1 || arr[ind] > arr[lastindex])
+            pick = 1 + f(ind+1,ind,arr);
+
+        return max(notpick,pick);
+    }
+    int lengthOfLIS(vector<int>& nums) {
+        return f(0,-1,nums);
+    }
+};
+
+TC: 2^n 
+SC: O(n)
+
+
+###############################################################################################
+// memoization
+
+class Solution {
+public:
+    int f(int ind,  int lastindex, vector<int>& arr,vector<vector<int>>& dp)
+    {
+        if(ind == arr.size())   return 0;
+
+        if(dp[ind][lastindex + 1] != -1)    return dp[ind][lastindex+1];
+        
+        int notpick = f(ind+1,lastindex,arr,dp);
+        int pick = 0;
+        if(lastindex == -1 || arr[ind] > arr[lastindex])
+            pick = 1 + f(ind+1,ind,arr,dp);
+
+        return dp[ind][lastindex+1] = max(notpick,pick);
+    }
+    int lengthOfLIS(vector<int>& nums) {
+        int  n = nums.size();
+        vector<vector<int>> dp(n,vector<int>(n,-1));
+        return f(0,-1,nums,dp);
+    }
+};
+
+
+TC: N*N
+SC: N*N + N {
+    dp = n*n;
+    stack space = n
+}
+
+
+################################################################################################################################################################
+
+
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& arr) {
+        int n = arr.size();
+        vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
+
+        for(int ind = n-1; ind>=0; ind--){
+            for(int prev_i = ind - 1; prev_i >=-1 ; prev_i--){
+                
+                
+                int notpick = dp[ind+1][prev_i+1];
+                int pick = 0;
+                if(prev_i == -1 || arr[ind] > arr[prev_i])
+                    pick = 1 + dp[ind+1][ind+1];
+
+                dp[ind][prev_i+1] = max(notpick,pick);
+            }
+        }
+
+        return dp[0][0];
+    }
+};
+
+TC: O(n*n)
+SC: O(n*n)
+
+
+
+############################################################################################################################
+
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> current(n+1, 0), prev(n+1, 0);
+
+        for(int ind = n-1; ind>=0; ind--){
+            for(int prev_i = ind - 1; prev_i >=-1 ; prev_i--){
+                
+                
+                int notpick = prev[prev_i+1];
+                int pick = 0;
+                if(prev_i == -1 || arr[ind] > arr[prev_i])
+                    pick = 1 + prev[ind+1];
+
+                current[prev_i+1] = max(notpick,pick);
+            }
+            prev = current;
+        }
+
+        return current[0];
+    }
+};
+
+TC: O(n*n)
+SC: O(n)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,11 @@
 
 
+1. recursion 
+2. memoization
+3. tabulation
+4. optimization
+
+
 // recursion
 
 #include <bits/stdc++.h> 
@@ -23,6 +29,8 @@ int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight)
 
 	return f(n-1,maxWeight, value, weight);
 }
+
+
 
 
 ###############################################################################################

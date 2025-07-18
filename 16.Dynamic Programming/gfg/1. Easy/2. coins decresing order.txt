@@ -1,0 +1,270 @@
+
+
+https://www.geeksforgeeks.org/problems/-minimum-number-of-coins4426/1?page=1&category=Dynamic%20Programming
+
+
+1. recursion (TLE )
+2. memoization 
+
+
+// recursion 
+
+
+// User function Template for C++
+
+class Solution {
+  public:
+  
+    void f(int ind, int target, int len, vector<int>& coins, vector<int>& path, vector<int>& ans){
+        
+        if(target == 0){
+            if((path.size() < ans.size()) || ans.size() == 0)
+                ans = path;
+                
+            return;
+        }
+        if(ind == -1)   return ;
+        
+        
+        if(coins[ind] <= target){
+            path.push_back(coins[ind]);
+            f(ind, target-coins[ind], len, coins, path, ans);
+            path.pop_back();
+        }
+        
+        f(ind-1, target, len, coins, path, ans);
+    }
+    vector<int> minPartition(int N) {
+        // code here
+        vector<int> coins = {1, 2, 5, 10, 20, 50, 100, 200, 500 , 2000};
+        int len = coins.size();
+        vector<int> ans, path;
+        
+        f(len-1, N, len, coins, path, ans);
+        
+        return ans;
+    }
+};
+
+TC: O(2^N)
+SC: O(N)
+
+
+The given code is essentially solving a variant of the "minimum coin change problem" where the goal is to find the minimum set of coins that add up to a given amount `N`. It uses a recursive approach to explore all possible combinations of coins and selects the one with the fewest coins. Let's analyze its time complexity step-by-step.
+
+### Code Breakdown
+
+The key function here is `f(ind, target, len, coins, path, ans)`:
+
+* `ind`: the current index in the `coins` array.
+* `target`: the remaining amount we need to form.
+* `coins`: the available coin denominations.
+* `path`: a vector to track the current combination of coins being considered.
+* `ans`: the vector storing the current minimum set of coins found.
+
+The function explores two main cases for each coin:
+
+1. **Take the coin (if possible)**: If `coins[ind] <= target`, the function reduces the target by `coins[ind]` and tries to include this coin in the solution.
+2. **Skip the coin**: It also explores the case where the coin is not taken, and it moves to the next coin (i.e., `ind-1`).
+
+### Time Complexity Analysis
+
+#### 1. **Recursion Depth**
+
+* The depth of the recursion is determined by the length of the `coins` array (`len`), which in this case is fixed at 10 (`coins = {1, 2, 5, 10, 20, 50, 100, 200, 500, 2000}`).
+* So, at most, the recursion will go as deep as the number of coins available, which is `O(len)`.
+
+#### 2. **Subproblems**
+
+* For each coin, you either take it or leave it. Thus, there are two choices at each step. If you recursively consider each coin, the number of possible subproblems is **2^len** (since each coin can either be part of the solution or not).
+* So, there are `O(2^len)` subproblems, where each subproblem corresponds to a decision on whether to include or exclude a particular coin.
+
+#### 3. **Time per Subproblem**
+
+* For each recursive call, there are some constant-time operations such as checking if the `target == 0` (which takes `O(1)` time), updating the `path` (push/pop), and comparing the size of `path` to `ans` (which also takes `O(1)` time).
+* These operations are done for each subproblem, so the time spent per recursive call is constant, `O(1)`.
+
+### Total Time Complexity
+
+Given that we have at most `2^len` subproblems, and each subproblem takes constant time `O(1)`, the total time complexity of the function is:
+
+$$
+O(2^{\text{len}})
+$$
+
+Since `len` is 10 (the number of available coins), this results in:
+
+$$
+O(2^{10}) = O(1024)
+$$
+
+Thus, the time complexity is **O(2^n)** where `n` is the number of coins available, and in this case, `n = 10`.
+
+### Space Complexity
+
+* **Recursive call stack**: The depth of the recursion is at most `len` (since you can only go as deep as the number of coins), so the space complexity due to the recursion stack is `O(len)`.
+* **Auxiliary space**: There are additional vectors `path` and `ans`, but their sizes are bounded by `len` because at most, they can contain all the coins. Hence, the space complexity for these vectors is also `O(len)`.
+
+Thus, the overall space complexity is:
+
+$$
+O(len) = O(10)
+$$
+
+This is constant because the number of coins is fixed, so the space complexity is considered **O(1)** in practical terms.
+
+### Conclusion
+
+* **Time Complexity**: $O(2^{n})$, where `n` is the number of coin denominations. For `n = 10`, this results in $O(1024)$.
+* **Space Complexity**: $O(n)$, where `n` is the number of coin denominations, and for this specific problem, it is $O(10)$.
+
+
+
+
+
+#####################################################################################################
+
+
+class Solution {
+  public:
+  
+    void f(int ind, int target, int len, vector<int>& coins, vector<int>& path, vector<int>& ans, vector<vector<int>>& dp){
+        
+        if(target == 0){
+            if((path.size() < ans.size()) || ans.size() == 0)
+                ans = path;
+                
+            return;
+        }
+        if(ind == -1)   return ;
+        
+        if(dp[ind][target] != -1)   return ;
+        
+        
+        if(coins[ind] <= target){
+            path.push_back(coins[ind]);
+            f(ind, target-coins[ind], len, coins, path, ans, dp);
+            path.pop_back();
+        }
+        
+        f(ind-1, target, len, coins, path, ans, dp);
+        
+        dp[ind][target] = 1;
+    }
+    vector<int> minPartition(int N) {
+        // code here
+        vector<int> coins = {1, 2, 5, 10, 20, 50, 100, 200, 500 , 2000};
+        int len = coins.size();
+        vector<int> ans, path;
+        
+        vector<vector<int>> dp(len, vector<int>(N+1, -1));
+        
+        f(len-1, N, len, coins, path, ans, dp);
+        
+        return ans;
+    }
+};
+
+TC: O(len*N)
+SC: O(N) + O(len*N){
+    stack space  = N
+    dp = len*N 
+}
+
+
+The modified version of the code introduces **dynamic programming (DP)** via the `dp` array to avoid recomputing the same subproblems multiple times. Let's analyze the time complexity and space complexity of this code step by step.
+
+### Code Breakdown
+
+The key changes to the original code are:
+
+1. **Memoization with DP**: The `dp` table stores results of subproblems, where `dp[ind][target]` indicates whether a solution for a given index `ind` and remaining target `target` has already been computed.
+2. **Recursion**: The function `f(ind, target, len, coins, path, ans, dp)` now checks if a result for a given `ind` and `target` has already been computed (`dp[ind][target] != -1`). If so, it avoids redundant recursive calls.
+
+### Time Complexity
+
+#### 1. **Recursion with Memoization**
+
+* The function `f(ind, target, len, coins, path, ans, dp)` is called for every pair of `ind` and `target`.
+* The recursion explores all combinations of coins, but due to memoization (`dp[ind][target]`), each unique subproblem (defined by `ind` and `target`) will only be solved once.
+
+#### 2. **Number of Subproblems**
+
+* There are `len` possible values for `ind` (from `0` to `len-1`), where `len` is the number of coin denominations.
+* There are `N+1` possible values for `target` (from `0` to `N`), where `N` is the total amount to partition.
+* Therefore, the total number of unique subproblems that need to be computed is at most:
+
+$$
+\text{Total subproblems} = \text{len} \times (N+1)
+$$
+
+#### 3. **Work per Subproblem**
+
+* For each subproblem, the function does a constant amount of work (e.g., checking `dp[ind][target]`, comparing path sizes, and pushing/popping coins from `path`).
+* Hence, each recursive call with a unique pair of `(ind, target)` takes constant time, i.e., `O(1)`.
+
+#### 4. **Time Complexity**
+
+* Since there are at most `len * (N + 1)` subproblems and each takes `O(1)` time, the time complexity is:
+
+$$
+O(\text{len} \times N)
+$$
+
+Where `len` is the number of coin denominations, and `N` is the target value.
+
+In this specific case:
+
+* `len = 10` (number of available coin denominations).
+* `N` is the target value (up to a maximum of the input value `N`).
+
+So, the time complexity is:
+
+$$
+O(10 \times N) = O(N)
+$$
+
+### Space Complexity
+
+#### 1. **Recursive Call Stack**
+
+* The recursion depth depends on the number of coins, which is `O(len)`. This is the maximum number of recursive calls (in the worst case).
+
+#### 2. **Memoization Table (`dp`)**
+
+* The `dp` table has dimensions `len x (N + 1)`, where:
+
+  * `len` is the number of coin denominations (fixed at 10).
+  * `N + 1` is the number of possible target values (from 0 to N).
+* Therefore, the space complexity due to the `dp` table is:
+
+$$
+O(\text{len} \times (N + 1)) = O(10 \times (N + 1)) = O(N)
+$$
+
+#### 3. **Other Variables**
+
+* `path`: Stores a combination of coins, and its maximum size is `O(len)` (at most all coins are in the combination).
+* `ans`: Stores the final result, and its maximum size is also `O(len)` (at most all coins are in the minimum solution).
+
+#### 4. **Total Space Complexity**
+
+* Combining the space for the `dp` table, the recursion stack, and the auxiliary variables, the total space complexity is:
+
+$$
+O(\text{len} \times (N + 1)) + O(\text{len}) = O(N)
+$$
+
+### Conclusion
+
+* **Time Complexity**: $O(\text{len} \times N)$, where `len` is the number of coin denominations (fixed at 10), and `N` is the target value. This simplifies to $O(N)$.
+* **Space Complexity**: $O(\text{len} \times (N + 1)) = O(N)$, considering the `dp` table and auxiliary space.
+
+In this specific problem:
+
+* **Time Complexity**: $O(N)$
+* **Space Complexity**: $O(N)$
+
+
+
+

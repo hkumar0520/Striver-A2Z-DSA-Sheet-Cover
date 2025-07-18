@@ -1,0 +1,215 @@
+
+1. recursion
+2. memoization
+3. tabulation 
+4. optimized
+
+
+// recursion 
+
+#include <bits/stdc++.h> 
+
+int f(int row, int col1, int col2,int n, int m, vector<vector<int>>& grid)
+{
+    if(col1<0 || col2<0 || col1>=m || col2>=m)
+        return -1e9;
+    if(row == n-1)
+    {
+        if(col1 == col2)
+            return grid[row][col1];
+        else
+            return grid[row][col1]+grid[row][col2];
+    }
+
+    int maximum = -1e9;
+    for(int d1 = -1; d1<=1 ;d1++)
+    {
+        for(int d2 = -1; d2<=1;d2++)
+        {
+            int ans = -1e9;
+            if(col1 == col2)
+                ans = grid[row][col1]+f(row+1,col1+d1,col2+d2,n,m,grid);
+            else
+                ans = grid[row][col1]+grid[row][col2]+f(row+1,col1+d1,col2+d2,n,m,grid);
+            maximum = max(maximum, ans);
+        }
+    }
+    return maximum;
+}
+int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
+    // Write your code here.
+    return f(0,0,c-1,r,c,grid);
+}
+
+TC : (3^n * 3^n)
+SC : O(n)
+
+
+###############################################################################################
+
+always pass  grid and dp as aliases(&) references, if not in every function call it creates
+copy of matrix which consumes time 
+
+// memoization
+
+#include <bits/stdc++.h> 
+
+int f(int row, int col1, int col2,int n, int m, vector<vector<int>>& grid, vector<vector<vector<int>>>& dp)
+{
+    if(col1<0 || col2<0 || col1>=m || col2>=m)
+        return -1e9;
+    if(row == n-1)
+    {
+        if(col1 == col2)
+            return grid[row][col1];
+        else
+            return grid[row][col1]+grid[row][col2];
+    }
+
+    if(dp[row][col1][col2] != -1)   return dp[row][col1][col2];
+
+    int maximum = -1e9;
+    for(int d1 = -1; d1<=1 ;d1++)
+    {
+        for(int d2 = -1; d2<=1;d2++)
+        {
+            int ans = -1e9;
+            if(col1 == col2)
+                ans = grid[row][col1]+f(row+1,col1+d1,col2+d2,n,m,grid,dp);
+            else
+                ans = grid[row][col1]+grid[row][col2]+f(row+1,col1+d1,col2+d2,n,m,grid,dp);
+            maximum = max(maximum, ans);
+        }
+    }
+    return dp[row][col1][col2] = maximum;
+}
+int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
+    // Write your code here.
+    vector<vector<vector<int>>> dp(r,vector<vector<int>>(c,vector<int>(c,-1)));
+    return f(0,0,c-1,r,c,grid,dp);
+}
+
+
+TC : (r*c*c*9)
+SC : O(r) + O(r*c*c){
+    dp = r*c*c 
+    stack space = r 
+}
+
+###############################################################################################
+// tabular
+
+#include <bits/stdc++.h> 
+
+int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
+    // Write your code here.
+    vector<vector<vector<int>>> dp(r,vector<vector<int>>(c,vector<int>(c,-1)));
+
+    for(int col1 = 0; col1 < c ; col1++){
+        for(int col2 = 0; col2 < c ; col2++){
+            if(col1 == col2)
+                dp[r-1][col1][col2] = grid[r-1][col1];
+            else
+                dp[r-1][col1][col2] = grid[r-1][col1] + grid[r-1][col2];
+        }
+    }
+
+    for(int row = r-2; row>=0; row--){
+        for(int col1 = 0; col1 < c; col1++){
+            for(int col2 = 0; col2 < c; col2++){
+                int maximum = -1e9;
+
+                for(int d1 = -1; d1<=1; d1++){
+                    for(int d2 = -1; d2<=1; d2++){
+                        
+                        int ans = -1e9;
+                        if(col1 == col2)
+                            ans = grid[row][col1];
+                        else
+                            ans = grid[row][col1] + grid[row][col2];
+
+                        int newCol1 = col1 + d1, newCol2 = col2 + d2;
+                        
+                        if(newCol1<0 || newCol2<0 || newCol1>=c || newCol2>=c)
+                            ans += -1e9;
+                        else 
+                            ans += dp[row+1][newCol1][newCol2];
+
+                        maximum = max(maximum, ans);
+                    }
+                }
+                dp[row][col1][col2] = maximum;
+            }
+        }
+    }
+
+    return dp[0][0][c-1];
+}
+
+TC : (r*c*c*9)
+SC : O(r*c*c){
+    dp = r*c*c 
+}
+
+
+###############################################################################################
+// optimization
+
+#include <bits/stdc++.h> 
+
+int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
+    // Write your code here.
+    vector<vector<int>> prev(c,vector<int>(c,-1));
+    vector<vector<int>> curr(c,vector<int>(c,-1));
+
+    for(int col1 = 0; col1 < c ; col1++){
+        for(int col2 = 0; col2 < c ; col2++){
+            if(col1 == col2)
+                prev[col1][col2] = grid[r-1][col1];
+            else
+                prev[col1][col2] = grid[r-1][col1] + grid[r-1][col2];
+        }
+    }
+
+    for(int row = r-2; row>=0; row--){
+        curr = prev;
+        for(int col1 = 0; col1 < c; col1++){
+            for(int col2 = 0; col2 < c; col2++){
+                int maximum = -1e9;
+
+                for(int d1 = -1; d1<=1; d1++){
+                    for(int d2 = -1; d2<=1; d2++){
+                        
+                        int ans = -1e9;
+                        if(col1 == col2)
+                            ans = grid[row][col1];
+                        else
+                            ans = grid[row][col1] + grid[row][col2];
+
+                        int newCol1 = col1 + d1, newCol2 = col2 + d2;
+                        
+                        if(newCol1<0 || newCol2<0 || newCol1>=c || newCol2>=c)
+                            ans += -1e9;
+                        else 
+                            ans += prev[newCol1][newCol2];
+
+                        maximum = max(maximum, ans);
+                    }
+                }
+                curr[col1][col2] = maximum;
+            }
+        }
+        prev = curr;
+    }
+
+    return prev[0][c-1];
+}
+
+
+
+TC : (r*c*c*9)
+SC : O(c*c){
+    dp = c*c 
+}
+
+

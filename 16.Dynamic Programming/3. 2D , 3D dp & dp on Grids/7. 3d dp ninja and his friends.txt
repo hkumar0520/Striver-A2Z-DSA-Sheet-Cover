@@ -38,11 +38,18 @@ int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
     return f(0,0,c-1,grid);
 }
 
+TC : (3^n * 3^n)
+SC : O(n)
+
+
 ###############################################################################################
 // memoization
 
+not working due to not passing of matrix as references(&)
+
 #include <bits/stdc++.h> 
 
+// int f(int row, int col1, int col2, vector<vector<int>>& grid, vector<vector<vector<int>>>& dp)
 int f(int row, int col1, int col2, vector<vector<int>> grid, vector<vector<vector<int>>> dp)
 {
     int colsize = grid[0].size();
@@ -77,6 +84,13 @@ int maximumChocolates(int r, int c, vector<vector<int>> &grid) {
     // Write your code here.
     vector<vector<vector<int>>> dp(r,vector<vector<int>>(c,vector<int>(c,-1)));
     return f(0,0,c-1,grid,dp);
+}
+
+
+TC : (r*c*c*9)
+SC : O(r) + O(r*c*c){
+    dp = r*c*c 
+    stack space = r 
 }
 
 ###############################################################################################

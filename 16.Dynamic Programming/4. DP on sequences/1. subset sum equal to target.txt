@@ -1,4 +1,11 @@
 
+
+1. recursion 
+2. memoization
+3. tabulation
+4. optimization
+
+
 // recursion
 #include <bits/stdc++.h> 
 
@@ -21,6 +28,9 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
 
     return f(n-1,k, arr);
 }
+
+TC: O(2^n)
+SC: O(n)
 
 ###############################################################################################
 // memoization
@@ -48,6 +58,14 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
     vector<vector<int>> dp(n, vector<int>(k+1,-1));
     return f(n-1,k, arr, dp);
 }
+
+
+TC: O(n*k)
+SC: O(n*k) + n{
+    n = stack space 
+    n*k = dp space 
+}
+
 
 ###############################################################################################
 // tabular approach 
@@ -84,6 +102,12 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
 }
 
 
+TC: O(n*k)
+SC: O(n*k){
+    n*k = dp space 
+}
+
+
 ###############################################################################################
 // optimized space
 
@@ -99,7 +123,7 @@ bool f(int n, int k, vector<int> &arr, vector<bool> &dp)
     for(int i=1;i<n;i++)
     {
         vector<bool> temp(k+1,false);
-        temp[0] = true;
+        temp[0] = true;     // temp = dp;
         for(int j=1;j<k+1;j++)
         {
             bool nottaken = dp[j];
@@ -121,5 +145,9 @@ bool subsetSumToK(int n, int k, vector<int> &arr) {
 }
 
 
+TC: O(n*k)
+SC: O(k){
+    k = dp space 
+}
 
 

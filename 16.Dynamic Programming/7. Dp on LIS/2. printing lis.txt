@@ -43,3 +43,60 @@ vector<int> printingLongestIncreasingSubsequence(vector<int> arr, int n) {
 	// Write your code here
 	return f(arr,n);
 }
+
+TC: O(n*n)
+SC: O(n)
+
+
+#####################################################################################################################################
+
+
+#include<bits/stdc++.h>
+
+vector<int> f(vector<int> arr, int n)
+{
+    vector<int> dp(n,1);
+	vector<int> hash(n,-1);
+    int maxAns = INT_MIN, lastIndex = 0;
+
+    for(int i=1;i<n;i++)
+    {
+		hash[i] = i;
+        for(int j=i-1;j>=0;j--)
+        {
+            if(arr[i]>arr[j])
+			{
+				if((dp[j]+1)>dp[i])
+				{
+                	dp[i] = dp[j]+1;
+					hash[i] = j;
+				}
+			}
+        }
+		if(dp[i] > maxAns){
+			maxAns = dp[i];
+			lastIndex = i;
+		}
+    }
+	vector<int> ans;
+	ans.push_back(arr[lastIndex]);
+	while(lastIndex != -1 && (lastIndex != hash[lastIndex]))
+	{
+		lastIndex = hash[lastIndex];
+		ans.push_back(arr[lastIndex]);
+	}
+
+	reverse(ans.begin(),ans.end());
+	return ans;
+}
+
+vector<int> printingLongestIncreasingSubsequence(vector<int> arr, int n) {
+	// Write your code here
+	return f(arr,n);
+}
+
+
+TC: O(n*n)
+SC: O(n)
+
+

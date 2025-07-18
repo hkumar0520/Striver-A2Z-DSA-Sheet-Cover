@@ -42,3 +42,60 @@ int targetSum(int n, int target, vector<int>& arr) {
 
     return f(n-1,k,arr,dp);
 }
+
+
+##########################################################################
+
+
+class Solution {
+public:
+
+    int f(int n, int target, vector<int> &arr)
+    {
+        vector<int> curr(target+1,0);
+
+        if(arr[0] == 0)     curr[0] = 2;
+        else                curr[0] = 1;
+
+        if(arr[0]!=0 && arr[0]<=target)      curr[arr[0]]  = 1;
+        
+        for(int i=1;i<n;i++)
+        {
+            vector<int> temp(target+1,0);
+            for(int j=0;j<=target;j++)
+            {
+                int notpick = curr[j];
+                int pick = 0;
+                if(arr[i]<=j)
+                    pick = curr[j-arr[i]];
+                
+                temp[j] = (pick + notpick);
+            }
+            curr = temp;
+        }
+        return curr[target];
+    }
+
+    int countPartitions(int n, int d, vector<int> &arr) {
+        // Write your code here.
+        int totalsum = 0;
+        for(int i=0;i<n;i++)
+            totalsum += arr[i];
+
+        if((totalsum-d) < 0)    return 0;
+        if((totalsum-d)%2 ==1)        return 0;
+        
+        int k = (totalsum-d)/2;
+
+        return f(n,k,arr);
+    }
+    int findTargetSumWays(vector<int>& nums, int target) {
+        return countPartitions(nums.size(), target, nums);
+    }
+};
+
+
+TC: O(n* (totalsum - d)/2)
+SC: O( (totalsum - d)/2){
+    dp = totalsum - d/2
+}

@@ -1,0 +1,39 @@
+
+
+https://www.geeksforgeeks.org/problems/adjacents-are-not-allowed3528/1?page=1&category=Dynamic%20Programming
+
+
+class Solution {
+  public:
+    int f(int col, vector<vector<int>>& mat, vector<int>& dp){
+        if(col < 0) return 0;
+        if(col == 0)    return dp[0] = max(mat[0][col], mat[1][col]);
+        
+        if(dp[col] != -1 )  return dp[col];
+        
+        int maxAns = -1e9;
+        
+        // including/excluding  from the current col
+        for(int i = 0; i<2; i++){
+            int pick = mat[i][col] + f(col-2, mat, dp);
+            int notpick = f(col-1, mat, dp);
+            maxAns = max({maxAns, pick, notpick});
+        }
+        
+        
+        return dp[col] = maxAns;
+        
+    }
+    int maxSum(int N, vector<vector<int>> mat) {
+        // code here
+        vector<int> dp(N, -1);
+        return f(N-1, mat, dp);
+    }
+};
+
+TC: O(n)
+SC: O(n) + O(n){
+    stack space = n;
+    dp = n;
+}
+

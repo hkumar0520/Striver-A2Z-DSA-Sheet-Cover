@@ -1,0 +1,60 @@
+
+
+https://www.geeksforgeeks.org/problems/largest-zigzag-sequence5416/1?page=1&category=Dynamic%20Programming
+
+
+
+
+class Solution {
+  public:
+  
+     int f(int i, int j, int sideLen, vector<vector<int>>& grid, vector<vector<int>>& dp){
+        if(j<0 || j>=sideLen) return -1e9;
+    
+        if(i == 0)  return dp[i][j] = grid[i][j];
+    
+        if(dp[i][j] != -1e9)    return dp[i][j];
+    
+        int maxAns = -1e9;
+        for(int k = 0; k<sideLen; k++){
+            if(k == j)  continue;
+            int pathSum = grid[i][j] + f(i-1, k, sideLen, grid, dp);
+            maxAns = max( maxAns, pathSum);
+        }
+    
+        return dp[i][j] = maxAns;
+    }
+    int minFallingPathSum(vector<vector<int>>& grid) {
+        int  n = grid.size();
+        if(n == 1)
+            return grid[0][0];
+
+        vector<vector<int>> dp(n, vector<int>(n, -1e9));
+
+        int maxAns = -1e9;
+        for(int j = 0; j<n; j++){
+            for(int k = 0; k<n; k++){
+                if(j == k)  continue;
+                int pathSum = grid[n-1][j] + f(n-2, k, n, grid, dp);
+                maxAns = max( maxAns, pathSum);
+            }
+            dp[n-1][j] = maxAns;
+        }
+        return maxAns;
+    }
+  
+    int zigzagSequence(int n, vector<vector<int>> M) {
+        // code here
+        return minFallingPathSum(M);
+    }
+};
+
+TC: O(n*n*n)
+SC: O(n*n) + O(n){
+    dp = n*n
+    stack space = n
+}
+
+
+
+

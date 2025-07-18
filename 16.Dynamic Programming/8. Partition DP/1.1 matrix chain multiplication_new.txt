@@ -1,0 +1,122 @@
+
+
+1. Recursion 
+2. memoization
+3. tabulation
+
+
+
+class Solution {
+  public:
+     int f(int start, int endd, vector<int>& arr)
+    {
+        if(start == endd)   return 0;
+    
+        int mini = 1e9;
+    
+    
+        for(int k=start; k < endd; k++)
+        {
+            int ans = f(start,k,arr) + f(k+1,endd,arr) + arr[start-1]*arr[k]*arr[endd];
+            mini = min(mini,ans);
+        }
+        return mini;
+    }   // Write your code here
+ 
+    int matrixMultiplication(vector<int> &arr) {
+        // code here
+        int n = arr.size();
+        return f(1, n-1, arr);
+        
+    }
+};
+
+TC: exponentail
+SC: O(n)
+
+
+
+
+
+#######################################################################################################################################################
+
+
+
+
+class Solution {
+  public:
+    int f(int start, int endd, vector<int>& arr, vector<vector<int>>& dp)
+    {
+        if(start == endd)   return 0;
+        
+        if(dp[start][endd] != -1)   return dp[start][endd];
+    
+        int mini = 1e9;
+    
+        for(int k=start; k < endd; k++)
+        {
+            int ans = f(start, k, arr, dp) + f(k+1, endd, arr, dp) + arr[start-1]*arr[k]*arr[endd];
+            mini = min(mini,ans);
+        }
+        return dp[start][endd] = mini;
+    }  
+ 
+    int matrixMultiplication(vector<int> &arr) {
+        // code here
+        int n = arr.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        return f(1, n-1, arr, dp);
+        
+    }
+};
+
+TC: O(n*n*n)
+SC: O(n*n) + O(n)
+
+
+
+##################################################################################################
+
+
+class Solution {
+  public:
+    int matrixMultiplication(vector<int> &arr) {
+        // code here
+        int n = arr.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        for(int i = 0; i<n; i++)
+            dp[i][i] = 0;
+            
+        for(int i = n-1; i>=1; i--){
+            for(int j = i+1; j<n; j++){
+                
+                int mini = 1e9;
+                for(int k = i; k < j; k++){
+                            
+                    int ans = dp[i][k] + dp[k+1][j] + arr[i-1]*arr[k]*arr[j];
+                    mini = min(mini,ans);
+                }
+                dp[i][j] = mini;
+            }
+        }
+        return dp[1][n-1];
+    }
+};
+
+
+TC: O(n*n*n)
+SC: O(n*n){
+    dp = n*n 
+}
+
+
+
+
+
+
+
+
+
+
+
+

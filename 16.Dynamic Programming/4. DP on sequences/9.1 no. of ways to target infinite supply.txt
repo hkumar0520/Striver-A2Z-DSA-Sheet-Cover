@@ -1,0 +1,188 @@
+
+
+
+similar to 7, minimum coins to target infinite supply
+here no. of combinations to target infinite supply of coins 
+
+
+1. recursion
+2. memoization
+3. tabulation
+4. two rows
+5. one row 
+
+
+long f(int ind, int target, int* denominations){
+
+    if(ind == 0){
+        return target % denominations[ind] == 0;
+    }
+
+    long notPick = f(ind-1, target, denominations);
+    long pick = 0;
+    if(denominations[ind] <= target)
+        pick = f(ind, target - denominations[ind], denominations);
+
+    return notPick + pick;
+}
+long countWaysToMakeChange(int *denominations, int n, int value)
+{
+    //Write your code here
+    return f(n-1, value, denominations);
+}
+
+TC: exponential >> (2^n)
+SC: O(value)
+
+
+##########################################################################################
+
+
+#include <bits/stdc++.h>
+
+long f(int ind, int target, int* denominations, vector<vector<long>>& dp){
+
+    if(ind == 0){
+        return target % denominations[ind] == 0;
+    }
+
+    if(dp[ind][target] != -1)   return dp[ind][target];
+
+    long notPick = f(ind-1, target, denominations, dp);
+    long pick = 0;
+    if(denominations[ind] <= target)
+        pick = f(ind, target - denominations[ind], denominations, dp);
+
+    return dp[ind][target] = notPick + pick;
+}
+long countWaysToMakeChange(int *denominations, int n, int value)
+{
+    //Write your code here
+    vector<vector<long>> dp(n, vector<long>(value + 1, -1));
+
+    return f(n-1, value, denominations, dp);
+}
+
+TC: O(n*value)
+SC: O(n*value ) + O(value){
+    dp = n*value 
+    stack space = value
+}
+
+
+########################################################################################
+
+#include <bits/stdc++.h>
+
+long countWaysToMakeChange(int *denominations, int n, int value)
+{
+    //Write your code here
+    vector<vector<long>> dp(n, vector<long>(value + 1, 0));
+    for(int target = 0; target<= value; target++)
+        dp[0][target] = (target % denominations[0]) == 0 ? 1 : 0;
+
+    
+    for(int ind = 1; ind < n; ind++){
+        for(int target = 0; target <= value; target++){
+
+            long notPick = dp[ind-1][target];
+            long pick = 0;
+            if(denominations[ind] <= target)
+                pick = dp[ind][target - denominations[ind]];
+
+            dp[ind][target] = notPick + pick;
+        }
+    }
+
+    return dp[n-1][value];
+}
+
+
+TC: O(n*value)
+SC: O(n*value ) {
+    dp = n*value 
+}
+
+
+
+
+############################################################################################
+
+
+#include <bits/stdc++.h>
+
+long countWaysToMakeChange(int *denominations, int n, int value)
+{
+    //Write your code here
+    vector<long> prev(value + 1, 0), curr(value + 1, 0);
+
+    for(int target = 0; target<= value; target++)
+        prev[target] = (target % denominations[0]) == 0 ? 1 : 0;
+
+    
+    for(int ind = 1; ind < n; ind++){
+        for(int target = 0; target <= value; target++){
+
+            long notPick = prev[target];
+            long pick = 0;
+            if(denominations[ind] <= target)
+                pick = curr[target - denominations[ind]];
+
+            curr[target] = notPick + pick;
+        }
+        prev = curr;
+    }
+    return prev[value];
+}
+
+
+
+TC: O(n*value)
+SC: O(value ) {
+    (curr, prev) = value 
+}
+
+
+
+##############################################################################################
+
+
+
+
+#include <bits/stdc++.h>
+
+long countWaysToMakeChange(int *denominations, int n, int value)
+{
+    //Write your code here
+    vector<long> prev(value + 1, 0);
+
+    for(int target = 0; target<= value; target++)
+        prev[target] = (target % denominations[0]) == 0 ? 1 : 0;
+
+    
+    for(int ind = 1; ind < n; ind++){
+        for(int target = 0; target <= value; target++){
+
+            long notPick = prev[target];
+            long pick = 0;
+            if(denominations[ind] <= target)
+                pick = prev[target - denominations[ind]];
+
+            prev[target] = notPick + pick;
+        }
+    }
+
+    return prev[value];
+}
+
+
+TC: O(n*value)
+SC: O(value) {
+    prev = value 
+}
+
+
+
+
+
+

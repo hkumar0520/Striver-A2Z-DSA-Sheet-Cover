@@ -62,12 +62,75 @@ int stockProfit(vector<int> &prices){
 ###############################################################################################
 // tabular
 
+class Solution {
+public:
+    int ff(vector<int>& prices, vector<vector<int>>& dp)
+    {
+        int n= prices.size();
+        for(int i=n-1;i>=0;i--)
+        {
+            for(int buy = 0;buy<2;buy++)
+            {
+                if(buy ==0 )
+                {
+                    dp[i][buy] = max(0+dp[i+1][buy],
+                                    -prices[i]+dp[i+1][1]);
+                }
+                else
+                {
+                    dp[i][buy] = max(0+dp[i+1][buy],
+                                +prices[i]+dp[i+2][0]);
+                }
+            }
+        }
+        return dp[0][0];
+    }
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        vector<vector<int>> dp(n+2,vector<int>(2,0));
+        return ff(prices,dp);
+    }
+};
+
 
 ###############################################################################################
 // optimization
 
 
-
+class Solution {
+public:
+    int ff(vector<int>& prices, vector<vector<int>>& dp)
+    {
+        vector<int> curr(2,0);
+        vector<int> ahead(2,0);
+        vector<int> aheadnext(2,0);
+        int n= prices.size();
+        for(int i=n-1;i>=0;i--)
+        {
+            for(int buy = 0;buy<2;buy++)
+            {
+                if(buy ==0 )
+                {
+                    curr[buy] = max(0+ahead[buy],
+                                    -prices[i]+ahead[1]);
+                }
+                else
+                {
+                    curr[buy] = max(0+ahead[buy],
+                                +prices[i]+aheadnext[0]);
+                }
+            }
+            aheadnext = ahead;
+            ahead = curr;
+        }
+        return curr[0];
+    }
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        vector<vector<int>> dp(n+2,vector<int>(2,0));
+        return ff(prices,dp);
+    }
+};
 
 
 

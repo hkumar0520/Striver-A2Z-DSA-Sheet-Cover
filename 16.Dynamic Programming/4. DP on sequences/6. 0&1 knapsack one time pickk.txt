@@ -1,0 +1,194 @@
+
+1. recursion
+2. memoization
+3. tabulation
+4. two rows
+5. one row 
+
+
+#include <bits/stdc++.h> 
+
+int f(int ind, int target, vector<int> value, vector<int> weight)
+{
+	if(ind == 0)
+		return (target >= weight[ind]) ? value[ind]: 0;
+
+
+	int nonPick = f(ind-1, target, value, weight);
+	int pick = 0;
+	if(weight[ind] <= target)
+		pick = value[ind] + f(ind-1, target-weight[ind], value, weight);
+
+	return max(nonPick, pick);
+}
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	// Write your code here
+
+
+	return f(n-1,maxWeight, value, weight);
+}
+
+TC: O(2^n)
+SC: O(maxWeight){
+    maxWeight = stack space
+}
+
+
+#########################################################################################
+
+
+
+#include <bits/stdc++.h> 
+
+int f(int ind, int target, vector<int> value, vector<int> weight, vector<vector<int>>& dp)
+{
+	if(ind == 0)
+		return (target >= weight[ind]) ? value[ind]: 0;
+
+	if(dp[ind][target] != -1)	return dp[ind][target];
+
+	int nonPick = f(ind-1, target, value, weight, dp);
+	int pick = 0;
+	if(weight[ind] <= target)
+		pick = value[ind] + f(ind-1, target-weight[ind], value, weight, dp);
+
+	return dp[ind][target] = max(nonPick, pick);
+}
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	vector<vector<int>> dp(n, vector<int>(maxWeight + 1, -1));
+
+	return f(n-1,maxWeight, value, weight, dp);
+}
+
+
+TC: O(n*maxWeight)
+SC: O(n*maxWeight) + O(maxWeight){
+    n*maxWeight = dp
+    maxWeight = stack space
+}
+
+
+
+
+################################################################################################
+
+
+
+
+
+
+#include <bits/stdc++.h> 
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	vector<vector<int>> dp(n, vector<int>(maxWeight + 1, 0));
+	for(int target = 0; target<= maxWeight; target++){
+		if(target >= weight[0])
+			dp[0][target] = value[0];
+	}
+
+	for(int ind = 1; ind<n; ind++){
+		for(int target = 0; target<=maxWeight; target++){
+			int nonPick = dp[ind-1][target];
+			int pick = 0;
+			if(weight[ind] <= target)
+				pick = value[ind] + dp[ind-1][target-weight[ind]];
+
+			dp[ind][target] = max(nonPick, pick);
+		}
+	}
+
+	return dp[n-1][maxWeight];
+}
+
+
+
+
+TC: O(n*maxWeight)
+SC: O(n*maxWeight){
+    n*maxWeight = dp
+}
+
+
+
+#############################################################################################
+
+
+
+
+#include <bits/stdc++.h> 
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	vector<int> prev(maxWeight + 1, 0), curr(maxWeight + 1, 0);
+
+	for(int target = 0; target<= maxWeight; target++){
+		if(target >= weight[0])
+			prev[target] = value[0];
+	}
+
+	for(int ind = 1; ind<n; ind++){
+		for(int target = 0; target<=maxWeight; target++){
+			int nonPick = prev[target];
+			int pick = 0;
+			if(weight[ind] <= target)
+				pick = value[ind] + prev[target-weight[ind]];
+
+			curr[target] = max(nonPick, pick);
+		}
+		prev = curr;
+	}
+
+	return prev[maxWeight];
+}
+
+
+
+
+TC: O(n*maxWeight)
+SC: O(maxWeight){
+    maxWeight = (curr + prev)
+}
+
+
+############################################################################################
+
+
+
+
+#include <bits/stdc++.h> 
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
+{
+	vector<int> prev(maxWeight + 1, 0);
+
+	for(int target = 0; target<= maxWeight; target++){
+		if(target >= weight[0])
+			prev[target] = value[0];
+	}
+
+	for(int ind = 1; ind<n; ind++){
+		for(int target = maxWeight; target >= 0; target--){
+			int nonPick = prev[target];
+			int pick = 0;
+			if(weight[ind] <= target)
+				pick = value[ind] + prev[target-weight[ind]];
+
+			prev[target] = max(nonPick, pick);
+		}
+	}
+
+	return prev[maxWeight];
+}
+
+
+TC: O(n*maxWeight)
+SC: O(maxWeight){
+    maxWeight = prev
+}
+
+
+
+

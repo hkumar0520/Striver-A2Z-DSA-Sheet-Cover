@@ -1,0 +1,32 @@
+
+
+
+class Solution {
+    int mod = 1e9 + 7;
+  public:
+    int f(int n, vector<int>& dp){
+        if(n < 0)  return 0;
+        if(n == 0)  return dp[n] = 1;
+        
+        if(dp[n] != -1) return dp[n];
+        
+        int oneStep = f(n-1, dp);
+        int twoStep = f(n-2, dp);
+        
+        return dp[n] = (oneStep + twoStep)%mod;
+    }
+    int nthPoint(int n) {
+        // Code here
+        vector<int> dp(n+1, -1);
+        return f(n, dp);
+    }
+};
+
+TC: O(n)
+SC: O(n) + O(n){
+    n = dp
+    n = stack space 
+}
+
+https://www.geeksforgeeks.org/problems/reach-the-nth-point5433/1?page=1&category=Dynamic%20Programming
+

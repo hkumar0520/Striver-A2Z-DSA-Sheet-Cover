@@ -1,0 +1,131 @@
+
+
+1. recursion 
+2. memoization 
+3. tabular 
+
+
+class Solution {
+public:
+    bool isPalindrome(int start, int endd, string& s){
+        while(start < endd){
+            if(s[start] != s[endd])
+                return false;
+            start++;
+            endd--;
+        }
+        return true;
+    }
+    int f(int start, int endd, string& s){
+        if(start == endd || isPalindrome(start, endd, s))   return 0;
+
+        int minAns = 1e9;
+        for(int i = start; i<endd; i++){
+            int ans = 1 + f(start, i, s) + f(i+1, endd, s);
+            minAns = min(minAns, ans);
+        }
+
+        return minAns;
+    }
+    int minCut(string s) {
+        int n = s.size();
+        return f(0, n-1, s);
+    }
+};
+
+TC: exponential 
+SC: O(n)
+
+
+#############################################################################################################################################################
+
+// got tle using below
+// memoization 
+
+
+class Solution {
+public:
+    bool isPalindrome(int start, int endd, string& s){
+        while(start < endd){
+            if(s[start] != s[endd])
+                return false;
+            start++;
+            endd--;
+        }
+        return true;
+    }
+    int f(int start, int endd, string& s, vector<vector<int>>& dp){
+        if(start == endd || isPalindrome(start, endd, s))
+           return dp[start][endd] = 0;
+
+        if(dp[start][endd] != -1)   return dp[start][endd];
+
+        int minAns = 1e9;
+        for(int i = start; i<endd; i++){
+            int ans = 1 + f(start, i, s, dp) + f(i+1, endd, s, dp);
+            minAns = min(minAns, ans);
+        }
+
+        return dp[start][endd] = minAns;
+    }
+    int minCut(string s) {
+        int n = s.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        return f(0, n-1, s, dp);
+    }
+};
+
+TC: O(n*n*N)
+SC: O(n*n) + O(n){
+    n*n = dp
+    n = stack space 
+}
+
+
+#############################################################################################################################################################
+
+// memoization + Optimization
+// tle coming 
+
+
+class Solution {
+public:
+    int f(int start, int endd, string& s, vector<vector<int>>& dp, vector<vector<bool>>& isPal){
+        if(start == endd || isPal[start][endd] )
+           return dp[start][endd] = 0;
+
+        if(dp[start][endd] != -1)   return dp[start][endd];
+
+        int minAns = 1e9;
+        for(int i = start; i<endd; i++){
+            int ans = 1 + f(start, i, s, dp, isPal) + f(i+1, endd, s, dp, isPal);
+            minAns = min(minAns, ans);
+        }
+
+        return dp[start][endd] = minAns;
+    }
+    int minCut(string s) {
+        int n = s.size();
+
+        vector<vector<bool>> isPal(n, vector<bool>(n, false));
+        for(int i = n-1; i>=0; i--){
+            for(int j = i; j<n; j++){
+                if( s[i] == s[j] && ( (j - i) <=2 || isPal[i+1][j-1]))
+                    isPal[i][j] = true;
+            }
+        }
+
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        return f(0, n-1, s, dp, isPal);
+    }
+};
+
+TC: O(n*n*n)
+SC: O(n*n*2) + O(n){
+    n*n = dp
+    n*n = isPal  
+    n = stack space 
+}
+
+#############################################################################################################################################################
+
