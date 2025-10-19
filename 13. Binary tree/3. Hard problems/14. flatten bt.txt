@@ -1,0 +1,145 @@
+
+
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* lastNode(TreeNode* root){
+        while(root && root->right != nullptr)
+            root = root->right;
+
+        return root;
+    }
+    void flatten(TreeNode* root) {
+        if(root == nullptr) return;
+
+        flatten(root->left);
+        flatten(root->right);
+
+        if(root->left != nullptr){
+            lastNode(root->left)->right = root->right;
+            root->right = root->left;
+            root->left = nullptr;
+        }
+    }
+};
+
+
+### Time and Space Complexity Analysis:
+
+#### Time Complexity:
+
+* **`flatten(root->left)`** and **`flatten(root->right)`** are called recursively for each node. Each call processes a node and its children, but the key point is the **`lastNode(root->left)`** call.
+* The function `lastNode` traverses the entire right subtree of the left child to find the last node, which takes **O(h)** time, where `h` is the height of the tree.
+* For each node:
+
+  * The `flatten(root->left)` and `flatten(root->right)` calls will take **O(h)** time for the left subtree and **O(h)** time for the right subtree (in the worst case).
+  * The `lastNode` function takes **O(h)** time, as it needs to traverse the rightmost path of the left subtree.
+
+Thus, for each node in the tree, you are calling `flatten` on both left and right subtrees, and `lastNode` on the left subtree. In total, you are performing **O(h)** work for each node, where `h` is the height of the tree.
+
+In the worst case, for a skewed tree (where the tree has only one child per node), the height of the tree `h` is **O(n)**, where `n` is the number of nodes.
+
+Therefore, **the time complexity is O(n \* h)**, where `n` is the number of nodes in the tree and `h` is the height of the tree. In the worst case, **h = n**, so the time complexity becomes **O(n^2)**.
+
+#### Space Complexity:
+
+* **Recursion Stack Space**: The space complexity is driven by the recursion depth, which in the worst case is equal to the height of the tree.
+
+  * For a balanced binary tree, the recursion depth is **O(log n)** (since the tree is balanced).
+  * For a skewed tree (i.e., a linked list), the recursion depth is **O(n)**.
+* **No extra data structures** are used in the solution except for the recursion stack.
+
+Therefore, **the space complexity is O(h)**, where `h` is the height of the tree. In the worst case (for a skewed tree), the space complexity is **O(n)**.
+
+### Conclusion:
+
+* **Time Complexity**: **O(n \* h)**, which in the worst case becomes **O(n^2)** for a skewed tree.
+* **Space Complexity**: **O(h)**, which in the worst case becomes **O(n)** for a skewed tree.
+
+### Optimizing the Solution:
+
+You could improve the time complexity by reducing the need to traverse the left subtree's rightmost node. Instead of recursively calling `flatten(root->left)` and `flatten(root->right)` separately, you can flatten the tree iteratively using a more efficient approach, like Morris Traversal, or use a stack to avoid redundant recursion calls.
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################################################################################################################################################################
+
+
+
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    TreeNode* prev = nullptr;
+public:
+    void flatten(TreeNode* root) {
+        if(root == nullptr) return;
+
+        flatten(root->right);
+        flatten(root->left);
+        root->right = prev;
+        root->left = nullptr;
+        prev = root;
+    }
+};
+
+TC: O(n)
+SC: O(n)
+
+
+
+Time Complexity: O(N) where N is the number of nodes in the Binary Tree. Each node of the binary node is visited exactly once. At each node, constant-time operations are performed. Hence the time complexity is O(N).
+
+Space Complexity : O(log2N)where N is the number of nodes in the Binary Tree. There are no additional data structures or space used but the auxiliary stack space is used during recursion. Since the recursion depth can be at most equal to the height to the Binary Tree, the space complexity is O(H) where H is the height of the Binary Tree. In the ideal case, H = log2N and in the worst case H = N (skewed tree).
+
+
+
+
+
+######################################################################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+

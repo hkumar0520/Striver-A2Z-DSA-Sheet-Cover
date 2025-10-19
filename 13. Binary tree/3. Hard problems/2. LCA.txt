@@ -1,0 +1,97 @@
+
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        
+        if(root == nullptr || root == p || root == q)
+            return root;
+
+        TreeNode* leftLCA = lowestCommonAncestor(root->left, p, q);
+        TreeNode* rightLCA = lowestCommonAncestor(root->right, p, q);
+
+        if(leftLCA && rightLCA)
+            return root;
+
+        return leftLCA ? leftLCA : rightLCA;
+    }
+};
+
+
+TC: O(n)
+SC: O(n)
+
+
+
+
+#############################################################################################
+
+
+
+iterative
+
+
+
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        unordered_map<TreeNode*, TreeNode*> parent;
+        unordered_set<TreeNode*> ancestors;
+
+        // Step 1: BFS to populate parent pointers
+        queue<TreeNode*> qnodes;
+        qnodes.push(root);
+        parent[root] = nullptr;
+
+        while (!parent.count(p) || !parent.count(q)) {
+            TreeNode* node = qnodes.front();
+            qnodes.pop();
+
+            if (node->left) {
+                parent[node->left] = node;
+                qnodes.push(node->left);
+            }
+            if (node->right) {
+                parent[node->right] = node;
+                qnodes.push(node->right);
+            }
+        }
+
+        // Step 2: Add all ancestors of p to a set
+        while (p) {
+            ancestors.insert(p);
+            p = parent[p];
+        }
+
+        // Step 3: The first ancestor of q which is also an ancestor of p is the LCA
+        while (!ancestors.count(q)) {
+            q = parent[q];
+        }
+
+        return q;
+    }
+};
+
+
+
+TC: O(n)
+SC: O(n)
+
+
+
+
+
+
+
+

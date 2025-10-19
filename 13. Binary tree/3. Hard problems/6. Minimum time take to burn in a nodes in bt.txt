@@ -1,0 +1,212 @@
+
+
+1.
+
+
+class Solution {
+  public:
+    unordered_map<Node*, Node*> parent;
+    Node* targetNode = nullptr;
+
+    void traverse(Node* node, int target){
+        if(node == nullptr) return;
+        
+        if(node->data == target)
+            targetNode = node;
+        
+        if(node->left)
+            parent[node->left] = node;
+
+        if(node->right)
+            parent[node->right] = node;
+
+        traverse(node->left, target);
+        traverse(node->right, target);
+    }
+    
+    int bfs(){
+        
+        unordered_map<int, bool> vis;
+        queue<pair<Node*, int>> q;
+
+        vis[targetNode->data] = true;
+        q.push({ targetNode, 0});
+        
+        int maxDistance = 0;
+
+        while(!q.empty()){
+            auto[node, step] = q.front();
+            q.pop();
+            
+            maxDistance = max(maxDistance, step);
+
+            // traverse left, right, upward
+            if(node->left && !vis[node->left->data]){
+                q.push({ node->left, step + 1});
+                vis[node->left->data] = 1;
+            }
+            
+            if(node->right && !vis[node->right->data]){
+                q.push({ node->right, step + 1});
+                vis[node->right->data] = 1;
+            }
+
+            if(parent.find(node) != parent.end() && !vis[parent[node]->data]){
+                q.push({ parent[node], step + 1});
+                vis[parent[node]->data] = 1;
+            }
+        }
+        return  maxDistance;
+    }
+    int minTime(Node* root, int target) {
+        // code here
+        traverse(root, target);
+        
+        
+        return bfs();
+    }
+};
+
+TC: O(n) + O(n){
+    n = bfs 
+    n = traverse 
+}
+SC: O(n) + O(n) + O(n) + O(n){
+    n = stack space
+    n = queue
+    n = vis 
+    n = parent
+}
+
+
+
+Let's break down the **time and space complexity** of your code step by step.
+
+---
+
+## 🔍 Code Overview
+
+You're solving the **"Burning Tree"** problem (or similar), where you're finding the **minimum time to burn the entire binary tree** starting from a given `target` node.
+
+### Key parts:
+
+* `traverse(...)`: DFS to map parents and find the `targetNode`.
+* `bfs(...)`: BFS to simulate fire spreading level by level from `targetNode`.
+
+---
+
+## ✅ Time Complexity
+
+### 1. **`traverse(root, target)`**
+
+* Visits each node exactly **once**.
+* Builds `parent` map and locates `targetNode`.
+
+**Time**: `O(N)`
+(where `N` = number of nodes in the tree)
+
+---
+
+### 2. **`bfs()`**
+
+* Also visits each node **once**.
+* For each node, it may push up to 3 nodes into the queue: `left`, `right`, `parent`.
+
+**Time**: `O(N)`
+(Each node is visited once, and operations are O(1))
+
+---
+
+### ✅ Total Time Complexity:
+
+$$
+\boxed{O(N)}
+$$
+
+---
+
+## ✅ Space Complexity
+
+### 1. **Parent Map**
+
+```cpp
+unordered_map<Node*, Node*> parent;
+```
+
+* Stores one entry per node.
+
+**Space**: `O(N)`
+
+---
+
+### 2. **Visited Map**
+
+```cpp
+unordered_map<int, bool> vis;
+```
+
+* At most one entry per node.
+
+**Space**: `O(N)`
+
+---
+
+### 3. **Queue for BFS**
+
+```cpp
+queue<pair<Node*, int>> q;
+```
+
+* At most `N` nodes in queue at peak.
+
+**Space**: `O(N)`
+
+---
+
+### ✅ Total Space Complexity:
+
+$$
+\boxed{O(N)}
+$$
+
+---
+
+## ⚠️ Optional Improvement Suggestion
+
+If **node values (`data`) are not unique**, using `data` in `vis` can cause bugs.
+
+### 🔁 Replace:
+
+```cpp
+unordered_map<int, bool> vis;
+```
+
+### ✅ With:
+
+```cpp
+unordered_set<Node*> vis;
+```
+
+And mark visited like this:
+
+```cpp
+if (node->left && !vis.count(node->left)) {
+    vis.insert(node->left);
+    q.push({node->left, step + 1});
+}
+```
+
+This avoids false "visited" assumptions if multiple nodes have the same value.
+
+---
+
+## ✅ Final Answer:
+
+| Metric    | Complexity |
+| --------- | ---------- |
+| **Time**  | `O(N)`     |
+| **Space** | `O(N)`     |
+
+Let me know if you want a version that tracks which nodes are burning at each second (to show the simulation), or want to optimize further.
+
+

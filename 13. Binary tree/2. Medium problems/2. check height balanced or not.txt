@@ -1,0 +1,66 @@
+
+
+1. brute force 
+2. optimal
+
+
+
+
+class Solution {
+public:
+
+    int maxDepth(TreeNode* root) {
+        if(root == nullptr) return 0;
+
+        return 1 + max( maxDepth(root->left), maxDepth(root->right));
+    }
+    bool isBalanced(TreeNode* root) {
+        if(root == nullptr) return true;
+
+        int leftH = maxDepth(root->left);
+        int rightH = maxDepth(root->right);
+
+        bool isLeft = isBalanced(root->left);
+        bool isRight = isBalanced(root->right);
+
+        return abs( leftH - rightH) <= 1 && isLeft && isRight;
+        
+    }
+};
+
+Time Complexity: O(N2) where N is the number of nodes in the Binary Tree.This arises as we calculate the height of each node and to calculate the height for each node, we traverse the tree which is proportional to the number of nodes. Since this calculation is performed for each node in the tree, the complexity becomes: O(N x N) ~ O(N2).
+
+Space Complexity : O(1) as no additional data structures or memory is allocated.O(H): Recursive Stack Space is used to calculate the height of the tree at each node which is proportional to the height of the tree.The recursive nature of the getHeight function, which incurs space on the call stack for each recursive call until it reaches the leaf nodes or the height of the tree.
+
+
+##################################################################################################
+
+
+
+class Solution {
+public:
+
+    pair<bool, int> isBalancedEqual(TreeNode* root) {
+        if(root == nullptr) return make_pair(true, 0);
+
+        pair<bool, int> isLeft = isBalancedEqual(root->left);
+        pair<bool, int> isRight = isBalancedEqual(root->right);
+
+        return make_pair(abs( isLeft.second - isRight.second) <= 1 && isLeft.first && isRight.first,
+                         1 + max(isLeft.second, isRight.second));
+    }
+
+    bool isBalanced(TreeNode* root) {
+        return isBalancedEqual(root).first;
+    }
+};
+
+
+TC: O(n)
+SC: O(h)
+
+
+##################################################################################################
+
+
+
