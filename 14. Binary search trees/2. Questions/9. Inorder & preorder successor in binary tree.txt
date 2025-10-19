@@ -1,0 +1,120 @@
+
+
+
+
+/* BST Node
+class Node
+{
+   public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int x){
+        data = x;
+        left = NULL;
+        right = NULL;
+    }
+}; */
+
+class Solution {
+    Node* predecessor = nullptr;
+    Node* successor = nullptr;
+  public:
+    Node* findMin(Node* root){
+        while(root && root->left != nullptr)
+            root = root->left;
+            
+        return root;
+    }
+    
+    Node* findMax(Node* root){
+        while(root && root->right != nullptr)
+            root = root->right;
+            
+        return root;
+    }
+    void findKey(Node* root, int key){
+        if(root == nullptr) return;
+        
+        if(root->data == key){
+            if(root->right != nullptr){
+                successor = findMin(root->right);
+            }
+            if(root->left != nullptr){
+                predecessor = findMax(root->left);
+            }
+            return;
+            
+        }
+        else if(root->data > key){
+            successor = root;
+            findKey(root->left, key);
+        }
+        else if(root->data < key){
+            predecessor = root;
+            findKey(root->right, key);
+        }
+    }
+    vector<Node*> findPreSuc(Node* root, int key) {
+        // code here
+        findKey(root, key);
+        return { predecessor, successor};
+    }
+};
+
+
+TC: O( logn )
+SC: O( n )
+
+
+### Time and Space Complexity Analysis
+
+Let's break down the time and space complexity for the given code:
+
+### Time Complexity
+
+1. **`findMin(Node* root)`**:
+
+   * This function traverses the left subtree until it finds the minimum node.
+   * In the worst case, it might have to traverse all the way down to the leftmost node.
+   * **Time Complexity: O(h)**, where `h` is the height of the tree (the maximum number of edges from the root to a leaf node).
+
+2. **`findMax(Node* root)`**:
+
+   * This function traverses the right subtree until it finds the maximum node.
+   * In the worst case, it might have to traverse all the way down to the rightmost node.
+   * **Time Complexity: O(h)**, where `h` is the height of the tree (the maximum number of edges from the root to a leaf node).
+
+3. **`findKey(Node* root, int key)`**:
+
+   * This is the most significant part of the code, as it's a recursive function that searches for the key in the BST.
+   * In the worst case, it could traverse the entire tree, visiting each node once. The height of the tree could be `h`, so in the worst case, it takes `O(h)` time.
+   * In the worst case (unbalanced tree), `h` could be `O(n)`, where `n` is the number of nodes in the tree.
+   * **Time Complexity: O(h)**, where `h` is the height of the tree (or `O(n)` in the worst case if the tree is unbalanced).
+
+4. **`findPreSuc(Node* root, int key)`**:
+
+   * This function just calls `findKey()`, which has a time complexity of `O(h)`.
+   * Therefore, the time complexity of `findPreSuc()` is the same as `findKey()`, i.e., `O(h)`.
+   * **Time Complexity: O(h)**, where `h` is the height of the tree.
+
+### Space Complexity
+
+1. **Recursive Function Calls (`findKey`)**:
+
+   * The recursion depth in `findKey` depends on the height of the tree. In the worst case (unbalanced tree), the recursion depth is `O(n)`, where `n` is the number of nodes.
+   * Each recursive call uses space on the stack, so the space complexity due to recursion is `O(h)`, where `h` is the height of the tree.
+
+2. **Auxiliary Space**:
+
+   * The space used by the `predecessor` and `successor` pointers is constant (i.e., `O(1)`).
+   * The return value of `findPreSuc` is a vector containing two nodes, which does not affect space complexity in a significant way.
+
+   Therefore, the overall **space complexity** is `O(h)` due to the recursive stack, where `h` is the height of the tree.
+
+### Summary:
+
+* **Time Complexity**: `O(h)` (or `O(n)` in the worst case if the tree is unbalanced).
+* **Space Complexity**: `O(h)` (due to recursion).
+

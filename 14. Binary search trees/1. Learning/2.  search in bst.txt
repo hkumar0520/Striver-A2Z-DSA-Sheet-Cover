@@ -1,0 +1,120 @@
+
+
+1. recursion (logn, logn)
+2. iterative (logn, 1)
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        if(!root)   return root;
+        if(root->val == val)
+            return root;
+
+        if(root->val > val)
+            return searchBST(root->left, val);
+        else
+            return searchBST(root->right, val);
+    }
+};
+
+
+TC:O(logn)
+SC: O(logn)
+
+
+#####################################################################################################################################
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        if(!root) return root;
+
+        TreeNode* node = root;
+
+        while(node != nullptr){
+            if(node->val == val)
+                break;
+            else if(node->val > val)
+                node = node->left;
+            else
+                node = node->right;
+        }
+
+        return node;
+    }
+};
+
+
+
+TC:O(logn)
+SC: O(1)
+
+
+
+
+
+
+
+
+The **time complexity of search in a Binary Search Tree (BST)** depends on the shape of the tree:
+
+---
+
+### ✅ **Best Case (Balanced BST):**
+
+* **Time Complexity:** `O(log n)`
+* **Why:** In a balanced BST, the height of the tree is `log n`, and each comparison allows us to discard half of the remaining nodes (like binary search).
+
+---
+
+### ❌ **Worst Case (Unbalanced BST):**
+
+* **Time Complexity:** `O(n)`
+* **Why:** If the tree is skewed (e.g., every node only has a right child), it essentially becomes a linked list.
+
+---
+
+### Summary Table:
+
+| Tree Type    | Time Complexity |
+| ------------ | --------------- |
+| Balanced BST | `O(log n)`      |
+| Skewed BST   | `O(n)`          |
+
+---
+
+> 🔎 If you want guaranteed `O(log n)` search time, consider using **self-balancing BSTs** like:
+
+* **AVL Tree**
+* **Red-Black Tree**
+
+Let me know if you want to see examples or code for BST search.
+
+
+

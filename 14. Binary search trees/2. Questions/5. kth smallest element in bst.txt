@@ -1,0 +1,128 @@
+
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    vector<int> arr;
+public:
+    void inOrderTraversal(TreeNode*  root){
+        if(root == nullptr) return;
+
+        inOrderTraversal(root->left);
+        arr.push_back(root->val);
+        inOrderTraversal(root->right);
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        inOrderTraversal(root);
+        sort(arr.begin(), arr.end());
+        return arr[k-1];
+    }
+};
+
+
+TC: O( nlogn )
+SC: O(n) + O(n){
+    arr = N
+    stack space = n;
+}
+
+#########################################################################################################################
+
+class Solution {
+    priority_queue<int> pq;
+    int k;
+public:
+    void inOrderTraversal(TreeNode*  root){
+        if(root == nullptr) return;
+
+        inOrderTraversal(root->left);
+        pq.push(root->val);
+        if(pq.size() > k)
+            pq.pop();
+        inOrderTraversal(root->right);
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        this->k = k;
+        inOrderTraversal(root);
+        return pq.top();
+    }
+};
+
+TC: O( nlogk )
+SC: O(n) + O(n){
+    arr = N
+    stack space = n;
+}
+
+##############################################################################################
+
+// inorder traversal is already in sorted order in bst
+
+class Solution {
+    vector<int> arr;
+public:
+    void inOrderTraversal(TreeNode*  root){
+        if(root == nullptr) return;
+
+        inOrderTraversal(root->left);
+        arr.push_back(root->val);
+        inOrderTraversal(root->right);
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        inOrderTraversal(root);
+        return arr[k-1];
+    }
+};
+
+TC: O(n)
+SC: O(n) + O(n){
+    arr = N
+    stack space = n;
+}
+
+
+
+######################################################################################################
+
+
+
+class Solution {
+    int cnt = 0;
+    int k;
+    int kthSmallestElement = -1;
+public:
+    void inOrderTraversal(TreeNode*  root){
+        if(root == nullptr) return;
+
+        inOrderTraversal(root->left);
+        cnt++;
+        if(cnt == k)
+            kthSmallestElement = root->val;
+        inOrderTraversal(root->right);
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        this->k = k;
+        inOrderTraversal(root);
+        return kthSmallestElement;
+    }
+};
+
+TC: O(n)
+SC: O(n){
+    n = stack space
+}
+
+
+
+
