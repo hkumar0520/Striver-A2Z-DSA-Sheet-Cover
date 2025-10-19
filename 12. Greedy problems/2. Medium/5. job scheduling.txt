@@ -122,3 +122,230 @@ class Solution {
 
 TC: nlogn + n 
 SC: O(n)
+
+
+###############################################################################
+
+
+using dsu 
+
+
+struct Job {
+    int deadline;
+    int profit;
+
+    Job(int dl, int pf) {
+        deadline = dl;
+        profit = pf;
+    }
+};
+
+class Solution {
+public:
+    // DSU find operation
+    int find(int x, vector<int> &parent) {
+        if (parent[x] == x) return x;
+        return parent[x] = find(parent[x], parent);  // Path compression
+    }
+
+    // DSU union operation
+    void merge(int u, int v, vector<int> &parent) {
+        parent[u] = v;
+    }
+
+    vector<int> jobSequencing(vector<int> &deadline, vector<int> &profit) {
+        int n = deadline.size();
+        vector<Job> jobs;
+        int maxDeadline = 0;
+
+        for (int i = 0; i < n; ++i) {
+            jobs.push_back(Job(deadline[i], profit[i]));
+            maxDeadline = max(maxDeadline, deadline[i]);
+        }
+
+        sort(jobs.begin(), jobs.end(), [](Job &a, Job &b) {
+            return a.profit > b.profit;
+        });
+
+        // Initialize DSU parent array
+        vector<int> parent(maxDeadline + 1);
+        for (int i = 0; i <= maxDeadline; ++i)
+            parent[i] = i;
+
+        int countJob = 0, maxProfit = 0;
+
+        for (auto &job : jobs) {
+            int availableSlot = find(job.deadline, parent);
+            if (availableSlot > 0) {
+                merge(availableSlot, availableSlot - 1, parent);
+                countJob++;
+                maxProfit += job.profit;
+            }
+        }
+
+        return {countJob, maxProfit};
+    }
+};
+
+
+### ✅ Time and Space Complexity of the DSU-Based Job Sequencing Code
+
+---
+
+## 🔹 Time Complexity:
+
+Let:
+
+* `N` = number of jobs
+* `D` = maximum deadline (`max(deadline)`)
+
+### Step-by-step:
+
+1. **Creating the list of jobs**:
+
+   * Time: `O(N)`
+
+2. **Finding the maximum deadline**:
+
+   * Time: `O(N)`
+
+3. **Sorting jobs by profit**:
+
+   * Time: `O(N log N)`
+
+4. **Initializing the DSU parent array**:
+
+   * Time: `O(D)`
+
+5. **Scheduling jobs (DSU operations)**:
+
+   * For each job, `find()` and `merge()` are called:
+
+     * `find()` is nearly `O(1)` amortized (due to path compression)
+     * `merge()` is `O(1)`
+   * Total for `N` jobs → `O(N × α(D)) ≈ O(N)`
+
+### ✅ **Total Time Complexity**:
+
+$$
+\boxed{O(N \log N + D)}
+$$
+
+---
+
+## 🔹 Space Complexity:
+
+1. **Job list (`jobs`)**:
+
+   * Stores `N` job structs → `O(N)`
+
+2. **DSU parent array**:
+
+   * Size `D + 1` → `O(D)`
+
+3. **No additional space used significantly**
+
+### ✅ **Total Space Complexity**:
+
+$$
+\boxed{O(N + D)}
+$$
+
+---
+
+### 🔁 Summary Table
+
+| Component          | Time Complexity      | Space Complexity |
+| ------------------ | -------------------- | ---------------- |
+| Job List Creation  | `O(N)`               | `O(N)`           |
+| Sorting            | `O(N log N)`         | `-`              |
+| DSU (Find + Merge) | `O(N × α(D)) ≈ O(N)` | `O(D)`           |
+| **Total**          | `O(N log N + D)`     | `O(N + D)`       |
+
+---
+
+Let me know if you want this benchmarked against the brute-force version or if you'd like a version with actual runtime profiling.
+
+
+deadline[] = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
+profit[] = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10]
+
+
+
+parent
+0 1 2 3 4 5
+
+
+0 1 2 3 4 5
+0 0 2 3 4 5	 - 1
+0 0 1 3 4 5	 - 2
+0 0 0 3 4 5	 - 3
+
+
+###############################################################################
+
+my code 
+
+struct Job{
+    int deadline;
+    int profit;
+    
+    Job(int dl, int pf){
+        deadline = dl;
+        profit = pf;
+    }
+};
+
+class Solution {
+  public:
+  
+    int find(int x, vector<int>& parent){
+        if(parent[x] == x)  return x;
+        
+        return parent[x] = find(parent[x], parent);
+    }
+    
+    void merge(int u, int v, vector<int>& parent){
+        parent[u] = v;
+    }
+    vector<int> jobSequencing(vector<int> &deadline, vector<int> &profit) {
+        // code here
+        vector<Job> arr;
+        int  len = deadline.size();
+        int  maxDeadLine = INT_MIN;
+        for(int i= 0; i<len; i++){
+            maxDeadLine = max( maxDeadLine, deadline[i]);
+            arr.push_back(Job(deadline[i], profit[i]));
+        }
+            
+        sort(arr.begin(), arr.end(), []( Job a, Job b){
+           // sort any way in case of decreasing deadline
+           if(a.profit == b.profit)
+                return a.deadline < b.deadline;
+                
+            return a.profit > b.profit;
+        });
+        
+        vector<int> parent(maxDeadLine+1, 0);
+        for(int i = 0; i<= maxDeadLine; i++)
+            parent[i] = i;
+        
+        unordered_set<int> scheduler;
+        int maxProfit = 0, countJob = 0;
+        for(int i = 0; i<len; i++){
+            int currDeadLine = arr[i].deadline, currProfit = arr[i].profit;
+
+            int availableCount = find(currDeadLine, parent);
+            if(availableCount > 0){
+                maxProfit += currProfit;
+                merge(availableCount, availableCount - 1, parent);
+                countJob++;
+            }
+        }
+        return {countJob, maxProfit};
+    }
+};
+
+
+
+

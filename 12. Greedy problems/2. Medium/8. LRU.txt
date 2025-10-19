@@ -70,3 +70,122 @@ public:
 
 TC: n*c*logC
 SC: C
+
+#######################################################################
+
+https://www.geeksforgeeks.org/problems/page-faults-in-lru5603/1
+
+class Solution{
+public:
+
+    int pageFaults(int N, int C, int pages[]){
+
+        map<int,int> mp;
+        queue<int> q;
+        int  pageFault = 0;
+        
+        for(int i = 0; i<N; i++){
+                
+            // not present
+            if(mp.find(pages[i]) == mp.end()){
+                
+                pageFault++;
+                if(mp.size() == C){
+                    mp.erase(q.front());
+                    q.pop();
+                }
+        
+                mp[pages[i]] = 1;
+                q.push(pages[i]);
+                
+            }
+            else{
+                mp[pages[i]] = 1;
+                
+                int qSize = q.size(), cnt  = 0;
+                while(cnt < qSize){
+                    if(q.front() != pages[i])
+                        q.push(q.front());
+                    q.pop();
+                    cnt++;
+                }
+                q.push(pages[i]);
+            }
+        }
+        return pageFault;
+    }
+};
+
+TC: O(n*n)
+SC: O(n)
+
+
+
+#############################################################################
+
+https://www.geeksforgeeks.org/problems/lru-cache/1
+
+class LRUCache {
+  private:
+    int size;
+    queue<int> q;
+    map<int,int> m;
+  public:
+    LRUCache(int cap) {
+        size=cap;
+    }
+
+    int get(int key) {
+
+     //Your code here
+        if(m.find(key)!=m.end())
+        {
+            int qSize = q.size(), i = 0;
+            while(i<qSize){
+                if(q.front() != key)
+                    q.push(q.front());
+                
+                q.pop();
+                i++;
+            }
+            q.push(key);
+            return m[key];
+        }
+        return -1;
+        
+    }
+
+        
+    void put(int key, int value) {
+        // code here
+        if(m.find(key)!=m.end())
+        {
+            m[key]=value;
+            
+            int qSize = q.size(), i = 0;
+            while(i<qSize){
+                if(q.front() != key)
+                q.push(q.front());
+                
+                q.pop();
+                i++;
+            }
+            q.push(key);
+        }
+        else
+        {
+            if(q.size()>=size)
+            {
+                int current=q.front();
+                q.pop();
+                m.erase(current);
+            }
+            q.push(key);
+            m[key]=value;
+        }
+    }
+};
+
+
+
+

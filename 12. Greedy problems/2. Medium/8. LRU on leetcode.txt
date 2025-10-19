@@ -86,7 +86,7 @@ public:
 
             head->next = removeData->next;
             if(removeData->next != NULL)
-            removeData->next->prev = head;
+                removeData->next->prev = head;
 
             mp.erase(removeData->key);
             delete removeData;
