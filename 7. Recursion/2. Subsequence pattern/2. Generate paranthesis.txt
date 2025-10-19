@@ -114,3 +114,42 @@ O(4^n / n^{1/2})
 
 
 
+
+###############################################################################
+
+
+
+class Solution {
+public:
+    void generateAllParenthesis(pair<int,int> openOrCloseNo, string path, vector<string>& ans){
+        if(openOrCloseNo.first == 0 && openOrCloseNo.second == 0){
+            ans.push_back(path);
+            return ;
+        }
+
+        int openNo = openOrCloseNo.first, closedNo = openOrCloseNo.second;
+
+        if(openNo == 0){
+            generateAllParenthesis({0, closedNo-1}, path + ')', ans);
+            return;
+        }
+
+        if(openNo == closedNo)
+            generateAllParenthesis({openNo - 1, closedNo}, path + '(', ans);
+        else{
+            generateAllParenthesis({openNo-1, closedNo}, path + '(', ans);
+            generateAllParenthesis({openNo, closedNo-1}, path + ')', ans);
+            
+        }
+    }
+    vector<string> generateParenthesis(int n) {
+        string path = "";
+        vector<string> ans;
+
+        generateAllParenthesis({n,n}, path, ans);
+
+        return ans;
+    }
+};
+
+

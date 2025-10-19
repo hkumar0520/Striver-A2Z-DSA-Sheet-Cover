@@ -1,0 +1,49 @@
+
+TLE, 1010/1100 cases 
+
+class Solution {
+  public:
+    int findSubset(int idx, int sum, int target, vector<int>& arr){
+        
+        int ans = 0;
+        if( sum == target)
+            ans += 1;
+        
+        for(int i = idx; i<arr.size(); i++){
+            if( (sum + arr[i]) <= target)
+                ans +=findSubset(i+1, sum+arr[i], target, arr);
+        }
+        return  ans;
+    }
+    int perfectSum(vector<int>& arr, int target) {
+        // code here
+        return findSubset(0, 0, target, arr);
+    }
+};
+
+
+
+##############################################################################################
+
+
+class Solution {
+  public:
+    int findSubset(int idx, int sum, int target, vector<int>& arr){
+        
+        int ans = 0;
+        if( sum == target)
+            ans += 1;
+        
+        for(int i = idx; i<arr.size(); i++){
+                ans +=findSubset(i+1, sum+arr[i], target, arr);
+        }
+        return  ans;
+    }
+    int perfectSum(vector<int>& arr, int target) {
+        // code here
+        return findSubset(0, 0, target, arr);
+    }
+};
+
+
+

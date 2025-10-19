@@ -124,3 +124,124 @@ O(n) \, \text{(recursion stack)} + O(2^n \cdot n) \, \text{(answer storage)} = O
 - **Space Complexity:** \( O(2^n \cdot n) \)
 
 
+
+
+
+#################################################################################################################################################
+
+
+class Solution {
+public:
+
+    void backTrack(int ind, string str, vector<string>& path,
+            vector<vector<string>>& ans, vector<vector<bool>>& isPal)
+    {
+        if(ind == str.size()){
+            ans.push_back(path);
+            return;
+        }
+
+        for(int i = ind; i<str.size(); i++){
+            if(isPal[ind][i]){
+                path.push_back(str.substr(ind, i-ind+1));
+                backTrack(i+1, str, path, ans, isPal);
+                path.pop_back();
+            }
+        }
+    }
+    vector<vector<string>> partition(string s) {
+        vector<string> path;
+        vector<vector<string>> ans;
+
+        int n = s.size();
+        vector<vector<bool>> isPal(n, vector<bool>(n, false));
+        
+        // Precompute palindrome substrings
+        for (int len = 1; len <= n; ++len) {
+            for (int i = 0; i <= n - len; ++i) {
+                int j = i + len - 1;
+                if (s[i] == s[j]) {
+                    if (len <= 2)
+                        isPal[i][j] = true;
+                    else
+                        isPal[i][j] = isPal[i + 1][j - 1];
+                }
+            }
+        }
+
+        backTrack(0, s, path, ans, isPal);
+        return ans;
+    }
+};
+
+TC: exponential 
+SC: same as above + O(n*n)
+
+
+
+
+
+############################################################################################################################################
+
+
+
+//  tried memoization using wordbreak concept but failed 
+
+class Solution {
+public:
+
+    
+    vector<vector<string>> backTrack(int ind, string s, vector<vector<bool>>& isPal,
+    unordered_map<int, vector<vector<string>>>& memo){
+
+        if(ind == s.size())
+            return memo[ind] = {{}};
+        
+        if(memo.find(ind) != memo.end())
+            return memo[ind];
+
+        int len = s.size();
+        vector<vector<string>> path;
+
+        for(int i = ind; i<len; i++){
+            if( isPal[ind][i] ){
+                string str = s.substr(ind, i-ind+1);
+                vector<vector<string>> subStrings = backTrack(i+1, s, isPal, memo);
+
+                for(vector<string> subString: subStrings){
+                    subString.insert(subString.begin(), str);
+                    path.push_back(subString);
+                }
+            }
+        }
+        return memo[ind] = path;
+    }
+
+    vector<vector<string>> partition(string str) {
+        
+        int n = str.size();
+        vector<vector<bool>> isPal(n, vector<bool>(n, false));
+
+        for(int len = 1; len<=n; len++){
+            for(int i = 0; i<= n - len; i++){
+                int j = i + len - 1;
+
+                if( (str[i] == str[j]) && ( ( (j - i) <= 2 ) || isPal[i+1][j-1] ) )
+                    isPal[i][j] = true;
+            }
+        }
+
+        unordered_map<int, vector<vector<string>>> memo;
+        return backTrack(0, str, isPal, memo);
+    }
+};
+
+TC: n*n + n*n + k(string push overhead)
+SC: n*n + k + n{
+    n*n = dp 
+    k = memo 
+    n = stack space 
+}
+
+
+

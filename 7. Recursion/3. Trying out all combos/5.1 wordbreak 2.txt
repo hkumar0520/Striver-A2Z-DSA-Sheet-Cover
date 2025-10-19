@@ -184,3 +184,85 @@ public:
 
 
 
+###########################################################################################################
+
+recursion 
+
+class Solution {
+public:
+    vector<string> backTrack(int ind, string s, unordered_set<string>& map){
+        if(ind == s.size())
+            return {""};
+
+        int len = s.size();
+        vector<string> path;
+
+        for(int i = ind; i<len; i++){
+            if(map.count(s.substr(ind, i-ind+1))){
+                string str = s.substr(ind, i-ind+1);
+                vector<string> subStrings = backTrack(i+1, s, map);
+
+                for(string subString: subStrings){
+                    if(subString.size() > 0){
+                        string currSubString = str + " " + subString;
+                        path.push_back(currSubString);
+                    }
+                    else
+                        path.push_back(str);
+                }
+            }
+        }
+        return path;
+    }
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> map(wordDict.begin(), wordDict.end());
+        string path = "";
+        return backTrack(0, s, map);
+    }
+};
+
+
+################################################################################################
+
+
+class Solution {
+public:
+    vector<string> backTrack(int ind, string s, unordered_set<string>& map,
+    unordered_map<int, vector<string>>& memo){
+
+        if(ind == s.size())
+            return memo[ind] = {""};
+        
+        if(memo.find(ind) != memo.end())
+            return memo[ind];
+
+        int len = s.size();
+        vector<string> path;
+
+        for(int i = ind; i<len; i++){
+            if(map.count(s.substr(ind, i-ind+1))){
+                string str = s.substr(ind, i-ind+1);
+                vector<string> subStrings = backTrack(i+1, s, map, memo);
+
+                for(string subString: subStrings){
+                    if(subString.size() > 0){
+                        string currSubString = str + " " + subString;
+                        path.push_back(currSubString);
+                    }
+                    else
+                        path.push_back(str);
+                }
+            }
+        }
+        return memo[ind] = path;
+    }
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> map(wordDict.begin(), wordDict.end());
+        string path = "";
+        unordered_map<int, vector<string>> memo;
+        return backTrack(0, s, map, memo);
+    }
+};
+
+
+

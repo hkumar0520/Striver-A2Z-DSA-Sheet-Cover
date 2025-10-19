@@ -91,3 +91,134 @@ public:
         return ans;
     }
 };
+
+
+###########################################################################################
+
+
+
+The given code for solving the problem of inserting binary operators ('+', '-', and '*') between digits of a string `num` to match a target value contains some errors. The main problem is related to how the recursion and evaluation are being handled, particularly around building the expressions, backtracking, and evaluating the expressions correctly.
+
+### Issues and Corrections:
+
+1. **Incorrect backtracking structure**:
+   - The backtracking algorithm needs to consider building the expression step by step, but your current approach is not correctly appending operators and digits to the path and also evaluates prematurely.
+   
+2. **Path evaluation**:
+   - The `evaluate` function is designed to calculate the result of an expression, but it lacks proper handling for multi-digit numbers, and it's also operating on only single digits.
+   
+3. **Operators**:
+   - The logic to insert operators (`+`, `-`, `*`) needs to correctly handle multiple digits of the input `num`, ensuring that no operands have leading zeros (this is the key part of the problem).
+
+4. **Backtracking recursion**:
+   - The recursive function should evaluate the current expression and recursively explore adding an operator between subsequent digits.
+
+### Corrected Code:
+
+Here is the corrected and fully functional version of the code in C++.
+
+```cpp
+class Solution {
+public:
+    // Helper function to evaluate a string expression
+    int evaluate(int op1, int op2, char op) {
+        if (op == '+') return op1 + op2;
+        if (op == '-') return op1 - op2;
+        return op1 * op2;
+    }
+
+    // Backtracking function to generate all valid expressions
+    void backtrack(int idx, int prevOperand, int currentOperand, int target, 
+                   string& num, string& path, vector<string>& result) {
+        
+        if (idx == num.size()) {
+            // If we've processed all digits, evaluate the expression
+            if (currentOperand == target) {
+                result.push_back(path);
+            }
+            return;
+        }
+
+        for (int i = idx; i < num.size(); ++i) {
+            // Avoid leading zeros in multi-digit numbers
+            if (i > idx && num[idx] == '0') break;
+
+            string currentNumStr = num.substr(idx, i - idx + 1);
+            int currentNum = stoi(currentNumStr);
+
+            // If this is the first number, start the path with it
+            if (idx == 0) {
+                path = currentNumStr;
+                backtrack(i + 1, currentNum, currentNum, target, num, path, result);
+            } else {
+                // Try each operator (+, -, *)
+                // Addition
+                path += "+" + currentNumStr;
+                backtrack(i + 1, currentNum, currentOperand + currentNum, target, num, path, result);
+                path = path.substr(0, path.size() - currentNumStr.size() - 1); // Remove the last operator and number
+
+                // Subtraction
+                path += "-" + currentNumStr;
+                backtrack(i + 1, -currentNum, currentOperand - currentNum, target, num, path, result);
+                path = path.substr(0, path.size() - currentNumStr.size() - 1); // Remove the last operator and number
+
+                // Multiplication
+                path += "*" + currentNumStr;
+                backtrack(i + 1, prevOperand * currentNum, currentOperand - prevOperand + prevOperand * currentNum, target, num, path, result);
+                path = path.substr(0, path.size() - currentNumStr.size() - 1); // Remove the last operator and number
+            }
+        }
+    }
+
+    vector<string> addOperators(string num, int target) {
+        vector<string> result;
+        string path = "";
+        backtrack(0, 0, 0, target, num, path, result);
+        return result;
+    }
+};
+```
+
+### Explanation of Changes:
+
+1. **Backtracking Logic**:
+   - The `backtrack` function is now designed to handle operators correctly. It keeps track of the current number (`currentNum`) and accumulates the results based on the current operation being performed.
+   
+2. **Avoiding Leading Zeros**:
+   - The check `if (i > idx && num[idx] == '0') break;` ensures that we don't form numbers with leading zeros (for example, "05" or "012").
+   
+3. **Expression Handling**:
+   - Each time we recursively explore adding an operator, the function builds up the current expression and recursively moves forward to the next index in the string `num`.
+   - The `prevOperand` is important for handling multiplication properly, as it adjusts the result for multiplication's precedence.
+
+4. **Result Construction**:
+   - The `path` string accumulates the current expression being built, and when a valid expression matches the target, it is added to the `result` vector.
+
+### Time Complexity:
+- The time complexity of this algorithm is exponential, given that there are `3^(n-1)` possible ways to insert the operators between the digits, where `n` is the length of the input string `num`. This is due to the recursive exploration of all operator insertions between digits.
+
+### Example Walkthrough:
+
+For the input `num = "123"` and `target = 6`:
+
+- The function will recursively try all possible ways to insert the operators: `1+2+3`, `1-2-3`, `1*2*3`, etc.
+- It will evaluate each resulting expression, and if it matches the target `6`, it will be added to the result list.
+
+### Sample Input/Output:
+
+```cpp
+Input: num = "123", target = 6
+Output: ["1*2*3", "1+2+3"]
+```
+
+```cpp
+Input: num = "232", target = 8
+Output: ["2*3+2", "2+3*2"]
+```
+
+```cpp
+Input: num = "3456237490", target = 9191
+Output: []
+```
+
+
