@@ -1,0 +1,84 @@
+
+
+
+1. recursion
+2. memo
+
+
+class Solution {
+public:
+
+    int f(int ind1, int ind2, int ind3, string& s1, string& s2, string& s3){
+        if(ind1 == -1 && ind2 == -1 && ind3 == -1)  return true;
+
+        bool isMatch = false;
+        if( (ind3 >= 0 && ind2 >= 0 && s3[ind3] == s2[ind2]) && 
+            (ind3 >= 0 && ind1 >= 0 && s3[ind3] == s1[ind1]) ){
+                isMatch = f(ind1-1, ind2, ind3-1, s1, s2, s3) ||
+                          f(ind1, ind2-1, ind3-1, s1, s2, s3);
+            }
+        else if(ind3 >= 0 && ind2 >= 0 && s3[ind3] == s2[ind2])
+            isMatch = f(ind1, ind2-1, ind3-1, s1, s2, s3);
+        else if(ind3 >= 0 && ind1 >= 0 && s3[ind3] == s1[ind1])
+            isMatch = f(ind1-1, ind2, ind3-1, s1, s2, s3);
+
+        return isMatch;
+    }
+    bool isInterleave(string s1, string s2, string s3) {
+        int s1Size = s1.size(), s2Size = s2.size(), s3Size = s3.size();
+
+        return f(s1Size-1, s2Size-1, s3Size-1, s1, s2, s3);
+    }
+};
+
+TC: exponential
+SC: O(m + n)
+
+
+###################################################################################################
+
+
+
+
+class Solution {
+public:
+
+    int f(int ind1, int ind2, int ind3, string& s1, string& s2, string& s3,  vector<vector<vector<int>>>& dp){
+        if(ind1 == -1 && ind2 == -1 && ind3 == -1)  return dp[ind1+1][ind2+1][ind3+1] = true;
+
+        if(dp[ind1+1][ind2+1][ind3+1] != -1)    return dp[ind1+1][ind2+1][ind3+1];
+
+        bool isMatch = false;
+        if( (ind3 >= 0 && ind2 >= 0 && s3[ind3] == s2[ind2]) && 
+            (ind3 >= 0 && ind1 >= 0 && s3[ind3] == s1[ind1]) ){
+                isMatch = f(ind1-1, ind2, ind3-1, s1, s2, s3, dp) ||
+                          f(ind1, ind2-1, ind3-1, s1, s2, s3, dp);
+            }
+        else if(ind3 >= 0 && ind2 >= 0 && s3[ind3] == s2[ind2])
+            isMatch = f(ind1, ind2-1, ind3-1, s1, s2, s3, dp);
+        else if(ind3 >= 0 && ind1 >= 0 && s3[ind3] == s1[ind1])
+            isMatch = f(ind1-1, ind2, ind3-1, s1, s2, s3, dp);
+
+        return dp[ind1+1][ind2+1][ind3+1] = isMatch;
+    }
+    bool isInterleave(string s1, string s2, string s3) {
+        int s1Size = s1.size(), s2Size = s2.size(), s3Size = s3.size();
+
+        vector<vector<vector<int>>> dp(s1Size + 1, vector<vector<int>>( s2Size + 1, vector<int>( s3Size + 1, -1)));
+
+        return f(s1Size-1, s2Size-1, s3Size-1, s1, s2, s3, dp);
+    }
+};
+
+TC: O(m*n*(m+n))
+SC: O(m*n*(m+n)) + O(m+n){
+    dp = m*n*(m+n)
+    stack space = m + n
+}
+
+
+
+
+
+
+

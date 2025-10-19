@@ -13,3 +13,7 @@ int maximumProfit(vector<int> &prices){
     }
     return result;
 }
+
+TC:  O(n)
+SC: O(1)
+

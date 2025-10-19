@@ -1,0 +1,143 @@
+
+
+1. recursion
+2. memoization
+3. tabular
+4. optimization
+
+
+class Solution {
+public:
+    int f(int indp, int inds, string& pat, string& str){
+        if(indp == -1)  return 1;   // char of p is over
+        if(inds == -1)  return 0;   // char of s is over, no char left to compare with p
+
+        int notpick = f(indp, inds - 1, pat, str);
+        int pick = 0;
+        if(str[inds] == pat[indp])   // abc, defabc
+            pick = f(indp-1, inds-1, pat, str);
+
+        return notpick + pick;
+
+    }
+    int numDistinct(string s, string t) {
+        
+        return f(t.size()-1, s.size()-1, t, s);
+    }
+};
+
+TC: 2^n 
+SC: O(m + n)
+
+
+
+####################################################################################################################
+
+
+class Solution {
+public:
+    int f(int indp, int inds, string& pat, string& str, vector<vector<int>>& dp){
+        if(indp == -1)  return 1;   // char of p is over
+        if(inds == -1)  return 0;   // char of s is over, no char left to compare with p
+
+        if(dp[indp][inds] != -1)    return dp[indp][inds];
+
+        int notpick = f(indp, inds - 1, pat, str, dp);
+        int pick = 0;
+        if(str[inds] == pat[indp])   // abc, defabc
+            pick = f(indp-1, inds-1, pat, str, dp);
+
+        return dp[indp][inds] = notpick + pick;
+
+    }
+    int numDistinct(string s, string t) {
+        int m = t.size(), n = s.size();
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return f(m-1, n-1, t, s, dp);
+    }
+};
+
+TC: O(m*n)
+SC: O(m*n) + O(m+n){
+    stack space = m + n
+    dp = m * n
+}
+
+
+
+
+####################################################################################################################
+
+
+
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        int m = t.size(), n = s.size();
+        vector<vector<long>> dp(m+1, vector<long>(n+1, 0));
+
+        int mod = INT_MAX;
+        // coordinate change +1 in dp
+        for(int i = 0; i<=n; i++)
+            dp[0][i] = 1;
+
+        for(int indp = 1; indp <= m; indp++){
+            for(int inds = 1; inds <= n; inds++){
+                
+                long notpick = dp[indp][inds-1];
+                long pick = 0;
+                if(s[inds-1] == t[indp-1])   // abc, defabc
+                    pick = dp[indp-1][inds-1];
+
+                dp[indp][inds] = (notpick + pick)%mod;
+            }
+        }
+
+        return dp[m][n];
+    }
+};
+
+TC: O(m*n)
+SC: O(m*n) {
+    dp = m * n
+}
+
+
+
+####################################################################################################################
+
+
+
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        int m = t.size(), n = s.size();
+        // cordinate change
+        vector<int> curr(n+1, 0), prev(n+1, 1);
+
+        int mod = INT_MAX;
+
+        for(int indp = 1; indp <= m; indp++){
+            for(int inds = 1; inds <= n; inds++){
+                
+                long notpick = curr[inds-1];
+                long pick = 0;
+                if(s[inds-1] == t[indp-1])   // abc, defabc
+                    pick = prev[inds-1];
+
+                curr[inds] = (notpick + pick)%mod;
+            }
+            prev = curr;
+        }
+
+        return curr[n];
+    }
+};
+
+
+TC: O(m*n)
+SC: O(2n) {
+    dp = n
+}
+
+
