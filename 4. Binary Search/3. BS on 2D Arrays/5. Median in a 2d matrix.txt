@@ -1,0 +1,61 @@
+
+
+
+
+
+####################################################################
+
+class Solution {
+  public:
+    int upperBound(vector<int>& arr, int target){
+        int low = 0, high = arr.size() -1;
+        while(low <= high){
+            int mid = (low + high)/2;
+            
+            if(arr[mid] <= target)
+                low = mid+1;
+            else
+                high = mid-1;
+        }
+        return low;
+    }
+    int findNoOfElementSmallerEqual(vector<vector<int>> &mat, int target){
+        int m = mat.size(), n = mat[0].size(), sum = 0;
+        for(int i = 0; i<m; i++){
+            sum += upperBound(mat[i], target);
+        }
+        return  sum;
+    }
+    int median(vector<vector<int>> &mat) {
+        // code here
+        // low is min(first element of every row)
+        // high is max(last element of every row)
+        
+        int m = mat.size(), n = mat[0].size();
+        int low = INT_MAX, high = INT_MIN;
+        for(int i = 0; i<m; i++){
+            low = min( low, mat[i][0]);
+            high = max(high, mat[i][n-1]);
+        }
+        
+        int median = (m*n+1)/2;
+        
+        while(low <= high){
+            
+            int mid = (low + high)/2;
+            int noOfElement = findNoOfElementSmallerEqual(mat, mid);
+            if(noOfElement >= median)
+                high = mid-1;
+            else
+                low = mid+1;
+            
+        }
+        return low;
+    }
+};
+
+TC:  log(max-min+ 1) * m * log(n)
+SC: O(1)
+
+
+

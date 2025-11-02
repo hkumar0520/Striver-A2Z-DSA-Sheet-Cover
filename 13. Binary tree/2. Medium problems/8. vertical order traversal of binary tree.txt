@@ -1,0 +1,139 @@
+
+
+
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public:
+    struct Tuple {
+        TreeNode* node;
+        int row;
+        int col;
+        Tuple(TreeNode* n, int r, int c) : node(n), row(r), col(c) {}
+    };
+
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        // map<col, map<row, min-heap of values>>
+        map<int, map<int, priority_queue<int, vector<int>, greater<int>>>> nodes;
+        queue<Tuple> q;
+        q.push(Tuple(root, 0, 0));
+
+        while (!q.empty()) {
+            Tuple t = q.front();
+            q.pop();
+            TreeNode* node = t.node;
+            int row = t.row;
+            int col = t.col;
+
+            nodes[col][row].push(node->val);
+
+            if (node->left)
+                q.push(Tuple(node->left, row + 1, col - 1));
+            if (node->right)
+                q.push(Tuple(node->right, row + 1, col + 1));
+        }
+
+        vector<vector<int>> result;
+        for (auto& colPair : nodes) {
+            vector<int> colNodes;
+            for (auto& rowPair : colPair.second) {
+                auto& pq = rowPair.second;
+                while (!pq.empty()) {
+                    colNodes.push_back(pq.top());
+                    pq.pop();
+                }
+            }
+            result.push_back(colNodes);
+        }
+
+        return result;
+    }
+};
+
+
+
+TC: O(n)
+SC: O(n)
+
+
+
+###################################################################################################
+
+
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public:
+    struct Tuple {
+        TreeNode* node;
+        int row;
+        int col;
+        Tuple(TreeNode* n, int r, int c) : node(n), row(r), col(c) {}
+    };
+
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        // map<col, map<row, min-heap of values>>
+        map<int, map<int, multiset<int>>> nodes;
+        queue<Tuple> q;
+        q.push(Tuple(root, 0, 0));
+
+        while (!q.empty()) {
+            Tuple t = q.front();
+            q.pop();
+            TreeNode* node = t.node;
+            int row = t.row;
+            int col = t.col;
+
+            nodes[col][row].insert(node->val);
+
+            if (node->left)
+                q.push(Tuple(node->left, row + 1, col - 1));
+            if (node->right)
+                q.push(Tuple(node->right, row + 1, col + 1));
+        }
+
+        vector<vector<int>> result;
+        for (auto& colPair : nodes) {
+            vector<int> colNodes;
+            for (auto& rowPair : colPair.second) {
+                colNodes.insert(colNodes.end(), rowPair.second.begin(), rowPair.second.end());
+            }
+            result.push_back(colNodes);
+        }
+
+        return result;
+    }
+};
+
+
+
+
+

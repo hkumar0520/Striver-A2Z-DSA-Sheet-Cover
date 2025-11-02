@@ -1,0 +1,31 @@
+
+
+
+
+// return the indexes of the subarray
+
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int sum = 0, maxSum = INT_MIN, currStart = 0, ansStart = 0, ansEnd = 0;
+        for(int i = 0; i<nums.size(); i++){
+            if(sum == 0)    currStart = i;
+
+            sum += nums[i];
+
+            if(sum > maxSum){
+                maxSum = sum;
+                ansStart = currStart;
+                ansEnd = i;
+            }
+
+            if(sum < 0) sum  = 0;
+        }
+        return maxSum;
+    }
+};
+
+TC: O(n)
+SC: O(n)
+
+

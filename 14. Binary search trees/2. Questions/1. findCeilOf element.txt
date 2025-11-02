@@ -1,0 +1,94 @@
+
+
+1. recursion (logn, logn)
+2. iterative (logn, 1)
+
+#include <bits/stdc++.h> 
+/************************************************************
+
+    Following is the TreeNode class structure:
+
+    class BinaryTreeNode {
+    public:
+        T data;
+        BinaryTreeNode<T> *left;
+        BinaryTreeNode<T> *right;
+        
+        BinaryTreeNode(T data) {
+            this->data = data;
+            left = NULL;
+            right = NULL;
+        }
+        
+        ~BinaryTreeNode() {
+            if (left) {
+              delete left;
+            }
+            if (right) {
+              delete right;
+            }
+        }
+    };
+
+************************************************************/
+
+int findCeilOfX(BinaryTreeNode<int> *node, int x){
+    // Write your code here.
+    if(node == nullptr) return INT_MAX;
+    if(node->data == x) return x;
+
+    if(node->data > x)
+        return min(node->data, findCeilOfX(node->left, x));
+    else
+        return findCeilOfX(node->right, x);
+
+}
+int findCeil(BinaryTreeNode<int> *node, int x){
+    // Write your code here.
+    int ceilElement = findCeilOfX(node, x);
+
+    return ceilElement == INT_MAX ? -1 : ceilElement;
+}
+
+
+TC: O(logn)
+SC: O(logn)
+
+
+
+
+#################################################################################################################################################################################################
+
+
+
+#include <bits/stdc++.h> 
+
+int findCeil(BinaryTreeNode<int> *node, int x){
+    // Write your code here.
+    BinaryTreeNode<int>* currentNode = node, *ceil = nullptr;
+
+    while(currentNode != nullptr){
+        
+        if(currentNode->data == x){
+            ceil = currentNode;
+            break;
+        }
+        else if(currentNode->data > x){
+            ceil = currentNode;
+            currentNode = currentNode->left;
+        }
+        else
+            currentNode = currentNode->right;
+    }
+
+    return ceil == nullptr ? -1 : ceil->data;
+}
+
+
+TC: O( log (n) )
+SC: O(1)
+
+
+
+
+

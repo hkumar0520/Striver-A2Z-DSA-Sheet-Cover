@@ -1,0 +1,156 @@
+
+
+
+1. recursion 
+2. memoization 
+3. tabulation 
+
+
+
+
+class Solution {
+public:
+bool isPalindrome(int start, int endd, string& s){
+        while(start < endd){
+            if(s[start] != s[endd])
+                return false;
+            start++;
+            endd--;
+        }
+        return true;
+    }
+    bool f(int ind, int cut, string& s){
+        // string 3, then cut = 2
+        if(ind  == s.size() || isPalindrome(ind, s.size()-1, s))    
+            return (cut == 2);
+
+        int sSize = s.size();
+        for(int j = ind; j<sSize;  j++){
+
+            if(isPalindrome(ind, j, s)){
+                if(f(j+1, cut + 1, s))  return true;
+            }
+        }
+        return false;
+    }
+    bool checkPartitioning(string s) {
+        return f(0, 0, s);
+    }
+};
+
+TC: O(2^n)*n (exponential)
+SC: O(n){
+    stack space = n 
+}
+
+
+
+####################################################################################################################################
+
+
+// another recursion 
+
+class Solution {
+public:
+    bool isPalindrome(int start, int endd, string& str){
+        while(start < endd){
+            if(str[start] != str[endd])     return false;
+            start++;
+            endd--;
+        }
+        return true;
+    }
+    bool f(int ind, int k, string& str){
+        int n = str.size();
+        if(k == 0){
+            if(ind < n && isPalindrome(ind, n - 1, str))   return true;
+            return false;
+        }
+        if(k<0 || (ind == n))   return false;
+        
+        for(int i = ind; i<n; i++){
+            if(isPalindrome(ind, i, str)){
+                if(f(i+1, k-1, str))    return true;
+            }
+        }
+        return false;
+    }
+    bool checkPartitioning(string str) {
+        
+        return f(0, 2, str);
+    }
+};
+
+TC: exponential
+SC: O(n)
+
+
+############################################################################################################################################
+
+
+
+
+class Solution {
+public:
+    bool f(int ind, int k, string& str, vector<vector<bool>>& isPal, vector<vector<int>>& dp){
+        int n = str.size();
+        if(k == 0){
+            if(ind < n && isPal[ind][n-1])   return dp[ind][k] = 1;
+            return dp[ind][k] = 0;
+        }
+        if(k<0 || (ind == n))   return false;
+
+        if(dp[ind][k] != -1)    return dp[ind][k];
+        
+        bool isPossible = false;
+        for(int i = ind; i<n; i++){
+            if(isPal[ind][i]){
+                if(f(i+1, k-1, str, isPal, dp)){
+                    isPossible = true;
+                    break;
+                }    
+            }
+        }
+        return dp[ind][k] = isPossible ? 1 : 0;
+    }
+    bool checkPartitioning(string str) {
+        int n = str.size();
+
+        vector<vector<bool>> isPal(n, vector<bool>(n, false));
+        for(int len = 1; len<=n; len++){
+            for(int i = 0; i<=n-len; i++){
+                int j = i + len - 1;
+                if( (str[i] == str[j]) && ( ((j - i) <= 2) || isPal[i+1][j-1]))
+                    isPal[i][j] = true;
+            }
+        }
+
+        int k = 3;
+        vector<vector<int>> dp(n+1, vector<int>(k, -1));
+
+        return f(0, k-1, str, isPal, dp);
+    }
+};
+
+
+TC: O(n*k*N) + O(n*n)
+SC: O(n*k) + O(n) + O(n*n){
+    n = stack space 
+    dp = n*k
+    isPal = n*n 
+}
+
+
+##########################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+

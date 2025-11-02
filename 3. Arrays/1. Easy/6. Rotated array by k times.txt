@@ -1,4 +1,5 @@
 
+// leftrotate
 
 vector<int> rotateArray(vector<int>arr, int k) {
     // Write your code here.
@@ -15,5 +16,72 @@ vector<int> rotateArray(vector<int>arr, int k) {
 
     return arr;
 }
+
+######################################################################
+
+// leftrotate
+
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        int n = nums.size();
+        k = k%n;
+
+        reverse(nums.begin(), nums.end() + k);
+        reverse(nums.begin() + (n-k), nums.end());
+        reverse(nums.begin(), nums.end());
+    }
+};
+
+TC: O(k) + O(n-k) + O(n): O(2n)
+SC: O(1)
+
+
+######################################################################
+
+// rightrotate
+
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        int n = nums.size();
+        k = k%n;
+
+        vector<int> tempArr(k, 0);
+        for(int i = n-k; i<n; i++)
+            tempArr[i -(n-k)] = nums[i];
+
+        for(int i = n-1; i>=k; i--)
+            nums[i] = nums[i-k];
+
+        for(int i = 0; i<k; i++)
+            nums[i] = tempArr[i];
+        
+    }
+};
+
+TC: k + (n-k) + k : O(n+k)
+SC: O(k) : O(n){
+    in worst case k = n 
+}
+
+####################################################################################
+
+// rightrotate
+
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        int n = nums.size();
+        k = k%n;
+
+        reverse(nums.begin() + (n-k), nums.end());
+        reverse(nums.begin(), nums.begin() + (n-k));
+        reverse(nums.begin(), nums.end());
+    }
+};
+
+TC: O(k) + O(n-k) + O(n): O(2n)
+SC: O(1)
 
 

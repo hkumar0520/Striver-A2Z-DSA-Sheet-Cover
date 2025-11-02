@@ -1,0 +1,48 @@
+
+
+struct Item{
+    int value;
+    int weight;
+    
+    Item(int val, int wt){
+        value = val;
+        weight = wt;
+    }
+};
+
+class Solution {
+  public:
+    // Function to get the maximum total value in the knapsack.
+    double fractionalKnapsack(vector<int>& val, vector<int>& wt, int capacity) {
+        // Your code here
+        vector<Item> arr;
+        int n = val.size();
+        for(int i = 0;i<n; i++)
+            arr.push_back(Item(val[i], wt[i]));
+            
+        sort(arr.begin(), arr.end(), [](Item a, Item b){
+            double fractionA = (double)a.value/(double)a.weight;
+            double fractionB = (double)b.value/(double)b.weight;
+            
+            return fractionA>fractionB;
+        });
+        
+        double maxAns = 0;
+        for(int i = 0; i<n; i++){
+            if(arr[i].weight <= capacity){
+                maxAns += arr[i].value;
+                capacity -= arr[i].weight;
+            }
+            else{
+                maxAns += (double)capacity *(double)(arr[i].value)/(double)(arr[i].weight);
+                break;
+            }
+        }
+        return maxAns;
+    }
+};
+
+
+TC: O(nlogn) + O(n)
+SC: O(2n)
+

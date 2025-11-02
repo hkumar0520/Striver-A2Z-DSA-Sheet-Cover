@@ -1,0 +1,114 @@
+
+
+1. Brute force (n*n, 1)
+2. Prefix sum(n, n)
+3. optimal (nlogn, 1)
+
+
+
+
+
+class Solution {
+  public:
+    // Function to find the minimum number of platforms required at the
+    // railway station such that no train waits.
+    int findPlatform(vector<int>& arr, vector<int>& dep) {
+        // Your code here
+        int maxPlatform = 0, len = arr.size();
+        for(int i = 0; i<len; i++){
+            
+            int count = 1;
+            for(int j=i+1; j<len; j++){
+                if( ( (arr[i] >= arr[j]) && (arr[i] <= dep[j]) ) ||
+                    ( (arr[j] >= arr[i]) && (arr[j] <= dep[i]) ) )
+                    count++;
+            }
+            maxPlatform = max(maxPlatform, count);
+        }
+        return maxPlatform;
+    }
+};
+
+TC: O(n*n)
+SC: O(1)
+
+
+failed on this test case 
+arr = 900 940 950 1125 1500 1800
+dep = 2200 945 1120 1130 1700 2000
+
+
+
+#######################################################################################################
+
+// using prefix sum 
+
+class Solution {
+  public:
+    // Function to find the minimum number of platforms required at the
+    // railway station such that no train waits.
+    int findPlatform(vector<int>& arr, vector<int>& dep) {
+        // Your code here
+        int minStartTime = INT_MAX, maxEndTime = INT_MIN;
+        int len = arr.size();
+        for(int i = 0; i<len; i++){
+            minStartTime = min( minStartTime, arr[i]);
+            maxEndTime = max( maxEndTime, dep[i]);
+        }
+        
+        vector<int> preFixSubarr(maxEndTime - minStartTime + 2, 0);
+        for(int i = 0; i<len; i++){
+            preFixSubarr[ arr[i] - minStartTime] += 1;
+            preFixSubarr[ dep[i] + 1 - minStartTime] -=1;
+        }
+        
+        int maxPlatform = 0;
+        for(int i = 1; i< preFixSubarr.size(); i++){
+            preFixSubarr[i] += preFixSubarr[i-1];
+            maxPlatform = max( maxPlatform, preFixSubarr[i]);
+        }
+        return maxPlatform;
+    }
+};
+
+TC: O(n) + O(max - min + 2)
+SC: O(max - min + 2)
+
+
+
+
+#######################################################################################################
+
+
+class Solution {
+  public:
+    // Function to find the minimum number of platforms required at the
+    // railway station such that no train waits.
+    int findPlatform(vector<int>& arr, vector<int>& dep) {
+        // Your code here
+        sort(arr.begin(), arr.end());
+        sort(dep.begin(), dep.end());
+        
+        int i = 0, j = 0, len = arr.size(), countt = 0, maxPlatform = 0;
+        while((i<len) && (j<len)){
+            if(arr[i] <= dep[j]){
+                countt++;
+                maxPlatform = max(maxPlatform, countt);
+                i++;
+            }
+            else{
+                countt--;
+                j++;
+            }
+        }
+        return maxPlatform;
+    }
+};
+
+
+TC: O(nlogn)
+SC: O(1)
+
+
+
+

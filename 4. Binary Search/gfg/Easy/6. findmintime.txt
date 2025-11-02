@@ -1,0 +1,40 @@
+
+
+class Solution{
+public:
+
+    /*
+        minimize max(S1*x, S2*(N-x) ) where 0<= x <= N, considder x as mid
+    */
+    bool findPossible(int s1, int s2, int n, int mid){
+        
+        int ans = INT_MAX;
+        for(int x = 0; x <= n; x++){
+            
+            int workS1 = s1*x, workS2 = s2*(n-x);
+            ans = min(ans, max(workS1, workS2));
+        }
+        return ans <= mid;
+    }
+    int minTime(int S1, int S2, int N){
+        // code here
+        if(S1 > S2)
+            return minTime(S2, S1, N);
+            
+        int low = 1, high = S2*N;
+        while(low <= high){
+            int mid = ( low + high)/2;
+            
+            bool isPossible = findPossible(S1, S2, N, mid);
+            if(isPossible)
+                high = mid-1;
+            else
+                low = mid+1;
+        }
+        return low;
+    }
+};
+
+TC: log(S2*N)*n
+SC: O(1)
+

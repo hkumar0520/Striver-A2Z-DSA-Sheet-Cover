@@ -1,0 +1,18 @@
+
+
+
+1. Full - 0 or 2 child of all nodes ( no node with single child)
+2. complete - all levels are filled except last level where nodes are left assigned.( can have internal nodes with one child)
+3. perfect - max nodes at each level, 0 or 2 children.
+4. balanced - height of subtree differe at most 1.
+5. skewed - only one children of internal nodes, 
+
+
+
+
+
+
+
+
+
+

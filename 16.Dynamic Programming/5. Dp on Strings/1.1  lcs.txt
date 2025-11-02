@@ -1,0 +1,221 @@
+
+
+
+1. recursion
+2. memoization
+3. tabular
+4. optimization
+
+
+
+class Solution {
+public:
+    int f(int ind1, int ind2, string& str1, string& str2,
+        vector<vector<int>>& dp){
+        int m = str1.size(), n = str2.size();
+
+        if(ind1 == m)   return 0;
+        if(ind2 == n)   return 0;
+
+        int pick = 0;
+        if(str1[ind1] == str2[ind2])
+            pick = 1 + f(ind1 + 1, ind2 + 1, str1, str2, dp);
+
+        int notpick = max( f(ind1 + 1, ind2, str1, str2, dp) , 
+                           f(ind1, ind2 + 1, str1, str2, dp) );
+
+        return max( pick, notpick);
+    }
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size(), n = text2.size();
+
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+
+        return f(0, 0, text1, text2, dp);
+    }
+};
+
+TC: O(exponential)
+SC: O(m + n)
+
+
+
+##########################################################################################################################
+
+class Solution {
+public:
+    int f(int ind1, int ind2, string& str1, string& str2,
+        vector<vector<int>>& dp){
+        int m = str1.size(), n = str2.size();
+
+        if(ind1 == m)   return 0;
+        if(ind2 == n)   return 0;
+
+        if(dp[ind1][ind2] != -1)    return dp[ind1][ind2];
+
+        int pick = 0;
+        if(str1[ind1] == str2[ind2])
+            pick = 1 + f(ind1 + 1, ind2 + 1, str1, str2, dp);
+
+        int notpick = max( f(ind1 + 1, ind2, str1, str2, dp) , 
+                           f(ind1, ind2 + 1, str1, str2, dp) );
+
+        return dp[ind1][ind2] = max( pick, notpick);
+    }
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size(), n = text2.size();
+
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+
+        return f(0, 0, text1, text2, dp);
+    }
+};
+
+TC: O(m*n) 
+SC: O(m*n) + O(m+n){
+    stack space = m + n 
+    dp = m*n 
+}
+
+
+##########################################################################################################################
+
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size(), n = text2.size();
+
+        vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+
+        for(int ind1 = m-1; ind1 >= 0; ind1--){
+            for(int ind2 = n-1; ind2 >=0; ind2--){
+
+                int pick = 0;
+                if(text1[ind1] == text2[ind2])
+                    pick = 1 + dp[ind1 + 1][ind2 + 1];
+
+                int notpick = max( dp[ind1+1][ind2], dp[ind1][ind2+1]);
+
+                dp[ind1][ind2] = max( pick, notpick);
+            }
+        }
+
+        return dp[0][0];
+    }
+};
+
+
+TC: O(m*n) 
+SC: O(m*n) {
+    dp = m*n 
+}
+
+##########################################################################################################################
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size(), n = text2.size();
+
+        vector<int> curr(n+1, 0), prev(n+1, 0);
+
+        for(int ind1 = m-1; ind1 >= 0; ind1--){
+            for(int ind2 = n-1; ind2 >=0; ind2--){
+
+                int pick = 0;
+                if(text1[ind1] == text2[ind2])
+                    pick = 1 + prev[ind2 + 1];
+
+                int notpick = max( prev[ind2], curr[ind2+1]);
+
+                curr[ind2] = max( pick, notpick);
+            }
+            prev = curr;
+        }
+
+        return curr[0];
+    }
+};
+
+
+TC: O(m*n) 
+SC: O(n) {
+    dp = n 
+}
+
+
+##########################################################################################################################
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size(), n = text2.size();
+
+        vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+
+        for(int ind1 = 1; ind1 <= m ; ind1++){
+            for(int ind2 = 1; ind2 <= n; ind2++){
+
+                int pick = 0;
+                if(text1[ind1-1] == text2[ind2-1])
+                    pick = 1 + dp[ind1 - 1][ind2 - 1];
+
+                int notpick = max( dp[ind1-1][ind2], dp[ind1][ind2-1]);
+
+                dp[ind1][ind2] = max( pick, notpick);
+            }
+        }
+
+        return dp[m][n];
+    }
+};
+
+
+TC: O(m*n) 
+SC: O(m*n) {
+    dp = m*n 
+}
+
+
+
+##########################################################################################################################
+
+
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size(), n = text2.size();
+
+        vector<int> curr(n+1, 0), prev(n+1, 0);
+
+        for(int ind1 = 1; ind1 <= m ; ind1++){
+            for(int ind2 = 1; ind2 <= n; ind2++){
+
+                int pick = 0;
+                if(text1[ind1-1] == text2[ind2-1])
+                    pick = 1 + prev[ind2 - 1];
+
+                int notpick = max( prev[ind2], curr[ind2 - 1]);
+
+                curr[ind2] = max( pick, notpick);
+            }
+            prev = curr;
+        }
+
+        return curr[n];
+    }
+};
+
+
+
+TC: O(m*n) 
+SC: O(n) {
+    dp = n 
+}
+
+
+
+##########################################################################################################################
+
+

@@ -1,0 +1,44 @@
+
+class Solution {
+  public:
+    string oddEven(int n) {
+        // code here
+        
+        return  (n & 1) ? "odd": "even";
+    }
+};
+
+
+Let's analyze the time and space complexity of the given code.
+
+### Code Overview:
+The function `oddEven` checks whether the integer `n` is odd or even by using a bitwise operation:
+1. The expression `n & 1` checks if the least significant bit (LSB) of the number `n` is 1 (odd) or 0 (even).
+   - If the result of `n & 1` is 1, it means `n` is odd.
+   - If the result is 0, it means `n` is even.
+   
+   The function returns the string `"odd"` if `n` is odd, or `"even"` if `n` is even.
+
+### Time Complexity:
+1. **Bitwise AND Operation** (`n & 1`):
+   - The bitwise AND operation `n & 1` takes **O(1)** time because it only checks the least significant bit of the number, which is a constant-time operation.
+
+2. **Ternary Operator** (`? "odd" : "even"`):
+   - The ternary operator evaluates to either `"odd"` or `"even"`. This operation is **O(1)** because it is a simple conditional check that does not depend on the size of the input.
+
+Since all the operations in the function are constant-time operations, the total time complexity is:
+- **Time Complexity**: **O(1)** (constant time).
+
+### Space Complexity:
+1. The function uses a fixed number of variables:
+   - `n` is the input, and the result of the ternary operation is a string (`"odd"` or `"even"`).
+2. The strings `"odd"` and `"even"` are constant in size, and the function does not dynamically allocate memory based on the input size.
+
+Since there is no dynamic memory allocation and the space used is independent of the size of the input, the space complexity is:
+- **Space Complexity**: **O(1)** (constant space).
+
+### Conclusion:
+- **Time Complexity**: **O(1)** (constant time)
+- **Space Complexity**: **O(1)** (constant space)
+
+

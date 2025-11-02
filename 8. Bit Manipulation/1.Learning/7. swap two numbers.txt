@@ -1,0 +1,56 @@
+
+
+class Solution{   
+public:
+    pair<int, int> get(int a, int b){
+        //complete the function here
+         a = a^b;
+         b = a^b;
+         a = a^b;
+         
+         return {a,b};
+    }
+};
+
+
+
+In this problem, we are tasked with analyzing the time and space complexity of a function in the given class `Solution`.
+
+### Function Description
+
+The function `get(int a, int b)` swaps two integers using the XOR operation. The XOR operation is performed in three steps:
+
+1. `a = a ^ b;`
+   - Here, `a` becomes the XOR of `a` and `b`. This operation stores the bitwise difference of `a` and `b` in `a`.
+
+2. `b = a ^ b;`
+   - Now, `b` becomes the XOR of the modified `a` and the original `b`. This effectively assigns the original value of `a` to `b`.
+
+3. `a = a ^ b;`
+   - Finally, `a` becomes the XOR of the modified `a` (which is the XOR of original `a` and `b`) and the modified `b` (which is the original value of `a`). This step assigns the original value of `b` to `a`.
+
+In the end, the values of `a` and `b` are swapped.
+
+### Time Complexity Analysis
+
+- The function consists of three XOR operations, which each take constant time, i.e., **O(1)**. 
+- There are no loops or recursive calls involved, and each operation is performed a fixed number of times.
+
+Thus, the **time complexity** of the `get` function is **O(1)**.
+
+### Space Complexity Analysis
+
+- The function does not use any extra data structures or dynamic memory allocation.
+- It only uses a fixed number of variables (`a` and `b`), which are updated in-place.
+- No additional memory is required beyond the input parameters and the return value.
+
+Thus, the **space complexity** of the `get` function is **O(1)**.
+
+### Summary
+
+- **Time Complexity**: O(1)
+- **Space Complexity**: O(1)
+
+This is a highly efficient implementation for swapping two integers using XOR.
+
+

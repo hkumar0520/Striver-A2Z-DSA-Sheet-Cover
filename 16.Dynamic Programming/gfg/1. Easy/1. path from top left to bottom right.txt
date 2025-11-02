@@ -1,0 +1,22 @@
+
+https://www.geeksforgeeks.org/problems/count-all-possible-paths-from-top-left-to-bottom-right3011/1?page=1&category=Dynamic%20Programming
+
+
+class Solution {
+  public:
+    int numberOfPaths(int m, int n) {
+        // code here
+        vector<int> prev(n, 1), next(n, 1);
+        for(int i = 1; i<m; i++){
+            for(int j = 1; j<n; j++){
+                next[j] = next[j-1] + prev[j];
+            }
+            prev = next;
+        }
+        return prev[n-1];
+    }
+};
+
+TC: O(m*n)
+SC: O(n)
+

@@ -1,0 +1,60 @@
+
+https://leetcode.com/contest/weekly-contest-452/
+
+
+typedef __int128 ll;
+
+class Solution {
+public:
+    bool checkEqualPartitions(vector<int>& nums, long long target) {
+        int n = nums.size();
+        ll ans = 1;
+        for (auto it : nums) {
+            ans *= it;
+            if (ans > (ll)target * target) return false;
+        }
+
+        if (ans != (ll)target * target) return false;
+
+        int maxi = (1 << n);
+        for (int i = 1; i < maxi - 1; i++) {
+            ll sub = 1;
+            for (int j = 0; j < n; j++) {
+                if (i & (1 << j)) {
+                    sub *= nums[j];
+                    if (sub > target) break;
+                }
+            }
+            if (sub == target) return true;
+        }
+        return false;
+    }
+};
+
+
+
+##################################################################
+
+class Solution {
+public:
+    bool checkEqualPartitions(vector<int>& nums, long long target) {
+        long long anotherTarget = target, currProd = 1;
+        for(int num : nums){
+            if(target % num == 0)
+                target /= num;
+            else
+                currProd *= num;
+
+            if(currProd > anotherTarget)
+            {
+                if(currProd & target != 0)
+                    return false;
+
+                currProd /= target;
+                target = 1;
+            }
+        }
+        return (target == 1 && currProd == anotherTarget);
+    }
+};
+

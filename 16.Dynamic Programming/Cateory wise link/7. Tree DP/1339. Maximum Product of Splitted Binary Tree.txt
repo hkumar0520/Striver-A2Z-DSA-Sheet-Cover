@@ -1,0 +1,207 @@
+
+
+1. recursion
+2. memoization
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    int mod = 1e9 + 7;
+    long long totalSum;
+public:
+    long sumOfTree(TreeNode* root){
+        if(root == nullptr) return 0;
+        return (root->val  + sumOfTree(root->left) + sumOfTree(root->right) ) ;
+    }
+
+    long maxProdOfTree(TreeNode* root){
+        if(root == nullptr) return 1;
+
+        long long prod = 1;
+        long long sumOfLeft = sumOfTree(root->left);
+        long long sumOfRight = sumOfTree(root->right);
+
+        long long resultOfLeft = maxProdOfTree(root->left);
+        long long resultOfRight = maxProdOfTree(root->right);
+
+        return max({ 
+            (totalSum - sumOfLeft)  * sumOfLeft ,
+            (totalSum - sumOfRight) * sumOfRight ,
+            resultOfLeft ,
+            resultOfRight
+        });
+
+    }
+    int maxProduct(TreeNode* root) {
+        totalSum = sumOfTree(root);
+
+        return maxProdOfTree(root) % mod;
+    }
+};
+
+
+
+###############################################################################
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    int mod = 1e9 + 7;
+    long long totalSum;
+public:
+    long long sumOfTree(TreeNode* root, unordered_map<TreeNode* , long long>& mapSumOfTree){
+        if(root == nullptr) return 0;
+        return mapSumOfTree[root] = (root->val  + 
+                                    sumOfTree(root->left, mapSumOfTree) + 
+                                    sumOfTree(root->right, mapSumOfTree) ) ;
+    }
+
+    long maxProdOfTree(TreeNode* root, unordered_map<TreeNode* , long long>& mapSumOfTree){
+        if(root == nullptr) return 1;
+
+        long long prod = 1;
+        long long sumOfLeft = mapSumOfTree[root->left];
+        long long sumOfRight = mapSumOfTree[root->right];
+
+        long long resultOfLeft = maxProdOfTree(root->left, mapSumOfTree);
+        long long resultOfRight = maxProdOfTree(root->right, mapSumOfTree);
+
+        return max({ 
+            (totalSum - sumOfLeft)  * sumOfLeft ,
+            (totalSum - sumOfRight) * sumOfRight ,
+            resultOfLeft ,
+            resultOfRight
+        });
+
+    }
+    int maxProduct(TreeNode* root) {
+        unordered_map<TreeNode* , long long> mapSumOfTree;
+        totalSum = sumOfTree(root, mapSumOfTree);
+
+        return maxProdOfTree(root, mapSumOfTree) % mod;
+    }
+};
+
+
+
+
+
+########################################################################################################################
+
+
+
+class Solution {
+    int mod = 1e9 + 7;
+    long long totalSum = 0;
+    long long maxProductResult = 0;
+
+    // First pass to calculate total sum
+    long long computeTotalSum(TreeNode* root) {
+        if (!root) return 0;
+        return root->val + computeTotalSum(root->left) + computeTotalSum(root->right);
+    }
+
+    // Second pass to compute max product by trying all subtree splits
+    long long computeSubtreeSum(TreeNode* root) {
+        if (!root) return 0;
+        long long left = computeSubtreeSum(root->left);
+        long long right = computeSubtreeSum(root->right);
+        long long subTreeSum = root->val + left + right;
+
+        // Compute product of current split
+        long long product = subTreeSum * (totalSum - subTreeSum);
+        maxProductResult = max(maxProductResult, product);
+
+        return subTreeSum;
+    }
+
+public:
+    int maxProduct(TreeNode* root) {
+        totalSum = computeTotalSum(root);          // O(N)
+        computeSubtreeSum(root);                   // O(N)
+        return maxProductResult % mod;
+    }
+};
+
+
+
+You're already on the right track with a two-pass approach (one to calculate subtree sums and another to evaluate the best product). However, you’re using an `unordered_map<TreeNode*, long long>`, which introduces **extra overhead** due to:
+
+1. **Pointer hashing** (which is more expensive than array indexing).
+2. **Non-contiguous memory access** during the traversal and lookup.
+
+We can **improve both runtime and space** by eliminating the hashmap and using a **postorder traversal** to compute both the sum and the max product in a single pass (or two minimal passes) — storing intermediate sums in-place using recursion.
+
+---
+
+### ✅ Optimized Version (Improved Time & Space)
+
+```cpp
+class Solution {
+    int mod = 1e9 + 7;
+    long long totalSum = 0;
+    long long maxProductResult = 0;
+
+    // First pass to calculate total sum
+    long long computeTotalSum(TreeNode* root) {
+        if (!root) return 0;
+        return root->val + computeTotalSum(root->left) + computeTotalSum(root->right);
+    }
+
+    // Second pass to compute max product by trying all subtree splits
+    long long computeSubtreeSum(TreeNode* root) {
+        if (!root) return 0;
+        long long left = computeSubtreeSum(root->left);
+        long long right = computeSubtreeSum(root->right);
+        long long subTreeSum = root->val + left + right;
+
+        // Compute product of current split
+        long long product = subTreeSum * (totalSum - subTreeSum);
+        maxProductResult = max(maxProductResult, product);
+
+        return subTreeSum;
+    }
+
+public:
+    int maxProduct(TreeNode* root) {
+        totalSum = computeTotalSum(root);          // O(N)
+        computeSubtreeSum(root);                   // O(N)
+        return maxProductResult % mod;
+    }
+};
+```
+
+---
+
+### ✅ Time & Space Complexity
+
+| Metric           | Before (`unordered_map`) | After (Optimized Recursion) |
+| ---------------- | ------------------------ | --------------------------- |
+| Time Complexity  | O(N)                     | O(N)                        |
+| Space Complexity | O(N) map + O(H) stack    | O(H) stack only (no map)    |
+
+> Where `N` is number of nodes, and `H` is the height of the tree.
+
+---
+
+Let me know if you’d like a diagram or dry-run to visualize how the recursion avoids the map.

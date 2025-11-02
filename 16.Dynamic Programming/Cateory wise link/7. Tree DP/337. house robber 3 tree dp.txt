@@ -1,0 +1,99 @@
+
+
+
+1. recursion 
+2. memo 
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int rob(TreeNode* root) {
+        if(root == nullptr) return 0;
+
+        // pick root
+        int selectRoot = root->val;
+        if(root->left != nullptr){
+            selectRoot += rob(root->left->left) + rob(root->left->right);
+        }   
+        if(root->right != nullptr){
+            selectRoot += rob(root->right->right) + rob(root->right->left);
+        }  
+
+        int selectRootleft = rob(root->left);
+        int selectRootRight = rob(root->right);
+
+        return max(selectRoot, selectRootleft + selectRootRight);
+    }
+};
+
+
+TC: exponential 
+SC: O(height of tree)
+
+
+#################################################################################################
+
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int f(TreeNode* root, unordered_map<TreeNode*, int>& mp){
+        
+        if(root == nullptr) return 0;
+
+        if(mp.find(root) != mp.end())   return mp[root];
+
+        // pick root
+        int selectRoot = root->val;
+        if(root->left != nullptr){
+            selectRoot += f(root->left->left, mp) + f(root->left->right, mp);
+        }   
+        if(root->right != nullptr){
+            selectRoot += f(root->right->right, mp) + f(root->right->left, mp);
+        }  
+
+        int selectRootleft = f(root->left, mp);
+        int selectRootRight = f(root->right, mp);
+
+        return mp[root] = max(selectRoot, selectRootleft + selectRootRight);
+    }
+    int rob(TreeNode* root) {
+        
+        unordered_map<TreeNode*, int> mp;
+        return f(root, mp);
+
+    }
+};
+
+
+TC: O(N)
+SC: O(h) + O(N){
+    N = no. of nodes in a tree 
+    h = height of tree 
+}
+
+
+

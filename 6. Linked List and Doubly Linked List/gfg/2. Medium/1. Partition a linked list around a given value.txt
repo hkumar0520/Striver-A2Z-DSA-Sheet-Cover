@@ -1,0 +1,62 @@
+
+
+https://www.geeksforgeeks.org/problems/partition-a-linked-list-around-a-given-value/1?page=2&category=Linked%20List
+
+
+
+/*struct Node
+{
+    int data;
+    struct Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+
+};*/
+class Solution {
+  public:
+    struct Node* partition(struct Node* head, int x) {
+        // code here
+        Node* lessThanX = new Node(-1);
+        Node* equalToX = new Node(-1);
+        Node* greaterThanX = new Node(-1);
+        
+        Node* lessThanXHead = lessThanX,
+              *equalToXHead = equalToX, 
+              *greaterThanXHead = greaterThanX;
+        
+        Node* current = head;
+        while(current != nullptr){
+            if(current->data < x){
+                lessThanX->next = current;
+                lessThanX = lessThanX->next;
+            }
+            else if(current->data == x){
+                equalToX->next = current;
+                equalToX = equalToX->next;
+            }
+            else{
+                greaterThanX->next = current;
+                greaterThanX = greaterThanX->next;
+            }
+            
+            current = current->next;
+        }
+        
+        greaterThanX->next = nullptr;
+        equalToX->next = greaterThanXHead->next;
+        lessThanX->next = equalToXHead->next;
+        
+        return lessThanXHead->next;
+    }
+};
+
+
+TC: O(n)
+SC: O(1)
+
+
+
+

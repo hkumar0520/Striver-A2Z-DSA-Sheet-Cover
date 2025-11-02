@@ -1,0 +1,318 @@
+
+1. recrusion
+2. memo
+3. stack
+4. greedy
+
+
+class Solution {
+public:
+    bool isValid(int ind, int open, int close, string& s){
+
+        if(open < close)    return false;
+
+        if(ind == s.size()) return open == close;
+
+        if(s[ind] == '(')   return isValid(ind+1, open+1, close, s);
+        if(s[ind] == ')')   return isValid(ind+1, open, close+1, s);
+
+        bool considerOpen = isValid(ind+1, open+1, close, s);
+        bool considerClose = isValid(ind+1, open, close+1, s);
+        bool considerEmpty = isValid(ind+1, open, close, s);
+
+        return considerOpen || considerClose || considerEmpty;
+    }
+    bool checkValidString(string s) {
+        
+        return isValid(0, 0, 0, s);
+    }
+};
+
+
+
+###########################################################################################################
+
+
+
+class Solution {
+public:
+    bool isValid(int ind, int open, string& s){
+
+        if(open < 0)    return false;
+
+        if(ind == s.size()) return open == 0;
+
+        if(s[ind] == '(')   return isValid(ind+1, open+1, s);
+        if(s[ind] == ')')   return isValid(ind+1, open-1, s);
+
+        bool considerOpen = isValid(ind+1, open+1, s);
+        bool considerClose = isValid(ind+1, open-1, s);
+        bool considerEmpty = isValid(ind+1, open, s);
+
+        return considerOpen || considerClose || considerEmpty;
+    }
+    bool checkValidString(string s) {
+        
+        return isValid(0, 0, s);
+    }
+};
+
+
+TC: O(3^n)
+SC: O(n)
+
+
+#####################################################################################################
+
+class Solution {
+public:
+    bool isValid(int ind, int open, vector<vector<int>>& memo, string& s){
+
+        if(open < 0)    return false;
+        if(ind == s.size()) return ( open == 0 ) ? 1 : 0;
+
+        if( memo[ind][open] != -1)   return memo[ind][open];
+
+        bool isMatch = false;
+        if(s[ind] == '(')   
+            isMatch = isValid(ind+1, open+1, memo, s);
+        else if(s[ind] == ')')
+            isMatch = isValid(ind+1, open-1, memo, s);
+        else{
+            bool considerOpen = isValid(ind+1, open+1, memo, s);
+            bool considerClose = isValid(ind+1, open-1, memo, s);
+            bool considerEmpty = isValid(ind+1, open, memo, s);
+
+            isMatch = considerOpen || considerClose || considerEmpty;
+        }
+
+        return memo[ind][open] = isMatch ? 1 : 0 ;
+    }
+    bool checkValidString(string s) {
+        int len = s.size();
+        vector<vector<int>> memo(len, vector<int>(len+1, -1));
+        return isValid(0, 0, memo, s);
+    }
+};
+
+
+TC: O(n*n)
+SC: O(n*n) + O(n)
+
+
+#########################################################################################################
+
+
+
+class Solution {
+public:
+    bool checkValidString(string s) {
+        stack<int> openBrackets, star;
+
+        int len = s.size();
+        for(int i = 0 ; i<len; i++){
+            if(s[i] == '(')
+                openBrackets.push(i);
+            else if(s[i] == '*')
+                star.push(i);
+            else{
+                if(!openBrackets.empty())
+                    openBrackets.pop();
+                else if(!star.empty())
+                    star.pop();
+                else
+                    return false;
+            }
+        }
+
+        while(!openBrackets.empty() && !star.empty()){
+            if(openBrackets.top() > star.top())
+                return false;
+
+            openBrackets.pop();
+            star.pop();
+        }
+
+        return openBrackets.empty();
+    }
+};
+
+
+TC: O(n)
+SC: O(n)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#########################################################################################################
+
+
+
+class Solution {
+public:
+    int startFromLeft(string s){
+        int countLeft = 0, countStar = 0;
+        for(int i = 0; i<s.size(); i++){
+            if(s[i] == '('){
+                countLeft++;
+            }
+            else if(s[i] == '*'){
+                countStar++;
+            }
+            else{
+                if(countLeft > 0)
+                    countLeft--;
+                else if(countStar > 0)
+                    countStar--;
+                else
+                    return -1;
+            }
+        }
+        return countLeft;
+    }
+    int startFromRight(string s){
+        int countRight = 0, countStar = 0;
+        for(int i = s.size()-1; i>=0; i--){
+            if(s[i] == ')'){
+                countRight++;
+            }
+            else if(s[i] == '*'){
+                countStar++;
+            }
+            else{
+                if(countRight > 0)
+                    countRight--;
+                else if(countStar > 0)
+                    countStar--;
+                else
+                    return -1;
+            }
+        }
+        return countRight;
+    }
+    bool checkValidString(string s) {
+        // ((((
+        int countLeft = startFromLeft(s);
+        // ))))
+        int countRight = startFromRight(s);
+        
+        if( (countLeft == -1) || (countRight == -1) )
+            return false;
+
+        return true;
+    }
+};
+
+TC: O(2n)
+SC: O(1)
+
+
+
+
+#####################################################################################################################################################
+
+
+class Solution {
+public:
+    pair<int,int> startFromBothSides(string s){
+        int countLeft = 0, countStar = 0, countStartRight = 0, countRight = 0, len = s.size();
+        for(int i = 0; i<len; i++){
+            if(s[i] == '('){
+                countLeft++;
+            }
+            else if(s[i] == '*'){
+                countStar++;
+            }
+            else{
+                if(countLeft > 0)
+                    countLeft--;
+                else if(countStar > 0)
+                    countStar--;
+                else
+                    return {-1, 0};
+            }
+
+            
+            if(s[len-1-i] == ')'){
+                countRight++;
+            }
+            else if(s[len-1-i] == '*'){
+                countStartRight++;
+            }
+            else{
+                if(countRight > 0)
+                    countRight--;
+                else if(countStartRight > 0)
+                    countStartRight--;
+                else
+                    return {0, -1};
+            }
+        }
+        return {countLeft, countRight};
+    }
+
+    bool checkValidString(string s) {
+
+        pair<int,int> curr = startFromBothSides(s);
+
+        // ((((
+        int countLeft = curr.first;
+        // ))))
+        int countRight = curr.second;
+
+        if( (countLeft == -1) || (countRight == -1) )
+            return false;
+
+        return true;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+
+
+##########################################################################################
+
+
+
+
+class Solution {
+public:
+
+    bool checkValidString(string s) {
+
+        int countOpen = 0, countClosed = 0, len = s.size();
+        for(int i = 0; i<len; i++){
+            if(s[i] == '(' || s[i] == '*')
+                countOpen++;
+            else
+                countOpen--;
+            
+            if(s[len-1-i] == ')' || s[len-1-i] == '*')
+                countClosed++;
+            else
+                countClosed--;
+            
+            if(countOpen < 0 || countClosed < 0)
+                return false;
+        }
+        return true;
+    }
+};
+
+

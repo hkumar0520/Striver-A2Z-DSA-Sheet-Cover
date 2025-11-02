@@ -1,0 +1,135 @@
+
+
+1. brute force
+2. hashing
+3. optimal
+
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        
+        set<vector<int>> st;
+        int n = nums.size();
+        for(int i = 0; i<n; i++){
+            for(int j = i+1; j<n; j++){
+                for(int k = j+1; k<n; k++){
+                    for(int l = k+1; l<n; l++){
+                        long long sum = nums[i];
+                        sum += nums[j];
+                        sum += nums[k];
+                        sum += nums[l];
+                        if( sum == target){
+                            vector<int> tmp = { nums[i], nums[j], nums[k], nums[l]};
+                            sort(tmp.begin(), tmp.end());
+                            st.insert(tmp);
+                        }
+                    }
+                }
+            }
+        }
+
+        vector<vector<int>> ans(st.begin(), st.end());
+        return ans;
+    }
+};
+
+
+TC: O(n*n*n*n*log(unique triplets))
+SC: O(2*(unique triplets))
+
+
+
+########################################################################
+
+not done correctly 
+291/294 passed
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        
+        
+        set<vector<int>> st;
+        int n = nums.size();
+        for(int i = 0; i<n; i++){
+            for(int j = i+1; j<n; j++){
+                set<int> hashMap;             
+                // use set<long long> instead of set<int>
+                for(int k = j+1; k<n; k++){
+                    long long sum = nums[i];
+                    sum += nums[j];
+                    sum += nums[k];
+                    long long fourthNum = target;
+                    fourthNum -= sum;
+                    if(hashMap.find(fourthNum) != hashMap.end()){
+                        vector<int> tmp = { nums[i], nums[j], nums[k], (int)fourthNum};
+                        sort(tmp.begin(), tmp.end());
+
+                        st.insert(tmp);
+                    }
+                    hashMap.insert(nums[k]);
+
+                }
+            }
+        }
+        vector<vector<int>> ans(st.begin(), st.end());
+        return ans;
+
+
+    }
+};
+
+
+TC: O(n*n*n*Log(unique triplets))
+SC: O(2*(unique Triplets)) + O(n)
+
+
+######################################################################
+
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        
+        
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> ans;
+        int n = nums.size();
+
+        for(int i = 0; i<n; i++){
+            if(i>0 && nums[i] == nums[i-1]) continue;
+            for(int j = i+1; j<n; j++){
+                if(j>(i+1) && nums[j] == nums[j-1]) continue;
+
+                int k = j+1, l = n-1;
+                while(k<l){
+                    long long sum = nums[i];
+                    sum += nums[j];
+                    sum += nums[k];
+                    sum += nums[l];
+                    if(sum > target)
+                        l--;
+                    else if( sum < target)
+                        k++;
+                    else{
+                        ans.push_back({ nums[i], nums[j], nums[k], nums[l]});
+                        int valk = nums[k], vall = nums[l];
+                        while(k<l && nums[k] == valk)  k++;
+                        while(l>k && nums[l] == vall)   l--;
+                    }
+                }
+
+            }
+        }
+        return ans;
+
+    }
+};
+
+
+
+
+TC: O(n*n*n)
+SC: O(1)
+

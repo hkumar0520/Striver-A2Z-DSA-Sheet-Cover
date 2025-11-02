@@ -1,0 +1,150 @@
+
+
+https://www.geeksforgeeks.org/problems/subtraction-in-linked-list/1?page=1&category=Linked%20List
+
+
+
+class Solution {
+
+  public:
+    
+    // O(n)
+    pair<Node*, int> reverseLinkedList(Node* head){
+        Node* current = head, *prev = nullptr, *frontNode = nullptr;
+        int cnt = 0;
+        while(current != nullptr){
+            frontNode = current->next;
+            
+            current->next = prev;
+            prev = current;
+            
+            current = frontNode;
+            
+            cnt++;
+        }
+        
+        return { prev, cnt};
+    }
+    
+    // O(n)
+    // void handleLeadingZeroes(Node* head, int  k){
+    //     Node* prevSlow = nullptr, *slow = head, *fast = head;
+    //     while(k-- > 0 && fast != nullptr)
+    //         fast = fast->next;
+            
+    //     while(fast != nullptr){
+    //         prevSlow = slow;
+    //         slow = slow->next;
+    //         fast = fast->next;
+    //     }
+        
+    //     if(prevSlow != nullptr)
+    //         prevSlow->next = nullptr;
+    // }
+    
+     Node* handleLeadingZeroes(Node* head, int  k){
+        Node* prevSlow = nullptr, *slow = head;
+        while(k-- > 0 && slow != nullptr){
+            prevSlow = slow;
+            slow = slow->next;
+        }
+        
+        prevSlow->next = nullptr;
+        return slow;
+    }
+    
+    // O(n)
+    Node* subtractLinkedList(Node* head1, Node* head2){
+        Node* currentHead1 = head1, *currentHead2 = head2;
+        
+        Node* newHead = new Node(-1);
+        Node* currentNewHead = newHead;
+        int borrow = 0, leadingZeroes = 0;
+        
+        while(currentHead1 != nullptr){
+            
+            int data2 = currentHead2 != nullptr ? currentHead2->data : 0;
+            int data1 = currentHead1 != nullptr ? currentHead1->data : 0;
+            data1 -= borrow;
+            if(data1 < data2){
+                data1 += 10;
+                borrow = 1;
+            }
+            else
+                borrow = 0;
+            
+            // to check leading zeroes;    
+            if((data1 - data2) == 0)    leadingZeroes++;
+            else    leadingZeroes = 0;
+            
+            currentNewHead->next = new Node(data1 - data2);
+            currentNewHead = currentNewHead->next;
+            
+            if(currentHead2 != nullptr)
+                currentHead2 = currentHead2->next;
+            currentHead1 = currentHead1->next;
+        }
+        
+        // reverse the result
+        newHead->next = reverseLinkedList(newHead->next).first;
+        
+        if(leadingZeroes)
+            newHead->next = handleLeadingZeroes(newHead->next, leadingZeroes);
+        
+        return newHead->next;
+    }
+    Node* subLinkedList(Node* head1, Node* head2) {
+        
+        // check here only if which one greater
+        int headOneGreater = -1;
+        Node* currentHead1 = head1, *currentHead2 = head2;
+        while(currentHead1 != nullptr && currentHead2 != nullptr){
+            if(currentHead1->data > currentHead2->data) {
+                headOneGreater = 1;
+                break;
+            }
+            else if(currentHead2->data > currentHead1->data) {
+                headOneGreater = 2;
+                break;
+            }
+            currentHead1 = currentHead1->next;
+            currentHead2 = currentHead2->next;
+        }
+        
+        
+        // checking length and reverse
+        pair<Node*, int> firstHeadvar = reverseLinkedList(head1);
+        pair<Node*, int> secondHeadvar = reverseLinkedList(head2);
+        
+        // unequal length
+        if(firstHeadvar.second > secondHeadvar.second){
+            return subtractLinkedList(firstHeadvar.first, secondHeadvar.first);
+        }
+        else if(secondHeadvar.second > firstHeadvar.second){
+            return subtractLinkedList(secondHeadvar.first, firstHeadvar.first);
+        }
+        
+        // for equal length
+        if(headOneGreater == 1) 
+            return subtractLinkedList(firstHeadvar.first, secondHeadvar.first);
+        else if(headOneGreater == 2) 
+            return subtractLinkedList(secondHeadvar.first, firstHeadvar.first);
+ 
+        
+        return new Node(0);
+    }
+};
+
+TC: min(m,n) + (m + n) + 2*(max(m,n) + 1) + k{
+    equal = min(m,n)
+    reverse = (m+n)
+    subtract = max(m,n)
+    reverse = max(m,n)
+    leadingZeroes = k( 1 <= k <= min(m,n))
+}
+SC: O(1)
+
+
+
+
+

@@ -1,0 +1,64 @@
+
+
+optimal using 5 
+
+class Solution {
+public:
+    // increasing stack 
+    long long sumSubarrayMins(vector<int>& arr) {
+        stack<int> st;
+        st.push(0);
+        arr.insert(arr.begin(), INT_MIN);
+
+        int len = arr.size();
+        vector<long long> result(len, 0);
+
+        for(int i = 1; i < len; i++){
+            while(arr[st.top()] > arr[i])
+                st.pop();
+
+            int j = st.top();
+            result[i] = (result[j] + (long long)(i - j)*arr[i]);
+            st.push(i);
+        }
+
+        long long ans = 0;
+        for(int i = 0; i<len; i++)
+            ans += result[i];
+
+        arr.erase(arr.begin());
+        return ans;
+    }
+    // decreasing stack 
+    long long sumSubarrayMaxs(vector<int>& arr) {
+        stack<int> st;
+        st.push(0);
+        arr.insert(arr.begin(), INT_MAX);
+
+        int len = arr.size();
+        vector<long long> result(len, 0);
+
+        for(int i = 1; i < len; i++){
+            while(arr[st.top()] < arr[i])
+                st.pop();
+
+            int j = st.top();
+            result[i] = (result[j] + (long long)(i - j)*arr[i]);
+            st.push(i);
+        }
+
+        long long ans = 0;
+        for(int i = 1; i<len; i++)
+            ans += result[i];
+
+        arr.erase(arr.begin());
+        return ans;
+    }
+    long long subArrayRanges(vector<int>& nums) {
+        return sumSubarrayMaxs(nums) - sumSubarrayMins(nums);
+    }
+};
+
+TC: O(3n) + O(3n)
+SC: O(2n)
+

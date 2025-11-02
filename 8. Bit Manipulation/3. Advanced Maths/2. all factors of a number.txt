@@ -1,0 +1,57 @@
+
+
+class Solution {
+  public:
+    void print_divisors(int N) {
+        // Code here.
+        vector<int> first, second;
+        for(int i = 1; i<= sqrt(N); i++){
+            int firstNum = i, secondNum = N/i;
+            if( N % firstNum == 0){
+                first.push_back(firstNum);
+                
+                if(secondNum != firstNum)
+                    second.insert(second.begin(), secondNum);
+            }
+        }
+        for(int num: first)
+            cout<<num<<" ";
+            
+        for(int num: second)
+            cout<<num<<" ";
+    }
+};
+
+TC: O(sqrt(n))
+SC: O(sqrt(n))
+
+
+##########################################################################################
+
+
+class Solution {
+  public:
+    void print_divisors(int N) {
+        // Code here.
+        vector<int> first;
+        for(int i = 1; i*i<= N; i++){
+            int firstNum = i, secondNum = N/i;
+            if( N % firstNum == 0){
+                first.push_back(firstNum);
+                
+                if(secondNum != firstNum)
+                    first.push_back(secondNum);
+            }
+        }
+        sort(first.begin(), first.end());
+        for(int num: first)
+            cout<<num<<" ";
+            
+    }
+};
+
+
+TC: O(sqrt(N))
+SC: O(sqrt(N))
+
+

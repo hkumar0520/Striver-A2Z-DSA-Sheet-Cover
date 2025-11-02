@@ -1,0 +1,40 @@
+
+
+
+
+class Solution {
+public:
+
+    
+    int longestCommonSubsequence(string text1, string text2) {
+        int m = text1.size(), n = text2.size();
+
+        vector<int> curr(n+1, 0), prev(n+1, 0);
+
+        for(int ind1 = 1; ind1 <= m ; ind1++){
+            for(int ind2 = 1; ind2 <= n; ind2++){
+
+                int pick = 0;
+                if(text1[ind1-1] == text2[ind2-1])
+                    pick = 1 + prev[ind2 - 1];
+
+                int notpick = max( prev[ind2], curr[ind2 - 1]);
+
+                curr[ind2] = max( pick, notpick);
+            }
+            prev = curr;
+        }
+
+        return curr[n];
+    }
+    int longestPalindromeSubseq(string s) {
+        string t = s;
+        reverse(t.begin(), t.end());
+        return longestCommonSubsequence(s, t);
+    }
+};
+
+
+TC: O(n * n)
+SC: O(n + n )
+

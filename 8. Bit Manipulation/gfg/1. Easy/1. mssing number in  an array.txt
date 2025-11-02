@@ -1,0 +1,50 @@
+
+
+https://www.geeksforgeeks.org/problems/missing-number-in-array1416/1?page=1&category=Bit%20Magic
+
+
+
+class Solution {
+  public:
+    int missingNumber(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        int xorr = n+1;
+        for(int i=0; i<n; i++){
+            xorr ^=arr[i];
+            xorr ^=(i+1);
+        }
+        return xorr;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+
+###########################################################################################
+
+using index mapping , gibing incorrect don't know why 
+
+class Solution {
+  public:
+    int missingNumber(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        for(int i= 0; i<n; i++){
+            while(1 <= arr[i] <= n && arr[i] != arr[arr[i]-1])
+                swap(arr[i], arr[arr[i]-1]);
+        }
+        for(int i =0; i<n; i++){
+            if( (i+1) != arr[i])
+                return i+1;
+        }
+        return n+1;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+
+

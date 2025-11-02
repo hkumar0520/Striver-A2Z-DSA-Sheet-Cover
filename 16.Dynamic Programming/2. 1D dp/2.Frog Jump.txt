@@ -24,6 +24,13 @@ int frogJump(int n, vector<int> &heights)
     return f(n-1, heights);
 }
 
+TC: O(2^(n-1))
+SC: O(n){
+    n = stack space 
+}
+
+#####################################################################################
+
 //Memoization
 
 int f(int ind, vector<int> hgs, vector<int> & dp)
@@ -38,11 +45,7 @@ int f(int ind, vector<int> hgs, vector<int> & dp)
     if(ind>1)
         twoStep = f(ind-2, hgs, dp) + abs(hgs[ind]-hgs[ind-2]);
 
-
-    dp[ind] = min(oneStep,twoStep);
-
     return dp[ind] = min(oneStep,twoStep);
-
 }
 int frogJump(int n, vector<int> &heights)
 {
@@ -50,6 +53,13 @@ int frogJump(int n, vector<int> &heights)
     vector<int> dp(n,-1);
 
     return f(n-1, heights, dp);
+}
+
+
+TC: O(n)
+SC: O(n) + O(n) {
+    n = stack space
+    n = dp array space 
 }
 
 
@@ -81,6 +91,11 @@ int frogJump(int n, vector<int> &heights)
     return f(heights);
 }
 
+TC: O(n)
+SC: O(n)
+
+
+
 ###############################################################################################
 // optimization method
 
@@ -110,4 +125,7 @@ int frogJump(int n, vector<int> &heights)
     return f(heights);
 }
 
+
+TC: O(n)
+SC: O(1)
 

@@ -1,0 +1,37 @@
+
+
+class Solution {
+public:
+    bool lemonadeChange(vector<int>& bills) {
+        int countFive = 0, countTen = 0, countTwenty = 0;
+        for(int i = 0; i<bills.size(); i++){
+            if( bills[i] == 5)
+                countFive++;
+            else if(bills[i] == 10){
+                if(countFive >= 1)
+                    countFive--;
+                else
+                    return false;
+
+                countTen++;
+            }
+            else{
+                if(countTen >=1 && countFive >= 1){
+                    countTen--;
+                    countFive--;
+                }
+                else if(countFive >= 3)
+                    countFive -= 3;
+                else
+                    return false;
+                countTwenty++;
+            }
+        }
+        return true;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+

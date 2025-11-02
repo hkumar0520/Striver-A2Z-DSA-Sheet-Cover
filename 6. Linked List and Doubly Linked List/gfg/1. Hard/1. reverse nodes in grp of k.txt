@@ -1,0 +1,60 @@
+
+
+https://www.geeksforgeeks.org/problems/reverse-a-linked-list-in-groups-of-given-size/1?page=1&category=Linked%20List
+
+
+/*
+  Node is defined as
+    struct node
+    {
+        int data;
+        struct Node* next;
+
+        Node(int x){
+            data = x;
+            next = NULL;
+        }
+
+    }*head;
+*/
+
+class Solution {
+  public:
+    Node* reverseLinkedList(Node* head, int k){
+        Node* current = head, *prev = nullptr, *frontNode = nullptr;
+        while(current != nullptr && k-- > 0){
+            frontNode = current ->next;
+
+            current->next = prev;
+            prev = current;
+            current = frontNode;
+        }
+        // joining to the node
+        head->next = frontNode;
+        return prev;
+    }
+    Node* reverseKGroup(Node* head, int k) {
+        if(head == nullptr || head->next == nullptr)    return head;
+
+        Node* prevHead = nullptr, *currHead = head, *resultNewHead = nullptr;
+        while(currHead != nullptr){
+
+            Node* newHead = reverseLinkedList(currHead, k);
+            if(resultNewHead == nullptr){
+                resultNewHead = newHead;
+            }
+            if(prevHead != nullptr)
+                prevHead->next = newHead;
+            prevHead = currHead;
+            currHead = currHead->next;
+            
+        }
+        return resultNewHead;
+    }
+
+};
+
+TC: O(n)
+SC: O(1)
+
+

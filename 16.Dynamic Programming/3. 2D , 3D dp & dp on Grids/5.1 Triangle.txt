@@ -1,0 +1,161 @@
+
+fixex point - variable point 
+
+1. recursion 
+2. memoization
+3. tabulation
+4. optimization 
+    i) two arrays (prev, current)
+    ii) one array( dp )
+
+
+
+class Solution {
+public:
+    int f(int i, int j, int nRow, vector<vector<int>>& triangle){
+        if(i == nRow)   return triangle[i][j];
+
+        int down = triangle[i][j] + f(i+1, j, nRow, triangle);
+        int diagonal = triangle[i][j] + f(i+1, j+1, nRow, triangle);
+
+        return min(down, diagonal);
+    }
+    int minimumTotal(vector<vector<int>>& triangle) {
+        return f(0, 0, triangle.size()-1, triangle);
+    }
+};
+
+TC: O(2^(n*n))
+SC: O(n-1 + n-1){
+    stack space = n-1 + n-1 
+}
+
+
+####################################################################################
+
+
+class Solution {
+public:
+    int f(int i, int j, int nRow, vector<vector<int>>& triangle, vector<vector<int>>& dp){
+        if(i == nRow)   return triangle[i][j];
+
+        if(dp[i][j] != -1)  return dp[i][j];
+
+        int down = triangle[i][j] + f(i+1, j, nRow, triangle, dp);
+        int diagonal = triangle[i][j] + f(i+1, j+1, nRow, triangle, dp);
+
+        return dp[i][j] = min(down, diagonal);
+    }
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int n = triangle.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        return f(0, 0, triangle.size()-1, triangle, dp);
+    }
+};
+
+TC: O(n*n)
+SC: O(n-1 + n-1) + O(n*n){
+    stack space = n-1 + n-1
+    dp = n*n
+}
+
+
+#########################################################################################
+
+class Solution {
+public:
+
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int n = triangle.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+
+        for(int i = n-1; i>=0; i--){
+            for(int j = i; j>=0; j--){
+                // base case
+                if(i == (n-1)){
+                    dp[i][j] = triangle[i][j];
+                    continue;
+                }
+
+                int up = triangle[i][j] + dp[i+1][j];
+                int diagonal = triangle[i][j] + dp[i+1][j+1];
+
+                dp[i][j] = min(up, diagonal);
+            }
+        }
+        return dp[0][0];
+    }
+};
+
+TC: O(n*n)
+SC: O(n*n){
+    dp = n*n ( space )
+}
+
+
+###########################################################################################
+
+class Solution {
+public:
+
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int n = triangle.size();
+        vector<int> prev(n, -1), curr(n, -1);
+
+        for(int i = n-1; i>=0; i--){
+            for(int j = 0; j<=i; j++){
+                // base case
+                if(i == (n-1)){
+                    curr[j] = triangle[i][j];
+                    continue;
+                }
+
+                int up = triangle[i][j] + prev[j];
+                int diagonal = triangle[i][j] + prev[j+1];
+
+                curr[j] = min(up, diagonal);
+            }
+            prev = curr;
+        }
+        return prev[0];
+    }
+};
+
+TC: O(n*n)
+SC: O(2*n)
+
+###########################################################################################
+
+
+class Solution {
+public:
+
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int n = triangle.size();
+        vector<int> dp(n, -1);
+
+        for(int i = n-1; i>=0; i--){
+            for(int j = 0; j<=i; j++){
+                // base case
+                if(i == (n-1)){
+                    dp[j] = triangle[i][j];
+                    continue;
+                }
+
+                int up = triangle[i][j] + dp[j];
+                int diagonal = triangle[i][j] + dp[j+1];
+
+                dp[j] = min(up, diagonal);
+            }
+        }
+        return dp[0];
+    }
+};
+
+TC: O(n*n)
+SC: O(n)
+
+
+
+
+

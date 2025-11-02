@@ -1,0 +1,320 @@
+
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        
+        int n = nums.size();
+        int totalSubsetNumber = pow(2, n);
+
+        vector<vector<int>> ans;
+
+        for(int num = 0; num<totalSubsetNumber; num++){
+            vector<int> path;
+            for(int i = 0; i<n; i++){
+                if( (num & (1<<i)) != 0)
+                    path.push_back(nums[i]);
+            }
+            ans.push_back(path);
+        }
+
+        return ans;
+    }
+};
+
+
+Let's analyze the **time complexity** and **space complexity** of the given code, which generates all subsets of a given list of integers `nums`.
+
+### Code Overview:
+- The function `subsets` generates all subsets of a given array `nums` using bitwise operations. For each number from `0` to `2^n - 1` (where `n` is the size of `nums`), it determines which elements of `nums` should be included in the subset by using a bitmask. 
+
+### Time Complexity:
+
+1. **Outer Loop:**
+   - The outer loop iterates over `num` from `0` to `2^n - 1`. So, it runs `2^n` times, where `n` is the size of the `nums` vector.
+   - This is because the total number of subsets of a set with `n` elements is `2^n`.
+
+2. **Inner Loop:**
+   - For each iteration of `num`, the inner loop runs for `i = 0` to `i = n - 1` (for all elements in `nums`). Therefore, the inner loop executes `n` times for each subset generation.
+   
+3. **Path construction and insertion:**
+   - Inside the inner loop, the check `(num & (1 << i)) != 0` is a constant-time operation to check whether the `i`-th bit of `num` is set (indicating that the `i`-th element should be included in the subset).
+   - If the condition is true, the `path.push_back(nums[i])` operation adds an element to the `path`. The `push_back` operation is generally **O(1)**, but the total number of elements added over all iterations is at most `n * 2^n` because there are `2^n` subsets and the average subset size is `n / 2`.
+   - After constructing the subset, `ans.push_back(path)` also takes **O(n)** time, as it copies the elements of the `path` to `ans`.
+
+### Time Complexity Summary:
+- The outer loop runs `2^n` times.
+- The inner loop runs `n` times for each iteration.
+- Thus, the total time complexity is:
+  \[
+  O(2^n \times n)
+  \]
+  
+### Space Complexity:
+
+1. **Input:**
+   - The input vector `nums` takes **O(n)** space, where `n` is the number of elements in the `nums` array.
+
+2. **Output:**
+   - The output `ans` stores all subsets. Since there are `2^n` subsets and each subset has at most `n` elements, the space needed to store the subsets is **O(2^n \times n)**.
+
+3. **Auxiliary Space:**
+   - The space used by the `path` vector during the execution is at most **O(n)** (for each subset), and the inner loop only uses a few integer variables (constant space).
+   
+Thus, the total space complexity is dominated by the space required to store the subsets in the result. Therefore, the space complexity is:
+\[
+O(2^n \times n)
+\]
+
+### Conclusion:
+- **Time Complexity:** \( O(2^n \times n) \)
+- **Space Complexity:** \( O(2^n \times n) \)
+
+This algorithm generates all subsets of a set of `n` elements, and thus both the time and space complexities grow exponentially with the size of the input.
+
+
+###########################################################################
+
+// error coming in unordered_set<vector<int>>
+
+class Solution {
+public:
+
+    void backTrack(int index, unordered_set<vector<int>>& subsetSet,
+        vector<int>& path, vector<int>& nums ){
+        if(index == nums.size()){
+            if(subsetSet.find(path) == subsetSet.end())
+                subsetSet.insert(path);
+
+            return ;
+        }
+
+        // exclude
+        backTrack(index+1, subsetSet, path, nums);
+
+        // include
+        path.push_back(nums[index]);
+        backTrack(index+1, subsetSet, path, nums);
+        path.pop_back();
+
+        return ;
+    }
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int startIndex = 0;
+        unordered_set<vector<int>> subsetSet;
+        vector<int> path;
+        backTrack(startIndex, subsetSet, path, nums);
+
+        vector<vector<int>> ans;
+        for(auto it: subsetSet)
+            ans.push_back(*it);
+
+        return ans;
+    }
+};
+
+########################################################################
+
+corrected code 
+
+
+class Solution {
+public:
+
+    void backTrack(int index, set<vector<int>>& subsetSet,
+        vector<int>& path, vector<int>& nums ){
+        if(index == nums.size()){
+            subsetSet.insert(path);
+
+            return ;
+        }
+
+        // exclude
+        backTrack(index+1, subsetSet, path, nums);
+
+        // include
+        path.push_back(nums[index]);
+        backTrack(index+1, subsetSet, path, nums);
+        path.pop_back();
+
+        return ;
+    }
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int startIndex = 0;
+        set<vector<int>> subsetSet;
+        vector<int> path;
+        backTrack(startIndex, subsetSet, path, nums);
+
+        vector<vector<int>> ans;
+        for(auto it: subsetSet)
+            ans.push_back(it);
+
+        return ans;
+    }
+};
+
+
+### Time Complexity
+
+The given code generates all subsets of a given set of numbers using backtracking. Let's break down the key aspects:
+
+1. **Backtracking Recursive Calls:**
+   - The `backTrack` function explores both possibilities for each number in the input list:
+     - **Exclude the current number**: It proceeds to the next index without adding the current number to the `path`.
+     - **Include the current number**: It adds the current number to the `path` and then proceeds to the next index.
+   - At each index, there are two recursive calls: one for including the current element and one for excluding it. Thus, the recursion tree has a branching factor of 2 at each level.
+   - The depth of recursion is equal to the number of elements in the `nums` array (`n`). So, the total number of recursive calls is `2^n` because at each step we choose whether to include or exclude an element.
+
+2. **Inserting into the Set:**
+   - Inside the `backTrack` function, subsets are added to the `subsetSet` (which is a `set` container).
+   - Since `set` stores unique elements, inserting a subset into it takes logarithmic time relative to the number of subsets already in the set. However, for the worst-case scenario, you can insert a subset `O(n)` time, and there are `2^n` subsets. Thus, the time complexity for inserting all subsets into the set is `O(2^n * n)`.
+
+3. **Constructing the Final Answer:**
+   - After the backtracking completes, the `subsetSet` is iterated over to convert it into a `vector<vector<int>>`. This step involves iterating through all `2^n` subsets, and for each subset, copying its `vector<int>` into a new vector. This also takes `O(n)` time per subset.
+   - So, the time complexity of this step is `O(2^n * n)`.
+
+**Overall Time Complexity:**  
+The time complexity of this solution is dominated by the recursive calls and the insertion into the set. The total time complexity is:
+
+\[
+O(2^n \cdot n)
+\]
+
+Where `n` is the number of elements in the input list `nums`.
+
+---
+
+### Space Complexity
+
+The space complexity can be broken down as follows:
+
+1. **Recursive Call Stack:**
+   - The maximum depth of recursion is `n` because the function recurses over each element in the list. Each recursive call also uses a small amount of space to store the current `path` and the `index`.
+   - The space complexity for the recursion stack is therefore `O(n)`.
+
+2. **Storing Subsets in the Set:**
+   - The `set<vector<int>> subsetSet` will store all possible subsets. The number of subsets is `2^n`, and each subset can have up to `n` elements (in the case of the full set). Hence, the space needed to store all subsets is `O(2^n * n)`.
+
+3. **Final Answer Vector:**
+   - The `ans` vector stores all subsets after they are collected from the `set`. This requires additional space proportional to the number of subsets, so the space for `ans` is also `O(2^n * n)`.
+
+**Overall Space Complexity:**  
+The total space complexity is the sum of the space for the recursion stack and the space used to store subsets, which gives:
+
+\[
+O(2^n \cdot n)
+\]
+
+Where `n` is the number of elements in the input list `nums`.
+
+
+
+
+
+###########################################################################
+
+The given code has a few issues, including the use of an unordered set with vectors, which is problematic due to the fact that `std::unordered_set` requires its elements to be hashable. Vectors are not hashable by default. To resolve this, we can use `std::set` (which allows for ordered elements) or alternatively use `unordered_map` with a custom hash function, but for simplicity and correctness, let's use `std::set` which guarantees uniqueness of subsets.
+
+### Issues:
+1. **Hashing of `vector<int>`**: `unordered_set<vector<int>>` requires vectors to be hashable. We can either implement a custom hash function or switch to `std::set` to avoid these complications.
+2. **Incorrect insertion to `unordered_set<vector<int>>`**: `unordered_set` uses `==` and hash functions to compare elements, but `vector<int>` does not have a default hash function. Thus, we'll switch to `std::set` to store subsets since `std::set` automatically handles duplicates.
+
+### Corrected Code:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <set>
+using namespace std;
+
+class Solution {
+public:
+    void backTrack(int index, set<vector<int>>& subsetSet,
+        vector<int>& path, vector<int>& nums) {
+        if (index == nums.size()) {
+            // Insert the current subset (path) into the set
+            subsetSet.insert(path);
+            return;
+        }
+
+        // exclude: don't include the current element
+        backTrack(index + 1, subsetSet, path, nums);
+
+        // include: include the current element
+        path.push_back(nums[index]);
+        backTrack(index + 1, subsetSet, path, nums);
+        path.pop_back(); // backtrack
+
+        return;
+    }
+
+    vector<vector<int>> subsets(vector<int>& nums) {
+        set<vector<int>> subsetSet; // using set to store unique subsets
+        vector<int> path;
+        backTrack(0, subsetSet, path, nums);
+
+        // Convert set to vector
+        vector<vector<int>> ans(subsetSet.begin(), subsetSet.end());
+        return ans;
+    }
+};
+
+int main() {
+    Solution solution;
+    vector<int> nums = {1, 2, 3};
+    vector<vector<int>> result = solution.subsets(nums);
+
+    // Print the subsets
+    for (const auto& subset : result) {
+        cout << "[";
+        for (size_t i = 0; i < subset.size(); ++i) {
+            cout << subset[i];
+            if (i < subset.size() - 1) cout << ", ";
+        }
+        cout << "]\n";
+    }
+
+    return 0;
+}
+```
+
+### Explanation of Changes:
+
+1. **`set<vector<int>>` instead of `unordered_set<vector<int>>`**:
+   - The main change is switching from `unordered_set` to `set`. Since `std::set` automatically handles the uniqueness of subsets and works with vectors by comparing their content, it's a simpler solution for ensuring that there are no duplicate subsets.
+
+2. **Backtracking Logic**:
+   - The recursive function `backTrack` explores all subsets. For each index, we either include or exclude the current element in the subset.
+   - After reaching the end of the array (when `index == nums.size()`), the current subset (`path`) is added to the `set` of subsets.
+   
+3. **Returning the Result**:
+   - After generating all subsets, we convert the `set` to a vector (`vector<vector<int>>`) to return the result in the required format.
+
+### Time and Space Complexity:
+
+1. **Time Complexity**:
+   - We generate all subsets of `nums`, so the number of subsets is \(2^n\), where `n` is the length of the input array `nums`. Each subset takes \(O(n)\) time to build, and there are \(2^n\) subsets, so the overall time complexity is \(O(n \times 2^n)\).
+
+2. **Space Complexity**:
+   - The space complexity is driven by the storage of all subsets. There are \(2^n\) subsets, and each subset can have at most \(n\) elements, so the space complexity is \(O(n \times 2^n)\).
+
+### Example Output:
+For `nums = [1, 2, 3]`, the output will be:
+```
+[]
+[1]
+[1, 2]
+[1, 2, 3]
+[1, 3]
+[2]
+[2, 3]
+[3]
+```
+
+This code now works correctly and avoids the issues with hashing vectors in an unordered set.
+
+
+##############################################################################
+
+
+
+

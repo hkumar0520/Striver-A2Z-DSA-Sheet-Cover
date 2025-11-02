@@ -1,0 +1,89 @@
+
+0. naive brute force(3 loops)
+1. Brute force
+2. Hashing
+3. sliding window(two pointers)
+
+
+#include <bits/stdc++.h>
+
+int longestSubarrayWithSumK(vector<int> arr, long long k) {
+    // code here
+    int n = arr.size(), maxLen = INT_MIN;
+    for(int i = 0; i<n; i++){
+
+        long long sum = 0;
+        for(int j = i; j<n; j++){
+            sum += arr[j];
+
+            if(sum == k){
+                maxLen = max( maxLen, j-i+1);
+            }
+        }
+    }
+    return maxLen;
+}
+
+TC: O(n*n)
+SC: O(1)
+
+#####################################################################################
+
+#include <bits/stdc++.h>
+
+int longestSubarrayWithSumK(vector<int> arr, long long k) {
+    // code here
+    
+    map<long long,int> prefixSum;
+    long long sum = 0;
+    int  maxLen = 0;
+    
+    // if subarray starts from starting
+    prefixSum[0] = -1;
+    
+    for(int i = 0; i<arr.size(); i++){
+        sum += arr[i];
+        
+        if( prefixSum.find(sum-k) != prefixSum.end()){
+            maxLen = max(maxLen, i - prefixSum[sum-k]);
+        }
+        
+        if(prefixSum.find(sum) == prefixSum.end())
+            prefixSum[sum] = i;
+    }
+    return maxLen;
+}
+
+
+TC: O(nlogn)
+SC: O(n)
+
+
+###########################################################################################
+
+#include <bits/stdc++.h>
+
+int longestSubarrayWithSumK(vector<int> a, long long k) {
+    // Write your code here
+    long long sum = 0, left = 0, right = 0, aSize = a.size(), longestSub = INT_MIN;
+
+    while( right < aSize){
+        sum += a[right];
+
+        while(sum > k){
+            sum -= a[left];
+            left++;
+        }
+
+        if(sum == k)
+            longestSub = max( longestSub, right - left + 1);
+
+        right++;
+    }
+    return longestSub;
+}
+
+TC: O(2n)
+SC: O(1)
+
+

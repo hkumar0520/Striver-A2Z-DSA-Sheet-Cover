@@ -1,5 +1,8 @@
 
 
+1. brute force (n*(maxElement - minElement), 1)
+2. optimal (n*log(maxElement - minElement),  1)
+
 
 int makebanquets(vector<int> arr, int k, int m, int mid)
 {
@@ -47,4 +50,144 @@ int roseGarden(vector<int> arr, int k, int m)
 	}
 	return lo;
 }
+
+
+
+##############################################################################################
+
+
+class Solution {
+public:
+    bool canBloom(vector<int>& bloomDay, int dayLimit, int m, int k){
+        int countFlower = 0, countBouquet = 0;
+        for(int day: bloomDay){
+            if(day <= dayLimit){
+                countFlower++;
+                if(countFlower == k){
+                    countFlower = 0;
+                    countBouquet++;
+                }
+            }
+            else
+                countFlower = 0;
+        }
+
+        return ( countBouquet >= m );
+    }
+    int minDays(vector<int>& bloomDay, int m, int k) {
+        if( (long)m*k > bloomDay.size())  return -1;
+
+        int minElement = INT_MAX, maxElement = INT_MIN;
+        for(int day: bloomDay){
+            minElement = min( minElement, day);
+            maxElement = max( maxElement, day);
+        }
+        // initially i( only min flower blooms), j( every flower blooms)
+        // after bs, on i(shift right) flower blooms with given condition
+        int i = minElement;
+
+        for(; i<=maxElement; i++){
+            if(canBloom(bloomDay, i, m, k))
+                return i;
+        }
+
+        return -1;
+    }
+};
+
+TC: n*(maxElement - minElement)
+SC: O(1)
+
+
+
+##############################################################################################
+
+class Solution {
+public:
+    bool canBloom(vector<int>& bloomDay, int dayLimit, int m, int k){
+        int countFlower = 0, countBouquet = 0;
+        for(int day: bloomDay){
+            if(day <= dayLimit){
+                countFlower++;
+                if(countFlower == k){
+                    countFlower = 0;
+                    countBouquet++;
+                }
+            }
+            else
+                countFlower = 0;
+        }
+
+        return ( countBouquet >= m );
+    }
+    int minDays(vector<int>& bloomDay, int m, int k) {
+        if( (long)m*k > bloomDay.size())  return -1;
+
+        int minElement = INT_MAX, maxElement = INT_MIN;
+        for(int day: bloomDay){
+            minElement = min( minElement, day);
+            maxElement = max( maxElement, day);
+        }
+        // initially i( only min flower blooms), j( every flower blooms)
+        // after bs, on i(shift right) flower blooms with given condition
+        int i = minElement, j = maxElement;
+        while( i<= j){
+            int mid = (i+j)/2;
+            bool isPossible = canBloom(bloomDay, mid, m, k); 
+            if( isPossible )
+                j = mid-1;
+            else
+                i = mid+1;
+        }
+        return i;
+    }
+};
+
+Let's analyze the **time and space complexity** of the given code.
+
+---
+
+## **Time Complexity Analysis**
+The code is solving the **"Minimum Days to Make m Bouquets"** problem using **binary search**. Here's a breakdown:
+
+1. **Finding the Minimum and Maximum Bloom Day:**  
+   - The loop iterates through `bloomDay` once to find `minElement` and `maxElement`.  
+   - This takes **O(N)** time.
+
+2. **Binary Search on Days:**  
+   - The search space is from `minElement` to `maxElement`, which is at most **O(M)** (where M is the range of days).
+   - Binary search operates in **O(log M)** time.
+
+3. **Checking Feasibility (`canBloom` function):**  
+   - For each `mid`, the function **checks** whether it's possible to make `m` bouquets.
+   - This function iterates through the entire `bloomDay` array (O(N)) for each binary search step.
+
+Since the binary search runs in **O(log M)** time, and each step requires **O(N)** time for `canBloom`, the total time complexity is:
+
+\[
+O(N + N \log M) = O(N \log M)
+\]
+
+---
+
+## **Space Complexity Analysis**
+1. The algorithm uses only a few integer variables (`i`, `j`, `mid`, `minElement`, `maxElement`).
+2. No additional data structures are used.
+3. The `canBloom` function only uses constant extra space.
+
+Thus, the space complexity is:
+
+\[
+O(1)
+\]
+
+---
+
+## **Final Complexity**
+- **Time Complexity:** \( O(N \log M) \), where \( N \) is the size of `bloomDay` and \( M \) is the range of bloom days.  
+- **Space Complexity:** \( O(1) \).  
+
+This is an efficient approach using **binary search on the answer** instead of brute-force checking all possible days. 🚀
+
+
 

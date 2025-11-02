@@ -1,0 +1,274 @@
+
+
+1. Brute force (n*n, 1)
+2. using pse, nsee (10n, 5n)
+3. using monotonic increasing stack(2n, n)
+
+
+class Solution {
+public:
+    int sumSubarrayMins(vector<int>& arr) {
+        int  mod = 1e9 + 7, len = arr.size();
+        long ans = 0;
+
+        for(int i = 0; i < len ; i++){
+            int minElement = arr[i];
+            for(int j = i; j < len ; j++){
+                minElement = min(minElement, arr[j]);
+
+                ans = (ans + minElement) % mod;
+            }
+        }
+
+        return ans;
+    }
+};
+
+TC: O(n*n)
+SC: O(1)
+
+
+
+
+
+
+
+
+
+#######################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Solution {
+public:
+    int sumSubarrayMins(vector<int>& arr) {
+        stack<int> st;
+        st.push(0);
+        arr.insert(arr.begin(), 0);
+
+        int len = arr.size(), mod = 1e9 + 7;
+        vector<int> result(len, 0);
+
+        for(int i = 1; i < len; i++){
+            while(arr[st.top()] > arr[i])
+                st.pop();
+
+            int j = st.top();
+            result[i] = (result[j] + (i - j)*arr[i]) % mod;
+            st.push(i);
+        }
+
+        int ans = 0;
+        for(int i = 0; i<len; i++)
+            ans = (ans + result[i]) % mod;
+
+        return ans;
+    }
+};
+
+TC: O(n)  + O(n) + O(n)
+SC: O(n)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+striver video method( using prevSmallerEqual, nextSmaller)
+
+class Solution {
+public:
+
+    // index earlier than  prev smaller, equal element
+    // increasing stack 
+    vector<int> findPrevSmallerEqual(vector<int>& heights){
+        int len = heights.size();
+        stack<int> st;
+        vector<int> ans(len, -1);
+        for(int i = 0; i<len; i++){
+            if(st.empty())
+                st.push(i);
+            else{
+
+                while(!st.empty() && heights[st.top()] > heights[i])
+                    st.pop();
+                if(!st.empty())
+                    ans[i] = st.top() + 1;
+                
+                st.push(i);
+            }
+        }
+        // if no prev smaller found, then assign 0 index
+        for(int i = 0; i<len; i++){
+            if(ans[i] == -1)
+                ans[i] = 0;
+        }
+        return ans;
+    }
+    
+    // index of element before next smaller element
+    // increasing stack 
+    vector<int> findNextSmaller(vector<int>& heights){
+        int len = heights.size();
+        vector<int> ans(len, -1);
+        stack<int> st;
+        for(int i = 0; i<len; i++){
+            while(!st.empty() && heights[st.top()] > heights[i]){
+                ans[st.top()] = i-1;
+                st.pop();
+            }
+            st.push(i);
+        }
+        // if no next smaller found assign len-1
+        for(int i = 0; i<len; i++){
+            if(ans[i] == -1)
+                ans[i] = len-1;
+        }
+        return ans;
+    }
+
+    int sumSubarrayMins(vector<int>& arr) {
+        int len = arr.size(), mod = 1e9 + 7;
+        long totalSum = 0;
+
+        vector<int> prevSmaller = findPrevSmallerEqual(arr);
+        vector<int> nextSmaller = findNextSmaller(arr);
+
+        for(int i = 0; i<len; i++){
+            int prev = prevSmaller[i];
+            int next = nextSmaller[i];
+            totalSum = (totalSum + 1L*(i - prev + 1)*(next - i+1)*arr[i]) % mod;
+        }
+        return totalSum;
+    }
+};
+
+TC: O(3n) + O(3n) + O(n)
+SC: O(2n) + O(2n) + O(2n)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##############################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+using prevSmaller, nextSmallerEqual 
+
+class Solution {
+public:
+
+    // index earlier than  prev smaller
+    vector<int> findPrevSmaller(vector<int>& heights){
+        int len = heights.size();
+        stack<int> st;
+        vector<int> ans(len, -1);
+        for(int i = 0; i<len; i++){
+            if(st.empty())
+                st.push(i);
+            else{
+
+                while(!st.empty() && heights[st.top()] >= heights[i])
+                    st.pop();
+                if(!st.empty())
+                    ans[i] = st.top() + 1;
+                
+                st.push(i);
+            }
+        }
+        // if no prev smaller found, then assign 0 index
+        for(int i = 0; i<len; i++){
+            if(ans[i] == -1)
+                ans[i] = 0;
+        }
+        return ans;
+    }
+    
+    // index of element before next smaller element, equal
+    vector<int> findNextSmallerEqual(vector<int>& heights){
+        int len = heights.size();
+        vector<int> ans(len, -1);
+        stack<int> st;
+        for(int i = 0; i<len; i++){
+            while(!st.empty() && heights[st.top()] >= heights[i]){
+                ans[st.top()] = i-1;
+                st.pop();
+            }
+            st.push(i);
+        }
+        // if no next smaller found assign len-1
+        for(int i = 0; i<len; i++){
+            if(ans[i] == -1)
+                ans[i] = len-1;
+        }
+        return ans;
+    }
+
+    int sumSubarrayMins(vector<int>& arr) {
+        int len = arr.size(), mod = 1e9 + 7;
+        long totalSum = 0;
+
+        vector<int> prevSmaller = findPrevSmaller(arr);
+        vector<int> nextSmaller = findNextSmallerEqual(arr);
+
+        for(int i = 0; i<len; i++){
+            int prev = prevSmaller[i];
+            int next = nextSmaller[i];
+            totalSum = (totalSum + 1L*(i - prev + 1)*(next - i+1)*arr[i]) % mod;
+        }
+        return totalSum;
+    }
+};

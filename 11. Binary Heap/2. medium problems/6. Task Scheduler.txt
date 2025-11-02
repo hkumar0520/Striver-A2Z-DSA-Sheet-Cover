@@ -160,7 +160,6 @@ public:
                         vec.push_back(curr);
 
                     countN--;
-                    countPossibleSequence++;
                     continue;
                }
 
@@ -169,9 +168,8 @@ public:
                     break;
                 
                 countN--;
-                countPossibleSequence++;
             }
-
+            countPossibleSequence += n - countN;
             for(auto curr: vec)
                 pq.push(curr);
         }

@@ -1,0 +1,68 @@
+
+
+
+class Solution {
+public:
+    
+    string longestCommonSubsequence(string str1, string str2) {
+        int m = str1.size(), n = str2.size();
+
+        vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+
+        for(int ind1 = 1; ind1 <= m ; ind1++){
+            for(int ind2 = 1; ind2 <= n; ind2++){
+
+                int pick = 0;
+                if(str1[ind1-1] == str2[ind2-1])
+                    pick = 1 + dp[ind1 - 1][ind2 - 1];
+
+                int notpick = max( dp[ind1-1][ind2], dp[ind1][ind2-1]);
+
+                dp[ind1][ind2] = max( pick, notpick);
+            }
+        }
+
+        string ans = "";
+        int i = m, j = n;
+        while(i > 0 && j > 0){
+            if(dp[i][j] == dp[i-1][j]){
+                ans += str1[i-1];
+                i--;
+            }
+            else if(dp[i][j] == dp[i][j-1]){
+                ans += str2[j-1];
+                j--;
+            }
+            else{
+                ans += str1[i-1];
+                i--;
+                j--;
+            }
+        }
+
+        while(i > 0){
+            ans += str1[i-1];
+            i--;
+        }
+        while(j > 0){
+            ans += str2[j-1];
+            j--;
+        }
+
+        reverse(ans.begin(), ans.end());
+        return ans;
+
+    }
+    string shortestCommonSupersequence(string str1, string str2) {
+        return longestCommonSubsequence(str1, str2);
+    }
+};
+
+
+TC: O(m*n) + O(m + n) + O(m + n){
+    reverse, while loop = m + n 
+    nested loop = m * n 
+}
+
+SC: O(m*n) + O(m + n)
+

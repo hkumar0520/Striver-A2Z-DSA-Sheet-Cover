@@ -1,0 +1,62 @@
+
+
+https://www.geeksforgeeks.org/problems/maximum-sum-problem2211/1?page=1&category=Dynamic%20Programming
+
+
+1. recursion 
+2. memoization
+
+
+class Solution {
+  public:
+    int f(int n){
+        if(n < 2)   return 0;
+        
+        
+        int firstNum = max(n/2, f(n/2));
+        int secondNum = max(n/3, f(n/3));
+        int thirdNum = max(n/4, f(n/4));
+        
+        return firstNum + secondNum + thirdNum;
+    }
+  
+    int maxSum(int n) {
+        // code here.
+        
+        return  max(n, f(n));
+    }
+};
+
+TC: O(3^log(n))
+SC: log(n)
+
+
+###############################################################################################
+
+
+class Solution {
+  public:
+    int f(int n, vector<int>& dp){
+        if(n < 2)   return 0;
+        
+        if(dp[n] != -1) return dp[n];
+        
+        int firstNum = max(n/2, f(n/2, dp));
+        int secondNum = max(n/3, f(n/3, dp));
+        int thirdNum = max(n/4, f(n/4, dp));
+        
+        return dp[n] = firstNum + secondNum + thirdNum;
+    }
+  
+    int maxSum(int n) {
+        // code here.
+        vector<int> dp(n+1, -1);
+        return  dp[n] = max(n, f(n, dp));
+    }
+};
+
+TC: 3*logn
+SC: O(logn) + n 
+
+
+

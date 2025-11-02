@@ -1,0 +1,15 @@
+Convert from Infix to Postfix and Prefix
+convert a+b*(c^d-e) to Postfix : abcd^e-*+
+convert (A+B)*C-D+F to Prefix : +-*+ABCDF
+
+Convert from Postfix to Infix
+convert AB-DE+F*/ to Infix : ((A-B)/((D+E)*F))
+
+Convert from Prefix to Infix
+convert *+PQ-MN to Infix : ((P+Q)*(M-N))
+
+Convert from Postfix to Prefix
+convert AB-DE+F*/ to Prefix : /-AB*+DEF
+
+Convert from Prefix to Postfix
+convert /-AB*+DEF to postfix : AB-DE+F*/

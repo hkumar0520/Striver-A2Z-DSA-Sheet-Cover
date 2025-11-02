@@ -20,6 +20,10 @@ int matrixChainMultiplication(int* arr, int n) {
     return f(1,n, arr);
 }
 
+TC: exponential
+SC: O(n)
+
+
 ###############################################################################################
 // memoization
 
@@ -47,6 +51,12 @@ int matrixChainMultiplication(int* arr, int n) {
     // Write your code here
     vector<vector<int>> dp(n,vector<int>(n+1,-1));
     return f(1,n, arr, dp);
+}
+
+TC: O(n*n * n)
+SC: O(n*n) + O(n){
+    dp = n*n
+    stack space = n
 }
 
 
@@ -80,6 +90,15 @@ int matrixChainMultiplication(int* arr, int n) {
     vector<vector<int>> dp(n+1,vector<int>(n+1,-1));
     return f(n+1, arr, dp);
 }
+
+TC: n*n*n
+SC: n*n
+
+##########################################################################################################
+
+// memoization to tabular approach
+
+
 
 
 ###############################################################################################

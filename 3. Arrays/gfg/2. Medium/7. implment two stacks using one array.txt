@@ -1,0 +1,61 @@
+
+
+https://www.geeksforgeeks.org/problems/implement-two-stacks-in-an-array/1?page=1&category=Arrays
+
+
+
+class twoStacks {
+  public:
+    vector<int> arr;
+    int sizeOfFirstSt;
+    int sizeOfSecondSt;
+    twoStacks() {
+        arr = {};
+        sizeOfFirstSt = 0;
+        sizeOfSecondSt = 0;
+    }
+
+    // Function to push an integer into the stack1.
+    void push1(int x) {
+        // code here
+        arr.insert(arr.begin(), x);
+        sizeOfFirstSt++;
+    }
+
+    // Function to push an integer into the stack2.
+    void push2(int x) {
+        // code here
+        arr.push_back(x);
+        sizeOfSecondSt++;
+    }
+
+    // Function to remove an element from top of the stack1.
+    int pop1() {
+        // code here
+        if(sizeOfFirstSt == 0)
+            return -1;
+            
+        sizeOfFirstSt--;
+        int element = arr[0];
+        arr.erase(arr.begin());
+        
+        return element;
+    }
+
+    // Function to remove an element from top of the stack2.
+    int pop2() {
+        // code here
+        if(sizeOfSecondSt == 0)
+            return -1;
+            
+        sizeOfSecondSt--;
+        int element = arr[arr.size()-1];
+        arr.pop_back();
+        
+        return element;
+    }
+};
+
+TC: O(n)
+SC: O(n)
+

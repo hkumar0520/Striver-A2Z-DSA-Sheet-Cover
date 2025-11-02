@@ -1,0 +1,93 @@
+
+TLE, 1010/1100
+
+
+class Solution {
+  public:
+    int findSubset(int idx, int sum, int target, vector<int>& arr){
+        if(idx == arr.size()){
+            if( sum == target)
+                return 1;
+            return 0;
+        }
+        
+        int include = 0;
+        // include
+        if( (sum + arr[idx]) <= target)
+            include = findSubset(idx + 1, sum + arr[idx], target, arr);
+            
+        int exclude = findSubset(idx + 1, sum, target, arr);
+        
+        return (include + exclude);
+    }
+    int perfectSum(vector<int>& arr, int target) {
+        // code here
+        return findSubset(0, 0, target, arr);
+    }
+};
+
+
+
+##############################################################################################
+
+
+class Solution {
+  public:
+    int findSubset(int idx, int sum, int target, vector<int>& arr){
+        if(idx == arr.size()){
+            if( sum == target)
+            {
+                // print subsequence
+                return 1
+            }
+            return 0;
+        }
+        
+        int include = 0;
+        // include
+        if( (sum + arr[idx]) <= target)
+            include = findSubset(idx + 1, sum + arr[idx], target, arr);
+            
+        int exclude = findSubset(idx + 1, sum, target, arr);
+        
+        return (include + exclude);
+    }
+    int perfectSum(vector<int>& arr, int target) {
+        // code here
+        return findSubset(0, 0, target, arr);
+    }
+};
+
+
+#####################################################################################
+
+class Solution {
+  public:
+    bool findSubset(int idx, int sum, int target, vector<int>& arr){
+        if(idx == arr.size()){
+            if( sum == target)
+            {
+                // print subsequence
+                return true;
+            }
+            return false;
+        }
+        
+        int include = false;
+        // include
+        if( (sum + arr[idx]) <= target)
+            include = findSubset(idx + 1, sum + arr[idx], target, arr);
+            
+        int exclude = findSubset(idx + 1, sum, target, arr);
+        
+        return (include | exclude);
+    }
+    bool perfectSum(vector<int>& arr, int target) {
+        // code here
+        return findSubset(0, 0, target, arr);
+    }
+};
+
+
+
+

@@ -65,7 +65,43 @@ int longestIncreasingSubsequence(int arr[], int n)
 
 // too long to execute 
 
+class Solution {
+public:
+    int f(vector<int> nums, vector<vector<int>> dp)
+    {
+        int n = nums.size();
+        for(int i=0;i<n;i++)
+        {
+            for(int j = i+1;j<n+1;j++)
+            {
+                int  notpick = 0;
+                if(i-1>=0)
+                    notpick = dp[i-1][j];
+                int pick = 0;
+                if(j == n || nums[i]<nums[j])
+                {
+                    pick = 1;
+                    if(i-1>=0)
+                        pick = pick +dp[i-1][i];
+                
+                }
+                    
+                dp[i][j]= max(notpick, pick);
+            }
+        }
+        return dp[n-1][n];
+    }
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> dp(n,vector<int>(n+1,0));
+        return f(nums,dp);
+    }
+};
 
+
+
+###############################################################################################
+// optimization
 #include<bits/stdc++.h>
 
 int f(int arr[], int n)
@@ -91,6 +127,3 @@ int longestIncreasingSubsequence(int arr[], int n) {
     return f(arr,n);
 }
 
-
-###############################################################################################
-// optimization

@@ -1,0 +1,38 @@
+
+
+
+class Solution {
+  public:
+    vector<long long> distributeCandies(int N, int K) {
+        // code here
+        vector<long long> arr(K, 0);
+        long long cnt = 1, index = 0;
+        while(N > 0){
+            if(cnt <= N){
+                arr[index] += cnt;
+                
+                N = N - cnt;
+                cnt++;
+                
+                // index within k
+                index++;
+                index = index % K;
+            }
+            else{
+                arr[index] += N;
+                N = 0;
+            }
+        }
+        return arr;
+    }
+};
+
+TC: O( pow(N, 0.5 ))
+SC: O(1)
+
+
+solve  x*x + x -2N  = 0
+as (x*x + x)/2 = N
+
+
+

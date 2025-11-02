@@ -30,3 +30,66 @@ int findMin(vector<int>& arr)
 }
 
 
+###########################################################################################
+
+
+
+class Solution {
+public:
+    int findMin(vector<int>& arr) {
+
+	// Write your code here.
+	int n = arr.size();
+	int i=0,j = n-1, ans = INT_MAX;
+    while(i<=j)
+    {
+        int mid = (i+j)/2;
+        
+        if(arr[i]<=arr[mid])
+        {
+            ans = min(ans,arr[i]);
+            i = mid+1;
+        }
+        else
+        {
+            ans = min(ans,arr[mid]);
+            j = mid-1;
+        }
+        
+    }
+	return ans;  
+    }
+};
+
+Let's analyze the **time and space complexity** of the given C++ code.
+
+### **Time Complexity Analysis**
+The code is using a modified **binary search** approach to find the minimum element in a rotated sorted array.
+
+1. The array is divided into two halves in each iteration.
+2. The search space is reduced by half at every step.
+3. This results in a logarithmic behavior, making the worst-case time complexity **O(log N)**, where \( N \) is the size of the input array.
+
+**Breakdown of operations:**
+- The `while` loop runs while \( i \leq j \).
+- In each iteration, the index range is halved (either `i = mid + 1` or `j = mid - 1`).
+- Since the problem follows a binary search approach, the number of iterations is at most **log₂(N)**.
+
+Thus, the **time complexity is O(log N)**.
+
+---
+
+### **Space Complexity Analysis**
+- The algorithm only uses a few integer variables (`i, j, ans, mid`).
+- No extra data structures are used except for the input array, which is given as an argument.
+- No recursion is used (which could add stack space overhead).
+
+Thus, the **space complexity is O(1)**, as the algorithm runs in constant extra space.
+
+---
+
+### **Final Complexity**
+- **Time Complexity:** **O(log N)**
+- **Space Complexity:** **O(1)**
+
+This makes the solution efficient for large inputs. 🚀

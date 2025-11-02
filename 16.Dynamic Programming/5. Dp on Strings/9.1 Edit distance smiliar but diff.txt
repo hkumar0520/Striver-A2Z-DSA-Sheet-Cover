@@ -1,0 +1,94 @@
+
+https://leetcode.com/problems/delete-operation-for-two-strings/
+
+class Solution {
+public:
+    int f(int ind1, string s, int ind2, string t,vector<vector<int>>&  dp)
+    {
+        if(ind1<0)   return ind2+1;
+        if(ind2<0)  return ind1+1;
+
+        if(dp[ind1][ind2] != -1)    return dp[ind1][ind2];
+
+        if(s[ind1] == t[ind2])  return dp[ind1][ind2] = f(ind1-1,s, ind2-1,t,dp);
+
+        int dels = f(ind1-1,s,ind2,t,dp);
+        int delt = f(ind1,s,ind2-1,t,dp);
+        return dp[ind1][ind2] = min(dels,delt)+1;
+    }
+    int minDistance(string word1, string word2) {
+        int m = word1.size(), n = word2.size();
+        vector<vector<int>>  dp(m,vector<int>(n,-1));
+        return f(m-1,word1, n-1, word2,dp);
+    }
+};
+
+###############################################################################################
+
+https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/description/
+// memory exceed
+
+class Solution {
+public:
+    int calSum(string t,int n)
+    {
+        int sum = 0;
+        for(int i=0;i<= n;i++)
+            sum += (t[i]-'a')+97;
+        return sum;
+    }
+    int f(int ind1, string s, int ind2, string t,vector<vector<int>>&  dp)
+    {
+        if(ind1<0)   return calSum(t,ind2);
+        if(ind2<0)  return calSum(s,ind1);
+
+        if(dp[ind1][ind2] != -1)    return dp[ind1][ind2];
+
+        if(s[ind1] == t[ind2])  return dp[ind1][ind2] = f(ind1-1,s, ind2-1,t,dp);
+
+        int dels = f(ind1-1,s,ind2,t,dp) + (s[ind1]-'a')+97;
+        int delt = f(ind1,s,ind2-1,t,dp) + (t[ind2]-'a')+97;
+        return dp[ind1][ind2] = min(dels,delt);
+    }
+    int minimumDeleteSum(string word1, string word2) {
+        int m = word1.size(), n = word2.size();
+        vector<vector<int>>  dp(m,vector<int>(n,-1));
+        return f(m-1,word1, n-1, word2,dp);
+    }
+};
+
+
+
+
+// correct with memoization, added alias in arguement list 
+
+class Solution {
+public:
+    int calSum(string& t, int n)
+    {
+        int sum = 0;
+        for(int i=0;i<= n;i++)
+            sum += (t[i]-'a')+97;
+        return sum;
+    }
+    int f(int ind1, string& s, int ind2, string& t, vector<vector<int>>&  dp)
+    {
+        if(ind1<0)   return calSum(t,ind2);
+        if(ind2<0)  return calSum(s,ind1);
+
+        if(dp[ind1][ind2] != -1)    return dp[ind1][ind2];
+
+        if(s[ind1] == t[ind2])  return dp[ind1][ind2] = f(ind1-1,s, ind2-1,t,dp);
+
+        int dels = f(ind1-1,s,ind2,t,dp) + (s[ind1]-'a')+97;
+        int delt = f(ind1,s,ind2-1,t,dp) + (t[ind2]-'a')+97;
+        return dp[ind1][ind2] = min(dels,delt);
+    }
+    int minimumDeleteSum(string word1, string word2) {
+        int m = word1.size(), n = word2.size();
+        vector<vector<int>>  dp(m,vector<int>(n,-1));
+        
+        return f(m-1, word1, n-1, word2, dp);
+    }
+};
+

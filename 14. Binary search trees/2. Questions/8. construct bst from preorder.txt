@@ -1,0 +1,237 @@
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+
+    TreeNode* bstFromPreorder(int start, int end, vector<int>& preorder) {
+        if(start > end) return nullptr;
+        if(start == end)    return new TreeNode(preorder[start]);
+
+        int idx = start + 1;
+        for( ; idx <= end; idx++){
+            if(preorder[idx] > preorder[start])
+                break;
+        }
+
+        TreeNode* newNode = new TreeNode(preorder[start]);
+        newNode->left = bstFromPreorder(start + 1, idx-1, preorder);
+        newNode->right = bstFromPreorder(idx, end, preorder);
+
+        return newNode;
+    }
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        return bstFromPreorder(0, preorder.size()-1, preorder);
+    }
+};
+
+
+TC: O( nlogn )
+sc: O(n)
+
+
+### Time and Space Complexity of the `bstFromPreorder` Function:
+
+#### **Time Complexity**:
+
+1. **Recursion & Tree Construction**:
+
+   * The function `bstFromPreorder(int start, int end, vector<int>& preorder)` is called recursively to build the BST.
+   * At each level of recursion, you are iterating through a segment of the `preorder` array to find the right boundary for the left subtree (i.e., the first element greater than the root).
+   * This iteration takes **O(n)** time for each recursive call, where `n` is the number of nodes in the current segment of the tree.
+
+2. **Breaking Down the Recursion**:
+
+   * In total, you perform `O(n)` comparisons (in the worst case) to find the boundary at each level.
+   * In the worst case, the tree could be unbalanced (e.g., if the `preorder` array is sorted), and each node would be processed individually in a manner similar to a linked list.
+   * This results in **O(n^2)** time complexity in the worst case.
+
+   **Best case (Balanced BST)**:
+
+   * In the best case, where the tree is perfectly balanced, the recursion depth is logarithmic, and each node is processed linearly. In this case, the time complexity will be **O(n log n)**.
+
+   **Worst-case (Unbalanced Tree)**:
+
+   * The worst case occurs when the BST degenerates into a skewed tree (like a linked list), where each node only has one child. This will make the solution perform `O(n)` work per level, leading to a total time complexity of **O(n^2)**.
+
+3. **Final Time Complexity**:
+
+   * **Worst-case time complexity**: **O(n^2)**
+   * **Best-case time complexity**: **O(n log n)**
+
+---
+
+#### **Space Complexity**:
+
+1. **Recursive Stack**:
+
+   * The recursive function uses the call stack to handle function calls. The space used by the call stack is proportional to the height of the tree.
+
+   * **Best case (Balanced BST)**: In a balanced tree, the height of the tree is **O(log n)**, so the space complexity for the recursive calls would be **O(log n)**.
+
+   * **Worst case (Unbalanced BST)**: In the worst case, when the tree is unbalanced (e.g., if the preorder array is sorted in increasing or decreasing order), the height of the tree becomes **O(n)**, leading to a worst-case space complexity of **O(n)**.
+
+2. **Additional Space**:
+
+   * The space used by the BST itself (the nodes and the tree structure) is **O(n)**, but this is not considered extra space, as it's required for the problem's output.
+
+3. **Final Space Complexity**:
+
+   * **Worst-case space complexity**: **O(n)** (for an unbalanced tree)
+   * **Best-case space complexity**: **O(log n)** (for a balanced tree)
+
+---
+
+### Final Summary:
+
+* **Time Complexity**:
+
+  * **Worst-case**: **O(n^2)** (unbalanced tree)
+  * **Best-case**: **O(n log n)** (balanced tree)
+* **Space Complexity**:
+
+  * **Worst-case**: **O(n)** (unbalanced tree)
+  * **Best-case**: **O(log n)** (balanced tree)
+
+Let me know if you need any further clarification or examples!
+
+
+
+##########################################################################################################################
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+
+    TreeNode* bstFromPreorder(int start, int end, vector<int>& preorder) {
+        if(start > end) return nullptr;
+        if(start == end)    return new TreeNode(preorder[start]);
+
+        int low = start + 1, high = end;
+        while(low <= high){
+            int mid = ( low + high)/2;
+
+            if(preorder[mid] > preorder[start])
+                high = mid-1;
+            else
+                low = mid+1;
+        }
+
+        int idx = low;
+
+        TreeNode* newNode = new TreeNode(preorder[start]);
+        newNode->left = bstFromPreorder(start + 1, idx-1, preorder);
+        newNode->right = bstFromPreorder(idx, end, preorder);
+
+        return newNode;
+    }
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        return bstFromPreorder(0, preorder.size()-1, preorder);
+    }
+};
+
+TC: logn * logn
+SC: logn
+
+
+
+
+This version of `bstFromPreorder` uses a **binary search** to find the boundary index where the right subtree starts — an optimization over the linear scan used in the earlier version.
+
+---
+
+## ✅ **Goal**
+
+Build a **Binary Search Tree (BST)** from a **preorder traversal** array in **O(n log n)** time using binary search instead of a linear scan to find subtree boundaries.
+
+---
+
+## 🔍 Time Complexity
+
+### 1. **Binary Search in Each Call**
+
+* For each node (i.e., each recursive call), you're doing a binary search to find the split point (`idx`) — where values go from `< root->val` (left subtree) to `> root->val` (right subtree).
+* Binary search takes **O(log n)** time for a segment of size `n`.
+
+### 2. **Recursive Tree Construction**
+
+* Each node in the preorder list is used **once**, so you're making **O(n)** recursive calls in total — one for each node.
+
+### 🧠 **Putting it together:**
+
+* For each of the `n` nodes, you may perform a **binary search** over a portion of the array, which in the worst case could have up to `O(log n)` steps.
+* So, the **total time complexity is**:
+
+> 🔸 **O(n log n)** — because you do `O(log n)` work (binary search) at each of the `n` recursive calls.
+
+### ⚠️ Important Note:
+
+This assumes **balanced partitioning** of the tree. If the input is such that it always produces a skewed tree (like a sorted array), the binary search becomes less effective, and this can degrade to **O(n^2)** in practice due to repeated binary searches on long skewed segments.
+
+So, strictly:
+
+* **Average / Best Case:** **O(n log n)**
+* **Worst Case (skewed tree):** **O(n log n)** (binary search still runs in log time, but depth of recursion becomes large)
+
+### Why not O(n^2) like the linear scan version?
+
+Because binary search is still O(log n), even in the worst case, and you still only build `n` nodes. You're never iterating over full slices like in the linear scan version.
+
+---
+
+## 🗃️ Space Complexity
+
+### 1. **Call Stack**
+
+* This is a **recursive** solution.
+
+* The space used on the stack depends on the **height of the tree**.
+
+* **Best / Average case (balanced tree)**: O(log n)
+
+* **Worst case (completely unbalanced tree)**: O(n)
+
+### 2. **Tree Structure**
+
+* Each node is stored once in the final BST: **O(n)** space.
+* However, this is part of the **output**, so we **don’t count it as extra space**.
+
+---
+
+## ✅ Final Complexity Summary
+
+| Type           | Complexity         |
+| -------------- | ------------------ |
+| Time (average) | **O(n log n)**     |
+| Time (worst)   | **O(n log n)**     |
+| Space (avg)    | **O(log n)** stack |
+| Space (worst)  | **O(n)** stack     |
+
+---
+
+Let me know if you'd like to improve this to **O(n)** time with an index and value bounds approach — it’s possible and very efficient.
+
+
+
+

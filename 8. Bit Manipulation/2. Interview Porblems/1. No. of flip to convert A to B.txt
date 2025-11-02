@@ -1,0 +1,53 @@
+
+
+class Solution {
+public:
+    int minBitFlips(int start, int goal) {
+        
+        // find  Xor
+        int num = start ^ goal;
+        int countSetBits = 0;
+        while(num > 0){
+            num = num & ( num -1 );
+            countSetBits++;
+        }
+        return countSetBits;
+    }
+};
+
+/*
+Time Complexity - O(K)
+k = no. of setbits in XOR
+
+*/
+
+
+Let's analyze the provided code in terms of **time complexity** and **space complexity**.
+
+### Code Breakdown:
+The goal of the function `minBitFlips` is to determine the number of bits that need to be flipped to convert `start` to `goal`.
+
+1. **XOR operation (`start ^ goal`)**:
+   - The XOR operation compares each bit of `start` and `goal`. If the bits are different, the corresponding bit in the result is set to 1; otherwise, it's set to 0. This operation takes constant time \(O(1)\) with respect to the size of the integers, but the number of operations depends on the bit size of the integers.
+
+2. **Counting set bits (`num = num & (num - 1)`)**:
+   - The `num & (num - 1)` operation removes the lowest set bit (rightmost 1) from the number. This reduces the number of set bits in the number by one on each iteration.
+   - The while loop continues until `num` becomes 0.
+   - The number of iterations of the loop is determined by the number of **set bits** in `num`. The operation `num & (num - 1)` reduces the number of set bits by 1 in each iteration, so the loop runs as many times as there are set bits in `num`.
+
+### Time Complexity:
+- The XOR operation `start ^ goal` is constant time \(O(1)\), but the number of set bits in the XOR result determines how many times the while loop runs.
+- In the worst case, the number of iterations in the loop is proportional to the number of set bits in `num`, which can be represented as \(O(k)\), where \(k\) is the number of set bits in `num`.
+
+Thus, the **time complexity** is **O(k)**, where \(k\) is the number of set bits in the XOR of `start` and `goal`.
+
+Since the number of set bits \(k\) can be at most \(O(\log n)\), where \(n\) is the number represented by `start` or `goal`, we can also say the time complexity is **O(\log n)**, where \(n\) is the size of the number (bitwise size).
+
+### Space Complexity:
+- The space complexity is determined by the amount of extra space used by the algorithm.
+- The function uses a constant amount of extra space for variables like `num` and `countSetBits`.
+- Therefore, the **space complexity** is **O(1)**.
+
+### Summary:
+- **Time Complexity**: O(k) (where \(k\) is the number of set bits in the XOR of `start` and `goal`)
+- **Space Complexity**: O(1)

@@ -1,0 +1,192 @@
+
+
+
+
+/* Tree node structure  used in the program
+
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};*/
+
+class Solution {
+  public:
+    /*You are required to complete this method */
+    // Return the size of the largest sub-tree which is also a BST
+    
+    int maxCnt = 0;
+    tuple<int, int, int, bool> traverseTreeToSum(Node* root){
+        if(root == nullptr) return {0, -1e9, 1e9, true};
+
+        auto[ leftCnt, maxLeft, minLeft, isLeftBst] = traverseTreeToSum(root->left);
+        auto[ rightCnt, maxRight, minRight, isRightBst] = traverseTreeToSum(root->right);
+
+        int currentCnt = leftCnt + rightCnt + 1;
+        int maxNum = max({ maxLeft, maxRight, root->data });
+        int minNum = min({ minLeft, minRight, root->data });
+
+        bool isBst = false;
+        if( root->data > maxLeft &&
+            root->data < minRight &&
+            isLeftBst && isRightBst){
+                maxCnt = max(maxCnt, currentCnt);
+                isBst = true;
+        }
+
+        return {currentCnt, maxNum, minNum, isBst};
+    }
+
+
+    int largestBst(Node *root) {
+        // Your code here
+        if(root == nullptr) return 0;
+        traverseTreeToSum(root);
+        return maxCnt;
+        
+    }
+};
+
+
+TC: O(n)
+SC: O(n)
+
+
+###################################################################################################################################
+
+
+refer from here largest sum bst in bt 
+
+
+
+
+
+
+1. using class
+2. using tuple
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+
+class Node{
+    public:
+        int sum;
+        int maxNum;
+        int minNum;
+        bool isBst;
+
+        Node(int x, int num1, int num2, bool isbst) : sum(x) , maxNum(num1), minNum(num2), isBst(isbst) {}
+};
+
+
+class Solution {
+public:
+    int maxSum = 0;
+    Node* traverseTreeToSum(TreeNode* root){
+        if(root == nullptr) return new Node(0, -1e9, 1e9, true);
+
+        Node* leftNode = traverseTreeToSum(root->left);
+        Node* rightNode = traverseTreeToSum(root->right);
+
+        int sum = leftNode->sum +
+                  rightNode-> sum  + root->val;
+        
+        int maxNum = max({ leftNode->maxNum ,
+                          rightNode->maxNum , root->val });
+
+        int minNum = min({ leftNode->minNum ,
+                          rightNode->minNum , root->val });
+
+        bool isBst = false;
+        if( root->val > leftNode->maxNum &&
+            root->val < rightNode->minNum &&
+            leftNode->isBst && rightNode->isBst){
+                maxSum = max(maxSum, sum);
+                isBst = true;
+        }
+
+        return new Node(sum, maxNum, minNum, isBst);
+    }
+
+    int maxSumBST(TreeNode* root) {
+        if(root == nullptr) return 0;
+        traverseTreeToSum(root);
+        return maxSum;
+    }
+};
+
+
+TC: O(n)*4
+SC: O(n)
+
+
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+
+class Solution {
+public:
+    int maxSum = 0;
+    tuple<int, int, int, bool> traverseTreeToSum(TreeNode* root){
+        if(root == nullptr) return {0, -1e9, 1e9, true};
+
+        auto[ leftSum, maxLeft, minLeft, isLeftBst] = traverseTreeToSum(root->left);
+        auto[ rightSum, maxRight, minRight, isRightBst] = traverseTreeToSum(root->right);
+
+        int sum = leftSum + rightSum + root->val;
+        int maxNum = max({ maxLeft, maxRight, root->val });
+        int minNum = min({ minLeft, minRight, root->val });
+
+        bool isBst = false;
+        if( root->val > maxLeft &&
+            root->val < minRight &&
+            isLeftBst && isRightBst){
+                maxSum = max(maxSum, sum);
+                isBst = true;
+        }
+
+        return {sum, maxNum, minNum, isBst};
+    }
+
+    int maxSumBST(TreeNode* root) {
+        if(root == nullptr) return 0;
+        traverseTreeToSum(root);
+        return maxSum;
+    }
+};
+
+
+
+

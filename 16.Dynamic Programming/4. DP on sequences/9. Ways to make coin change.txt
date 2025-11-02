@@ -1,4 +1,8 @@
 
+similar to 7, minimum coint to target infinite supply
+here no. of combinations to target infinite supply of coins 
+
+
 // recursion
 
 long f(int ind, int value, int *denominations)

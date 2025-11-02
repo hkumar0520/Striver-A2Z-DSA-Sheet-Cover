@@ -1,0 +1,42 @@
+
+
+class Solution{
+    public:
+    
+    int getValFromMid(int tree[], int height, int n){
+        int sum = 0;
+        for(int i = 0; i<n; i++){
+            if( tree[i] >= height)
+                sum += ( tree[i] - height);
+        }
+        return sum;
+    }
+    int find_height(int tree[], int n, int k)
+    {
+        // code here
+        int maxNumber = INT_MIN;
+        for(int i = 0; i<n; i++){
+            maxNumber = max(maxNumber, tree[i]);
+        }
+        
+        int low = 1, high = maxNumber;
+        while(low <= high){
+            int mid = (low + high)/2;
+            
+            int val = getValFromMid(tree, mid, n);
+            
+            if(val == k)
+                return mid;
+            if(val > k){
+                low = mid+1;
+            }
+            else
+                high = mid-1;
+        }
+        return -1;
+    }
+};
+
+
+TC: n*log(MaxNumber)
+SC: O(1)

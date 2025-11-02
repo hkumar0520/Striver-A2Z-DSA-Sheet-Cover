@@ -25,6 +25,9 @@ int ninjaTraining(int n, vector<vector<int>> &points)
     return max(pickOne, max(picktwo, pickthree));
 }
 
+TC: O(2^n)
+SC: O(n)
+
 
 ###############################################################################################
 

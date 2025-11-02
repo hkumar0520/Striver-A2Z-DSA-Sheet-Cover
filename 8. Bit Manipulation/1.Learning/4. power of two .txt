@@ -1,0 +1,71 @@
+
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        
+        return ( n > 0 && (n & (n-1)) == 0)? true: false;
+    }
+};
+
+
+
+#####################################################################################
+
+gpt  
+
+To determine if an integer `n` is a power of two without using loops or recursion, you can leverage a simple bit manipulation trick.
+
+### Key Insight:
+For a number to be a power of two, it must satisfy the following condition in binary:
+- A power of two has exactly one `1` bit in its binary representation. For example:
+  - `1` (binary `0001`) is \( 2^0 \)
+  - `2` (binary `0010`) is \( 2^1 \)
+  - `4` (binary `0100`) is \( 2^2 \)
+  - `8` (binary `1000`) is \( 2^3 \), and so on.
+
+The key property of powers of two is:
+- If `n` is a power of two, then `n & (n - 1)` should be `0`. This is because:
+  - Subtracting `1` from a power of two flips all bits after the highest `1` bit, making the bitwise AND of `n` and `n - 1` result in `0`.
+
+However, you need to ensure `n` is positive because the definition of powers of two applies to positive integers.
+
+### C++ Code Implementation:
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        // Check if n is positive and if n & (n - 1) is 0
+        return n > 0 && (n & (n - 1)) == 0;
+    }
+};
+
+int main() {
+    Solution solution;
+    cout << solution.isPowerOfTwo(1) << endl;  // Output: 1 (true)
+    cout << solution.isPowerOfTwo(16) << endl; // Output: 1 (true)
+    cout << solution.isPowerOfTwo(3) << endl;  // Output: 0 (false)
+    return 0;
+}
+```
+
+### Explanation:
+1. **Condition**: `n > 0 && (n & (n - 1)) == 0`
+   - First, we check if `n` is greater than `0` to avoid negative numbers or zero, since powers of two are positive numbers.
+   - Then, `(n & (n - 1)) == 0` checks if `n` is a power of two using bitwise manipulation.
+   
+2. **Edge Case**: If `n` is `0` or any negative number, the condition will return `false` because no negative number or zero is a power of two.
+
+### Time and Space Complexity:
+- **Time Complexity**: **O(1)**. The bitwise operations are constant-time operations.
+- **Space Complexity**: **O(1)**. The algorithm uses a constant amount of space.
+
+### Example Outputs:
+1. `isPowerOfTwo(1)` returns `true` because \( 2^0 = 1 \).
+2. `isPowerOfTwo(16)` returns `true` because \( 2^4 = 16 \).
+3. `isPowerOfTwo(3)` returns `false` because 3 is not a power of two.
+
+

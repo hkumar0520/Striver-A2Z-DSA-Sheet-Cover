@@ -1,0 +1,63 @@
+
+1. Brute force
+2. Single pass 
+
+
+// Brute force
+
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        
+        vector<int>  tmp;
+        for(int element: nums){
+            if(element != 0)
+                tmp.push_back(element);
+        }
+
+        for(int i = 0; i<tmp.size(); i++)
+            nums[i] = tmp[i];
+
+        for(int i = tmp.size(); i<nums.size(); i++)
+            nums[i] = 0;
+
+    }
+};
+
+
+TC: k + k + n-k : O(n+k) : O(2n)
+SC: O(n){
+    in worst case all elements are non zero 
+}
+
+
+##############################################################################################
+
+
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        
+        int j = -1;
+        for(int i = 0; i<nums.size(); i++){
+            if(nums[i] == 0){
+                j = i;
+                break;
+            }
+        }
+
+        if(j == -1) return;
+
+        for(int i = j+1; i<nums.size(); i++){
+            if(nums[i] != 0){
+                swap(nums[i], nums[j]);
+                j++;
+            }
+        }
+    }
+};
+
+TC: k + (n-k) : O(n)
+SC: O(1)
+
+

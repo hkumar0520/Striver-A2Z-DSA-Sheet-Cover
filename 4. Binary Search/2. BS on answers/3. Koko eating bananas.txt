@@ -1,5 +1,8 @@
 
 
+1. brute force (n*m, 1)
+2. optimal (nlogm, 1)
+
 
 int findhours(vector<int> v, int mid)
 {
@@ -15,6 +18,9 @@ int minimumRateToEatBananas(vector<int> v, int h) {
     for(auto u: v)
         maxx = max(u,maxx);
     
+
+    // initially , lo = 1 ( findHrs > h), high = maxx ( findHrs < H)
+    // after end, lo ( findHrs <= h) , high (findHrs > H)
     int lo = 1,hi = maxx;
     while(lo<=hi)
     {
@@ -27,4 +33,129 @@ int minimumRateToEatBananas(vector<int> v, int h) {
     }
     return findhours(v, lo)<=h? lo: lo+1;
 }
+
+
+##########################################################################################
+
+
+class Solution {
+public:
+    bool calPossibleWithMid(vector<int>& piles, int k, int h){
+
+        long ans = 0;
+        for(int num: piles){
+            ans += ceil((double)num/(double) k);
+        }
+
+        return (ans <= h);
+    }
+    int minEatingSpeed(vector<int>& piles, int h) {
+        
+        int maxElement = INT_MIN;
+        for(int num: piles)
+            maxElement = max(maxElement, num);
+
+        int i = 1, j = maxElement;
+        for(; i<= maxElement; i++){
+            if(calPossibleWithMid(piles, i, h))
+                return i;
+        }
+
+        return -1;
+    }
+};
+
+TC: n*m
+SC: 1
+
+
+###########################################################################################
+
+class Solution {
+public:
+    bool calPossibleWithMid(vector<int>& piles, int k, int h){
+
+        long ans = 0;
+        for(int num: piles){
+            ans += ceil((double)num/(double) k);
+            // if(num % k == 0)
+            //     ans += (num/k);
+            // else
+            //     ans += (num/k) + 1;
+        }
+
+        return (ans <= h);
+    }
+    int minEatingSpeed(vector<int>& piles, int h) {
+        
+        int maxElement = INT_MIN;
+        for(int num: piles)
+            maxElement = max(maxElement, num);
+
+        int i = 1, j = maxElement;
+        while(i<=j){
+            int mid = (i+j)/2;
+
+            bool isPossible = calPossibleWithMid(piles , mid, h);
+
+            if(isPossible)
+                j = mid-1;
+            else
+                i = mid+1;
+        }
+        return i;
+    }
+};
+
+
+Let's analyze the **time and space complexity** of the given code.
+
+---
+
+## **Time Complexity Analysis**
+The code is solving the **"Koko Eating Bananas"** problem using **binary search on the answer**. Let's break it down step by step.
+
+### **1. Finding the Maximum Element**
+- The code iterates over `piles` once to determine the maximum number of bananas in a single pile (`maxElement`).
+- This takes **O(N)** time.
+
+### **2. Binary Search on Eating Speed (`k`)**
+- The search space is from `1` to `maxElement`, which gives a worst-case range of **O(M)** (where \( M \) is the maximum number of bananas in a pile).
+- Binary search runs in **O(log M)** time.
+
+### **3. Checking Feasibility (`calPossibleWithMid` function)**
+- For each `mid`, the function **checks** how many hours are needed to eat all bananas.
+- This requires iterating over `piles`, which takes **O(N)** time.
+- Since this function is called in every iteration of the binary search, the worst-case number of calls is **O(log M)**.
+
+### **Total Time Complexity**
+Since we perform **O(N)** work in each of the **O(log M)** binary search iterations, the total time complexity is:
+
+\[
+O(N + N \log M) = O(N \log M)
+\]
+
+---
+
+## **Space Complexity Analysis**
+1. The algorithm only uses a few integer variables (`i`, `j`, `mid`, `maxElement`).
+2. No extra data structures are used.
+3. The `calPossibleWithMid` function also operates in **O(1)** extra space.
+
+Thus, the space complexity is:
+
+\[
+O(1)
+\]
+
+---
+
+## **Final Complexity**
+- **Time Complexity:** \( O(N \log M) \), where \( N \) is the number of piles and \( M \) is the largest pile size.  
+- **Space Complexity:** \( O(1) \).  
+
+This is an efficient solution leveraging **binary search on the answer** rather than brute force. 🚀
+
+
+
 

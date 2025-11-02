@@ -1,0 +1,361 @@
+
+
+//  recursion 
+
+class Solution {
+public:
+    bool getStrInRange(string s){
+        if(s[0] == '0') return false;
+
+        int num = 0;
+        for(int i= 0; i<s.size(); i++){
+            if(num > 26)    return false;
+            num = num*10 + (s[i] - '0');
+        }
+
+        if( 1<=num && num<=26)
+            return true;
+
+        return false;
+    }
+    int f(int ind, string s){
+        if(ind == s.size()) return 1;
+        if(s[ind] == '0')   return 0;
+
+        int ans = 0;
+        for(int i = ind; i<s.size(); i++){
+            string str = s.substr(ind, i-ind+1);
+            if(getStrInRange(str)){
+                ans += f(i+1, s);
+            }
+        }
+        return ans;
+    }
+    int numDecodings(string s) {
+        return f(0, s);        
+    }
+};
+
+TC: O(n*n)
+SC: O(n)
+
+##########################################################################################################
+
+// memoization 
+
+class Solution {
+public:
+    bool getStrInRange(string s){
+        if(s[0] == '0') return false;
+
+        int num = 0;
+        for(int i= 0; i<s.size(); i++){
+            if(num > 26)    return false;
+            num = num*10 + (s[i] - '0');
+        }
+
+        if( 1<=num && num<=26)
+            return true;
+
+        return false;
+    }
+    int f(int ind, string s, vector<int>& dp){
+        if(ind == s.size()) return 1;
+        if(s[ind] == '0')   return dp[ind] = 0;
+
+        if(dp[ind] != -1)   return dp[ind];
+
+        int ans = 0;
+        for(int i = ind; i<s.size(); i++){
+            string str = s.substr(ind, i-ind+1);
+            if(getStrInRange(str)){
+                ans += f(i+1, s, dp);
+            }
+        }
+        return dp[ind] = ans;
+    }
+    int numDecodings(string s) {
+        int n = s.size();
+        vector<int> dp(n, -1);
+        return f(0, s, dp);        
+    }
+};
+
+TC: O(n*n)
+SC: O(n*n) + O(n){
+    n = stack space
+    n = dp space 
+}
+
+
+
+##############################################################################################################################################
+
+
+using reference  
+
+
+class Solution {
+public:
+    bool getStrInRange(string& s){
+        if(s[0] == '0') return false;
+
+        int num = 0;
+        for(int i= 0; i<s.size(); i++){
+            if(num > 26)    return false;
+            num = num*10 + (s[i] - '0');
+        }
+
+        if( 1<=num && num<=26)
+            return true;
+
+        return false;
+    }
+    int f(int ind, string& s, vector<int>& dp){
+        if(ind == s.size()) return 1;
+        if(s[ind] == '0')   return dp[ind] = 0;
+
+        if(dp[ind] != -1)   return dp[ind];
+
+        int ans = 0;
+        for(int i = ind; i<s.size(); i++){
+            string str = s.substr(ind, i-ind+1);
+            if(getStrInRange(str)){
+                ans += f(i+1, s, dp);
+            }
+        }
+        return dp[ind] = ans;
+    }
+    int numDecodings(string s) {
+        int n = s.size();
+        vector<int> dp(n, -1);
+        return f(0, s, dp);        
+    }
+};
+
+
+
+
+Let's analyze the **time and space complexity** of this updated C++ code to solve the **"Decode Ways"** problem (Leetcode 91-style), where:
+
+* `getStrInRange(string& s)` checks if a string represents a number between 1 and 26.
+* `f(ind, s, dp)` is a **recursive + memoized** function that calculates the number of decoding ways from index `ind` onwards.
+
+---
+
+### ✅ Key Observations:
+
+* The function explores **all substrings** starting at index `ind`, and goes from length 1 up to the full remaining length.
+* However, only substrings that represent valid numbers (1–26) will trigger further recursive calls.
+
+---
+
+### 🔍 Time Complexity:
+
+* At each index `ind`, the loop goes from `i = ind` to `s.size() - 1`, and creates substrings (`s.substr(ind, i-ind+1)`), which takes $O(k)$, where $k = i - ind + 1$. In the worst case, this is $O(n)$.
+* The function `f(ind)` is called once for each index `ind`, due to memoization.
+
+So for **each of the $n$ calls to `f(ind)`**, you could:
+
+* Loop up to $n$ times.
+* Call `s.substr(...)` (which takes $O(n)$) and `getStrInRange(...)` (which is also $O(n)$ due to full parsing).
+
+Therefore:
+
+**Time Complexity =**
+
+$$
+\boxed{O(n^2)} \quad \text{(per index: O(n) iterations × O(1~n) substr and range checks)}
+$$
+
+> ⚠ The expensive `s.substr(...)` call in the loop makes it quadratic. This could be optimized to linear by avoiding substring creation (e.g., using indices instead).
+
+---
+
+### 💾 Space Complexity:
+
+* **`dp` vector** of size $n$: $O(n)$
+* **Recursion stack depth**: at most $O(n)$ in worst case
+* **`s.substr()` creates new strings** in every call, which adds up to **$O(n^2)$** in total allocations (due to all substrings)
+
+So, **Space Complexity =**
+
+$$
+\boxed{O(n^2)} \quad \text{(mainly due to substring allocations)}
+$$
+
+> If substrings were avoided (e.g., by parsing integers directly using indices), the space would be $O(n)$.
+
+---
+
+### ✅ Final Verdict:
+
+| Metric    | Complexity                         |
+| --------- | ---------------------------------- |
+| **Time**  | $\boxed{O(n^2)}$                   |
+| **Space** | $\boxed{O(n^2)}$ (due to `substr`) |
+
+---
+
+### 🛠 Optimization Tip:
+
+To reduce complexity to $O(n)$ time and space:
+
+* Replace this:
+
+  ```cpp
+  string str = s.substr(ind, i - ind + 1);
+  if (getStrInRange(str))
+  ```
+* With something like:
+
+  ```cpp
+  int num = s[ind] - '0';
+  if (num >= 1) ans += f(ind + 1, s, dp);
+  if (ind + 1 < s.size()) {
+      num = num * 10 + (s[ind + 1] - '0');
+      if (num >= 10 && num <= 26) ans += f(ind + 2, s, dp);
+  }
+  ```
+
+This avoids substring creation and simplifies the check, making the algorithm run in **O(n) time and space**.
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+used reference and eliminate str  
+
+
+class Solution {
+public:
+    bool getStrInRange(string& s, int start, int endd){
+        if(s[start] == '0') return false;
+
+        int num = 0;
+        for(int i= start; i<s.size() && i<=endd; i++){
+            if(num > 26)    return false;
+            num = num*10 + (s[i] - '0');
+        }
+
+        if( 1<=num && num<=26)
+            return true;
+
+        return false;
+    }
+    int f(int ind, string& s, vector<int>& dp){
+        if(ind == s.size()) return 1;
+        if(s[ind] == '0')   return dp[ind] = 0;
+
+        if(dp[ind] != -1)   return dp[ind];
+
+        int ans = 0;
+        for(int i = ind; i<s.size(); i++){
+            if(getStrInRange(s, ind, i)){
+                ans += f(i+1, s, dp);
+            }
+        }
+        return dp[ind] = ans;
+    }
+    int numDecodings(string s) {
+        int n = s.size();
+        vector<int> dp(n, -1);
+        return f(0, s, dp);        
+    }
+};
+
+Let’s analyze the **time and space complexity** of this updated version of the **"Decode Ways"** solution.
+
+---
+
+### ✅ Code Summary:
+
+This version improves efficiency by:
+
+* Avoiding `s.substr(...)` (which allocates memory).
+* Instead, it passes start and end indices to `getStrInRange(...)` and parses the substring directly into an integer.
+
+### 🔍 Function Breakdown:
+
+* `getStrInRange(s, start, endd)`:
+
+  * Converts a substring `s[start..endd]` into an integer to check if it lies in the range 1–26.
+  * Time: $O(1)$ since `endd - start + 1` is at most 2 (valid encodings are 1–26, max two digits).
+* `f(ind, s, dp)`:
+
+  * At each index `ind`, it tries to extend substrings to form valid numbers (up to length 2).
+  * Uses memoization with a `dp` array to avoid recomputation.
+
+---
+
+### 📦 Variables:
+
+* Let `n` be the length of the string `s`.
+
+---
+
+### ⏱ Time Complexity:
+
+For each index `ind` (up to `n`), you:
+
+* Check at most **2 substrings** (`i = ind` and `i = ind+1`) to see if they form valid numbers.
+* Make recursive calls only when those substrings are valid.
+* Use memoization to ensure each `ind` is computed at most once.
+
+So:
+
+**Time Complexity =**
+
+$$
+\boxed{O(n)}
+$$
+
+---
+
+### 💾 Space Complexity:
+
+* **`dp` array** of size `n` → $O(n)$
+* **Recursion call stack**: at most `n` deep in the worst case → $O(n)$
+
+**Space Complexity =**
+
+$$
+\boxed{O(n)}
+$$
+
+---
+
+### ✅ Final Verdict:
+
+| Metric    | Complexity     |
+| --------- | -------------- |
+| **Time**  | $\boxed{O(n)}$ |
+| **Space** | $\boxed{O(n)}$ |
+
+This is now an **optimal** and efficient solution for the problem. Great improvement from the earlier versions!
+
+
+
+

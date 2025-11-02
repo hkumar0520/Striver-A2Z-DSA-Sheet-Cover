@@ -1,0 +1,122 @@
+
+
+
+1. Brute force ( 2n, 1)
+2. optimal (n, 1)
+
+
+
+
+class Solution {
+public:
+    int findLength(ListNode* head){
+        ListNode* current = head;
+        int cnt = 0;
+        while(current != nullptr){
+            current = current->next;
+            cnt++;
+        }
+        return cnt;
+    }
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        int len = findLength(head);
+        // delete head
+        if(len - n == 0){
+            ListNode* newHead = head->next;
+            head->next = nullptr;
+            delete head;
+
+            return newHead;
+        }
+
+        ListNode* current = head;
+        for(int  i = 0; i<(len-n-1); i++)
+            current = current->next;
+
+        ListNode* tmp = current->next;
+        current->next = current->next->next;
+        delete tmp;
+
+        return head;
+    }
+};
+
+
+
+TC: O(L + (L-n))
+SC: O(1)
+
+
+
+
+
+##########################################################################################################################
+
+
+
+
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+
+        ListNode* current = head, *prev = head;
+        while(current != nullptr && n > 0){
+            current = current->next;
+            n--;
+        }
+
+        // delete head, current reaches tail
+        if(current == nullptr){
+            ListNode* newHead = head->next;
+            head->next = nullptr;
+            delete head;
+            return newHead;
+        }
+
+        while(current != nullptr && current->next != nullptr){
+            current = current->next;
+            prev = prev->next;
+        }
+        ListNode* tmp = prev->next;
+        prev->next = prev->next->next;
+        delete tmp;
+
+        return head;
+
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+
+####################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,20 @@
+
+
+https://www.geeksforgeeks.org/problems/alone-in-couple5507/1?page=1&category=Bit%20Magic&company
+
+
+class Solution {
+  public:
+    int findSingle(vector<int> &arr) {
+        // code here
+        int xorr = 0;
+        for(int num: arr)
+            xorr ^= num;
+        
+        return xorr;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+

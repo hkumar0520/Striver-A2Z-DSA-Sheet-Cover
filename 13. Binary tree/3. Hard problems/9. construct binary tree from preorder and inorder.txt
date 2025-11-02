@@ -1,0 +1,100 @@
+
+
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* buildTree(int preStart, int start, int end,vector<int>& preorder, vector<int>& inorder) {
+       if(preStart >= preorder.size() || start > end)   return nullptr;
+       if(start == end) return new TreeNode(inorder[start]);
+
+       TreeNode* newNode = new TreeNode(preorder[preStart]);
+       int idx = -1;
+       for(int i = start; i<=end; i++){
+            if(preorder[preStart] == inorder[i]){
+                idx = i;
+                break;
+            }
+       } 
+
+       newNode->left = buildTree(preStart + 1, start, idx-1, preorder, inorder);
+    //    newNode->right = buildTree(preStart + 1 + (idx-1 - start + 1), idx+1, end, preorder, inorder);
+       newNode->right = buildTree(preStart + 1 + idx - start, idx+1, end, preorder, inorder);
+
+       return newNode;
+
+    }
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        
+        return buildTree(0, 0, inorder.size()-1, preorder, inorder);
+    }
+};
+
+
+
+
+TC: O( nlogn ) , worst = O( n*n)
+SC: O( logn ) , worst = O(n)
+
+
+
+##############################################################################################################################################################################################################
+
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    unordered_map<int, int> iMap;
+public:
+    TreeNode* buildTree(int preStart, int start, int end,vector<int>& preorder, vector<int>& inorder) {
+       if(preStart >= preorder.size() || start > end)   return nullptr;
+       if(start == end) return new TreeNode(inorder[start]);
+
+       TreeNode* newNode = new TreeNode(preorder[preStart]);
+        int idx = iMap[preorder[preStart]];
+
+       newNode->left = buildTree(preStart + 1, start, idx-1, preorder, inorder);
+    //    newNode->right = buildTree(preStart + 1 + (idx-1 - start + 1), idx+1, end, preorder, inorder);
+       newNode->right = buildTree(preStart + 1 + idx - start, idx+1, end, preorder, inorder);
+
+       return newNode;
+
+    }
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        int len = inorder.size();
+        for(int i = 0; i<len; i++)
+            iMap[inorder[i]] = i;
+
+        return buildTree(0, 0, len-1, preorder, inorder);
+    }
+};
+
+
+TC: O( logn ) , worst = O( n )
+SC: O( logn ) , worst = O(n)
+
+
+

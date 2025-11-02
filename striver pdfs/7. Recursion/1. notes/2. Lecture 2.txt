@@ -1,0 +1,88 @@
+
+
+
+// Lecture 2
+
+#include <bits/stdc++.h>
+using namespace std;
+
+void printNtimesName(int i, int N){
+    if( i>N)    return ;
+    
+    cout<<"Harish"<<endl;
+    
+    printNtimesName(i+1, N);
+}
+
+void printFromOneToN(int i, int N){
+    if(i>N) return;
+    
+    cout<<i<<endl;
+    printFromOneToN(i+1, N);
+}
+
+void printFromNToOne(int i){
+    if(i<1) return;
+    
+    cout<<i<<endl;
+    printFromNToOne(i-1);
+}
+
+void printFromOneToNBackTrack(int i){
+    if(i<1)
+        return ;
+        
+    printFromOneToNBackTrack(i-1);
+    cout<<i<<endl;
+}
+
+
+void printFromNToOneBackTrack(int i, int N){
+    if(i>N)
+        return ;
+        
+    printFromNToOneBackTrack(i, N);
+    cout<<i<<endl;
+}
+
+
+int main() {
+	
+    // print Name N times using Recursion
+    int N;
+    cin>>N;
+    printNtimesName(1, N);
+    
+    cout<<"#######################################"<<endl;
+    
+    // print from one to n 
+    printFromOneToN(1, N);
+    
+    cout<<"#######################################"<<endl;
+    
+    // print from n to one 
+    printFromNToOne(N);
+    
+    cout<<"#######################################"<<endl;
+    
+    // print from one to n using  backTrack
+    printFromOneToNBackTrack(N);
+    
+    cout<<"#######################################"<<endl;
+    
+    // print from n to one using  backTrack
+    printFromNToOneBackTrack(1, N);
+    
+    cout<<"#######################################"<<endl;
+    
+    
+    return 0;
+}
+
+
+
+
+
+
+
+

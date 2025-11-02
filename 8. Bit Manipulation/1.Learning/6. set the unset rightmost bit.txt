@@ -1,0 +1,89 @@
+
+class Solution {
+  public:
+    int setBit(int n) {
+        // first unset the rightmost bit
+        int num = n, ithBit = 0;
+        
+        while(num > 0){
+            if( (num & 1) == 0){
+                break;
+            }
+            else{
+                num = num / 2;
+                ithBit++;
+            }
+        }
+        
+        return (n | (1<<ithBit) );
+    }
+};
+
+
+Expected Time Complexity: O(Logn)
+Expected Auxiliary Space: O(1)
+
+
+Let's break down the code and analyze its **time complexity** and **space complexity**.
+
+### Code Explanation:
+The given code defines a function `setBit` that operates on an integer `n`. The function finds the position of the **rightmost unset bit** (the first `0` bit from the right) and sets it to `1`. 
+
+Here’s how the function works:
+
+1. **Initialization**:
+   - `num = n` initializes the variable `num` to store the value of `n`.
+   - `ithBit = 0` initializes the variable `ithBit` to keep track of the position of the rightmost unset bit.
+
+2. **While Loop**:
+   - The while loop runs as long as `num > 0`.
+   - It checks if the rightmost bit of `num` is `0` or `1` using `num & 1`.
+   - If it is `0`, the loop breaks, meaning we've found the rightmost unset bit.
+   - If it is `1`, it divides `num` by 2 (`num = num / 2`), effectively shifting the bits to the right, and increments `ithBit` to track the position of the current bit.
+
+3. **Set the Rightmost Unset Bit**:
+   - After finding the rightmost unset bit, it sets that bit to `1` using the bitwise OR operation: `n | (1 << ithBit)`.
+
+### Time Complexity:
+
+The time complexity primarily depends on the **while loop**. 
+
+- The loop continues to run as long as the rightmost bit of `num` is `1`. 
+- In each iteration, the number `num` is divided by `2`, which effectively shifts the bits to the right.
+- The number of times the loop runs is proportional to the number of bits in the binary representation of `n`, or the number of **consecutive `1` bits from the rightmost side**.
+
+If `n` has `m` bits (i.e., `n` is of size \( O(m) \)), the worst-case time complexity occurs when the while loop iterates over all the bits of `n` before finding a `0`. This happens in the case where all the bits are `1`.
+
+Therefore, the **time complexity** is:
+- **O(m)**, where `m` is the number of bits in `n` (i.e., \( O(\log n) \) in terms of the value of `n`).
+
+### Space Complexity:
+
+- The function uses a constant amount of extra space:
+  - `num` and `ithBit` are integer variables.
+  - No additional data structures are used that depend on the size of the input.
+
+Thus, the **space complexity** is:
+- **O(1)** (constant space).
+
+### Final Complexity Analysis:
+
+- **Time Complexity**: O(m) or O(log n), where `m` is the number of bits in `n` or the bit length of `n`.
+- **Space Complexity**: O(1).
+
+
+########################################################
+
+class Solution {
+  public:
+    int setBit(int n) {
+        // Write Your Code here
+        int i =0;
+        for(i = 0; i<32; i++){
+            if( (n & (1<<i)) == 0)
+                break;
+        }
+        return n | (1<<i);
+    }
+};
+

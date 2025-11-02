@@ -1,0 +1,167 @@
+
+
+1. recursion 
+2. memoization
+3. tabulation
+4. optimization
+
+bool f(int ind, int target, vector<int> &arr, vector<vector<int>> &dp)
+{
+    if(target == 0) return dp[ind][target] = true;
+    if (ind == 0) 
+      return (arr[ind] == target) ? true : false;
+   
+    if(dp[ind][target] != -1)   return dp[ind][target];
+
+    bool nonPick = f(ind-1, target,arr,dp);
+    bool pick = false;
+    if(arr[ind]<=target)
+        pick = f(ind-1, target-arr[ind], arr,dp);
+
+    return dp[ind][target] = (pick || nonPick);
+}
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	// Write your code here.
+	int totalSum = 0;
+	for(int num: arr)
+		totalSum += num;
+
+	vector<vector<int>> dp(n, vector<int>(totalSum + 1, -1));
+
+
+	int  minAbsoluteDiff = 1e9;
+
+	for(int i = 0; i<= totalSum; i++){
+		f(n-1, i, arr, dp);
+
+		if(dp[n-1][i] == 1)
+			minAbsoluteDiff = min(minAbsoluteDiff, abs(i - (totalSum - i)));
+	}
+
+	return minAbsoluteDiff;
+
+}
+
+TC: n*0 + n*1 + n*2 _ _ _ _ n*totalSum : O(n*totalSum*(totalSum)/2)
+SC: n*totalSum + n {
+    dp = n*totalSum
+    stack space = n 
+}
+
+
+#######################################################################################################
+
+
+
+bool f(int n, int k, vector<int> &arr, vector<vector<bool>> &dp)
+{
+    // target =0 
+    for(int  i=0;i<n;i++)
+        dp[i][0] = true;
+    
+    if(arr[0]<= k)
+        dp[0][arr[0]] = true;
+    for(int i=1;i<n;i++)
+    {
+        for(int j=1;j<k+1;j++)
+        {
+            bool nottaken = dp[i-1][j];
+            bool taken = false;
+            if(arr[i]<=j)
+                taken = dp[i-1][j-arr[i]];
+
+            dp[i][j] = (taken || nottaken)? 1: 0;
+        }
+    }
+
+    return  dp[n-1][k];
+}
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	// Write your code here.
+	int totalSum = 0;
+	for(int num: arr)
+		totalSum += num;
+
+	vector<vector<bool>> dp(n, vector<bool>(totalSum + 1, false));
+
+	f(n, totalSum, arr, dp);
+
+	int  minAbsoluteDiff = 1e9;
+
+	for(int i = 0; i<= totalSum; i++){
+		if(dp[n-1][i])
+			minAbsoluteDiff = min(minAbsoluteDiff, abs(i - (totalSum - i)));
+	}
+
+	return minAbsoluteDiff;
+
+}
+
+
+TC:  O(n*totalSum) + O(totalSum)
+SC: n*totalSum  {
+    dp = n*totalSum
+}
+
+
+################################################################################################
+
+
+
+bool f(int n, int k, vector<int> &arr, vector<bool> &dp)
+{
+    // target =0 
+
+    vector<bool> curr(dp.size(), false);
+    dp[0] = curr[0] = true;
+    
+    if(arr[0]<= k)
+        dp[arr[0]] = true;
+    for(int i=1;i<n;i++)
+    {
+        for(int j=1;j<k+1;j++)
+        {
+            bool nottaken = dp[j];
+            bool taken = false;
+            if(arr[i]<=j)
+                taken = dp[j-arr[i]];
+
+            curr[j] = (taken || nottaken)? 1: 0;
+        }
+        dp = curr;
+    }
+
+    return  dp[k];
+}
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	// Write your code here.
+	int totalSum = 0;
+	for(int num: arr)
+		totalSum += num;
+
+	vector<bool> dp(totalSum + 1, false);
+
+	f(n, totalSum, arr, dp);
+
+	int  minAbsoluteDiff = 1e9;
+
+	for(int i = 0; i<= totalSum; i++){
+		if(dp[i])
+			minAbsoluteDiff = min(minAbsoluteDiff, abs(i - (totalSum - i)));
+	}
+
+	return minAbsoluteDiff;
+
+}
+
+
+TC:  O(n*totalSum) + O(totalSum)
+SC: totalSum  {
+    dp = totalSum
+}
+
+
+

@@ -10,16 +10,21 @@ A substring of a string is a subsequence in which all the characters are consecu
 
 A subarray of a array is a subsequence in which all the numbers are consecutive
 
+arr[i]>temp.back()
+ int lbind  = lower_bound(temp.begin(),temp.end(),arr[i])-temp.begin();
+
 // recursion 
 
 
 ###############################################################################################
 // memoization
+top down approach - bigger problem to smaller sub problem 
 
 
 ###############################################################################################
 // tabular
 
+bottom up approach - smaller subproblem to bigger problem 
 
 ###############################################################################################
 // optimization

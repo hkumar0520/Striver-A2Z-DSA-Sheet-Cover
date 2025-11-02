@@ -1,0 +1,168 @@
+
+
+
+1. recursion
+2. memoization
+3. tabular
+4. optimization
+
+
+class Solution {
+public:
+
+    int f(int ind1, string& word1, int ind2, string& word2){
+        int m = word1.size(), n = word2.size();
+
+        if(ind1 == m)   return n - ind2;     //  horse, horseabc
+        if(ind2 == n)   return m - ind1;     // horse, hor
+
+        int isMatch = 1e9, isNotMatch = 1e9;
+        if(word1[ind1] == word2[ind2])
+            isMatch = f(ind1+1, word1, ind2+1, word2);
+        else{
+            int insertChar = f(ind1, word1, ind2 + 1, word2);
+            int deleteChar = f(ind1 + 1, word1, ind2, word2);
+            int replaceChar = f(ind1 + 1, word1, ind2 + 1, word2);   
+            isNotMatch = 1 + min({ insertChar,  deleteChar, replaceChar });
+        }
+
+        return min(isMatch, isNotMatch);
+
+    }
+    int minDistance(string word1, string word2) {
+
+        return f(0, word1, 0, word2);
+    }
+};
+
+TC: O(3^(n+n))
+SC: O(m + n)
+
+
+| Type                 | Complexity                     |
+| -------------------- | ------------------------------ |
+| **Time Complexity**  | `O(3^max(m, n))` (exponential) |
+| **Space Complexity** | `O(m + n)` (recursive depth)   |
+| **Efficient?**       | ❌ No — exponential time        |
+
+
+####################################################################################################################
+
+class Solution {
+public:
+
+    int f(int ind1, string& word1, int ind2, string& word2, vector<vector<int>>& dp){
+        int m = word1.size(), n = word2.size();
+
+        if(ind1 == m)   return n - ind2;     //  horse, horseabc
+        if(ind2 == n)   return m - ind1;     // horse, hor
+
+        if(dp[ind1][ind2] != -1)    return dp[ind1][ind2];
+
+        int isMatch = 1e9, isNotMatch = 1e9;
+        if(word1[ind1] == word2[ind2])
+            isMatch = f(ind1+1, word1, ind2+1, word2, dp);
+        else{
+            int insertChar = f(ind1, word1, ind2 + 1, word2, dp);
+            int deleteChar = f(ind1 + 1, word1, ind2, word2, dp);
+            int replaceChar = f(ind1 + 1, word1, ind2 + 1, word2, dp);  
+            isNotMatch = 1 + min({ insertChar,  deleteChar, replaceChar });
+        }
+
+        return dp[ind1][ind2] = min(isMatch, isNotMatch);
+
+    }
+    int minDistance(string word1, string word2) {
+        int m = word1.size(), n = word2.size();
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+
+        return f(0, word1, 0, word2, dp);
+    }
+};
+
+
+TC: O(m*n)
+SC: O(m*n) + O(m+n)
+
+
+####################################################################################################################
+
+class Solution {
+public:
+
+    int minDistance(string word1, string word2) {
+        int m = word1.size(), n = word2.size();
+        vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+
+        for(int i = 0; i<=n; i++)
+            dp[m][i] = n - i;
+        for(int i = 0; i<=m; i++)
+            dp[i][n] = m - i;
+
+        for(int ind1 = m-1; ind1 >= 0; ind1--){
+            for(int ind2 = n-1; ind2 >= 0; ind2--){
+                int isMatch = 1e9, isNotMatch = 1e9;
+                if(word1[ind1] == word2[ind2])
+                    isMatch = dp[ind1+1][ind2+1];
+                else{
+                    int insertChar = dp[ind1][ind2+1];
+                    int deleteChar = dp[ind1+1][ind2];
+                    int replaceChar = dp[ind1+1][ind2+1];
+                    isNotMatch = 1 + min({ insertChar,  deleteChar, replaceChar });
+                }
+
+                dp[ind1][ind2] = min(isMatch, isNotMatch);
+            }
+        }
+
+        return dp[0][0];
+    }
+};
+
+
+TC: O(m*n)
+SC: O(m*n) 
+
+####################################################################################################################
+
+
+class Solution {
+public:
+
+    int minDistance(string word1, string word2) {
+        int m = word1.size(), n = word2.size();
+        vector<int> curr(n+1, 0), prev(n+1, 0);
+
+        for(int i = 0; i<=n; i++)
+            curr[i] = n - i;
+
+        for(int ind1 = m-1; ind1 >= 0; ind1--){
+            prev = curr;
+            curr[n] = m - ind1;
+            for(int ind2 = n-1; ind2 >= 0; ind2--){
+                int isMatch = 1e9, isNotMatch = 1e9;
+                if(word1[ind1] == word2[ind2])
+                    isMatch = prev[ind2+1];
+                else{
+                    int insertChar = curr[ind2+1];
+                    int deleteChar = prev[ind2];
+                    int replaceChar = prev[ind2+1];
+                    isNotMatch = 1 + min({ insertChar,  deleteChar, replaceChar });
+                }
+
+                curr[ind2] = min(isMatch, isNotMatch);
+            }
+        }
+
+        return curr[0];
+    }
+};
+
+
+
+TC: O(m*n)
+SC: O(n) 
+
+
+####################################################################################################################
+

@@ -1,0 +1,61 @@
+
+
+
+class Solution {
+public:
+    vector<int> generateRow(int row){
+        vector<int> arr;
+        arr.push_back(1);
+        int currElement = 1;
+
+        for(int col = 1; col<row; col++){
+            currElement = currElement*(row-col);
+            currElement /= col;
+            arr.push_back(currElement);
+        }
+        return arr;
+    }
+    vector<vector<int>> generate(int numRows) {
+        
+        vector<vector<int>> ans;
+        for(int i = 1; i<=numRows; i++){
+            ans.push_back(generateRow(i));
+        }
+        return ans;
+    }
+};
+
+
+TC : O(numRows*rowSize)
+SC: O(numRows*rowSize)
+
+
+##############################################################################
+
+class Solution {
+    public List<List<Integer>> generate(int numRows) {
+      List<List<Integer>> arrlist = new ArrayList<List<Integer>>();
+      List<Integer> curr,prev = null;
+      for(int i=1;i<= numRows;i++)
+      {
+        curr = new ArrayList<Integer>();
+        for(int j=0;j<i;j++)
+        {
+          if(j==0 || j==(i-1))
+            curr.add(1);
+          else
+            curr.add(prev.get(j-1) + prev.get(j));
+        }
+        prev = curr;
+        arrlist.add(curr);
+      }
+      return arrlist;
+    }
+}
+
+
+
+TC : O(numRows*rowSize)
+SC: O(numRows*rowSize)
+
+

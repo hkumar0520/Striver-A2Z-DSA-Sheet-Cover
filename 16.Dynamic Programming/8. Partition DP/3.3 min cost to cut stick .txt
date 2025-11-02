@@ -1,0 +1,178 @@
+
+
+1. Recursion
+2. memoization
+3. tabular
+
+class Solution {
+public:
+    int f(int start, int endd, vector<int>& cuts){
+        if(start == endd || ( (start + 1) == endd ))    return 0;
+
+
+        int cutsSize = cuts.size(), minAns = 1e9;
+        for(int i = 0; i<cutsSize; i++){
+            int cutpoint = cuts[i];
+            if(cutpoint > start && cutpoint < endd){
+                int ans = (endd - start) + f(start, cutpoint, cuts) + f(cutpoint , endd, cuts);
+                
+                minAns = min(minAns, ans);
+            }
+        }
+
+        return minAns == 1e9 ? 0 : minAns;
+    }
+    int minCost(int n, vector<int>& cuts) {
+        return f(0, n, cuts);
+    }
+};
+
+TC: exponential 
+SC: O(n)
+
+
+
+##########################################################################################################
+
+memory limit as n = 1e6
+
+class Solution {
+public:
+    int f(int start, int endd, vector<int>& cuts, vector<vector<int>>& dp){
+        if(start == endd || ( (start + 1) == endd ))    return 0;
+
+        if(dp[start][endd] != -1)   return dp[start][endd];
+
+        int cutsSize = cuts.size(), minAns = 1e9;
+        for(int i = 0; i<cutsSize; i++){
+            int cutpoint = cuts[i];
+            if(cutpoint > start && cutpoint < endd){
+                int ans = (endd - start) + f(start, cutpoint, cuts, dp) + f(cutpoint , endd, cuts, dp);
+                
+                minAns = min(minAns, ans);
+            }
+        }
+
+        return dp[start][endd] = (minAns == 1e9 ? 0 : minAns);
+    }
+    int minCost(int n, vector<int>& cuts) {
+        vector<vector<int>> dp(n+1, vector<int>(n+1, -1));
+        return f(0, n, cuts, dp);
+    }
+};
+
+TC: O(n*n*n)
+SC: O(n*n) + O(n){
+    dp = n*n
+    stack space = n 
+}
+
+
+#####################################################################################################################################
+
+
+
+
+using recursion in different approach 
+
+
+recusion on sticks rather than length
+
+class Solution {
+public:
+    int f(int start, int endd, vector<int>& cuts){
+        if(start == endd || ( (start + 1) == endd ))    return 0;
+
+        int minAns = 1e9;
+        for(int k = start + 1; k<endd; k++){
+            int ans = (cuts[endd] - cuts[start]) + f(start, k, cuts) + f(k, endd, cuts);
+            minAns = min( minAns, ans);
+        }
+
+        return minAns == 1e9 ? 0 : minAns;
+    }
+    int minCost(int n, vector<int>& cuts) {
+        cuts.push_back(0);
+        cuts.push_back(n);
+        sort(cuts.begin(), cuts.end());
+        int m = cuts.size();
+        return f(0, m-1, cuts);
+    }
+};
+
+TC: exponential 
+SC: O(n) { 
+    n = stack space 
+}
+
+
+
+#####################################################################################################################################
+
+// passed solution 
+
+class Solution {
+public:
+    int f(int start, int endd, vector<int>& cuts, vector<vector<int>>& dp){
+        // this also work 
+        //if(start == endd || ( (start + 1) == endd ))    return 0;
+        
+        if(start == endd )    return 0;
+
+        if(dp[start][endd] != -1)   return dp[start][endd];
+
+        int minAns = 1e9;
+        for(int k = start + 1; k<endd; k++){
+            int ans = (cuts[endd] - cuts[start]) + f(start, k, cuts, dp) + f(k, endd, cuts, dp);
+            minAns = min( minAns, ans);
+        }
+
+        return dp[start][endd] = (minAns == 1e9 ? 0 : minAns);
+    }
+    int minCost(int n, vector<int>& cuts) {
+        cuts.push_back(0);
+        cuts.push_back(n);
+        sort(cuts.begin(), cuts.end());
+        int m = cuts.size();
+        vector<vector<int>> dp(m, vector<int>(m, -1));
+        return f(0, m-1, cuts, dp);
+    }
+};
+
+
+#####################################################################################################
+
+
+// tabular 
+
+class Solution {
+public:
+    int minCost(int n, vector<int>& cuts) {
+        cuts.push_back(0);
+        cuts.push_back(n);
+        sort(cuts.begin(), cuts.end());
+        int m = cuts.size();
+        vector<vector<int>> dp(m, vector<int>(m, -1));
+
+        for(int i = 0; i<m; i++)
+            dp[i][i] = 0;
+            
+        for(int i = m-2; i>=0; i--){
+            for(int j = i+1; j<m; j++){
+                int minAns = 1e9;
+                for(int k = i + 1; k<j; k++){
+                    int ans = (cuts[j] - cuts[i]) + dp[i][k] + dp[k][j];
+                    minAns = min( minAns, ans);
+                }
+                dp[i][j] = (minAns == 1e9 ? 0 : minAns);
+            }
+        }
+        return dp[0][m-1];
+    }
+};
+
+TC: O(n*n*n)
+SC: O(n*n)
+
+
+############################################################################################

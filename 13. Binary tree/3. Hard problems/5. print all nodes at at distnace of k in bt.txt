@@ -1,0 +1,272 @@
+
+
+1. brute force,
+2. optimized
+
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    map<int, TreeNode*> parent;
+
+    void traverse(TreeNode* node){
+        if(node == nullptr) return;
+
+        if(node->left)
+            parent[node->left->val] = node;
+
+        if(node->right)
+            parent[node->right->val] = node;
+
+        traverse(node->left);
+        traverse(node->right);
+    }
+    vector<int> bfs(TreeNode* root, int k){
+        if(root == nullptr ) return {};
+        if(k == 0)  return {root->val};
+        
+        int n = 501;
+        vector<bool> vis(n, false);
+        vector<int> ans;
+        queue<pair<TreeNode*, int>> q;
+
+        vis[root->val] = true;
+        q.push({ root, 0});
+
+        while(!q.empty()){
+            auto[node, step] = q.front();
+            q.pop();
+
+            if(step == k){
+                ans.push_back(node->val);
+                continue;
+            }
+
+            // traverse left, right, upward
+            if(node->left && !vis[node->left->val]){
+                q.push({ node->left, step + 1});
+                vis[node->left->val] = 1;
+            }
+            
+            if(node->right && !vis[node->right->val]){
+                q.push({ node->right, step + 1});
+                vis[node->right->val] = 1;
+            }
+
+            if(parent.find(node->val) != parent.end() && !vis[parent[node->val]->val]){
+                q.push({ parent[node->val], step + 1});
+                vis[parent[node->val]->val] = 1;
+            }
+        }
+        return  ans;
+    }
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        traverse(root);
+
+        return bfs(target, k);
+    }
+};
+
+TC: O(nlogn) + O(n){
+    nlogn = bfs 
+    n = traverse 
+}
+SC: O(n) + O(n) + O(n) + O(n){
+    n = stack space
+    n = queue
+    n = vis 
+    n = parent
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You're on the right track, and the code is functional, but we can **optimize both time and space** for better performance.
+
+---
+
+## 🔍 **Key Areas for Time Optimization**
+
+### 1. **Use `unordered_map` instead of `map`**
+
+* `map<int, TreeNode*>` → `unordered_map<int, TreeNode*>`
+* `std::map` has **O(log n)** time for insert and lookup; `std::unordered_map` has **average O(1)** time.
+
+### 2. **Use `unordered_set` instead of `vector<bool>` for visited**
+
+* `vector<bool>` assumes node values are in `[0, 500]`. That may not be true, and it uses space proportional to 501.
+* Use `unordered_set<TreeNode*>` for **O(1) lookup** and to avoid value constraints.
+
+### 3. **Avoid `continue` inside BFS**
+
+* Instead of continuing when `step == k`, you can **stop the BFS entirely** once you reach the target level using a **level-order BFS** with a queue size loop.
+
+---
+
+## ✅ **Optimized Version of Your Code**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+#include <unordered_map>
+#include <unordered_set>
+#include <queue>
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    unordered_map<TreeNode*, TreeNode*> parent;
+
+    // Build parent mapping
+    void buildParent(TreeNode* node, TreeNode* par = nullptr) {
+        if (!node) return;
+        parent[node] = par;
+        buildParent(node->left, node);
+        buildParent(node->right, node);
+    }
+
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        buildParent(root);
+
+        unordered_set<TreeNode*> visited;
+        queue<TreeNode*> q;
+        q.push(target);
+        visited.insert(target);
+
+        int currLevel = 0;
+
+        while (!q.empty()) {
+            int size = q.size();
+            if (currLevel == k) break;
+
+            for (int i = 0; i < size; ++i) {
+                TreeNode* node = q.front();
+                q.pop();
+
+                // Check left
+                if (node->left && !visited.count(node->left)) {
+                    q.push(node->left);
+                    visited.insert(node->left);
+                }
+
+                // Check right
+                if (node->right && !visited.count(node->right)) {
+                    q.push(node->right);
+                    visited.insert(node->right);
+                }
+
+                // Check parent
+                TreeNode* par = parent[node];
+                if (par && !visited.count(par)) {
+                    q.push(par);
+                    visited.insert(par);
+                }
+            }
+
+            ++currLevel;
+        }
+
+        // All nodes at level k
+        vector<int> result;
+        while (!q.empty()) {
+            result.push_back(q.front()->val);
+            q.pop();
+        }
+
+        return result;
+    }
+};
+```
+
+---
+
+## ✅ **Time & Space Complexity**
+
+* **Time**: `O(N)` where `N` is the number of nodes (for DFS + BFS).
+* **Space**:
+
+  * Parent map: `O(N)`
+  * Visited set: `O(N)`
+  * Queue: `O(N)` (in worst case)
+
+Much better than using `std::map` or `vector<bool>` constrained to a hardcoded range.
+
+---
+
+### ⚡ Summary of Improvements:
+
+| Before                   | After                                               |
+| ------------------------ | --------------------------------------------------- |
+| `map<int, TreeNode*>`    | `unordered_map<TreeNode*, TreeNode*>`               |
+| `vector<bool>`           | `unordered_set<TreeNode*>`                          |
+| Used value as key        | Used **pointer as key** (handles duplicates safely) |
+| BFS with `step` tracking | Clean BFS with **level-based processing**           |
+| No early exit            | **Early exit** once level `k` is reached            |
+
+---
+
+Let me know if you'd like to visualize the traversal, or support trees with duplicate values.
+
+
+
+TC: O(n) + O(n){
+    n = bfs 
+    n = traverse 
+}
+SC: O(n) + O(n) + O(n) + O(n){
+    n = stack space
+    n = queue
+    n = vis 
+    n = parent
+}
+
+
+
+

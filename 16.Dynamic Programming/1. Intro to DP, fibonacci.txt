@@ -106,3 +106,107 @@ int main()
 
 
 
+
+
+
+
+
+
+##########################################################################################################################################################################################################
+
+
+
+// recursion
+
+class Solution {
+  public:
+    int f(int n){
+        // code here
+        if(n<=1)    return n;
+        
+        return f(n-1) + f(n-2);
+        
+    }
+    int nthFibonacci(int n) {
+        return f(n);
+    }
+};
+
+TC: O(2^(n-1))
+SC: O(n)
+
+
+// memoziation
+
+class Solution {
+  public:
+    int f(int n, vector<int>& dp){
+        // code here
+        if(n<=1)    return n;
+        
+        return dp[n] = f(n-1, dp) + f(n-2, dp);
+        
+    }
+    int nthFibonacci(int n) {
+        vector<int> dp(n+1, -1);
+        return f(n, dp);
+    }
+};
+
+TC: O(n)
+SC: O(n) + O(n){
+        n = stack space
+        n = dp space
+}
+
+
+// tabulation
+
+class Solution {
+  public:
+    int f(int n, vector<int>& dp){
+        // code here
+        dp[0] = 0;
+        dp[1] = 1;
+        
+        for(int i = 2; i<=n; i++)
+            dp[i] = dp[i-1] + dp[i-2];
+            
+        return dp[n];
+    }
+    int nthFibonacci(int n) {
+        vector<int> dp(n+1, -1);
+        return f(n, dp);
+    }
+};
+
+TC: O(n)
+SC: O(n) { n = dp space}
+
+
+// optimization
+
+class Solution {
+  public:
+    int f(int n){
+       if(n <= 1)   return n;
+        // code here
+       int prev = 1, prevTwo = 0;
+       for(int i = 2; i<=n; i++){
+           int curr = prev + prevTwo;
+           prevTwo = prev;
+           prev = curr;
+       }
+       return prev;
+    }
+    int nthFibonacci(int n) {
+        
+        return f(n);
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+
+

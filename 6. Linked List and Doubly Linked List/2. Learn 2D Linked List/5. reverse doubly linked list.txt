@@ -1,0 +1,108 @@
+
+
+
+
+/*
+class DLLNode {
+  public:
+    int data;
+    DLLNode *next;
+    DLLNode *prev;
+
+    DLLNode(int val) {
+        data = val;
+        this->next = NULL;
+        this->prev = NULL;
+    }
+};
+*/
+class Solution {
+  public:
+    // Function to reverse a doubly linked list
+    DLLNode* reverseDLL(DLLNode* head) {
+        // Your code here
+        
+        DLLNode* current = head, *back = nullptr;
+        while(current != nullptr){
+            DLLNode* currentNext = current->next;
+            
+            current->next = back;
+            if(back != nullptr)
+                back->prev = current;
+            
+            back = current;
+            current = currentNext;
+        }
+        
+        return back;
+    }
+};
+
+
+TC: O(n)
+SC: O(1)
+
+
+
+###########################################################################################################
+
+
+class Solution {
+  public:
+  
+    DLLNode* reverseDLL(DLLNode* current, DLLNode* back){
+        if(current == nullptr)  return current;
+        
+        DLLNode* currentNext = current->next;
+        
+        current->next = back;
+        if(back != nullptr)
+            back->prev = current;
+            
+        if(currentNext == nullptr){
+            current->prev = nullptr;
+            return current;
+        }
+        
+        return reverseDLL(currentNext, current);
+    }
+    // Function to reverse a doubly linked list
+    DLLNode* reverseDLL(DLLNode* head) {
+        // Your code here
+        
+        return reverseDLL(head, nullptr);
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+
+#####################################################################################################
+
+using striver logic
+
+class Solution {
+  public:
+    // Function to reverse a doubly linked list
+    DLLNode* reverseDLL(DLLNode* head) {
+        // Your code here
+        if(head == nullptr || head->next == nullptr)
+            return head;
+            
+        DLLNode* newHead = reverseDLL(head->next);
+        
+        DLLNode*  nextCurrent = head->next;
+        
+        nextCurrent->next = head;
+        head->prev = nextCurrent;
+        
+        head->next = nullptr;
+        
+        return newHead;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+

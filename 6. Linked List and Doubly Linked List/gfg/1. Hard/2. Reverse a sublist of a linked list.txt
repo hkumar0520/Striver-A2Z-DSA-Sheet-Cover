@@ -1,0 +1,47 @@
+
+
+https://www.geeksforgeeks.org/problems/reverse-a-sublist-of-a-linked-list/1?page=1&category=Linked%20List
+
+
+class Solution {
+  public:
+    Node* reverseLinekedList(int k, Node* head){
+        Node* prev = nullptr, *current = head, *nextNode = nullptr;
+        while(current != nullptr && k-- > 0){
+            nextNode = current->next;
+            
+            current->next = prev;
+            prev = current;
+            current = nextNode;
+        }
+        head->next = nextNode;
+        return prev;
+    }
+    Node* reverseBetween(int a, int b, Node* head) {
+        // code here
+        Node* current = head, *prev = nullptr;
+        int cnt = 1;
+        while(cnt < a && current != nullptr){
+            prev = current;
+            current = current->next;
+            cnt++;
+        }
+        
+        Node* newPosHead = reverseLinekedList(b - a + 1, current);
+        // a != 1
+        if(prev != nullptr)
+            prev->next = newPosHead;
+            
+        if(a > 1)
+            return head;
+            
+        return newPosHead;
+    }
+};
+
+
+TC: O(n)
+SC: O(1)
+
+
+

@@ -6,7 +6,7 @@ where 'n' is the size of array.
 // recursion
 
 
-void f(vector<int> arr, int x, int i, int j, int &ans)
+void f(vector<int>& arr, int x, int i, int j, int &ans)
 {
 	if(i>j)
 		return ;
@@ -34,6 +34,65 @@ int lowerBound(vector<int> arr, int n, int x) {
 
 
 
+The given code implements **lower bound search** using a **recursive binary search approach**, but this time the array is passed **by reference** (`vector<int>& arr`). Let's analyze its **time complexity** and **space complexity**.
+
+---
+
+### **Time Complexity Analysis**
+1. The function `f(arr, x, i, j, ans)` follows **binary search**, where the search space is **halved** at each recursive call.
+2. The recurrence relation for this algorithm is:
+   \[
+   T(n) = T(n/2) + O(1)
+   \]
+   - Each recursive call does a constant amount of work \( O(1) \) (computing `mid`, updating `ans`, and making a recursive call).
+   - The problem size reduces by half in each step.
+3. The depth of recursion follows:
+
+   \[
+   n, \frac{n}{2}, \frac{n}{4}, \frac{n}{8}, \dots, 1
+   \]
+
+   Solving for \( k \) in \( \frac{n}{2^k} = 1 \):
+
+   \[
+   k = \log_2 n
+   \]
+
+Thus, the **time complexity** is:
+\[
+O(\log n)
+\]
+
+---
+
+### **Space Complexity Analysis**
+1. Since the function is **recursive**, each call adds a new frame to the **call stack**.
+2. The **maximum depth** of recursion is **\( O(\log n) \)** because the search space halves at each step.
+3. Unlike the previous version, **the array is now passed by reference (`vector<int>& arr`)**, meaning **no additional copies of the array are created**.
+4. The **only space used** is for the **recursive call stack**, which takes at most **\( O(\log n) \) space**.
+
+Thus, the **space complexity** is:
+\[
+O(\log n)
+\]
+
+---
+
+### **Final Complexity Summary**
+- **Time Complexity**: \( O(\log n) \) (binary search halves the search space at each step)
+- **Space Complexity**: \( O(\log n) \) (due to recursive call stack)
+
+This version is **much better** than the previous one because it avoids unnecessary **\( O(n) \) space** for array copies. However, an **iterative approach** would further reduce space complexity to **\( O(1) \)**. 🚀
+
+
+
+
+
+
+
+
+
+
 ################################################################################################
 
 // iteration 
@@ -54,9 +113,152 @@ int lowerBound(vector<int> arr, int n, int x) {
 		else
 			i = mid+1;
 	}
-	return ans;
+	return ans;		// return i
 }
 
 
+The given code implements **lower bound search** using an **iterative binary search approach**. Let's analyze its **time complexity**.
 
+---
+
+### **Understanding Lower Bound**
+The function finds the **first index** where `arr[mid] >= x`.  
+- If `x` is greater than the last element, it returns `n` (out-of-bounds index).
+- Otherwise, it performs **binary search** to find the smallest index where `arr[mid] >= x`.
+
+---
+
+### **Time Complexity Analysis**
+1. The `while(i <= j)` loop follows the **binary search pattern**, where the search space is **halved** at each step.
+2. The number of iterations in the worst case is determined by how many times we can halve `n` until we reach **1**:
+
+   \[
+   n, \frac{n}{2}, \frac{n}{4}, \frac{n}{8}, \dots, 1
+   \]
+
+   Solving for \( k \) in \( \frac{n}{2^k} = 1 \):
+
+   \[
+   k = \log_2 n
+   \]
+
+3. Each iteration performs a **constant amount of work** (`O(1)`) to compute `mid`, compare values, and update `i`, `j`, and `ans`.
+
+Thus, the **overall time complexity** is:
+
+\[
+O(\log n)
+\]
+
+---
+
+### **Final Complexity Summary**
+- **Time Complexity**: \( O(\log n) \) (binary search halves the search space at each step)
+- **Space Complexity**: \( O(1) \) (only a few integer variables are used)
+
+This is an optimal approach for finding the lower bound in a **sorted array**. 🚀
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################################
+
+
+time and space complexity of below code
+
+void f(vector<int> arr, int x, int i, int j, int &ans)
+{
+	if(i>j)
+		return ;
+	
+	int mid = (i+j)/2;
+	if(arr[mid] >= x)
+	{
+		ans = mid;
+		f(arr,x,i,mid-1,ans);
+	}
+	else
+		f(arr,x,mid+1,j,ans);
+	
+}
+int lowerBound(vector<int> arr, int n, int x) {
+	// Write your code here
+	if(x>arr[n-1])
+		return n;
+
+	int ans = 0;
+
+	f(arr,x,0,n-1,ans);
+	return ans;
+}
+
+The given code implements **lower bound search** using **recursive binary search**. Let's analyze its **time complexity** and **space complexity**.
+
+---
+
+### **Time Complexity Analysis**
+1. The function `f(arr, x, i, j, ans)` follows **binary search**, where the search space is **halved** at each recursive call.
+2. The recurrence relation for this algorithm is:
+   \[
+   T(n) = T(n/2) + O(1)
+   \]
+   - Each recursive call does a constant amount of work \( O(1) \) (computing `mid`, updating `ans`, and making a recursive call).
+   - The problem size reduces by half in each step.
+3. The depth of recursion follows:
+
+   \[
+   n, \frac{n}{2}, \frac{n}{4}, \frac{n}{8}, \dots, 1
+   \]
+
+   Solving for \( k \) in \( \frac{n}{2^k} = 1 \):
+
+   \[
+   k = \log_2 n
+   \]
+
+Thus, the **time complexity** is:
+\[
+O(\log n)
+\]
+
+---
+
+### **Space Complexity Analysis**
+1. Since the function is **recursive**, each call adds a new frame to the **call stack**.
+2. The **maximum depth** of recursion is **\( O(\log n) \)** because the search space halves at each step.
+3. **Extra space**: The array `arr` is passed by **value**, meaning a **copy** of the array is made in each recursive call.
+   - This results in an additional **\( O(n) \)** space consumption per recursive call.
+
+Thus, the **space complexity** is:
+\[
+O(n + \log n) \approx O(n)
+\]
+(Since \( O(n) \) dominates \( O(\log n) \), the final space complexity is \( O(n) \).)
+
+---
+
+### **Final Complexity Summary**
+- **Time Complexity**: \( O(\log n) \) (binary search halves the search space at each step)
+- **Space Complexity**: \( O(n) \) (due to passing the array by value in recursive calls)
+
+---
+
+### **Optimization Suggestion**
+To reduce space complexity:
+- Pass the array by **reference** instead of **value** (`vector<int>& arr` instead of `vector<int> arr`).
+- This will reduce space complexity from \( O(n) \) to **\( O(\log n) \)** (due to recursion depth). 🚀
 

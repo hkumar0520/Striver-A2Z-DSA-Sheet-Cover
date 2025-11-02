@@ -1,0 +1,52 @@
+
+
+class Solution {
+  public:
+    int findOneToNXor(int n){
+        if(n%4 == 0)    return n;
+        else if(n%4 == 1) return 1;
+        else if(n%4 == 2) return n+1;
+        
+        return 0;
+    }
+    int findXOR(int l, int r) {
+        // complete the function here
+        
+        int tillLminusOne = findOneToNXor(l-1);
+        int tillr = findOneToNXor(r);
+        
+        return tillr^tillLminusOne;
+    }
+};
+
+The provided code is an implementation of a solution to compute the XOR of all integers from `l` to `r` efficiently. Let's analyze its **time complexity** and **space complexity**.
+
+### Time Complexity:
+
+1. **findOneToNXor(n) function:**
+   - This function calculates the XOR of all integers from `1` to `n`. 
+   - It uses a pattern based on `n % 4` to directly return a result in constant time.
+   - This function operates in **O(1)** time because it performs a few conditional checks and returns a value accordingly.
+
+2. **findXOR(l, r) function:**
+   - The `findXOR` function calls the `findOneToNXor` function twice: once for `l-1` and once for `r`.
+   - Each call to `findOneToNXor` runs in **O(1)** time, as explained earlier.
+   - The XOR operation `tillr ^ tillLminusOne` is also constant time, **O(1)**.
+   
+So, the overall time complexity of the solution is **O(1)**, since the function calls and operations all take constant time.
+
+### Space Complexity:
+
+1. **findOneToNXor(n) function:**
+   - This function uses no extra space other than a few local variables (constants for the checks).
+   - Therefore, the space complexity of `findOneToNXor` is **O(1)**.
+
+2. **findXOR(l, r) function:**
+   - The `findXOR` function stores two intermediate results: `tillLminusOne` and `tillr`. These are simple integer variables and do not depend on the size of the input `l` or `r`.
+   - Thus, the space complexity of `findXOR` is also **O(1)**.
+
+### Conclusion:
+- **Time Complexity:** **O(1)**
+- **Space Complexity:** **O(1)**
+
+The algorithm runs in constant time and uses constant space.

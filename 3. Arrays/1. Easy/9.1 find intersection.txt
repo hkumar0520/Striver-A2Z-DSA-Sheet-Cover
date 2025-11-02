@@ -1,0 +1,139 @@
+
+1. Brute force 
+
+
+class Solution {
+  public:
+    // a,b : the arrays
+    // Function to return a list containing the union of the two arrays.
+    vector<int> findUnion(vector<int> &a, vector<int> &b) {
+        // Your code here
+        // return vector with correct order of 
+        int aSize = a.size(), bSize = b.size();
+        if(aSize > bSize)
+            return findUnion(b, a);
+            
+        vector<int> vis(aSize, 0);
+        
+        for(int i = 0; i<bSize; i++){
+            for(int j = 0; j<aSize; j++){
+                if( (b[i] == a[j]) && !vis[j]){
+                    vis[j] = 1;
+                    break;
+                }
+                else if(a[j] > b[i])
+                    break;
+            }
+        }
+        
+        vector<int> ans;
+        for(int i = 0; i<aSize; i++){
+            if(vis[i] != 0)
+                ans.push_back(a[i]);
+        }
+        return ans;
+    }
+};
+
+TC: O(N*M)
+SC: O(N){
+    for vis array 
+}
+
+
+#$$$$$$$$$$$$$$$#######################################################################
+
+
+
+1. using sorting + two pointers, res.stream().mapToInt()
+2. hashing
+3. same as 1st, arrays.copyOfRange in place
+
+
+// using Two Pointers
+
+class Solution {
+    public int[] intersect(int[] nums1, int[] nums2) {
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+
+        List<Integer> res = new ArrayList<>();
+        int i = 0, j = 0, nums1Len = nums1.length, nums2Len = nums2.length;
+        while( i<nums1Len && j<nums2Len){
+            if(nums1[i] < nums2[j])
+                i++;
+            else if(nums2[j] < nums1[i])
+                j++;
+            else{
+                res.add(nums1[i]);
+                i++;
+                j++;
+            }
+        }
+
+        return res.stream().mapToInt(k->k).toArray();
+    }
+}
+TC: O(nlogn + mlogm)
+SC: O(n)
+
+###########################################################################
+
+// using hashmap
+
+class Solution {
+    public int[] intersect(int[] nums1, int[] nums2) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for(int num: nums1){
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+
+        List<Integer> res = new ArrayList<>();
+        for(int num: nums2){
+            if(map.containsKey(num) && map.get(num) > 0){
+                res.add(num);
+                map.put(num, map.getOrDefault(num,0) -1);
+            }
+        }
+
+        return  res.stream().mapToInt(i -> i).toArray();
+    }
+}
+
+TC: O(nlogn)
+SC: O(n)
+
+#####################################################################
+
+class Solution {
+    public int[] intersect(int[] nums1, int[] nums2) {
+        int l1 = nums1.length;
+        int l2 = nums2.length;
+        int i = 0, j = 0, k = 0;
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        while( i < l1 && j < l2)
+        {
+            if(nums1[i] < nums2[j])
+            {
+                i++;
+            }
+            else if(nums1[i] > nums2[j])
+            {
+                j++;
+            }
+            else
+            {
+                nums1[k++] = nums1[i++];
+                j++;
+            }
+        }
+        return Arrays.copyOfRange(nums1,0,k);
+    }
+}
+
+TC: O(nlogn + mlogm)
+SC: O(1)
+
+

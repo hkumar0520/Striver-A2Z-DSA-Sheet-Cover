@@ -1,0 +1,79 @@
+
+
+
+1. optimal (n, 1)
+
+
+class Solution {
+  public:
+
+    Node *removeDuplicates(struct Node *head) {
+        // Your code here
+        Node* current = head;
+        current = current->next;
+        while(current != nullptr){
+            if(current->data == current->prev->data){
+                current->prev->next = current->next;
+                if(current->next != nullptr)
+                    current->next->prev = current->prev;
+                
+                Node* tmp = current;
+                current = current->next;
+                delete tmp;
+                continue;
+            }
+            current = current->next;
+        }
+        return head;
+    }
+};
+TC: O(n)
+SC: O(1)
+
+Let's analyze the **time and space complexity** of the `removeDuplicates` function you provided for a **sorted doubly linked list**.
+
+---
+
+### 📌 Code Functionality Overview:
+
+This function removes **duplicate nodes** from a **sorted doubly linked list**.
+
+* Since the list is sorted, duplicates are always **adjacent**.
+* It iterates through the list, starting from the second node.
+* If a node has the same value as the previous node, it removes it.
+
+---
+
+### ⏱️ **Time Complexity**
+
+Let **n** be the number of nodes in the linked list.
+
+* The function traverses the list **once** using a `while` loop.
+* In each iteration, either:
+
+  * It moves to the next node, or
+  * Deletes the current node and moves to the next.
+
+Hence, the number of iterations is at most **n**, and each operation inside the loop is **O(1)**.
+
+✅ **Time Complexity: O(n)**
+
+---
+
+### 🧠 **Space Complexity**
+
+* No extra data structures are used (only a few pointers).
+* The function modifies the list **in-place**.
+
+✅ **Space Complexity: O(1)**
+
+---
+
+### ✅ Final Answer:
+
+* **Time Complexity:** `O(n)`
+* **Space Complexity:** `O(1)`
+
+Let me know if you want a version for a singly linked list or one that works for unsorted lists.
+
+

@@ -1,0 +1,111 @@
+
+
+
+
+1. Brute force
+2. hashing
+3. two pointers
+
+
+class Solution {
+    public List<Integer> majorityElement(int[] nums) {
+        List<Integer> ans = new ArrayList<>();
+
+        for(int i = 0; i<nums.length; i++){
+
+            int cnt = 0, number = nums[i];
+            for(int j=0; j<nums.length; j++){
+                if(number == nums[j])
+                    cnt++;
+            }
+
+            if( cnt > nums.length/3){
+                if(ans.size() == 0)
+                    ans.add(number);
+                else if(ans.get(0) != number)
+                    ans.add(number);
+            }
+        }
+        return  ans;
+    }
+}
+
+TC: O(n*n)
+SC: O(1)
+
+###################################################################
+
+class Solution {
+    public List<Integer> majorityElement(int[] nums) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        int n = nums.length;
+        for(int i=0;i<n;i++)
+          map.put(nums[i], map.getOrDefault(nums[i],0)+1);
+
+        List<Integer> ans = new ArrayList<Integer>();
+        for(Integer i: map.keySet())
+        {
+          if(map.get(i)>n/3)  
+            ans.add(i);
+        }
+        return ans;
+    }
+}
+
+TC: O(n)
+SC: O(n)
+
+
+#######################################################################
+
+
+
+class Solution {
+    public List<Integer> majorityElement(int[] nums) {
+        int countNum1 = 0, num1 = 0, countNum2 = 0, num2 = -1;
+
+        for(int num: nums){
+            if(countNum1 == 0 && num != num2){
+                num1 = num;
+                countNum1 = 1;
+            }
+            else if(countNum2 == 0 && num != num1){
+                num2 = num;
+                countNum2 = 1;
+            }
+            else if(num1 == num)
+                countNum1++;
+            else if(num2 == num)
+                countNum2++;
+            else{
+                countNum1--;
+                countNum2--;
+            }
+        }
+        countNum1 = countNum2 = 0;
+        for(int num: nums){
+            if(num == num1)
+                countNum1++;
+            else if(num == num2)
+                countNum2++;
+        }
+        List<Integer> ans = new ArrayList<>();
+        if(countNum1 > nums.length/3)
+            ans.add(num1);
+        if(countNum2 > nums.length/3)
+            ans.add(num2);
+
+        return ans;
+    }
+}
+
+TC: O(n)
+SC: O(1)
+
+
+
+
+
+
+
+

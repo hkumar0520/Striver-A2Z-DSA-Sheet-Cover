@@ -1,0 +1,27 @@
+
+
+https://www.geeksforgeeks.org/problems/you-and-your-books/1?page=1&category=Dynamic%20Programming
+
+
+
+class Solution {
+  public:
+    /*You are requried to complete this method */
+    long long max_Books(int arr[], int n, int k) {
+        // Your code here
+        long long maxBooks = 0, currBooks = 0;
+        for(int i =0; i<n; i++){
+            if(arr[i] <= k){
+                currBooks += arr[i];
+                maxBooks = max( maxBooks, currBooks);
+            }
+            else
+                currBooks = 0;
+        }
+        return maxBooks;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+

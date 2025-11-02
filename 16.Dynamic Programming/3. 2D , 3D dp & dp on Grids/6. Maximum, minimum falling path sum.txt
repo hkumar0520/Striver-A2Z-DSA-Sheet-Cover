@@ -1,3 +1,12 @@
+
+
+1. recursion 
+2. memoization
+3. tabulation
+4. optimization 
+    i) two arrays (prev, current)
+    ii) one array( dp )
+
 #include <bits/stdc++.h> 
 
 int f(int m,int n, vector<vector<int>> &mat, vector<vector<int>> &dp)
@@ -43,6 +52,12 @@ int getMaxPathSum(vector<vector<int>> &matrix)
     int m = matrix.size(),n = matrix[0].size();
     vector<vector<int>> dp(m,vector<int>(n,INT_MIN));
     return f(m,n,matrix,dp);
+}
+
+TC: O(n*n)
+SC: O(n) + n*n{
+    dp = n*n
+    stack space = 
 }
 
 
@@ -136,6 +151,8 @@ int getMaxPathSum(vector<vector<int>> &matrix)
 
     return f(m,n,matrix,dp);
 }
+
+
 
 
 #############################################################################

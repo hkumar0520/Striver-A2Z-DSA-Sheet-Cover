@@ -1,0 +1,19 @@
+---------------Stack using array---------------------
+Top element: 30
+Stack size: 3
+Top element after pop: 20
+Stack size after pop: 2
+---------------Qeueu using array---------------------
+Front element: 10
+Queue size: 3
+Dequeue element: 10
+Front element after dequeue: 20
+Queue size after dequeue: 2
+Front element after enqueue: 20
+Queue size after enqueue: 3
+Dequeue element: 20
+---------------Qeueu using Linked List---------------------
+Top element: 30
+Stack size: 3
+Top element after pop: 20
+Stack size after pop: 2

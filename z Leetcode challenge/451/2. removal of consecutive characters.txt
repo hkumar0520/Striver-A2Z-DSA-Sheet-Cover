@@ -1,0 +1,31 @@
+
+
+https://leetcode.com/contest/weekly-contest-451/
+
+class Solution {
+public:
+    string resultingString(string s) {
+        
+        stack<int> st;
+        int len = s.size();
+        for(int i = 0; i<len; i++){
+            if(st.empty())
+                st.push((int)s[i]);
+            else{
+                int val = (int)s[i];
+                if((abs(st.top() - val)  == 1) || (abs(st.top() - val) == 25))
+                    st.pop();
+                else
+                    st.push((int)s[i]);
+            }
+        }
+        string ans = "";
+        while(!st.empty()){
+            ans += (char)st.top() ;
+            st.pop();
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
+

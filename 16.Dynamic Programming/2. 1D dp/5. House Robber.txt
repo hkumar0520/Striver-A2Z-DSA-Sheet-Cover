@@ -39,3 +39,54 @@ public:
         return max(maximum,prev);
     }
 };
+
+TC: O(2n)
+SC: O(1)
+
+
+
+################################################################################################
+
+
+using previous question logic
+
+class Solution {
+public:
+    int f(int n, vector<int> &nums)
+    {
+        int prev2 = 0;
+        int prev = nums[0];
+
+        for(int i=1;i<n;i++)
+        {
+            int pick = nums[i];
+            if(i>1)
+                pick += prev2;
+            int nonPick = prev;
+            
+            int curr = max(pick, nonPick); 
+            prev2 = prev;
+            prev = curr;
+        }
+        return prev;
+    }
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        
+        int lastElement = nums[n-1];
+        nums.pop_back();
+        int exCludingLastElement = f(n-1, nums);
+        nums.push_back(lastElement);
+
+        int firstElement = nums[0];
+        nums.erase(nums.begin());
+        int exCludingFirstElement = f(n-1, nums);
+        nums.insert(nums.begin(), firstElement);
+
+        return max(exCludingLastElement, exCludingFirstElement);
+    }
+};
+
+TC:  O(2n)
+SC: O(1)
+

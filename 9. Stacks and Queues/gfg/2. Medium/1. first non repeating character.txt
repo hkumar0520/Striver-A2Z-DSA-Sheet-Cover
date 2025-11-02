@@ -1,0 +1,44 @@
+
+https://www.geeksforgeeks.org/problems/first-non-repeating-character-in-a-stream1216/1?page=1&category=Stack,Queue
+
+
+1. Brute force ( n*n, 1)
+2. better (n, n)
+
+
+class Solution {
+  public:
+    string FirstNonRepeating(string &s) {
+        // Code here
+        queue<char> q;
+        vector<int> map(26, 0);
+        string ans = "";
+        int len = s.size();
+        
+        for(int i = 0; i<len; i++){
+            char ch = s[i];
+            map[ch-'a']++;
+            if(map[ch- 'a'] == 1)
+                q.push(ch);
+            
+            while(!q.empty() && map[q.front()-'a'] > 1){
+                map[q.front()  - 'a']--;
+                q.pop();
+            }
+                
+            if(q.empty())
+                ans += '#';
+            else
+                ans += q.front();
+        
+ 
+        }
+        
+        return ans;
+    }
+};
+
+
+TC: O(2n)
+SC: O(n)
+

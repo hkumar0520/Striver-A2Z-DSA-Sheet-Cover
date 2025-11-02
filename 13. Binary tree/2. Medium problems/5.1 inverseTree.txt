@@ -1,0 +1,28 @@
+
+
+
+class Solution {
+public:
+    void inverseTree(TreeNode* root){
+        if(root == nullptr)
+            return ;
+
+        TreeNode* node = root->left;
+        root->left = root->right;
+        root->right = node;
+
+        inverseTree(root->left);
+        inverseTree(root->right);
+    }
+    TreeNode* invertTree(TreeNode* root) {
+        
+        inverseTree(root);
+        return root;
+        
+    }
+};
+
+TC: O(n)
+SC: O(n)
+
+

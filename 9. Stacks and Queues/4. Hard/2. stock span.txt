@@ -1,0 +1,72 @@
+
+
+class StockSpanner {
+private:
+    vector<int> arr;
+public:
+    StockSpanner() {
+        
+    }
+    
+    int next(int price) {
+        int len = arr.size();
+        int cnt = 1;
+        for(int i = len - 1; i>=0; i-- ){
+            if(arr[i] > price)
+                break;
+            cnt++;
+        }
+        arr.push_back(price);
+        return cnt;
+    }
+};
+
+/**
+ * Your StockSpanner object will be instantiated and called as such:
+ * StockSpanner* obj = new StockSpanner();
+ * int param_1 = obj->next(price);
+ */
+
+
+ TC: O(n*n)
+ SC: O(n)
+
+
+ #############################################################
+
+
+ class StockSpanner {
+public:
+    stack<pair<int,int>> st;
+    int cnt = 0;
+    StockSpanner() {
+        
+    }
+    
+    int next(int price) {
+        cnt++;
+        
+        while(!st.empty() && st.top().first <= price)
+            st.pop();
+
+        int ans = cnt;
+        if(!st.empty())
+            ans -= st.top().second;
+
+        st.push({ price, cnt });
+
+        return ans;
+    }
+};
+
+/**
+ * Your StockSpanner object will be instantiated and called as such:
+ * StockSpanner* obj = new StockSpanner();
+ * int param_1 = obj->next(price);
+ */
+
+ TC: O(2n)
+ SC: O(n)
+
+
+ 

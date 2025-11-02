@@ -1,0 +1,167 @@
+
+
+
+
+1. recusion 
+2. memoization 
+3. tabular 
+4. optimization 
+
+
+
+
+
+class Solution {
+public:
+    int f(int ind, int choice, int cap, vector<int>& values)
+    {
+        if(cap == 0)    return 0;
+        if(ind == values.size())    return 0;
+
+        int opt1 = 0, opt2 = 0;
+        if(choice == 0)
+        {
+            opt1 = f(ind+1, choice, cap, values);
+            opt2 = -values[ind] + f(ind+1, !choice, cap, values);
+        }
+        else
+        {
+            opt1 = f(ind+1, choice, cap, values);
+            opt2 = values[ind] + f(ind+1, !choice, cap-1, values);
+        }
+        return max(opt1,opt2);
+    }
+    int maxProfit(vector<int>& prices) {
+        return f(0, 0, 2, prices);
+    }
+};
+
+TC : exponential (2^n)
+SC: O(n){
+    n = stack space
+}
+
+
+############################################################################################################
+
+
+class Solution {
+public:
+    int f(int ind, int choice, int cap, vector<int>& values, vector<vector<vector<int>>>& dp)
+    {
+        if(cap == 0)    return 0;
+        if(ind == values.size())    return 0;
+
+        if(dp[ind][choice][cap] != -1) return dp[ind][choice][cap];
+
+        int opt1 = 0, opt2 = 0;
+        if(choice == 0)
+        {
+            opt1 = f(ind+1, choice, cap, values, dp);
+            opt2 = -values[ind] + f(ind+1, !choice, cap, values, dp);
+        }
+        else
+        {
+            opt1 = f(ind+1, choice, cap, values, dp);
+            opt2 = values[ind] + f(ind+1, !choice, cap-1, values, dp);
+        }
+        return dp[ind][choice][cap] = max(opt1,opt2);
+    }
+    int maxProfit(vector<int>& prices) {
+        int k = 2, capacity = 2, n = prices.size();
+        vector<vector<vector<int>>> dp(n, vector<vector<int>>(k, vector<int>(capacity + 1, -1)));
+        return f(0, 0, 2, prices, dp);
+    }
+};
+
+
+
+TC: O(n*k*capacity) = O(n*2*2)
+SC: O(n*2*2) + O(n)
+
+
+
+
+#######################################################################################################################
+
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int k = 2, capacity = 2, n = prices.size();
+        vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(k, vector<int>(capacity + 1, 0)));
+
+        for(int ind = n-1; ind>=0; ind--){
+            for(int choice = 1; choice>=0; choice--){
+                for(int cap = capacity; cap>0; cap--){
+                    
+                    int opt1 = 0, opt2 = 0;
+                    if(choice == 0)
+                    {
+                        opt1 = dp[ind+1][choice][cap];
+                        opt2 = -prices[ind] + dp[ind+1][!choice][cap];
+                    }
+                    else
+                    {
+                        opt1 = dp[ind+1][choice][cap];
+                        opt2 = prices[ind] + dp[ind+1][!choice][cap-1];
+                    }
+                    dp[ind][choice][cap] = max(opt1,opt2);
+                }
+            }
+        }
+        return dp[0][0][2];
+    }
+};
+
+
+
+TC: O(n*k*capacity) = O(n*2*2)
+SC: O(n*2*2) 
+
+
+
+
+##########################################################################################################################################
+
+
+
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int k = 2, capacity = 2, n = prices.size();
+        vector<vector<int>>curr (k, vector<int>(capacity + 1, 0));
+        vector<vector<int>>prev (k, vector<int>(capacity + 1, 0));
+
+        for(int ind = n-1; ind>=0; ind--){
+            for(int choice = 1; choice>=0; choice--){
+                for(int cap = capacity; cap>0; cap--){
+                    
+                    int opt1 = 0, opt2 = 0;
+                    if(choice == 0)
+                    {
+                        opt1 = prev[choice][cap];
+                        opt2 = -prices[ind] + prev[!choice][cap];
+                    }
+                    else
+                    {
+                        opt1 = prev[choice][cap];
+                        opt2 = prices[ind] + prev[!choice][cap-1];
+                    }
+                    curr[choice][cap] = max(opt1,opt2);
+                }
+            }
+            prev = curr;
+        }
+        return curr[0][2];
+    }
+};
+
+
+
+
+TC: O(n*k*capacity) = O(n*2*2)
+SC: O(2*2) 
+
+

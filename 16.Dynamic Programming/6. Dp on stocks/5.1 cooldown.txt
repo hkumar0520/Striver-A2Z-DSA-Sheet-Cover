@@ -1,0 +1,158 @@
+
+
+1. recusion 
+2. memoization 
+3. tabular 
+4. optimization 
+
+
+
+class Solution {
+public:
+
+    long f(int ind, int choice, vector<int>& values)
+    {
+        if(ind >= values.size())    return 0;
+
+        long opt1 = 0, opt2 = 0;
+        if(choice == 0)
+        {
+            opt1 = f(ind+1, choice, values);
+            opt2 = -values[ind] + f(ind+1, !choice, values);
+        }
+        else
+        {
+            opt1 = f(ind+1, choice, values);
+            opt2 = values[ind] + f(ind+2, !choice, values);
+        }
+        return max(opt1,opt2);
+    }
+    int maxProfit(vector<int>& prices) {
+        return f(0, 0, prices);
+    }
+};
+
+TC: O(2^n)
+SC: O(n)
+
+
+#########################################################################################################################################
+
+
+
+
+class Solution {
+public:
+
+    long f(int ind, int choice, vector<int>& values, vector<vector<int>>& dp)
+    {
+        if(ind >= values.size())    return 0;
+
+        if(dp[ind][choice] != -1)   return dp[ind][choice];
+
+        long opt1 = 0, opt2 = 0;
+        if(choice == 0)
+        {
+            opt1 = f(ind+1, choice, values, dp);
+            opt2 = -values[ind] + f(ind+1, !choice, values, dp);
+        }
+        else
+        {
+            opt1 = f(ind+1, choice, values, dp);
+            opt2 = values[ind] + f(ind+2, !choice, values, dp);
+        }
+        return dp[ind][choice] = max(opt1,opt2);
+    }
+
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        vector<vector<int>> dp(n, vector<int>(2, -1));
+        return f(0, 0, prices, dp);
+    }
+};
+
+
+TC: O(n*2)
+SC: O(n) + O(n*2){
+    dp  = n*2  
+    stack space = n
+}
+
+
+##################################################################################################################3
+
+
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        vector<vector<int>> dp(n+2, vector<int>(2, 0));
+
+        for(int ind = n-1; ind>=0; ind--){
+            for(int choice = 1; choice>=0; choice--){
+                long opt1 = 0, opt2 = 0;
+                if(choice == 0){
+                    opt1 = dp[ind+1][choice]; 
+                    opt2 = -prices[ind] + dp[ind+1][!choice]; 
+                }
+                else{
+                    opt1 = dp[ind+1][choice]; 
+                    opt2 = prices[ind] + dp[ind+2][!choice]; 
+                }
+                dp[ind][choice] = max(opt1,opt2);
+            }
+        }
+
+        return dp[0][0];
+    }
+};
+
+
+
+TC: O(n*2)
+SC: O(n*2)
+
+
+
+
+#####################################################################################################################################
+
+
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        vector<int> curr(2, 0), prev(2, 0), prevPrev(2, 0);
+
+        for(int ind = n-1; ind>=0; ind--){
+            for(int choice = 1; choice>=0; choice--){
+                long opt1 = 0, opt2 = 0;
+                if(choice == 0){
+                    opt1 = prev[choice]; 
+                    opt2 = -prices[ind] + prev[!choice]; 
+                }
+                else{
+                    opt1 = prev[choice]; 
+                    opt2 = prices[ind] + prevPrev[!choice]; 
+                }
+                curr[choice] = max(opt1,opt2);
+            }
+            prevPrev = prev;
+            prev = curr;
+        }
+
+        return curr[0];
+    }
+};
+
+
+
+
+TC: O(n*2)
+SC: O(n*2)
+
+
+
+

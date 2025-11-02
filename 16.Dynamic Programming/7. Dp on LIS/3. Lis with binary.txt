@@ -30,3 +30,9 @@ int longestIncreasingSubsequence(int arr[], int n) {
     
     return f(arr,n);
 }
+
+
+TC: n*log(n)
+SC: O(n)
+
+

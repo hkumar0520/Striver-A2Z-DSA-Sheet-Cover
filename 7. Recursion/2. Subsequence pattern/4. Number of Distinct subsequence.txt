@@ -104,3 +104,178 @@ string betterString(string str1, string str2) {
 
 
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+  #############################################################################
+
+
+
+
+  Problem Statement:
+Given two strings of equal length, we want to find the better string. The better string is the one that has more distinct subsequences. If both strings have an equal count of distinct subsequences, then return the first string.
+
+ 
+Approach:
+Counting Distinct Subsequences:
+
+To find the better string, we need to determine the count of distinct subsequences for each string.
+Dynamic Programming can be used to efficiently count the number of distinct subsequences.
+Dynamic Programming for Counting Distinct Subsequences:
+
+We can use an array dp, where dp[i] represents the count of distinct subsequences for the substring of length i in the given string.
+Initialize dp[0] as 1, representing an empty string.
+Iterate through each character of the string, and update dp[i] using the recurrence relation.
+dp[i] = 2 * dp[i - 1]
+Subtract the count of subsequences that end at the last occurrence of the current character.
+Keep track of the last occurrence of each character using an array.
+Comparing Counts and Returning the Result:
+
+After obtaining the counts of distinct subsequences for both strings, compare the counts.
+If the count for the first string is greater than or equal to the count for the second string, return the first string as the better string. Otherwise, return the second string.
+ 
+Video Solution Link with easy Explanation:
+Better String
+
+( https://youtu.be/PIUcggeSnuc )
+
+ 
+
+Java Code Explanation:
+betterString Method:
+
+Takes two input strings, str1 and str2.
+Calls the countDistinctSubsequences method for both strings.
+Compares the counts and returns the better string.
+countDistinctSubsequences Method:
+
+Takes a string as input.
+Uses dynamic programming to calculate the count of distinct subsequences.
+Utilizes an array dp and an array lastOccurrence to keep track of the last occurrence of each character.
+Implements the recurrence relation to update dp[i].
+Returns the final count of distinct subsequences.
+Example:
+Let's consider str1 = "gfg" and str2 = "ggg".
+
+Counting Distinct Subsequences:
+
+For str1: dp = 
+dp = [1, 2, 4, 7] (empty string, ‘g’,’f’, 'gf', ‘fg’,’gg’,gfg')
+
+For str2: 
+[1, 2, 3, 4] (empty string, 'g', 'gg', 'ggg')
+
+Comparing Counts and Returning the Result:
+
+Count for str1 is greater than the count for str2.
+Therefore, the better string is str1.
+Summary:
+The solution efficiently uses dynamic programming to count the distinct subsequences for each string and compares the counts to determine the better string. The implementation ensures correctness and handles the equal count scenario by returning the first string in such cases.
+
+ 
+
+Time Complexity
+
+The overall time complexity of the provided solution is O(n), where n is the length of the input strings. The solution efficiently calculates the count of distinct subsequences using dynamic programming, resulting in a linear time complexity.
+
+ 
+
+Java Code 
+
+public static String betterString(String str1, String str2) {
+        //
+        // Count distinct subsequences for each string
+        int count1 = countDistinctSubsequences(str1);
+        int count2 = countDistinctSubsequences(str2);
+
+        // Compare counts and return the better string
+        return (count1 >= count2) ? str1 : str2;
+    }
+
+    // Method to count distinct subsequences using dynamic programming
+    private static int countDistinctSubsequences(String str) {
+        int MOD = 1000000007;
+        int n = str.length();
+        
+        // Array to store the last occurrence index of each character
+        int[] lastOccurrence = new int[256];
+        Arrays.fill(lastOccurrence, -1);
+
+        // Dynamic programming array to store count of distinct subsequences
+        int[] dp = new int[n + 1];
+        dp[0] = 1; // Base case: empty string has one subsequence
+
+        // Iterate through each character of the string
+        for (int i = 1; i <= n; i++) {
+            // Calculate count based on the recurrence relation
+            dp[i] = (2 * dp[i - 1]) % MOD;
+
+            // Subtract count of subsequences ending at the last occurrence of the current character
+            if (lastOccurrence[str.charAt(i - 1)] != -1) {
+                dp[i] = (dp[i] - dp[lastOccurrence[str.charAt(i - 1)] - 1] + MOD) % MOD;
+            }
+
+            // Update last occurrence index of the current character
+            lastOccurrence[str.charAt(i - 1)] = i;
+        }
+
+        // Return the final count of distinct subsequences
+        return dp[n];
+    }
+C++ Code :
+
+
+  // Function to count distinct subsequences using dynamic programming
+int countDistinctSubsequences(const string& str) {
+    const int MOD = 1000000007;
+    int n = str.length();
+
+    // Array to store the last occurrence index of each character
+    int lastOccurrence[256];
+    memset(lastOccurrence, -1, sizeof(lastOccurrence));
+
+    // Dynamic programming array to store count of distinct subsequences
+    vector<int> dp(n + 1, 0);
+    dp[0] = 1; // Base case: empty string has one subsequence
+
+    // Iterate through each character of the string
+    for (int i = 1; i <= n; i++) {
+        // Calculate count based on the recurrence relation
+        dp[i] = (2 * dp[i - 1]) % MOD;
+
+        // Subtract count of subsequences ending at the last occurrence of the current character
+        if (lastOccurrence[str[i - 1]] != -1) {
+            dp[i] = (dp[i] - dp[lastOccurrence[str[i - 1]] - 1] + MOD) % MOD;
+        }
+
+        // Update last occurrence index of the current character
+        lastOccurrence[str[i - 1]] = i;
+    }
+
+    // Return the final count of distinct subsequences
+    return dp[n];
+}
+
+// Function to find the better string based on distinct subsequences count
+string betterString(const string& str1, const string& str2) {
+    // Count distinct subsequences for each string
+    int count1 = countDistinctSubsequences(str1);
+    int count2 = countDistinctSubsequences(str2);
+
+    // Compare counts and return the better string
+    return (count1 >= count2) ? str1 : str2;
+}
+
+
+
+

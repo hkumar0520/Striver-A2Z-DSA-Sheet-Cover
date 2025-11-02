@@ -1,0 +1,190 @@
+
+1. recursion
+2. memoization
+3. tabulation
+4. two rows
+5. one row 
+
+
+
+#include <bits/stdc++.h> 
+
+int f(int ind, int target, vector<int>& num){
+
+    if(ind == 0){
+        if(target % num[ind] == 0)  return target/num[ind];
+
+        return 1e9;
+    }
+
+    int notPick = f(ind-1, target, num);
+    int pick = 1e9;
+    if(num[ind] <= target)
+        pick = 1 + f(ind, target-num[ind], num);
+
+    return min(pick, notPick);
+}
+
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    int ans = f(n-1, x, num);
+    if(ans == 1e9)  return -1;
+    return ans;
+}
+
+TC: exponential >> 2^n 
+SC: O(target)
+
+
+#################################################################################
+
+
+#include <bits/stdc++.h> 
+
+int f(int ind, int target, vector<int>& num, vector<vector<int>>& dp){
+
+    if(ind == 0){
+        if(target % num[ind] == 0)  return target/num[ind];
+
+        return 1e9;
+    }
+
+    if(dp[ind][target] != -1)   return dp[ind][target];
+
+    int notPick = f(ind-1, target, num, dp);
+    int pick = 1e9;
+    if(num[ind] <= target)
+        pick = 1 + f(ind, target-num[ind], num, dp);
+
+    return dp[ind][target] = min(pick, notPick);
+}
+
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    vector<vector<int>> dp(n, vector<int>(x+1, -1));
+    int ans = f(n-1, x, num, dp);
+    if(ans == 1e9)  return -1;
+    return ans;
+}
+
+TC: O(n*target)
+SC: O(n*target) + O(target){
+    dp = n*target 
+    x = target 
+}
+
+
+##################################################################################
+
+
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+    vector<vector<int>> dp(n, vector<int>(x+1, 1e9));
+    for(int target = 0; target <= x; target++){
+        if(target % num[0] == 0)
+            dp[0][target] = target/num[0];
+    }
+
+    for(int ind = 1; ind<n; ind++){
+        for(int target = 0; target <= x; target++){
+
+            int notPick = dp[ind-1][target];
+            int pick = 1e9;
+            if(num[ind] <= target)
+                pick = 1 + dp[ind][target-num[ind]];
+
+            dp[ind][target] = min(notPick, pick);
+        }
+    }
+
+    int ans = dp[n-1][x];
+    if(ans == 1e9)  return -1;
+    return ans;
+}
+
+
+TC: O(n*target)
+SC: O(n*target){
+    dp = n*target 
+}
+
+
+##############################################################################
+
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+
+    vector<int> prev(x+1, 1e9), curr(x+1, 1e9);
+    for(int target = 0; target <= x; target++){
+        if(target % num[0] == 0)
+            prev[target] = target/num[0];
+    }
+
+    for(int ind = 1; ind<n; ind++){
+        for(int target = 0; target <= x; target++){
+
+            int notPick = prev[target];
+            int pick = 1e9;
+            if(num[ind] <= target)
+                pick = 1 + curr[target-num[ind]];
+
+            curr[target] = min(notPick, pick);
+        }
+        prev = curr;
+    }
+
+    int ans = prev[x];
+    if(ans == 1e9)  return -1;
+    return ans;
+}
+
+
+TC: O(n*target)
+SC: O(target){
+    prev = current = target 
+}
+
+
+##########################################################################################
+
+int minimumElements(vector<int> &num, int x)
+{
+    // Write your code here.
+    int n = num.size();
+
+    vector<int> prev(x+1, 1e9), curr(x+1, 1e9);
+    for(int target = 0; target <= x; target++){
+        if(target % num[0] == 0)
+            prev[target] = target/num[0];
+    }
+
+    for(int ind = 1; ind<n; ind++){
+        for(int target = 0; target <= x; target++){
+
+            int notPick = prev[target];
+            int pick = 1e9;
+            if(num[ind] <= target)
+                pick = 1 + prev[target-num[ind]];
+
+            prev[target] = min(notPick, pick);
+        }
+    }
+
+    int ans = prev[x];
+    if(ans == 1e9)  return -1;
+    return ans;
+}
+
+
+TC: O(n*target)
+SC: O(target){
+    prev =  target 
+}

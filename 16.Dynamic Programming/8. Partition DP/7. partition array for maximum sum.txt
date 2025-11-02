@@ -1,0 +1,201 @@
+
+
+
+1. recursion 
+2. memoization 
+3. tabular 
+4. optimization
+
+
+class Solution {
+public:
+    int maxElementInRange(int low, int high, vector<int>& arr){
+        int maxElement = arr[low];
+        for(int i = low; i<= high; i++)
+            maxElement = max(maxElement, arr[i]);
+
+        return maxElement;
+    }
+    int f(int start, int endd, int k, vector<int>& arr){
+        if( (endd - start + 1) <= k)    
+            return (endd - start + 1)*maxElementInRange(start, endd, arr);
+
+        int maxAns = -1;
+        for(int mid = start; mid< endd; mid++){
+            int ans = f(start, mid, k, arr) + f(mid+1, endd, k, arr);
+            maxAns = max(ans, maxAns);
+        }
+
+        return maxAns;
+    }
+    int maxSumAfterPartitioning(vector<int>& arr, int k) {
+        int n = arr.size();
+        return f(0, n-1, k, arr);
+    }
+};
+
+TC: exponential
+SC: O(n)
+
+
+
+########################################################################################################################################################
+
+
+class Solution {
+public:
+    int maxElementInRange(int low, int high, vector<int>& arr){
+        int maxElement = arr[low];
+        for(int i = low; i<= high; i++)
+            maxElement = max(maxElement, arr[i]);
+
+        return maxElement;
+    }
+    int f(int start, int endd, int k, vector<int>& arr, vector<vector<int>>& dp){
+        
+        if( dp[start][endd] != -1)  return dp[start][endd];
+
+        if( (endd - start + 1) <= k)    
+            return dp[start][endd] = (endd - start + 1)*maxElementInRange(start, endd, arr);
+
+        int maxAns = -1;
+        for(int mid = start; mid< endd; mid++){
+            int ans = f(start, mid, k, arr, dp) + f(mid+1, endd, k, arr, dp);
+            maxAns = max(ans, maxAns);
+        }
+
+        return dp[start][endd] = maxAns;
+    }
+    int maxSumAfterPartitioning(vector<int>& arr, int k) {
+        int n = arr.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        return f(0, n-1, k, arr, dp);
+    }
+};
+
+
+TC: O(n*n*n)
+SC: O(n*n) + O(n){
+    dp = n*n
+    stack space = n 
+}
+
+
+###############################################################################################################################
+
+
+
+class Solution {
+public:
+
+    int f(int start, int endd, int k, vector<int>& arr, vector<vector<int>>& dp, vector<vector<int>>& maxElementInRange){
+        if( (endd - start + 1) <= k)    
+            return dp[start][endd] = (endd - start + 1)*maxElementInRange[start][endd];
+            
+        if( dp[start][endd] != -1)  return dp[start][endd];
+
+        int maxAns = -1;
+        for(int mid = start; mid< endd; mid++){
+            int ans = f(start, mid, k, arr, dp, maxElementInRange) + f(mid+1, endd, k, arr, dp, maxElementInRange);
+            maxAns = max(ans, maxAns);
+        }
+
+        return dp[start][endd] = maxAns;
+    }
+    int maxSumAfterPartitioning(vector<int>& arr, int k) {
+        int n = arr.size();
+
+        vector<vector<int>> maxElementInRange(n, vector<int>(n, 0));
+        for(int len = 1; len<=n; len++){
+            for(int i = 0; i<= n-len; i++){
+                int j = i + len - 1;
+                if(((j - i) <= 1))
+                    maxElementInRange[i][j] = max(arr[i], arr[j]);
+                else
+                    maxElementInRange[i][j] = max({arr[i], arr[j],  maxElementInRange[i+1][j-1] });
+            }
+        }
+
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        return f(0, n-1, k, arr, dp, maxElementInRange);
+    }
+};
+
+
+TC: O(n*n*n)
+SC: O(n*n) + O(n){
+    dp = n*n
+    stack space = n 
+}
+
+
+#####################################################################################################################################################
+
+
+
+1d dp 
+
+class Solution {
+public:
+    int maxSumAfterPartitioning(vector<int>& arr, int k) {
+        int n = arr.size();
+        vector<int> dp(n+1, 0);
+
+        for(int i = 1; i<= n; i++){
+
+            int maxAns = 0;
+            for(int j = 1; j<=k && (i-j) >=0; j++){
+                maxAns = max(maxAns, arr[i-j]);
+                dp[i] = max(dp[i], dp[i-j] + maxAns*j);
+            }
+        }
+        return dp[n];
+    }
+};
+
+TC: O(n*k)
+SC: O(n)
+
+
+
+
+
+
+#########################################################################################################################################
+
+
+
+
+class Solution {
+public:
+    int maxSumAfterPartitioning(vector<int>& arr, int k) {
+        int n = arr.size();
+        vector<int> dp;
+        dp.push_back(0);
+
+        for(int i = 1; i<= n; i++){
+
+            int maxAns = 0, currAns = 0;
+            int dpSize = dp.size();
+            // int dpSize = (i < k ? i : k);
+            for(int j = 1; j<=k && (i-j) >=0; j++){
+                maxAns = max(maxAns, arr[i-j]);
+                currAns = max(currAns, dp[dpSize-j] + maxAns*j);
+            }
+
+            dp.push_back(currAns);
+            if(dp.size() > k)
+                dp.erase(dp.begin());
+        }
+        return dp[k-1];
+    }
+};
+
+
+TC: O(n*k)
+SC: O(k)
+
+
+
+
+

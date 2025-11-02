@@ -1,0 +1,60 @@
+
+
+1. Brute force
+2. optimal ( single pass )
+
+
+class Solution {
+    // Function to find the leaders in the array.
+  public:
+    vector<int> leaders(vector<int>& arr) {
+        // Code here
+        vector<int> ans;
+        for(int i = 0; i<arr.size(); i++){
+            
+            bool isGreater = true;
+            for(int j = i+1; j<arr.size(); j++){
+                if( arr[j] > arr[i]){
+                    isGreater = false;
+                    break;
+                }
+            }
+            if(isGreater)
+                ans.push_back(arr[i]);
+        }
+        return  ans;
+    }
+};
+
+TC: O(n*n)
+SC: O(1)
+
+
+
+########################################################################################
+
+class Solution {
+    // Function to find the leaders in the array.
+  public:
+    vector<int> leaders(vector<int>& arr) {
+        // Code here
+        vector<int> ans;
+        int lenArr = arr.size();
+        int maxNum = arr[lenArr-1];
+        ans.push_back(maxNum);
+        
+        for(int i = lenArr - 2; i>=0; i--){
+            if(arr[i] >= maxNum)
+                ans.push_back(arr[i]);
+            
+            maxNum = max(maxNum, arr[i]);
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+
+

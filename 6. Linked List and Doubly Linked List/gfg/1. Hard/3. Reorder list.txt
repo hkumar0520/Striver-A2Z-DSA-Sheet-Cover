@@ -1,0 +1,87 @@
+
+
+https://www.geeksforgeeks.org/problems/reorder-list/1?page=1&category=Linked%20List
+
+
+
+/*
+struct Node
+{
+    int data;
+    struct Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    Node* reverseLinkedList(Node* head){
+        Node* prev = nullptr, *current = head, *frontNode = nullptr;
+        while(current != nullptr){
+            frontNode = current->next;
+            
+            current->next = prev;
+            prev = current;
+            current = frontNode;
+        }
+        return prev;
+    }
+    void reorderList(Node* head) {
+        // Your code here
+        if(head == nullptr || head->next == nullptr)    return ;
+        
+        // reach till half of list
+        Node *slow = head, *fast = head, *prevSlow = nullptr;
+        while(fast != nullptr && fast->next != nullptr){
+            prevSlow = slow;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        // break list into two half
+        if(prevSlow != nullptr) 
+            prevSlow->next = nullptr;
+        
+        // reverse the second half of list
+        Node* current = head, *newCurrentRev = reverseLinkedList(slow);
+        Node* newHead = new Node(-1);
+        Node* newHeadTraverse = newHead;
+        
+        
+        // do the reordering of list
+        while(current && newCurrentRev){
+            // next Node
+            Node* currentNext = current->next;
+            Node* newCurrentRevNext = newCurrentRev->next;
+            
+            // current Node maniupalition
+            current->next = newCurrentRev;
+            newCurrentRev->next = nullptr;
+            
+            // new list
+            newHeadTraverse->next = current;
+            newHeadTraverse = newHeadTraverse->next->next;
+            
+            // assign next nodes
+            current = currentNext;
+            newCurrentRev = newCurrentRevNext;
+        }
+        
+        // secondHalfList == firstHalfList or firstHalfList+1
+        if(newCurrentRev != nullptr)
+            newHeadTraverse->next = newCurrentRev;
+        
+    }
+};
+
+
+
+TC: O(n/2) + O(n/2) : O(n)
+SC: O(1)
+
+
+

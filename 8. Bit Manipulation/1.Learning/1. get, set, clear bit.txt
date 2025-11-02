@@ -1,0 +1,61 @@
+
+class Solution {
+  public:
+    void bitManipulation(int num, int i) {
+        // your code here
+        
+        // 0th based indexing
+        i = i-1;
+        
+        // Two methods to check ith bit
+        int ithBit = (num>>i & 1) ? 1: 0;
+        // int ithBit = (num & (1<<i)) ? 1: 0;
+        
+        // set ith bit
+        int afterIthBitSet = num | (1<<i);
+        
+        // clear ith bit
+        int clearIthBit = num & (~(1<<i));
+        
+        cout<<ithBit<<" "<<afterIthBitSet<<" "<<clearIthBit;
+    }
+};
+
+
+
+Let's analyze the time and space complexity of the given code.
+
+### Code Overview:
+The function `bitManipulation` performs several bit manipulations on the input number `num`:
+1. **Check the i-th bit**: It uses a right shift (`>>`) and a bitwise AND (`&`) to check the value of the i-th bit.
+2. **Set the i-th bit**: It uses a bitwise OR (`|`) to set the i-th bit.
+3. **Clear the i-th bit**: It uses a bitwise AND (`&`) and a bitwise NOT (`~`) to clear the i-th bit.
+4. The result of these manipulations is printed.
+
+### Time Complexity:
+1. **Right Shift and Bitwise AND** (`num >> i & 1`):
+   - The right shift operation `num >> i` takes **O(1)** time because shifting an integer in memory is a constant-time operation.
+   - The bitwise AND operation `&` and comparison `? 1 : 0` also take **O(1)** time.
+
+2. **Bitwise OR** (`num | (1 << i)`):
+   - Shifting the number `1` to the left by `i` (i.e., `1 << i`) takes **O(1)** time.
+   - The bitwise OR operation `|` also takes **O(1)** time.
+
+3. **Bitwise AND with NOT** (`num & (~(1 << i))`):
+   - Shifting the number `1` to the left by `i` takes **O(1)** time.
+   - The bitwise NOT operation `~` is also a constant-time operation (**O(1)**).
+   - The bitwise AND operation `&` takes **O(1)** time.
+
+Since all the operations inside the function are constant-time operations, the total time complexity is:
+- **Time Complexity**: **O(1)**.
+
+### Space Complexity:
+1. The function uses a fixed number of variables: `ithBit`, `afterIthBitSet`, `clearIthBit`, and `i` (with `i` being modified). 
+2. These variables consume a constant amount of space, regardless of the input size.
+
+Since there is no dynamic memory allocation or growth in space usage as the input grows, the space complexity is:
+- **Space Complexity**: **O(1)**.
+
+### Conclusion:
+- **Time Complexity**: **O(1)** (constant time)
+- **Space Complexity**: **O(1)** (constant space)

@@ -1,0 +1,81 @@
+
+
+
+class Solution {
+public:
+    vector<int> asteroidCollision(vector<int>& asteroids) {
+        stack<int> st;
+        int len = asteroids.size();
+
+        for(int i = 0; i<len; i++){
+            if(st.empty())
+                st.push(asteroids[i]);
+            else{
+                bool isDestroyed = false;
+                while(!st.empty() && (st.top() > 0 && asteroids[i] < 0)){
+
+                    if(abs(st.top()) >= abs(asteroids[i])){
+                        if(abs(st.top()) == abs(asteroids[i]))
+                            st.pop();
+                        isDestroyed = true;
+                        break;
+                    }
+                    else
+                        st.pop();
+                }
+                if(!isDestroyed)
+                    st.push(asteroids[i]);
+            }
+        }
+        vector<int> ans;
+        while(!st.empty()){
+            ans.push_back(st.top());
+            st.pop();
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
+
+TC: O(4n)
+SC: O(2n)
+
+
+####################################################################################
+
+
+class Solution {
+public:
+    vector<int> asteroidCollision(vector<int>& asteroids) {
+        stack<int> st;
+        int len = asteroids.size();
+
+        for(int i = 0; i<len; i++){
+            bool isDestroyed = false;
+            while(!st.empty() && (st.top() > 0 && asteroids[i] < 0)){
+
+                if(abs(st.top()) >= abs(asteroids[i])){
+                    if(abs(st.top()) == abs(asteroids[i]))
+                        st.pop();
+                    isDestroyed = true;
+                    break;
+                }
+                else
+                    st.pop();
+            }
+            if(!isDestroyed)
+                st.push(asteroids[i]);
+        }
+        vector<int> ans;
+        while(!st.empty()){
+            ans.push_back(st.top());
+            st.pop();
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
+
+TC: O(4n)
+SC: O(2n)
+

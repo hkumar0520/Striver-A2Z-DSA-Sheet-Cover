@@ -1,0 +1,85 @@
+
+
+
+1. recursion 
+2. memoization
+
+
+class Solution {
+public:
+    int f(int num){
+        if(num == 1)    return 1;
+        
+        int prod = num;
+        for(int i = 1; i<num; i++){
+            prod = max(prod, f(num-i)*f(i));
+        }
+
+        return prod;
+    }
+    int integerBreak(int n) {
+        
+        int prod = 1;
+        for(int i = 1; i<n; i++){
+            prod = max(prod, f(n - i)*f(i));
+        }
+
+        return prod;
+    }
+};
+
+TC: exponential (N^N)
+SC: O(N)
+
+
+
+###############################################################################################################################################
+
+
+
+
+
+class Solution {
+public:
+    int f(int num, vector<int>& dp){
+        if(num == 1)    return 1;
+
+        if(dp[num] != -1)   return dp[num];
+        
+        int prod = num;
+        for(int i = 1; i<num; i++){
+            prod = max(prod, f(num-i, dp)*f(i, dp));
+        }
+
+        return dp[num] = prod;
+    }
+    int integerBreak(int n) {
+        
+        vector<int> dp(n+1, -1);
+        int prod = 1;
+        for(int i = 1; i<n; i++){
+            prod = max(prod, f(n - i, dp)*f(i, dp));
+        }
+
+        return prod;
+    }
+};
+
+
+
+TC: O(N)
+SC: O(N) + O(N){
+    dp = N 
+    stack space = N 
+}
+
+
+
+
+
+
+
+
+
+
+

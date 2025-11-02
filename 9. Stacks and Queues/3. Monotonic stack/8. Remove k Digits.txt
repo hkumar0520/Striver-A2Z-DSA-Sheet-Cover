@@ -1,0 +1,76 @@
+
+
+
+class Solution {
+public:
+    /*
+        increasing stack 
+        edge cases
+        1. numSize == k,    return "0"
+        2. number in reverse, remove last k elements
+        3. after doing operation, limitDelete >= ans.size(), ans = 0
+            else ans = ans.substr(0, ans.size()-limitDelete);
+    */
+    bool isReverse(string num){
+        int numSize = num.size();
+        for(int i = 1; i<numSize; i++){
+            if(num[i] >= num[i-1]){
+
+            }
+            else
+                return false;
+        }
+        return true;
+    }
+
+    string removeKdigits(string num, int k) {
+        int limitDelete = k, numSize = num.size();
+        if(numSize == k)    return "0";
+        if(isReverse(num))  return num.substr(0, numSize-k);
+
+        stack<int> st;
+        for(int i = 0; i<numSize; i++){
+            if(st.empty())
+                st.push(num[i] - '0');
+            else{
+                int numAtI = num[i] - '0';
+                while( !st.empty() && st.top() > numAtI && limitDelete > 0){
+                    st.pop();
+                    limitDelete--;
+                }
+                st.push(numAtI);
+            }
+        }
+        string ans = "";
+        while(!st.empty()){
+            ans += (char)(st.top() + '0');
+            st.pop();
+        }
+        reverse(ans.begin(), ans.end());
+
+        // leading zeroes removal
+        int ind = 0, ansSize = ans.size();
+        while(ind < ansSize && ans[ind] == '0')
+            ind++;
+        ans = ans.substr(ind);
+        
+        // delete characters left
+        if(ans.size() > limitDelete)
+            ans = ans.substr(0, ans.size() - limitDelete);
+        else
+            ans = "0";
+
+        return ans == "" ? "0": ans;
+    }
+};
+
+TC: O(n) + O(n) + O(n) + O(n) + O(n) : O(5n) : O(n){
+    n = for loop
+    n = while loop
+    n = while loop stack empty
+    n = reverse 
+    n = isReverse
+}
+SC: n + n : O(n)
+
+

@@ -1,0 +1,104 @@
+
+1. Brute force
+2. hahsing (using array)
+3. hashing ( map)
+4. using bits manipulation 
+
+
+
+// Brute force 
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        
+        for(int num: nums){
+            int  cnt = 0;
+            for(int element: nums){
+                if(element == num)
+                    cnt++;
+            }
+            if( cnt == 1)
+                return num;
+        }
+
+        return -1;
+    }
+};
+
+TC: O(n*n)
+SC: O(1)
+
+##################################################################################
+
+// hashing better approach
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        
+        int maxNumber = INT_MIN;
+        for(int num: nums)
+            maxNumber = max( maxNumber, num);
+
+        vector<int> hash(maxNumber+1, 0);
+        for(int num: nums)
+            hash[num]++;
+
+        for(int num: nums){
+            if(hash[num] == 1)
+                return num;
+        }
+
+        return -1;
+    }
+};
+
+TC: O(n)
+SC: O(maxNum + 1)
+
+#######################################################################################
+
+// second hash for negative no.s 
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        
+        int maxNumber = INT_MIN;
+        unordered_map<int,int> hash;
+        for(int num: nums)
+            hash[num]++;
+
+        for(int num: nums){
+            if(hash[num] == 1)
+                return num;
+        }
+
+        return -1;
+    }
+};
+
+
+TC: O(n)
+SC: O(M){
+    M = distinct numbers
+}
+
+################################################################################
+
+// using bits manipulation
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+         int result= 0;
+        for(int i=0;i<nums.size();i++)
+            result=result^nums[i];
+        return result;
+    }
+};
+
+TC: O(n)
+SC: O(1)
+

@@ -1,0 +1,36 @@
+
+
+https://leetcode.com/problems/xor-queries-of-a-subarray/description/
+
+
+class Solution {
+public:
+    vector<int> xorQueries(vector<int>& arr, vector<vector<int>>& queries) {
+        int len = arr.size(), queriesLen = queries.size();
+        vector<int> prefixXor(len, 0);
+        int num = 0;
+        for(int i = 0; i<len; i++){
+            num = num^arr[i];
+            prefixXor[i] = num;
+        }
+
+        vector<int> ans;
+        for(int i = 0; i<queriesLen; i++){
+            int left = queries[i][0], right = queries[i][1];
+
+            if(left != 0)
+                ans.push_back(prefixXor[right]^prefixXor[left-1]);
+            else
+                ans.push_back(prefixXor[right]);
+        }
+        return  ans;
+    }
+};
+
+TC: O(len(arr) + len(queries))
+SC: O(lne(arr))
+
+
+
+
+

@@ -1,0 +1,32 @@
+
+same concept of n meetings in one room 
+
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        sort(intervals.begin(), intervals.end(),
+            [](vector<int> a, vector<int> b){
+                
+                if(a[1] == b[1])
+                    return (a[1] - a[0])  < (b[1] - b[1]);
+
+                return a[1] < b[1];
+            });
+
+        vector<vector<int>> ans;
+        int countRemove = 0, lastPos = INT_MIN;
+        for(int i =0; i<intervals.size(); i++){
+            int start = intervals[i][0], endd = intervals[i][1];
+
+            if( (lastPos == INT_MIN) || (start >= lastPos))
+                lastPos = endd;
+            else
+                countRemove++;
+        }
+        return countRemove;
+    }
+};
+
+TC: nlogn
+SC: 1
+

@@ -1,0 +1,30 @@
+
+
+
+https://www.geeksforgeeks.org/problems/reverse-bits3556/1?page=1&category=Bit%20Magic
+
+
+
+class Solution {
+  public:
+    long long reversedBits(long long x) {
+        // code here
+        // code here
+        long long ans = 0, pos = 31;
+        while(x > 0){
+            
+            if(x & 1){
+                ans += ((long long)1 << pos);
+            }
+            
+            x /= 2;
+            pos--;
+        }
+        return ans;
+    }
+};
+
+TC: O(log(n))
+SC: O(1)
+
+

@@ -4,7 +4,7 @@
 3, If p.charAt(j) == '*': 
    here are two sub conditions:
                1   if p.charAt(j-1) != s.charAt(i) : dp[i][j] = dp[i][j-2]  //in this case, a* only counts as empty
-               2   if p.charAt(i-1) == s.charAt(i) or p.charAt(i-1) == '.':
+               2   if p.charAt(j-1) == s.charAt(i) or p.charAt(j-1) == '.':
                               dp[i][j] = dp[i-1][j]    //in this case, a* counts as multiple a 
                            or dp[i][j] = dp[i][j-1]   // in this case, a* counts as single a
                            or dp[i][j] = dp[i][j-2]   // in this case, a* counts as empty
@@ -92,7 +92,46 @@ bool isAllStars(string pattern, int n)
     }
 };
 
+###############################################################################################
 
+
+// tabular
+
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int m = p.size(), n = s.size();
+        vector<vector<int>> dp(m+1,vector<int>(n+1,0));
+        dp[0][0] = 1;
+        for(int i=2;i<=m;i++)
+        {
+            if(p[i-1] == '*' )
+                dp[i][0] = dp[i-2][0];
+        }
+        for(int i=1;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(p[i-1] != '*')
+                    dp[i][j] = dp[i-1][j-1] && ((p[i-1] == s[j-1])||p[i-1] == '.');
+                else
+                {
+                    // skip two elements means c*(c any random element)
+                    int skiptwoelement = ((i-2)>=0)?dp[i-2][j]:0;
+                    int condition = ((i-2)>=0)? ((p[i-2] == s[j-1]) || p[i-2] == '.'): 0;
+                    int skiponeelement = condition && (dp[i-1][j] || dp[i][j-1]);
+                    dp[i][j] = skiptwoelement || (condition && skiponeelement);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+};
+
+
+
+###############################################################################################
+// optimization
 
 
 

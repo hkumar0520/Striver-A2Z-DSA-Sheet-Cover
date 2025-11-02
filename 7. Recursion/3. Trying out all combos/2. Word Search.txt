@@ -172,6 +172,88 @@ public:
 
 
 
+###############################################################################################
+
+
+
+write in different way
+
+class Solution {
+public:
+    bool backTrack(pair<int,int> cordinates,int idx, string word
+    , vector<vector<char>>& board)
+    {
+        int xCordinate = cordinates.first, yCordinate = cordinates.second;
+        int rowSize = board.size(), colSize = board[0].size();
+
+        if(idx == word.size())
+            return true;
+
+        int a[4] = {-1, 0, 1, 0};
+        int b[4] = {0, 1, 0, -1};
+
+        for(int i = 0; i<4; i++){
+            int xNew = xCordinate + a[i];
+            int yNew = yCordinate + b[i];
+            if(xNew >=0 && yNew>=0 && xNew<rowSize && yNew<colSize && board[xNew][yNew] == word[idx]){
+                char ch = board[xNew][yNew];
+                board[xNew][yNew] = '0';
+
+                if(backTrack({ xNew, yNew}, idx+1, word, board))
+                    return true;
+
+                board[xNew][yNew] = ch;
+            }
+        }
+
+        return false;
+    }
+    
+    bool exist(vector<vector<char>>& board, string word) {
+
+
+        int m = board.size(), n = board[0].size();
+
+        // Check character frequency: if board doesn't have enough of any character from word, return false early.
+        unordered_map<char, int> freqBoard, freqWord;
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                freqBoard[board[i][j]]++;
+            }
+        }
+        for (char c : word) {
+            freqWord[c]++;
+        }
+
+        // Early pruning: if any character in word is not present enough times in board, return false.
+        for (const auto& [c, count] : freqWord) {
+            if (freqBoard[c] < count) {
+                return false;
+            }
+        }
+
+
+
+        for(int i=0; i<board.size(); i++){
+            for(int j=0; j<board[0].size(); j++){
+                if(board[i][j] == word[0]){
+                    char ch = board[i][j];
+                    board[i][j] = '0';
+
+                    if(backTrack({i, j}, 1, word, board))
+                        return true;
+                    
+                    board[i][j] = ch;
+                }
+            }
+        }
+        return false;
+    }
+    
+};
+
+
+
 
 
 

@@ -1,0 +1,336 @@
+
+
+1. recursion
+2. memoization
+3. tabular
+4. optimization
+
+
+class Solution {
+public:
+    bool isAllStars(int ind, string& p){
+        while(ind >= 0 && p[ind] == '*')
+            ind--;
+
+        return ind < 0;
+    }
+    bool f(int inds, int indp, string& s, string& p){
+        // cout<<inds<<" "<<indp<<endl;
+        if(inds < 0 && indp >= 0 && isAllStars(indp, p)) return true;
+        // if(inds == -1 && indp == 0) cout<<"hi";
+        if(inds == 0 && indp == 0){
+            if( (s[inds] == p[indp]) || p[indp] == '?' || p[indp] == '*')  return true;
+            return false;
+        }
+        if(inds < 0 || indp <0) return false;
+
+        bool charactersMatch = false;
+        bool charactersNotMatch = false;
+        if( (s[inds] == p[indp]) || p[indp] == '?')
+            charactersMatch = f(inds-1, indp-1, s, p);
+        else if(p[indp] == '*'){
+            // empyt sequence, match single character, match character multiple
+            charactersNotMatch = f(inds, indp-1, s, p) || f(inds-1, indp-1, s, p) || f(inds-1, indp, s, p);
+        }
+
+        return charactersMatch || charactersNotMatch;
+    }
+    bool isMatch(string s, string p) {
+        if(s.size() == 0 && p.size() == 0)  return true;
+        
+        return f(s.size()-1, p.size()-1, s, p);
+    }
+};
+
+TC: exponential
+SC: O(m+n)
+
+
+
+The code you provided is a recursive solution for **Wildcard Pattern Matching**, where:
+
+* `'?'` matches any single character,
+* `'*'` matches any sequence of characters (including the empty sequence).
+
+Let's analyze **time and space complexity** of this recursive approach.
+
+---
+
+## 🔍 Time Complexity
+
+Let:
+
+* `n = s.size()` (length of input string)
+* `m = p.size()` (length of pattern)
+
+### Recursive Calls:
+
+In the worst case:
+
+* Each `'*'` in pattern can lead to **three recursive calls**:
+
+  1. `f(inds, indp - 1, s, p)` – `'*'` matches empty sequence
+  2. `f(inds - 1, indp - 1, s, p)` – `'*'` matches one character
+  3. `f(inds - 1, indp, s, p)` – `'*'` continues matching
+
+Thus, **number of recursive calls grows exponentially**.
+
+### Worst-Case Time:
+
+This leads to a time complexity of:
+
+$$
+\boxed{O(3^{\min(n, m)})}
+$$
+
+— which is **exponential**.
+
+Note: You could optimize this using memoization or dynamic programming to reduce time complexity to **`O(n * m)`**, but your current code doesn't do that.
+
+---
+
+## 🧠 Space Complexity
+
+This includes:
+
+* **Call stack size** due to recursion
+* Any extra space (negligible here)
+
+### Maximum recursion depth:
+
+* The maximum depth is `O(n + m)` (in worst-case when `*` leads to full recursive tree exploration)
+
+So the space complexity is:
+
+$$
+\boxed{O(n + m)}
+$$
+
+---
+
+## Summary
+
+| Type             | Complexity       |
+| ---------------- | ---------------- |
+| Time Complexity  | `O(3^min(n, m))` |
+| Space Complexity | `O(n + m)`       |
+
+> ⚠️ This is a **brute-force recursive solution**. It's not efficient for large inputs. A dynamic programming approach is preferred for real-world usage.
+
+
+
+
+
+
+
+####################################################################################################################
+
+
+
+class Solution {
+public:
+    bool isAllStars(int ind, string& p){
+        while(ind >= 0 && p[ind] == '*')
+            ind--;
+
+        return ind < 0;
+    }
+    bool f(int inds, int indp, string& s, string& p, vector<vector<int>>& dp){
+        if(inds < 0 && indp >= 0 && isAllStars(indp, p)) return true;
+        if(inds == 0 && indp == 0){
+            if( (s[inds] == p[indp]) || p[indp] == '?' || p[indp] == '*')  return true;
+            return false;
+        }
+        if(inds < 0 || indp <0) return false;
+
+        if(dp[inds][indp] != -1)    return dp[inds][indp];
+
+        bool charactersMatch = false;
+        bool charactersNotMatch = false;
+        if( (s[inds] == p[indp]) || p[indp] == '?')
+            charactersMatch = f(inds-1, indp-1, s, p, dp);
+        else if(p[indp] == '*'){
+            // empyt sequence, match single character, match character multiple
+            charactersNotMatch = f(inds, indp-1, s, p, dp) || f(inds-1, indp-1, s, p, dp) || f(inds-1, indp, s, p, dp);
+        }
+
+        return dp[inds][indp] = charactersMatch || charactersNotMatch;
+    }
+    bool isMatch(string s, string p) {
+        if(s.size() == 0 && p.size() == 0)  return true;
+        int m = s.size(), n = p.size();
+
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return f(m-1, n-1, s, p, dp);
+    }
+};
+
+TC: O(m*n)
+SC: O(m*n) + O(m+n){
+    dp = m*n
+    stack space = m + n
+}
+
+| Complexity Type | Value                          |
+| --------------- | ------------------------------ |
+| **Time**        | `O(m × n)`                     |
+| **Space**       | `O(m × n)`                     |
+| **Optimized?**  | ✅ Much better than brute-force |
+
+
+
+###########################################################################################################################
+
+
+
+another memo 
+
+class Solution {
+public:
+    bool isAllStars(int ind, string& p){
+        while(ind >= 0 && p[ind] == '*')
+            ind--;
+
+        return ind < 0;
+    }
+    bool f(int inds, int indp, string& s, string& p, vector<vector<int>>& dp){
+        if(inds < 0 && indp >= 0 && isAllStars(indp, p)) return true;
+        if(inds == -1 && indp == -1)    return true;
+        if(inds < 0 || indp <0) return false;
+
+        if(dp[inds][indp] != -1)    return dp[inds][indp];
+
+        bool charactersMatch = false;
+        bool charactersNotMatch = false;
+        if( (s[inds] == p[indp]) || p[indp] == '?')
+            charactersMatch = f(inds-1, indp-1, s, p, dp);
+        else if(p[indp] == '*'){
+            // empyt sequence, match single character, match character multiple
+            charactersNotMatch = f(inds, indp-1, s, p, dp) || f(inds-1, indp-1, s, p, dp) || f(inds-1, indp, s, p, dp);
+        }
+
+        return dp[inds][indp] = charactersMatch || charactersNotMatch;
+    }
+    bool isMatch(string s, string p) {
+        if(s.size() == 0 && p.size() == 0)  return true;
+        int m = s.size(), n = p.size();
+
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return f(m-1, n-1, s, p, dp);
+    }
+};
+
+
+
+TC: O(m*n)
+SC: O(m*n) + O(m+n){
+    dp = m*n
+    stack space = m + n
+}
+| Complexity Type | Value                          |
+| --------------- | ------------------------------ |
+| **Time**        | `O(m × n)`                     |
+| **Space**       | `O(m × n)`                     |
+| **Optimized?**  | ✅ Much better than brute-force |
+
+
+
+
+###########################################################################################################################
+
+
+class Solution {
+public:
+
+    bool isMatch(string s, string p) {
+        if(s.size() == 0 && p.size() == 0)  return true;
+        int m = s.size(), n = p.size();
+
+        vector<vector<bool>> dp(m+1, vector<bool>(n+1, false));
+        // in case of empty strings
+        dp[0][0] = true; 
+
+        // cordinate change i,j shift to i+1, j+1 for dp
+        for(int i = 1; i<=n; i++){
+            if(p[i-1] == '*')   dp[0][i] = true;
+            else    break;
+        }
+
+        for(int inds=1; inds<=m; inds++){
+            for(int indp=1; indp<=n; indp++){
+
+                bool charactersMatch = false;
+                bool charactersNotMatch = false;
+                if( (s[inds-1] == p[indp-1]) || p[indp-1] == '?')
+                    charactersMatch = dp[inds-1][indp-1];
+                else if(p[indp-1] == '*'){
+                    // empyt sequence, match single character, match character multiple
+                    charactersNotMatch = dp[inds][indp-1] || dp[inds-1][indp-1] || dp[inds-1][indp];
+                }
+                dp[inds][indp] = charactersMatch || charactersNotMatch;
+            }
+        }
+        return dp[m][n];
+    }
+};
+
+
+
+TC: O(m*n)
+SC: O(m*n) {
+    dp = m*n
+}
+
+
+
+###########################################################################################################################
+
+class Solution {
+public:
+
+    bool isMatch(string s, string p) {
+        if(s.size() == 0 && p.size() == 0)  return true;
+        int m = s.size(), n = p.size();
+
+        vector<bool> curr(n+1, false) , prev(n+1, false);
+        // in case of empty strings
+        curr[0] = true; 
+
+        // cordinate change i,j shift to i+1, j+1 for dp
+        for(int i = 1; i<=n; i++){
+            if(p[i-1] == '*')   curr[i] = true;
+            else    break;
+        }
+
+        for(int inds=1; inds<=m; inds++){
+            prev = curr;
+            for(int indp=1; indp<=n; indp++){
+
+                bool charactersMatch = false;
+                bool charactersNotMatch = false;
+                if( (s[inds-1] == p[indp-1]) || p[indp-1] == '?')
+                    charactersMatch = prev[indp-1];
+                else if(p[indp-1] == '*'){
+                    // empyt sequence, match single character, match character multiple
+                    charactersNotMatch = curr[indp-1] || prev[indp-1] || prev[indp];
+                }
+                curr[indp] = charactersMatch || charactersNotMatch;
+            }
+            // after 1st row, curr[0] = false always
+            curr[0] = false;
+        }
+        return curr[n];
+    }
+};
+
+
+TC: O(m*n)
+SC: O(n) {
+    dp = n
+}
+
+
+
+
+
+###########################################################################################################################

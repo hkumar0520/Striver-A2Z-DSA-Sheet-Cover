@@ -1,0 +1,30 @@
+
+
+https://www.geeksforgeeks.org/problems/longest-consecutive-1s-1587115620/1?page=1&category=Bit%20Magic
+
+
+class Solution
+{
+    public:
+    int maxConsecutiveOnes(int N)
+    {
+        // code here
+        int maxLen = 0, cnt = 0;
+        while(N > 0){
+            if( N & 1)
+                cnt++;
+            else
+                cnt = 0;
+            
+            N /= 2;
+            maxLen = max( maxLen, cnt);
+        }
+        return maxLen;
+    }
+};
+
+TC: O(logn)
+SC: O(1)
+
+
+

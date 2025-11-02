@@ -27,6 +27,13 @@ int minimizeCost(int n, int k, vector<int> &height){
 }
 
 
+TC: O( k ^ (n-1)) = O( k^ n){
+    k choices at every index so for large number n
+    k^n goes
+}
+SC: O(n)
+
+
 ###############################################################################################
 
 // memoization
@@ -55,6 +62,11 @@ int minimizeCost(int n, int k, vector<int> &height){
     // Write your code here.
 }
 
+TC: O(n*k)
+SC: O(n) + O(n){
+    n = stack space
+    n = dp array
+}
 
 ###############################################################################################
 //another memoization approach
@@ -86,6 +98,12 @@ int minimizeCost(int n, int k, vector<int> &height){
     return f(n-1, height, dp, k);
 
     // Write your code here.
+}
+
+TC: O(n*k)
+SC: O(n) + O(n){
+    n = stack space
+    n = dp array
 }
 
 ###############################################################################################
@@ -121,4 +139,63 @@ int minimizeCost(int n, int k, vector<int> &height){
     // Write your code here.
 }
 
+
+TC: O(n*k)
+SC: O(n) {
+    n = dp array
+}
+
 // table approach
+
+
+
+##############################################################################################
+
+
+
+
+#include <bits/stdc++.h>
+int f(int n, vector<int> hgs, int k)
+{
+    vector<int> dp(k, -1);
+
+    dp[0] = 0;
+    for(int i = 1; i<k; i++ ){
+        int minimum = INT_MAX;
+        for(int j = 1; j<=k; j++){
+            if((i-j)>=0){
+                int value = dp[i-j] + abs(hgs[i] - hgs[i-j]);
+                minimum = min(minimum, value);
+            }
+        }
+        dp[i] = minimum;
+    }
+
+    for(int ind=k;ind<n;ind++)
+    {
+        int minimum = INT_MAX;
+        for(int j = 1;j<=k;j++)
+        {
+            if((ind-j)>=0)
+            {
+                int value = dp[k-j] + abs(hgs[ind]-hgs[ind-j]);
+                minimum = min(minimum, value);
+            }
+        }
+        dp.push_back( minimum );
+        if(dp.size() > k)
+            dp.erase(dp.begin());
+    }
+    return dp[k-1];
+}
+
+int minimizeCost(int n, int k, vector<int> &height){
+
+    return f(n, height, k);
+}
+
+TC: O(n*k)
+SC: O(k)
+
+
+

@@ -1,0 +1,38 @@
+
+
+
+class Solution {
+  public:
+  
+    int f(int n, vector<int>& dp){
+        if(n == 0)  return 1;
+        
+        if(dp[n] != -1)     return dp[n];
+        
+        int countSteps = 0;
+        for(int i = 1; i<=3; i++){
+            if( (n-i) >= 0)
+                countSteps += f(n-i, dp);
+        }
+        
+        return dp[n] = countSteps;
+    }
+    // Function to count the number of ways in which frog can reach the top.
+    int countWays(int n) {
+
+        // your code here
+        vector<int> dp(n+1, -1);
+        
+        return f(n, dp);
+    }
+};
+
+TC: O(n)
+SC: O(n) + O(n){
+    n = dp,
+    n = stack space 
+}
+
+
+
+

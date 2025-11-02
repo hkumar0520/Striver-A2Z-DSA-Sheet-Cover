@@ -1,0 +1,77 @@
+
+
+
+1. Brute force
+
+2. optimal (n, 1)
+
+
+
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    int getLength(ListNode* head){
+        int cnt = 0;
+        while(head != nullptr){
+            head = head->next;
+            cnt++;
+        }
+        return cnt;
+    }
+    ListNode* reverseLinkedList(ListNode* head, int k){
+        ListNode* current = head, *prev = nullptr, *frontNode = nullptr;
+        while(current != nullptr && k-- > 0){
+            frontNode = current ->next;
+
+            current->next = prev;
+            prev = current;
+            current = frontNode;
+        }
+        // joining to the node
+        head->next = frontNode;
+        return prev;
+    }
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        if(head == nullptr || head->next == nullptr)    return head;
+
+        int len = getLength(head);
+        int quotient = len / k, remainder = len % k;
+        if(quotient == 0)
+            return head;
+
+        ListNode* prevHead = nullptr, *currHead = head, *resultNewHead = nullptr;
+        while(quotient > 0){
+
+            ListNode* newHead = reverseLinkedList(currHead, k);
+            if(resultNewHead == nullptr){
+                resultNewHead = newHead;
+            }
+            if(prevHead != nullptr)
+                prevHead->next = newHead;
+            prevHead = currHead;
+            currHead = currHead->next;
+            
+            quotient--;
+        }
+        return resultNewHead;
+    }
+};
+
+
+TC: O(n) + O(n)
+SC: O(1)
+
+
+
+

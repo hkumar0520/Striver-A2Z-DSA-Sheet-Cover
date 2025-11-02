@@ -40,3 +40,6 @@ int longestBitonicSubsequence(vector<int>& arr, int n)
 }
 
 
+TC : O(2*N*N)
+SC : O(2*N)
+

@@ -1,0 +1,101 @@
+
+
+
+in java
+
+
+1. Brute force
+2. Hashing
+3. Hashing (single pass)
+4. Two Pointer (only works on yes or no)
+
+
+
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Brute force
+        for(int i = 0; i<nums.length; i++){
+            for(int j = i+1; j<nums.length; j++){
+                if( (nums[i] + nums[j]) == target)
+                    return new int[]{i, j};
+            }
+        }
+        return new int[]{ -1, -1};
+    }
+}
+
+TC: O(n*n)
+SC: O(1)
+
+#####################################################################
+
+Using Map 
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map< Integer, Integer> map = new HashMap<>();
+        for(int i = 0; i < nums.length; i++){
+            map.put(nums[i], i);
+        }
+
+        for(int i = 0; i<nums.length; i++){
+            int moreNeed = target - nums[i];
+            if( map.containsKey(moreNeed) && map.get(moreNeed) != i)
+                return new int[] { i, map.get(moreNeed)};
+        }
+        return new int[] {-1, -1};
+    }
+}
+
+TC: O(n)
+SC: O(n)
+
+########################################################################
+
+Using Map with one pass
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map< Integer, Integer> map = new HashMap<>();
+
+        for(int i = 0; i<nums.length; i++){
+            int moreNeed = target - nums[i];
+            if( map.containsKey(moreNeed) )
+                return new int[] { map.get(moreNeed), i};
+            else
+                map.put( nums[i], i);
+        }
+        return new int[] {-1, -1};
+    }
+}
+
+TC: O(n)
+SC: O(n)
+
+########################################################################
+
+using Two Pointers
+
+only work for yes or no, not for index return as it is failing for it 
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Arrays.sort(nums);
+        int low = 0, high = nums.length-1;
+        while(low < high){
+            int sum = nums[low] + nums[high];
+
+            if(sum == target)
+                return new int[]{ low, high};
+            if(sum > target)
+                high--;
+            else
+                low++;
+        }
+        return new int[]{ -1, -1};
+    }
+}
+
+TC: O(nlogn)
+SC: O(1)
